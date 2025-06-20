@@ -1,0 +1,135 @@
+import React, { useState } from 'react';
+
+// Main App component
+export default function App() {
+  const [email, setEmail] = useState('');
+  const [league, setLeague] = useState('');
+  const [message, setMessage] = useState('');
+
+  // Function to handle waitlist submission
+  const handleWaitlistSubmit = (e) => {
+    e.preventDefault();
+    // In a real application, this would send data to a backend.
+    // For now, we'll just show a message.
+    console.log('Email:', email);
+    console.log('League:', league);
+    setMessage('Thanks for joining the waitlist! We\'ll keep you updated.');
+    setEmail(''); // Clear the email input
+    setLeague(''); // Clear the league selection
+    // You would integrate your backend API call here, e.g.:
+    // fetch('/api/join-waitlist', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ email, league })
+    // }).then(response => response.json())
+    //   .then(data => console.log(data))
+    //   .catch(error => console.error('Error:', error));
+  };
+
+  return (
+    <div className="min-h-screen bg-blue-800 flex flex-col items-center justify-center p-4 font-inter">
+      {/* Main content container, centered and responsive */}
+      <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 lg:p-16 max-w-lg w-full text-center flex flex-col items-center">
+        {/* HeyBLU Logo/Icon */}
+        <div className="mb-8 p-4 bg-blue-100 rounded-full shadow-inner">
+          {/* Speech bubble SVG for the icon */}
+          <svg className="w-24 h-24 text-blue-800" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
+            {/* Baseball SVG inside the speech bubble */}
+            <circle cx="12" cy="10" r="4" fill="white" stroke="currentColor" strokeWidth="1"/>
+            <path d="M12 6.5a.5.5 0 01.5-.5h-1a.5.5 0 01-.5.5v7a.5.5 0 01.5.5h1a.5.5 0 01-.5-.5zM8.5 9a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v1a.5.5 0 01-.5.5z" fill="currentColor"/>
+          </svg>
+        </div>
+
+        {/* Headline */}
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-blue-900 mb-4 leading-tight">
+          Ask any youth baseball rule, get a fast, clear answer.
+        </h1>
+
+        {/* Subhead */}
+        <p className="text-lg md:text-xl text-gray-700 mb-8">
+          We’re training an AI rulebook assistant for every league.
+        </p>
+
+        {/* Waitlist Form */}
+        <form onSubmit={handleWaitlistSubmit} className="w-full max-w-sm">
+          <div className="mb-4">
+            <input
+              type="email"
+              placeholder="Your email address"
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="mb-6">
+            <select
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
+              value={league}
+              onChange={(e) => setLeague(e.target.value)}
+            >
+              <option value="">Select your league (optional)</option>
+              <option value="little-league">Little League</option>
+              <option value="cal-ripken">Cal Ripken Baseball</option>
+              <option value="babe-ruth">Babe Ruth Baseball</option>
+              <option value="pony-baseball">PONY Baseball</option>
+              <option value="other">Other / Not sure</option>
+            </select>
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105"
+          >
+            Join waitlist &rarr;
+          </button>
+        </form>
+
+        {/* Submission Message */}
+        {message && (
+          <p className="mt-6 text-green-700 font-medium text-center">
+            {message}
+          </p>
+        )}
+
+        {/* Building in public note */}
+        <p className="text-sm text-gray-500 mt-8 mb-4">
+          Building in public &bull; This is not an app yet.
+        </p>
+
+        {/* Social Media Link (X/Twitter) */}
+        <a
+          href="https://twitter.com/HeyBLUrulebook"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 hover:text-blue-800 text-lg font-semibold flex items-center justify-center rounded-full px-4 py-2 hover:bg-blue-50 transition duration-200"
+        >
+          {/* X/Twitter Icon (using a simple SVG as Font Awesome isn't directly available without setup) */}
+          <svg className="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18.244 2.25h3.308l-7.227 8.261L21.6 21.75h-5.276L10.92 13.914 2.457 21.75H.97L9.735 12.05L0 2.25h8.527L14.473 8.354L18.244 2.25zm-2.457 16.145h2.333L8.685 5.56H6.252l9.535 12.835z"/>
+          </svg>
+          @HeyBLUrulebook
+        </a>
+      </div>
+
+      {/* Placeholder for /rulebook link */}
+      <div className="mt-10">
+        <a
+          href="/rulebook" // This would be the actual path to your rulebook page
+          className="text-white text-opacity-80 hover:text-white hover:underline text-md md:text-lg transition duration-200"
+        >
+          Learn more about the Rulebook Assistant &rarr;
+        </a>
+      </div>
+
+      {/* Global styles for Inter font and Tailwind CSS */}
+      <style>{`
+        @import url('https://rsms.me/inter/inter.css');
+        html { font-family: 'Inter', sans-serif; }
+        @supports (font-variation-settings: normal) {
+          html { font-family: 'Inter var', sans-serif; }
+        }
+      `}</style>
+    </div>
+  );
+}

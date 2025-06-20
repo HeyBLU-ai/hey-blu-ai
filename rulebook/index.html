@@ -1,0 +1,85 @@
+import React from 'react';
+
+// Main App component for the Rulebook page
+export default function App() {
+  return (
+    <div className="min-h-screen bg-blue-800 flex flex-col items-center justify-center p-4 font-inter">
+      {/* Main content container, centered and responsive */}
+      <div className="bg-white rounded-lg shadow-xl p-8 md:p-12 lg:p-16 max-w-2xl w-full text-center flex flex-col items-center">
+        {/* Page Title */}
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-blue-900 mb-6 leading-tight">
+          The HeyBLU.AI Rulebook Assistant
+        </h1>
+
+        {/* Introduction */}
+        <p className="text-lg md:text-xl text-gray-700 mb-8">
+          Navigating youth baseball rules can be complex and time-consuming. The HeyBLU.AI Rulebook Assistant is being built to provide instant, precise, and easy-to-understand answers to any rule question you might have.
+        </p>
+
+        {/* How it Works Section */}
+        <div className="w-full text-left mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">How It Works</h2>
+          <p className="text-md md:text-lg text-gray-600 mb-4">
+            Our AI is meticulously trained on official rulebooks from various youth baseball leagues. When you ask a question, it processes the query to identify the relevant rules and provides a clear, concise answer, helping you make fair and informed decisions on the field or from the stands.
+          </p>
+          <ul className="list-disc list-inside text-gray-600 space-y-2">
+            <li><span className="font-semibold">Intelligent Query Processing:</span> Understands natural language questions.</li>
+            <li><span className="font-semibold">Comprehensive Rule Database:</span> Trained on official league rulebooks.</li>
+            <li><span className="font-semibold">Fast & Accurate Responses:</span> Get answers in seconds, not minutes.</li>
+            <li><span className="font-semibold">Clear & Concise Explanations:</span> Rules broken down for easy understanding.</li>
+          </ul>
+        </div>
+
+        {/* Who It's For Section */}
+        <div className="w-full text-left mb-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-blue-800 mb-4">Who Can Benefit?</h2>
+          <p className="text-md md:text-lg text-gray-600 mb-4">
+            HeyBLU.AI is designed for everyone involved in youth baseball:
+          </p>
+          <ul className="list-disc list-inside text-gray-600 space-y-2">
+            <li><span className="font-semibold">Coaches:</span> Quickly clarify rules during games or practices.</li>
+            <li><span className="font-semibold">Umpires:</span> Ensure fair play with immediate rule interpretations.</li>
+            <li><span className="font-semibold">Admins:</span> Streamline rule disputes and inquiries.</li>
+            <li><span className="font-semibold">Parents:</span> Understand game situations and rules affecting their children.</li>
+            <li><span className="font-semibold">Players:</span> Learn the rules of the game with clarity.</li>
+          </ul>
+        </div>
+
+        {/* Call to Action / Join Waitlist */}
+        <p className="text-lg md:text-xl text-gray-700 mb-6">
+          Be among the first to experience the future of youth baseball rule lookups.
+        </p>
+        <a
+          href="/" // Link back to the homepage for waitlist
+          className="w-full max-w-sm bg-blue-600 text-white font-bold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105"
+        >
+          Join the Waitlist Today &rarr;
+        </a>
+
+        {/* Building in public note */}
+        <p className="text-sm text-gray-500 mt-8 mb-4">
+          Building in public &bull; Your feedback helps us grow.
+        </p>
+
+        {/* Back to Home Link */}
+        <div className="mt-8">
+          <a
+            href="/"
+            className="text-blue-600 hover:text-blue-800 text-lg font-semibold flex items-center justify-center rounded-full px-4 py-2 hover:bg-blue-50 transition duration-200"
+          >
+            &larr; Back to Home
+          </a>
+        </div>
+      </div>
+
+      {/* Global styles for Inter font and Tailwind CSS */}
+      <style>{`
+        @import url('https://rsms.me/inter/inter.css');
+        html { font-family: 'Inter', sans-serif; }
+        @supports (font-variation-settings: normal) {
+          html { font-family: 'Inter var', sans-serif; }
+        }
+      `}</style>
+    </div>
+  );
+}
