@@ -4,86 +4,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyBLU.AI</title>
+    <title>HeyBLU Rulebook - AI Assistant for Youth Baseball & Softball</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        html { font-family: 'Inter', sans-serif; }
-        @supports (font-variation-settings: normal) {
-            html { font-family: 'Inter var', sans-serif; }
+        /* Use Inter as the default font */
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        /* Custom focus styles for better accessibility */
+        .form-input:focus, .form-checkbox:focus, .form-radio:focus {
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+            --tw-ring-color: #3b82f6; /* Equivalent to ring-blue-500 */
+            box-shadow: 0 0 0 2px var(--tw-ring-color);
+        }
+        .gradient-text {
+            background: -webkit-linear-gradient(45deg, #3b82f6, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
-<body class="bg-blue-800">
-    <div class="min-h-screen flex flex-col items-center justify-center p-4 font-inter">
-      <div class="bg-white rounded-lg shadow-xl p-8 md:p-12 lg:p-16 max-w-lg w-full text-center flex flex-col items-center">
-        <div class="mb-8 p-4 bg-blue-100 rounded-full shadow-inner">
-          <svg class="w-24 h-24 text-blue-800" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
-            <circle cx="12" cy="10" r="4" fill="white" stroke="currentColor" stroke-width="1"/>
-            <path d="M12 6.5a.5.5 0 01.5-.5h-1a.5.5 0 01-.5.5v7a.5.5 0 01.5.5h1a.5.5 0 01-.5-.5zM8.5 9a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h7a.5.5 0 01.5.5v1a.5.5 0 01-.5.5z" fill="currentColor"/>
-          </svg>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                     <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
+                    </svg>
+                    <span class="font-bold text-xl text-gray-900">HeyBLU Rulebook</span>
+                </div>
+                <a href="#waitlist-form" class="hidden sm:inline-block bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
+                    Join Waitlist
+                </a>
+            </div>
         </div>
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-blue-900 mb-4 leading-tight">
-          Ask any youth baseball rule, get a fast, clear answer.
-        </h1>
-        <p class="text-lg md:text-xl text-gray-700 mb-8">
-          We're training an AI rulebook assistant for every league.
-        </p>
-        <form action="https://formspree.io/f/mjkrezok" method="POST" class="w-full max-w-sm">
-          <div class="mb-4">
-            <input
-              type="email"
-              name="email"
-              placeholder="Your email address"
-              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-              required
-            />
-          </div>
-          <div class="mb-6">
-            <select
-              name="league"
-              class="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
-            >
-              <option value="">Select your league (optional)</option>
-              <option value="little-league">Little League</option>
-              <option value="cal-ripken">Cal Ripken Baseball</option>
-              <option value="babe-ruth">Babe Ruth Baseball</option>
-              <option value="pony-baseball">PONY Baseball</option>
-              <option value="other">Other / Not sure</option>
-            </select>
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-blue-600 text-white font-bold py-3 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105"
-          >
-            Join waitlist &rarr;
-          </button>
-        </form>
-        <p id="response-msg" class="mt-6 text-green-700 font-medium text-center"></p>
-        <p class="text-sm text-gray-500 mt-8 mb-4">
-          Building in public &bull; This is not an app yet.
-        </p>
-        <a
-          href="https://twitter.com/HeyBLUrulebook"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="text-blue-600 hover:text-blue-800 text-lg font-semibold flex items-center justify-center rounded-full px-4 py-2 hover:bg-blue-50 transition duration-200"
-        >
-          <svg class="w-6 h-6 mr-2" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18.244 2.25h3.308l-7.227 8.261L21.6 21.75h-5.276L10.92 13.914 2.457 21.75H.97L9.735 12.05L0 2.25h8.527L14.473 8.354L18.244 2.25zm-2.457 16.145h2.333L8.685 5.56H6.252l9.535 12.835z"/>
-          </svg>
-          @HeyBLUrulebook
-        </a>
-      </div>
-      <div class="mt-10">
-        <a
-          href="/rulebook"
-          class="text-white text-opacity-80 hover:text-white hover:underline text-md md:text-lg transition duration-200"
-        >
-          Learn more about the Rulebook Assistant &rarr;
-        </a>
-      </div>
-    </div>
+    </header>
+
+    <main class="pt-24">
+        <!-- Hero Section -->
+        <section class="text-center py-16 md:py-24 px-4">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-4">
+                    Know the rule. <span class="gradient-text">Prove the rule.</span> Instantly.
+                </h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mt-6">
+                    HeyBLU is the AI-powered rulebook assistant for youth baseball and softball. 
+                    Ask any rule. Get the correct answer — plus the citation to back it up. 
+                    Custom-trained for your league.
+                </p>
+                <div class="mt-10">
+                    <a href="#waitlist-form" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
+                        Join the Waitlist Now &rarr;
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Problem Section -->
+        <section class="bg-white py-16 sm:py-24 px-4">
+            <div class="max-w-5xl mx-auto text-center">
+                <h2 class="text-base font-semibold text-blue-600 tracking-wider uppercase">The Problem</h2>
+                <p class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">Stop the Arguments. End the Confusion.</p>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                    <!-- Problem 1 -->
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <p class="font-semibold text-lg">😠 Endless rule arguments with no definitive answer.</p>
+                    </div>
+                    <!-- Problem 2 -->
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                       <p class="font-semibold text-lg">🤯 Wasting time searching 100-page PDF rulebooks.</p>
+                    </div>
+                    <!-- Problem 3 -->
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <p class="font-semibold text-lg">🤔 Friction between parents, coaches, and umpires.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features/Solution Section -->
+        <section class="py-16 sm:py-24 px-4">
+             <div class="max-w-5xl mx-auto text-center">
+                <h2 class="text-base font-semibold text-blue-600 tracking-wider uppercase">The Solution</h2>
+                <p class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">A Big Step Up for the Game</p>
+                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-center">
+                    <!-- Feature 1 -->
+                    <div class="flex flex-col items-center">
+                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mt-4">Custom-Trained for Your League</h3>
+                        <p class="mt-2 text-gray-600">Works with Little League, PONY, Babe Ruth, and more. We'll train it on your specific rules.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                     <div class="flex flex-col items-center">
+                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mt-4">Instant Voice & Text Answers</h3>
+                        <p class="mt-2 text-gray-600">No more guessing or flipping through pages. Just ask your question and get an immediate response.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                     <div class="flex flex-col items-center">
+                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
+                           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <h3 class="font-bold text-xl mt-4">Prove It with Rule Citations</h3>
+                        <p class="mt-2 text-gray-600">Every answer includes the exact rule and number, so you can show it on the spot and be confident.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waitlist Form Section -->
+        <section id="waitlist-form" class="bg-white py-16 sm:py-24 px-4">
+             <div class="max-w-2xl mx-auto">
+                 <!-- Header -->
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Early Access</h2>
+                    <p class="text-lg text-gray-600 mt-3">Join the waitlist and help us train HeyBLU for your league.</p>
+                </div>
+
+                <!-- Form Container -->
+                <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8">
+                    <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
+                        <!-- Email Input -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                            <input type="email" name="email" id="email" placeholder="you@example.com" required
+                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+
+                        <!-- Role Checkboxes -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">I'm a:</label>
+                            <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+                                <div class="flex items-center"><input id="role-coach" name="role" type="checkbox" value="Coach" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-coach" class="ml-2 block text-sm text-gray-800">Coach</label></div>
+                                <div class="flex items-center"><input id="role-umpire" name="role" type="checkbox" value="Umpire" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-umpire" class="ml-2 block text-sm text-gray-800">Umpire</label></div>
+                                <div class="flex items-center"><input id="role-parent" name="role" type="checkbox" value="Parent" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-parent" class="ml-2 block text-sm text-gray-800">Parent</label></div>
+                                <div class="flex items-center"><input id="role-admin" name="role" type="checkbox" value="Admin" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-admin" class="ml-2 block text-sm text-gray-800">Admin</label></div>
+                                <div class="flex items-center"><input id="role-player" name="role" type="checkbox" value="Player" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-player" class="ml-2 block text-sm text-gray-800">Player</label></div>
+                            </div>
+                        </div>
+
+                        <!-- League Input -->
+                        <div>
+                            <label for="league" class="block text-sm font-medium text-gray-700 mb-1">League + Age (optional)</label>
+                            <input type="text" name="league" id="league" placeholder="e.g. Mill Valley Little League 13U"
+                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+
+                        <!-- Share Rulebook Radio Buttons -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Would you share your league's rulebook?</label>
+                            <div class="mt-2 flex items-center space-x-6">
+                                <div class="flex items-center"><input id="share-yes" name="share_rulebook" type="radio" value="Yes" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-yes" class="ml-2 block text-sm text-gray-800">Yes</label></div>
+                                <div class="flex items-center"><input id="share-no" name="share_rulebook" type="radio" value="No" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-no" class="ml-2 block text-sm text-gray-800">No</label></div>
+                            </div>
+                        </div>
+
+                        <!-- Referral Input -->
+                        <div>
+                            <label for="referral_email" class="block text-sm font-medium text-gray-700">Want to move up the waitlist?</label>
+                            <p class="text-sm text-gray-500 mb-2">Invite one person. We'll bump you up if they sign up too.</p>
+                            <input type="email" name="referral_email" id="referral_email" placeholder="friend@example.com"
+                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div>
+                            <button type="submit"
+                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
+                                Join the Waitlist
+                            </button>
+                        </div>
+                    </form>
+                </div>
+             </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 HeyBLU.AI. All rights reserved.</p>
+             <p class="text-sm text-gray-400 mt-2">
+                Building in public &bull; This is not an app yet.
+             </p>
+        </div>
+    </footer>
+
 </body>
 </html> 
