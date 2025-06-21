@@ -6,8 +6,12 @@
     <title>Rulebook Assistant - HeyBLU.AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
-    <!-- PDF.js library from Mozilla -->
+    
+    <!-- External libraries loaded in the head -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.min.js"></script>
+    <!-- The user's API key configuration file -->
+    <script src="config.js"></script>
+
     <style>
         html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         @supports (font-variation-settings: normal) {
@@ -43,6 +47,11 @@
         }
         .custom-file-upload:hover {
             background-color: #f3f4f6;
+        }
+        .custom-file-upload.disabled {
+            cursor: not-allowed;
+            background-color: #e5e7eb;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -113,9 +122,6 @@
         </footer>
     </div>
 
-    <!-- IMPORTANT: The API key is loaded from this separate, untracked file -->
-    <script src="config.js"></script>
-
     <script>
         window.addEventListener('DOMContentLoaded', () => {
 
@@ -130,20 +136,37 @@
             const errorText = document.getElementById('error-text');
             const pdfUpload = document.getElementById('pdf-upload');
             const pdfStatus = document.getElementById('pdf-status');
+            const pdfLabel = document.querySelector('label[for="pdf-upload"]');
 
-            // --- API Key Check ---
-            // The GEMINI_API_KEY is now expected to be in config.js
-            if (typeof GEMINI_API_KEY === 'undefined' || GEMINI_API_KEY === "PASTE_YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
-                showError("API Key is missing. Please edit 'rulebook/config.js' and add your Gemini API key.");
-                return;
+            // --- Robustness Checks on Page Load ---
+
+            // 1. Check if the PDF library loaded correctly.
+            if (typeof pdfjsLib === 'undefined') {
+                showError("Critical Error: The PDF library failed to load. Please check your internet connection, disable any ad-blockers, and refresh the page.");
+                askButton.disabled = true;
+                pdfUpload.disabled = true;
+                pdfLabel.classList.add('disabled');
+                return; // Stop execution if this critical component is missing.
             }
 
-            // --- Setup PDF.js worker ---
-            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
+            // 2. Check if the API key from config.js is present.
+            if (typeof GEMINI_API_KEY === 'undefined' || !GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE_YOUR_API_KEY_HERE")) {
+                showError("Configuration Error: The Gemini API Key is missing. Please ensure 'config.js' is in the same directory and contains your valid API key.");
+                askButton.disabled = true;
+                return; // Stop execution.
+            }
 
-            // --- Event Listeners ---
-            askButton.addEventListener('click', handleAskQuestion);
-            pdfUpload.addEventListener('change', handlePdfUpload);
+            // If all checks pass, setup the page.
+            setupPage();
+
+            function setupPage() {
+                // --- Setup PDF.js worker ---
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
+
+                // --- Event Listeners ---
+                askButton.addEventListener('click', handleAskQuestion);
+                pdfUpload.addEventListener('change', handlePdfUpload);
+            }
 
             /**
              * Handles the PDF file upload and text extraction.
@@ -152,13 +175,11 @@
                 const file = event.target.files[0];
                 if (!file) { return; }
                 if (file.type !== 'application/pdf') {
-                    pdfStatus.textContent = 'Error: Please select a PDF file.';
-                    pdfStatus.classList.add('text-red-600');
+                    showError('Invalid file type. Please select a PDF file.');
                     return;
                 }
 
                 pdfStatus.textContent = `Processing "${file.name}"...`;
-                pdfStatus.classList.remove('text-red-600');
                 rulebookText.value = 'Extracting text from PDF, please wait...';
                 askButton.disabled = true;
 
@@ -179,8 +200,7 @@
                         pdfStatus.textContent = `Successfully loaded "${file.name}" (${pdf.numPages} pages).`;
                     } catch (error) {
                         console.error('Error parsing PDF:', error);
-                        pdfStatus.textContent = `Error reading PDF. It might be corrupted or protected.`;
-                        pdfStatus.classList.add('text-red-600');
+                        showError(`Error reading PDF. It might be corrupted or protected. Error: ${error.message}`);
                         rulebookText.value = '';
                     } finally {
                         askButton.disabled = false;
@@ -228,22 +248,22 @@
                     if (!response.ok) {
                         const errorBody = await response.json();
                         console.error("API Error Response:", errorBody);
-                        throw new Error(`API request failed with status: ${response.status}. ${errorBody.error?.message || ''}`);
+                        throw new Error(`API request failed: ${errorBody.error?.message || response.statusText}`);
                     }
 
                     const result = await response.json();
 
-                    if (result.candidates && result.candidates.length > 0) {
+                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content?.parts?.length > 0) {
                         const aiResponse = result.candidates[0].content.parts[0].text;
                         displayAnswer(aiResponse);
                     } else {
-                        showError("The model returned an empty response. This could be due to a safety block or an issue with the prompt. Please check the console for details.");
-                        console.error("Unexpected API response structure:", result);
+                        showError("The model returned an empty response. This may be due to a safety filter. Check the developer console for details.");
+                        console.warn("API Response might have been blocked:", result);
                     }
 
                 } catch (error) {
                     console.error("Error calling Gemini API:", error);
-                    showError(`Could not connect to the AI service. ${error.message}`);
+                    showError(`An error occurred: ${error.message}`);
                 } finally {
                     loadingIndicator.style.display = 'none';
                     askButton.disabled = false;
@@ -257,7 +277,8 @@
             }
 
             function showError(message) {
-                errorText.textContent = message;
+                answerSection.style.display = 'block';
+                errorText.innerHTML = message; // Use innerHTML to render links if needed
                 errorMessage.style.display = 'block';
                 answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
@@ -270,4 +291,4 @@
         });
     </script>
 </body>
-</html> 
+</html>
