@@ -119,6 +119,18 @@
     <script>
         window.addEventListener('DOMContentLoaded', () => {
 
+            // --- DOM Element References ---
+            const askButton = document.getElementById('ask-button');
+            const rulebookText = document.getElementById('rulebook-text');
+            const questionText = document.getElementById('question-text');
+            const answerSection = document.getElementById('answer-section');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const answerOutput = document.getElementById('answer-output');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const pdfUpload = document.getElementById('pdf-upload');
+            const pdfStatus = document.getElementById('pdf-status');
+
             // --- API Key Check ---
             // The GEMINI_API_KEY is now expected to be in config.js
             if (typeof GEMINI_API_KEY === 'undefined' || GEMINI_API_KEY === "PASTE_YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
@@ -135,18 +147,6 @@
 
             // --- Setup PDF.js worker ---
             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
-
-            // --- DOM Element References ---
-            const askButton = document.getElementById('ask-button');
-            const rulebookText = document.getElementById('rulebook-text');
-            const questionText = document.getElementById('question-text');
-            const answerSection = document.getElementById('answer-section');
-            const loadingIndicator = document.getElementById('loading-indicator');
-            const answerOutput = document.getElementById('answer-output');
-            const errorMessage = document.getElementById('error-message');
-            const errorText = document.getElementById('error-text');
-            const pdfUpload = document.getElementById('pdf-upload');
-            const pdfStatus = document.getElementById('pdf-status');
 
             // --- Event Listeners ---
             askButton.addEventListener('click', handleAskQuestion);
