@@ -9,8 +9,7 @@
     
     <!-- External libraries loaded in the head -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.min.js"></script>
-    <!-- The user's API key configuration file -->
-    <script src="config.js"></script>
+    <!-- Note: config.js is loaded locally for development but not deployed to GitHub Pages -->
 
     <style>
         html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
@@ -149,9 +148,14 @@
                 return; // Stop execution if this critical component is missing.
             }
 
-            // 2. Check if the API key from config.js is present.
+            // 2. Check if the API key is available (for local development)
             if (typeof GEMINI_API_KEY === 'undefined' || !GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE_YOUR_API_KEY_HERE")) {
-                showError("Configuration Error: The Gemini API Key is missing. Please ensure 'config.js' is in the same directory and contains your valid API key.");
+                showError(`<strong>API Key Not Available</strong><br><br>
+                This page requires a Gemini API key to function. For local development:<br>
+                1. Create a file called <code>rulebook/config.js</code><br>
+                2. Add: <code>const GEMINI_API_KEY = "your-api-key-here";</code><br>
+                3. Refresh this page<br><br>
+                <em>Note: The config.js file is intentionally not deployed to keep your API key secure.</em>`);
                 askButton.disabled = true;
                 return; // Stop execution.
             }
