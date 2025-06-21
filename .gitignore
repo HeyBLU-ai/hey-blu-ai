@@ -1,2 +1,5 @@
 # Local Netlify folder
 .netlify
+
+# Ignore the local config file containing the secret API key
+rulebook/config.js

@@ -113,13 +113,25 @@
         </footer>
     </div>
 
+    <!-- IMPORTANT: The API key is loaded from this separate, untracked file -->
+    <script src="config.js"></script>
+
     <script>
         window.addEventListener('DOMContentLoaded', () => {
 
-            // --- IMPORTANT: PASTE YOUR GEMINI API KEY HERE ---
-            // This key is required to use the AI assistant.
-            // For security, it's best practice not to commit this key to a public git repository.
-            const GEMINI_API_KEY = "PASTE_YOUR_API_KEY_HERE";
+            // --- API Key Check ---
+            // The GEMINI_API_KEY is now expected to be in config.js
+            if (typeof GEMINI_API_KEY === 'undefined' || GEMINI_API_KEY === "PASTE_YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
+                // Use a try-catch block in case config.js doesn't exist, which would throw a ReferenceError
+                try {
+                    // This will still check the variable if the file exists but the key is not pasted
+                } catch (e) {
+                     showError("API Key is missing. Please create a 'rulebook/config.js' file and add your Gemini API key to it.");
+                     return; // Stop execution if the file/key is missing
+                }
+                 showError("API Key is missing. Please edit 'rulebook/config.js' and add your Gemini API key.");
+                 return;
+            }
 
             // --- Setup PDF.js worker ---
             pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
