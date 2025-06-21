@@ -3,21 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rulebook - HeyBLU.AI</title>
+    <title>Rulebook Assistant - HeyBLU.AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
+    <!-- PDF.js library from Mozilla -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.min.js"></script>
     <style>
-        html { font-family: 'Inter', sans-serif; }
+        html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         @supports (font-variation-settings: normal) {
             html { font-family: 'Inter var', sans-serif; }
         }
+        /* Simple spinner animation */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s ease infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Style for the file input */
+        input[type="file"] {
+            display: none;
+        }
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 10px 18px;
+            cursor: pointer;
+            border-radius: 8px;
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+            transition: background-color 0.2s;
+        }
+        .custom-file-upload:hover {
+            background-color: #f3f4f6;
+        }
     </style>
 </head>
-<body class="bg-gray-100">
-    <div class="min-h-screen flex flex-col items-center justify-center p-4">
-        <h1 class="text-4xl font-bold">Rulebook Assistant</h1>
-        <p class="text-xl mt-2">Coming soon...</p>
-        <a href="/" class="mt-4 text-blue-600 hover:underline">Go back home</a>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">Baseball & Softball Rulebook Assistant</h1>
+            <p class="text-lg md:text-xl mt-2 text-gray-600">Get instant answers from your rulebook PDF.</p>
+        </header>
+
+        <main class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+
+            <!-- Step 1: Input Rules -->
+            <div>
+                <h2 class="block text-lg font-semibold mb-4 text-gray-700">1. Provide the Rulebook</h2>
+                <div class="flex flex-col sm:flex-row gap-4 items-start">
+                    <!-- PDF Upload -->
+                    <label for="pdf-upload" class="custom-file-upload">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Upload PDF
+                    </label>
+                    <input type="file" id="pdf-upload" accept=".pdf">
+                    <span id="pdf-status" class="text-gray-600 mt-2 sm:mt-0 pt-2">No file selected.</span>
+                </div>
+                 <div class="mt-4">
+                    <p class="text-sm text-gray-500">Or paste the text below:</p>
+                    <textarea id="rulebook-text" rows="8" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition mt-2" placeholder="The text from your uploaded PDF will appear here, or you can paste rulebook text directly."></textarea>
+                </div>
+            </div>
+
+            <!-- Step 2: Ask Question -->
+            <div class="mt-6">
+                <label for="question-text" class="block text-lg font-semibold mb-2 text-gray-700">2. Ask a Question</label>
+                <input type="text" id="question-text" class="w-full p-4 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., 'What is the infield fly rule?' or 'When is a runner out?'">
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="mt-8 text-center">
+                <button id="ask-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed">
+                    Get Answer
+                </button>
+            </div>
+
+            <!-- Step 3: View Answer -->
+            <div id="answer-section" class="mt-8 pt-6 border-t border-gray-200" style="display: none;">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Answer</h2>
+                <div id="loading-indicator" class="flex justify-center items-center py-8" style="display: none;">
+                    <div class="spinner"></div>
+                    <p class="ml-4 text-gray-600">Checking the rulebook...</p>
+                </div>
+                <div id="error-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" style="display: none;" role="alert">
+                    <strong class="font-bold">Oops!</strong>
+                    <span class="block sm:inline" id="error-text"></span>
+                </div>
+                <div id="answer-output" class="prose prose-lg max-w-none bg-gray-50 p-6 rounded-lg">
+                    <!-- AI response will be injected here -->
+                </div>
+            </div>
+
+        </main>
+        
+        <footer class="text-center mt-8">
+            <a href="/" class="text-blue-600 hover:underline">Go back home</a>
+        </footer>
     </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+
+            // --- IMPORTANT: PASTE YOUR GEMINI API KEY HERE ---
+            // This key is required to use the AI assistant.
+            // For security, it's best practice not to commit this key to a public git repository.
+            const GEMINI_API_KEY = "PASTE_YOUR_API_KEY_HERE";
+
+            // --- Setup PDF.js worker ---
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
+
+            // --- DOM Element References ---
+            const askButton = document.getElementById('ask-button');
+            const rulebookText = document.getElementById('rulebook-text');
+            const questionText = document.getElementById('question-text');
+            const answerSection = document.getElementById('answer-section');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const answerOutput = document.getElementById('answer-output');
+            const errorMessage = document.getElementById('error-message');
+            const errorText = document.getElementById('error-text');
+            const pdfUpload = document.getElementById('pdf-upload');
+            const pdfStatus = document.getElementById('pdf-status');
+
+            // --- Event Listeners ---
+            askButton.addEventListener('click', handleAskQuestion);
+            pdfUpload.addEventListener('change', handlePdfUpload);
+
+            /**
+             * Handles the PDF file upload and text extraction.
+             */
+            async function handlePdfUpload(event) {
+                const file = event.target.files[0];
+                if (!file) { return; }
+                if (file.type !== 'application/pdf') {
+                    pdfStatus.textContent = 'Error: Please select a PDF file.';
+                    pdfStatus.classList.add('text-red-600');
+                    return;
+                }
+
+                pdfStatus.textContent = `Processing "${file.name}"...`;
+                pdfStatus.classList.remove('text-red-600');
+                rulebookText.value = 'Extracting text from PDF, please wait...';
+                askButton.disabled = true;
+
+                const reader = new FileReader();
+                reader.onload = async function() {
+                    try {
+                        const typedarray = new Uint8Array(this.result);
+                        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+                        let fullText = '';
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n\n';
+                            pdfStatus.textContent = `Reading page ${i} of ${pdf.numPages}...`;
+                        }
+                        rulebookText.value = fullText;
+                        pdfStatus.textContent = `Successfully loaded "${file.name}" (${pdf.numPages} pages).`;
+                    } catch (error) {
+                        console.error('Error parsing PDF:', error);
+                        pdfStatus.textContent = `Error reading PDF. It might be corrupted or protected.`;
+                        pdfStatus.classList.add('text-red-600');
+                        rulebookText.value = '';
+                    } finally {
+                        askButton.disabled = false;
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+
+            /**
+             * Main function to handle the "Get Answer" button click.
+             */
+            async function handleAskQuestion() {
+                resetUI();
+
+                if (GEMINI_API_KEY === "PASTE_YOUR_API_KEY_HERE" || !GEMINI_API_KEY) {
+                    showError("API Key is missing. Please edit rulebook/index.html and add your Gemini API key.");
+                    return;
+                }
+
+                if (!rulebookText.value.trim() || !questionText.value.trim()) {
+                    showError("Please provide a rulebook and ask a question before submitting.");
+                    return;
+                }
+
+                askButton.disabled = true;
+                answerSection.style.display = 'block';
+                loadingIndicator.style.display = 'flex';
+                answerSection.scrollIntoView({ behavior: 'smooth' });
+
+                const rules = rulebookText.value;
+                const question = questionText.value;
+                const prompt = `You are an expert umpire answering a question based *only* on the provided baseball or softball rulebook text. Analyze the text carefully. If the answer is not found in the provided text, clearly state that the information is not in the rulebook.
+
+                --- RULEBOOK START ---
+                ${rules}
+                --- RULEBOOK END ---
+
+                Question: "${question}"`;
+                
+                try {
+                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorBody = await response.json();
+                        console.error("API Error Response:", errorBody);
+                        throw new Error(`API request failed with status: ${response.status}. ${errorBody.error?.message || ''}`);
+                    }
+
+                    const result = await response.json();
+
+                    if (result.candidates && result.candidates.length > 0) {
+                        const aiResponse = result.candidates[0].content.parts[0].text;
+                        displayAnswer(aiResponse);
+                    } else {
+                        showError("The model returned an empty response. This could be due to a safety block or an issue with the prompt. Please check the console for details.");
+                        console.error("Unexpected API response structure:", result);
+                    }
+
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    showError(`Could not connect to the AI service. ${error.message}`);
+                } finally {
+                    loadingIndicator.style.display = 'none';
+                    askButton.disabled = false;
+                }
+            }
+
+            function resetUI() {
+                errorMessage.style.display = 'none';
+                answerOutput.style.display = 'none';
+                answerOutput.textContent = '';
+            }
+
+            function showError(message) {
+                errorText.textContent = message;
+                errorMessage.style.display = 'block';
+                answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+
+            function displayAnswer(text) {
+                const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+                answerOutput.innerHTML = formattedText;
+                answerOutput.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html> 
