@@ -1,20 +1,22 @@
 export default {
   async fetch(request, env) {
-    // Only allow POST requests
-    if (request.method !== 'POST') {
-      return new Response('Expected POST', { status: 405 });
-    }
-
-    // Set up CORS headers to allow requests from your domain
+    // Define CORS headers to attach to responses
     const corsHeaders = {
       'Access-Control-Allow-Origin': 'https://heyblu.ai',
       'Access-Control-Allow-Methods': 'POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
     };
 
-    // Handle CORS preflight requests
+    // The browser sends a "preflight" OPTIONS request to ask for permission.
+    // We must respond to this first.
     if (request.method === 'OPTIONS') {
       return new Response(null, { headers: corsHeaders });
+    }
+
+    // Now, we can handle the actual POST request.
+    // We reject any other method.
+    if (request.method !== 'POST') {
+      return new Response('Expected POST', { status: 405 });
     }
 
     try {
@@ -22,14 +24,14 @@ export default {
       const { prompt } = await request.json();
 
       if (!prompt) {
-        return new Response('Missing prompt in request body', { status: 400 });
+        return new Response('Missing prompt in request body', { status: 400, headers: corsHeaders });
       }
 
       // Securely get the API key from the Cloudflare environment
       const geminiApiKey = env.GEMINI_API_KEY;
 
       if (!geminiApiKey) {
-        return new Response('API key not configured in Cloudflare environment', { status: 500 });
+        return new Response('API key not configured in Cloudflare environment', { status: 500, headers: corsHeaders });
       }
       
       const googleApiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiApiKey}`;
@@ -57,19 +59,15 @@ export default {
         });
       }
 
-      // Get the response and forward it to the user
+      // Get the response and add our CORS headers before forwarding it
       const geminiResult = await geminiResponse.json();
       
-      // Add CORS headers to the final response
-      const finalHeaders = new Headers(geminiResponse.headers);
-      Object.entries(corsHeaders).forEach(([key, value]) => {
-        finalHeaders.set(key, value);
-      });
-      finalHeaders.set('Content-Type', 'application/json');
-
       return new Response(JSON.stringify(geminiResult), {
         status: 200,
-        headers: finalHeaders,
+        headers: {
+          'Content-Type': 'application/json',
+          ...corsHeaders
+        }
       });
 
     } catch (error) {
