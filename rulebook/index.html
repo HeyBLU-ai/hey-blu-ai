@@ -5,260 +5,124 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyBLU.AI Rulebook Demo - Experience the Future</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter - ensuring consistent loading with homepage -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <!-- PDF.js library will be loaded via a module import in the main script -->
-
     <style>
-        /* Use Inter as the default font */
-        body {
-            font-family: 'Inter', sans-serif;
-            scroll-behavior: smooth;
-        }
-        /* Custom focus styles for better accessibility, mimicking homepage */
-        .form-input:focus, .form-checkbox:focus, .form-radio:focus {
-            outline: 2px solid transparent;
-            outline-offset: 2px;
-            --tw-ring-color: #3b82f6; /* Equivalent to ring-blue-500 */
-            box-shadow: 0 0 0 2px var(--tw-ring-color);
-        }
-        /* Gradient text style, mimicking homepage */
-        .gradient-text {
-            background: -webkit-linear-gradient(45deg, #3b82f6, #1e40af);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        /* Simple spinner animation */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #09f;
-            animation: spin 1s ease infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        /* Style for the file input */
-        input[type="file"] {
-            display: none;
-        }
-        .custom-file-upload {
-            border: 1px solid #ccc;
-            display: inline-block;
-            padding: 10px 18px;
-            cursor: pointer;
-            border-radius: 8px;
-            background-color: #f9fafb;
-            font-weight: 600;
-            color: #374151;
-            transition: background-color 0.2s;
-        }
-        .custom-file-upload:hover {
-            background-color: #f3f4f6;
-        }
-        .custom-file-upload.disabled {
-            cursor: not-allowed;
-            background-color: #e5e7eb;
-            opacity: 0.7;
-        }
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .form-input:focus, .form-checkbox:focus, .form-radio:focus { outline: 2px solid transparent; outline-offset: 2px; --tw-ring-color: #3b82f6; box-shadow: 0 0 0 2px var(--tw-ring-color); }
+        .gradient-text { background: -webkit-linear-gradient(45deg, #3b82f6, #1e40af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .spinner { border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%; border-left-color: #09f; animation: spin 1s ease infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        input[type="file"] { display: none; }
+        .custom-file-upload { border: 1px solid #ccc; display: inline-block; padding: 10px 18px; cursor: pointer; border-radius: 8px; background-color: #f9fafb; font-weight: 600; color: #374151; transition: background-color 0.2s; }
+        .custom-file-upload:hover { background-color: #f3f4f6; }
+        .custom-file-upload.disabled { cursor: not-allowed; background-color: #e5e7eb; opacity: 0.7; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
-    <!-- Header - Copied from homepage -->
     <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-2">
-                    <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
-                    </svg>
+                    <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/></svg>
                     <span class="font-bold text-xl text-gray-900">HeyBLU Rulebook</span>
                 </div>
-                <!-- Link to the demo page itself for consistency, or to the waitlist form directly -->
-                <a href="#waitlist-form" class="hidden sm:inline-block bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
-                    Join Waitlist
-                </a>
+                <a href="#waitlist-form" class="hidden sm:inline-block bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">Join Waitlist</a>
             </div>
         </div>
     </header>
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 pt-40"> <!-- Increased pt-32 to pt-40 to give more space for the fixed nav bar -->
-        
-        <header class="text-center mb-8">
-            <!-- Updated H1 to be more concise as requested -->
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-4">
-                <span class="gradient-text">Rulebook Demo</span>
-            </h1>
-            <!-- Updated subhead to reflect new messages -->
-            <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mt-6">
-                Upload any rulebook. Ask real questions.<br>
-                A glimpse of where HeyBLU is headed.
-            </p>
-            <div class="mt-10">
-                <a href="#waitlist-form" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
-                    Join the Waitlist &rarr;
-                </a>
-            </div>
-            <!-- Added message for comments on future features -->
-            <p class="text-md text-gray-600 mt-6">
-                *Want to shape HeyBLU's future features? <br>
-                We want to hear from you! Comment on X (Twitter): <a href="https://x.com/HeyBLUrulebook" target="_blank" class="text-blue-600 hover:underline">@HeyBLUrulebook</a>
-            </p>
-        </header>
-
-        <main class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
-
-            <!-- Step 1: Input Rules -->
-            <div>
-                <h2 class="block text-lg font-semibold mb-4 text-gray-700">1. Provide a Rulebook (Try a sample PDF!)</h2>
-                <div class="flex flex-col sm:flex-row gap-4 items-start">
-                    <!-- PDF Upload -->
-                    <label for="pdf-upload" class="custom-file-upload form-input cursor-pointer">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                        </svg>
-                        Upload PDF
-                    </label>
-                    <input type="file" id="pdf-upload" accept=".pdf">
-                    <span id="pdf-status" class="text-gray-600 mt-2 sm:mt-0 pt-2">No file selected.</span>
+    <main class="pt-24">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <header class="text-center mb-12">
+                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tighter mb-4"><span class="gradient-text">Rulebook Demo</span></h1>
+                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mt-4">Upload any rulebook. Ask real questions.<br>A glimpse of where HeyBLU is headed.</p>
+                <div class="mt-8">
+                    <a href="https://x.com/HeyBLUrulebook" target="_blank" class="text-blue-600 hover:underline">Want to shape HeyBLU's future? We want to hear from you on X (Twitter)!</a>
                 </div>
-                <div class="mt-4">
-                    <p class="text-sm text-gray-500">Or paste the text below:</p>
-                    <textarea id="rulebook-text" rows="8" class="form-input w-full p-4 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition mt-2" placeholder="The text from your uploaded PDF will appear here, or you can paste rulebook text directly."></textarea>
+            </header>
+
+            <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div>
+                    <h2 class="block text-lg font-semibold mb-4 text-gray-700">1. Provide a Rulebook (Try a sample!)</h2>
+                    <div class="flex flex-col sm:flex-row gap-4 items-start">
+                        <label for="pdf-upload" class="custom-file-upload form-input cursor-pointer"><svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clip-rule="evenodd" /></svg>Upload PDF</label>
+                        <input type="file" id="pdf-upload" accept=".pdf">
+                        <span id="pdf-status" class="text-gray-600 mt-2 sm:mt-0 pt-2">No file selected.</span>
+                    </div>
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-500">Or paste the text below:</p>
+                        <textarea id="rulebook-text" rows="8" class="form-input w-full p-4 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition mt-2" placeholder="The text from your uploaded PDF will appear here, or you can paste rulebook text directly."></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-6">
+                    <label for="question-text" class="block text-lg font-semibold mb-2 text-gray-700">2. Ask a Question</label>
+                    <input type="text" id="question-text" class="form-input w-full p-4 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., 'What is the infield fly rule?'">
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <button id="ask-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed">Get Answer</button>
+                </div>
+
+                <div id="answer-section" class="mt-8 pt-6 border-t border-gray-200" style="display: none;">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Answer</h2>
+                    <div id="loading-indicator" class="flex justify-center items-center py-8" style="display: none;"><div class="spinner"></div><p class="ml-4 text-gray-600">Checking the rulebook...</p></div>
+                    <div id="error-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" style="display: none;" role="alert"><strong class="font-bold">Oops!</strong><span class="block sm:inline" id="error-text"></span></div>
+                    <div id="answer-output" class="prose prose-lg max-w-none bg-gray-50 p-6 rounded-lg"></div>
                 </div>
             </div>
 
-            <!-- Step 2: Ask Question -->
-            <div class="mt-6">
-                <label for="question-text" class="block text-lg font-semibold mb-2 text-gray-700">2. Ask a Question</label>
-                <input type="text" id="question-text" class="form-input w-full p-4 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition" placeholder="e.g., 'What is the infield fly rule?' or 'When is a runner out?'">
-            </div>
-            
-            <!-- Submit Button -->
-            <div class="mt-8 text-center">
-                <!-- Applied consistent button styling from homepage -->
-                <button id="ask-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-300 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed">
-                    Get Answer
-                </button>
-            </div>
-
-            <!-- Step 3: View Answer -->
-            <div id="answer-section" class="mt-8 pt-6 border-t border-gray-200" style="display: none;">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Answer</h2>
-                <div id="loading-indicator" class="flex justify-center items-center py-8" style="display: none;">
-                    <div class="spinner"></div>
-                    <p class="ml-4 text-gray-600">Checking the rulebook...</p>
-                </div>
-                <div id="error-message" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" style="display: none;" role="alert">
-                    <strong class="font-bold">Oops!</strong>
-                    <span class="block sm:inline" id="error-text"></span>
-                </div>
-                <div id="answer-output" class="prose prose-lg max-w-none bg-gray-50 p-6 rounded-lg">
-                    <!-- AI response will be injected here -->
-                </div>
-            </div>
-
-        </main>
-
-        <!-- Waitlist Form Section - Copied from homepage to reinforce CTA -->
-        <section id="waitlist-form" class="bg-gray-50 py-16 sm:py-24 px-4 mt-8 rounded-xl shadow-lg"> <!-- Added margin-top and shadow -->
-            <div class="max-w-2xl mx-auto">
-                <!-- Header -->
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Early Access</h2>
-                    <p class="text-lg text-gray-600 mt-3">Join the waitlist and help us train HeyBLU for your league.</p>
-                </div>
-
-                <!-- Form Container -->
-                <div class="w-full bg-white rounded-xl shadow-lg p-8"> <!-- Changed background to white for contrast -->
-                    <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
-                        <!-- Redirect to a custom thank you page -->
-                        <input type="hidden" name="_next" value="https://heyblu.ai/thank-you.html">
-
-                        <!-- Email Input -->
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                            <input type="email" name="email" id="email" placeholder="you@example.com" required
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                        </div>
-
-                        <!-- Role Checkboxes -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">I'm a:</label>
-                            <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
-                                <div class="flex items-center"><input id="role-coach" name="role" type="checkbox" value="Coach" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-coach" class="ml-2 block text-sm text-gray-800">Coach</label></div>
-                                <div class="flex items-center"><input id="role-umpire" name="role" type="checkbox" value="Umpire" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-umpire" class="ml-2 block text-sm text-gray-800">Umpire</label></div>
-                                <div class="flex items-center"><input id="role-parent" name="role" type="checkbox" value="Parent" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-parent" class="ml-2 block text-sm text-gray-800">Parent</label></div>
-                                <div class="flex items-center"><input id="role-admin" name="role" type="checkbox" value="Admin" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-admin" class="ml-2 block text-sm text-gray-800">Admin</label></div>
-                                <div class="flex items-center"><input id="role-player" name="role" type="checkbox" value="Player" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-player" class="ml-2 block text-sm text-gray-800">Player</label></div>
+            <section id="waitlist-form" class="bg-white py-16 sm:py-24 px-4 mt-12">
+                <div class="max-w-2xl mx-auto">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Early Access</h2>
+                        <p class="text-lg text-gray-600 mt-3">Join the waitlist and help us train HeyBLU for your league.</p>
+                    </div>
+                    <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8 border">
+                        <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
+                            <input type="hidden" name="_next" value="https://heyblu.ai/thank-you.html">
+                            <div><label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label><input type="email" name="email" id="email" placeholder="you@example.com" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">I'm a:</label>
+                                <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2">
+                                    <div class="flex items-center"><input id="role-coach" name="role" type="checkbox" value="Coach" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-coach" class="ml-2 block text-sm text-gray-800">Coach</label></div>
+                                    <div class="flex items-center"><input id="role-umpire" name="role" type="checkbox" value="Umpire" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-umpire" class="ml-2 block text-sm text-gray-800">Umpire</label></div>
+                                    <div class="flex items-center"><input id="role-parent" name="role" type="checkbox" value="Parent" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-parent" class="ml-2 block text-sm text-gray-800">Parent</label></div>
+                                    <div class="flex items-center"><input id="role-admin" name="role" type="checkbox" value="Admin" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-admin" class="ml-2 block text-sm text-gray-800">Admin</label></div>
+                                    <div class="flex items-center"><input id="role-player" name="role" type="checkbox" value="Player" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-player" class="ml-2 block text-sm text-gray-800">Player</label></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- League Input -->
-                        <div>
-                            <label for="league" class="block text-sm font-medium text-gray-700 mb-1">League + Age (optional)</label>
-                            <input type="text" name="league" id="league" placeholder="e.g. Mill Valley Little League 13U"
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                        </div>
-
-                        <!-- Share Rulebook Radio Buttons -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Would you share your league's rulebook?</label>
-                            <div class="mt-2 flex items-center space-x-6">
-                                <div class="flex items-center"><input id="share-yes" name="share_rulebook" type="radio" value="Yes" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-yes" class="ml-2 block text-sm text-gray-800">Yes</label></div>
-                                <div class="flex items-center"><input id="share-no" name="share_rulebook" type="radio" value="No" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-no" class="ml-2 block text-sm text-gray-800">No</label></div>
+                            <div><label for="league" class="block text-sm font-medium text-gray-700 mb-1">League + Age (optional)</label><input type="text" name="league" id="league" placeholder="e.g. Mill Valley Little League 13U" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Would you share your league's rulebook?</label>
+                                <div class="mt-2 flex items-center space-x-6">
+                                    <div class="flex items-center"><input id="share-yes" name="share_rulebook" type="radio" value="Yes" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-yes" class="ml-2 block text-sm text-gray-800">Yes</label></div>
+                                    <div class="flex items-center"><input id="share-no" name="share_rulebook" type="radio" value="No" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-no" class="ml-2 block text-sm text-gray-800">No</label></div>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Referral Input -->
-                        <div>
-                            <label for="referral_email" class="block text-sm font-medium text-gray-700">Want to move up the waitlist?</label>
-                            <p class="text-sm text-gray-500 mb-2">Invite one person. We'll bump you up if they sign up too.</p>
-                            <input type="email" name="referral_email" id="referral_email" placeholder="friend@example.com"
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div>
-                            <button type="submit"
-                                        class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
-                                Join the Waitlist
-                            </button>
-                        </div>
-                    </form>
+                            <div><label for="referral_email" class="block text-sm font-medium text-gray-700">Want to move up the waitlist?</label><p class="text-sm text-gray-500 mb-2">Invite one person. We'll bump you up if they sign up too.</p><input type="email" name="referral_email" id="referral_email" placeholder="friend@example.com" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></div>
+                            <div><button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">Join the Waitlist</button></div>
+                        </form>
+                    </div>
                 </div>
-            </div>
-        </section>
-    </div>
+            </section>
+        </div>
+    </main>
 
-    <!-- Footer - Copied from homepage -->
     <footer class="bg-gray-800 text-white">
         <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
             <p>&copy; 2025 HeyBLU.AI. All rights reserved.</p>
-            <p class="text-sm text-gray-400 mt-2">
-                Building in public &bull; This is not an app yet.
-            </p>
+            <p class="text-sm text-gray-400 mt-2">Building in public &bull; This is not an app yet.</p>
         </div>
     </footer>
 
     <script type="module">
-        // The PDF.js library is imported directly.
         import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
-
-        // Set the worker source for the PDF.js library.
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
-
-        // --- Code starts executing once the DOM is ready ---
         window.addEventListener('DOMContentLoaded', () => {
-
-            // --- DOM Element References ---
             const askButton = document.getElementById('ask-button');
             const rulebookText = document.getElementById('rulebook-text');
             const questionText = document.getElementById('question-text');
@@ -270,26 +134,18 @@
             const pdfUpload = document.getElementById('pdf-upload');
             const pdfStatus = document.getElementById('pdf-status');
             
-            // --- Event Listeners ---
             askButton.addEventListener('click', handleAskQuestion);
             pdfUpload.addEventListener('change', handlePdfUpload);
 
-            /**
-             * Handles the PDF file upload and text extraction.
-             */
             async function handlePdfUpload(event) {
                 const file = event.target.files[0];
                 if (!file) { return; }
-                if (file.type !== 'application/pdf') {
-                    showError('Invalid file type. Please select a PDF file.');
-                    return;
-                }
+                if (file.type !== 'application/pdf') { showError('Invalid file type. Please select a PDF file.'); return; }
                 
                 resetUI();
                 pdfStatus.textContent = `Processing "${file.name}"...`;
                 rulebookText.value = 'Extracting text from PDF, please wait...';
                 askButton.disabled = true;
-
                 const reader = new FileReader();
                 reader.onload = async function() {
                     try {
@@ -299,8 +155,7 @@
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
                             const textContent = await page.getTextContent();
-                            const pageText = textContent.items.map(item => item.str).join(' ');
-                            fullText += pageText + '\n\n';
+                            fullText += textContent.items.map(item => item.str).join(' ') + '\n\n';
                             pdfStatus.textContent = `Reading page ${i} of ${pdf.numPages}...`;
                         }
                         rulebookText.value = fullText;
@@ -316,57 +171,24 @@
                 reader.readAsArrayBuffer(file);
             }
 
-            /**
-             * Main function to handle the "Get Answer" button click.
-             */
             async function handleAskQuestion() {
                 resetUI();
-
-                if (!rulebookText.value.trim() || !questionText.value.trim()) {
-                    showError("Please provide a rulebook and ask a question before submitting.");
-                    return;
-                }
-
+                if (!rulebookText.value.trim() || !questionText.value.trim()) { showError("Please provide a rulebook and ask a question before submitting."); return; }
                 askButton.disabled = true;
                 answerSection.style.display = 'block';
                 loadingIndicator.style.display = 'flex';
                 answerSection.scrollIntoView({ behavior: 'smooth' });
-
-                const rules = rulebookText.value;
-                const question = questionText.value;
-                const prompt = `You are an expert umpire answering a question based *only* on the provided baseball or softball rulebook text. Analyze the text carefully. If the answer is not found in the provided text, clearly state that the information is not in the rulebook.
-
-                --- RULEBOOK START ---
-                ${rules}
-                --- RULEBOOK END ---
-
-                Question: "${question}"`;
-                
+                const prompt = `You are an expert umpire answering a question based *only* on the provided baseball or softball rulebook text. Analyze the text carefully. If the answer is not found in the provided text, clearly state that the information is not in the rulebook.\n\n--- RULEBOOK START ---\n${rulebookText.value}\n--- RULEBOOK END ---\n\nQuestion: "${questionText.value}"`;
                 try {
-                    // This is the URL for YOUR Cloudflare worker. You will create this in the Cloudflare dashboard.
-                    const PROXY_URL = 'https://heyblu-rulebook-proxy.robr-e0e.workers.dev'; 
-
-                    const response = await fetch(PROXY_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ prompt: prompt })
-                    });
-                    
-                    if (!response.ok) {
-                        const errorText = await response.text();
-                        throw new Error(`The API proxy server responded with an error: ${errorText}`);
-                    }
-
+                    const response = await fetch('https://heyblu-rulebook-proxy.robr-e0e.workers.dev', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt }) });
+                    if (!response.ok) { throw new Error(`The API proxy server responded with an error: ${await response.text()}`); }
                     const result = await response.json();
-
-                    if (result.candidates && result.candidates.length > 0 && result.candidates[0].content?.parts?.length > 0) {
-                        const aiResponse = result.candidates[0].content.parts[0].text;
-                        displayAnswer(aiResponse);
+                    if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
+                        displayAnswer(result.candidates[0].content.parts[0].text);
                     } else {
                         showError("The model returned an empty response. This may be due to a safety filter. Check the developer console for details.");
                         console.warn("API Response might have been blocked:", result);
                     }
-
                 } catch (error) {
                     console.error("Error calling the proxy worker:", error);
                     showError(`An error occurred while contacting the rulebook assistant. Please try again later. <br><small>${error.message}</small>`);
@@ -376,24 +198,9 @@
                 }
             }
             
-            function resetUI() {
-                errorMessage.style.display = 'none';
-                answerOutput.style.display = 'none';
-                answerOutput.textContent = '';
-            }
-
-            function showError(message) {
-                answerSection.style.display = 'block';
-                errorText.innerHTML = message;
-                errorMessage.style.display = 'block';
-                answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-
-            function displayAnswer(text) {
-                const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
-                answerOutput.innerHTML = formattedText;
-                answerOutput.style.display = 'block';
-            }
+            function resetUI() { errorMessage.style.display = 'none'; answerOutput.style.display = 'none'; answerOutput.textContent = ''; }
+            function showError(message) { answerSection.style.display = 'block'; errorText.innerHTML = message; errorMessage.style.display = 'block'; answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            function displayAnswer(text) { answerOutput.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>'); answerOutput.style.display = 'block'; }
         });
     </script>
 </body>
