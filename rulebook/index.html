@@ -7,9 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
     
-    <!-- External libraries loaded in the head -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.min.js"></script>
-    <!-- Note: config.js is loaded locally for development but not deployed to GitHub Pages -->
+    <!-- PDF.js library will be loaded via a module import in the main script -->
 
     <style>
         html { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
@@ -121,7 +119,17 @@
         </footer>
     </div>
 
-    <script>
+    <!-- The user's API key configuration file is no longer needed in the browser -->
+    <!-- <script src="config.js"></script> -->
+
+    <script type="module">
+        // The PDF.js library is imported directly.
+        import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';
+
+        // Set the worker source for the PDF.js library.
+        pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs`;
+
+        // --- Code starts executing once the DOM is ready ---
         window.addEventListener('DOMContentLoaded', () => {
 
             // --- DOM Element References ---
@@ -135,42 +143,10 @@
             const errorText = document.getElementById('error-text');
             const pdfUpload = document.getElementById('pdf-upload');
             const pdfStatus = document.getElementById('pdf-status');
-            const pdfLabel = document.querySelector('label[for="pdf-upload"]');
-
-            // --- Robustness Checks on Page Load ---
-
-            // 1. Check if the PDF library loaded correctly.
-            if (typeof pdfjsLib === 'undefined') {
-                showError("Critical Error: The PDF library failed to load. Please check your internet connection, disable any ad-blockers, and refresh the page.");
-                askButton.disabled = true;
-                pdfUpload.disabled = true;
-                pdfLabel.classList.add('disabled');
-                return; // Stop execution if this critical component is missing.
-            }
-
-            // 2. Check if the API key is available (for local development)
-            if (typeof GEMINI_API_KEY === 'undefined' || !GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE_YOUR_API_KEY_HERE")) {
-                showError(`<strong>API Key Not Available</strong><br><br>
-                This page requires a Gemini API key to function. For local development:<br>
-                1. Create a file called <code>rulebook/config.js</code><br>
-                2. Add: <code>const GEMINI_API_KEY = "your-api-key-here";</code><br>
-                3. Refresh this page<br><br>
-                <em>Note: The config.js file is intentionally not deployed to keep your API key secure.</em>`);
-                askButton.disabled = true;
-                return; // Stop execution.
-            }
-
-            // If all checks pass, setup the page.
-            setupPage();
-
-            function setupPage() {
-                // --- Setup PDF.js worker ---
-                pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.102/pdf.worker.min.js`;
-
-                // --- Event Listeners ---
-                askButton.addEventListener('click', handleAskQuestion);
-                pdfUpload.addEventListener('change', handlePdfUpload);
-            }
+            
+            // --- Event Listeners ---
+            askButton.addEventListener('click', handleAskQuestion);
+            pdfUpload.addEventListener('change', handlePdfUpload);
 
             /**
              * Handles the PDF file upload and text extraction.
@@ -182,7 +158,8 @@
                     showError('Invalid file type. Please select a PDF file.');
                     return;
                 }
-
+                
+                resetUI();
                 pdfStatus.textContent = `Processing "${file.name}"...`;
                 rulebookText.value = 'Extracting text from PDF, please wait...';
                 askButton.disabled = true;
@@ -197,7 +174,7 @@
                             const page = await pdf.getPage(i);
                             const textContent = await page.getTextContent();
                             const pageText = textContent.items.map(item => item.str).join(' ');
-                            fullText += pageText + '\n\n';
+                            fullText += pageText + '\\n\\n';
                             pdfStatus.textContent = `Reading page ${i} of ${pdf.numPages}...`;
                         }
                         rulebookText.value = fullText;
@@ -240,19 +217,18 @@
                 Question: "${question}"`;
                 
                 try {
-                    const payload = { contents: [{ role: "user", parts: [{ text: prompt }] }] };
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+                    // This is the URL for YOUR Cloudflare worker. You will create this in the Cloudflare dashboard.
+                    const PROXY_URL = 'https://heyblu-rulebook-proxy.robr-e0e.workers.dev'; 
 
-                    const response = await fetch(apiUrl, {
+                    const response = await fetch(PROXY_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
+                        body: JSON.stringify({ prompt: prompt })
                     });
                     
                     if (!response.ok) {
-                        const errorBody = await response.json();
-                        console.error("API Error Response:", errorBody);
-                        throw new Error(`API request failed: ${errorBody.error?.message || response.statusText}`);
+                        const errorText = await response.text();
+                        throw new Error(`The API proxy server responded with an error: ${errorText}`);
                     }
 
                     const result = await response.json();
@@ -266,14 +242,14 @@
                     }
 
                 } catch (error) {
-                    console.error("Error calling Gemini API:", error);
-                    showError(`An error occurred: ${error.message}`);
+                    console.error("Error calling the proxy worker:", error);
+                    showError(`An error occurred while contacting the rulebook assistant. Please try again later. <br><small>${error.message}</small>`);
                 } finally {
                     loadingIndicator.style.display = 'none';
                     askButton.disabled = false;
                 }
             }
-
+            
             function resetUI() {
                 errorMessage.style.display = 'none';
                 answerOutput.style.display = 'none';
@@ -282,7 +258,7 @@
 
             function showError(message) {
                 answerSection.style.display = 'block';
-                errorText.innerHTML = message; // Use innerHTML to render links if needed
+                errorText.innerHTML = message;
                 errorMessage.style.display = 'block';
                 answerSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
