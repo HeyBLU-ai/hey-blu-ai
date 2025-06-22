@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyBLU Rulebook - AI Assistant for Youth Baseball & Softball</title>
+    <title>HeyBLU Rulebook - End the Arguments</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Fonts: Inter -->
@@ -23,20 +23,21 @@
             --tw-ring-color: #3b82f6; /* Equivalent to ring-blue-500 */
             box-shadow: 0 0 0 2px var(--tw-ring-color);
         }
-        .gradient-text {
-            background: -webkit-linear-gradient(45deg, #3b82f6, #1e40af);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        }
+        .highlight {
+            color: #60a5fa; /* A lighter blue for highlights */
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-gray-100 text-gray-800">
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 shadow-sm">
+    <header class="bg-white/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-3">
                      <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
                     </svg>
@@ -49,109 +50,103 @@
         </div>
     </header>
 
-    <main class="pt-24">
+    <main>
         <!-- Hero Section -->
-        <section class="text-center py-16 md:py-24 px-4">
+        <section class="hero-gradient text-white text-center py-20 md:py-32 px-4">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tighter mb-4">
-                    Know the rule. <span class="gradient-text">Prove the rule.</span> Instantly.
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tighter leading-tight">
+                    "THAT'S NOT THE RULE!" <br class="sm:hidden"/> <span class="text-blue-300">"YES IT IS!"</span>
                 </h1>
-                <p class="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mt-6">
-                    HeyBLU is the AI-powered rulebook assistant for youth baseball and softball. 
-                    Ask any rule. Get the correct answer — plus the citation to back it up. 
-                    Custom-trained for your league.
+                <p class="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto mt-6">
+                    Every parent knows this scene. The screaming match. The confused umpire. The crying kid. <strong>All because nobody can prove who's right.</strong>
                 </p>
-                <div class="mt-10">
-                    <a href="#waitlist-form" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
-                        Join the Waitlist Now &rarr;
+                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#waitlist-form" class="w-full sm:w-auto bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-4 focus:ring-offset-blue-600 transition duration-200 transform hover:scale-105 flex items-center justify-center gap-2">
+                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                        Join the Waitlist
                     </a>
-                    <div class="mt-4">
-                        <a href="/rulebook/" class="text-blue-600 font-semibold hover:text-blue-700 underline">
-                            Try the Demo &rarr;
-                        </a>
-                    </div>
                 </div>
             </div>
         </section>
 
         <!-- Problem Section -->
         <section class="bg-white py-16 sm:py-24 px-4">
-            <div class="max-w-5xl mx-auto text-center">
-                <h2 class="text-base font-semibold text-blue-600 tracking-wider uppercase">The Problem</h2>
-                <p class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">Stop the Arguments. End the Confusion.</p>
-                <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-                    <!-- Problem 1 -->
-                    <div class="bg-gray-50 p-6 rounded-xl">
-                        <p class="font-semibold text-lg">😠 Endless rule arguments with no definitive answer.</p>
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">We've All Been There...</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <!-- Scenario 1 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-xl mt-4">The Screaming Parents</h3>
+                        <p class="mt-2 text-gray-600 leading-relaxed">"THAT'S OBSTRUCTION!"<br>"NO, IT'S INTERFERENCE!"<br>The game stops. The kids watch. Everyone's mad—and nobody's right.</p>
                     </div>
-                    <!-- Problem 2 -->
-                    <div class="bg-gray-50 p-6 rounded-xl">
-                       <p class="font-semibold text-lg">🤯 Wasting time searching 100-page PDF rulebooks.</p>
+                    <!-- Scenario 2 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-xl mt-4">The Teen Umpire<br>(Just Trying His Best)</h3>
+                        <p class="mt-2 text-gray-600 leading-relaxed">Two coaches are in his face over a dropped third strike. He freezes. The crowd groans. The game hangs in limbo.</p>
                     </div>
-                    <!-- Problem 3 -->
-                    <div class="bg-gray-50 p-6 rounded-xl">
-                        <p class="font-semibold text-lg">🤔 Friction between parents, coaches, and umpires.</p>
+                    <!-- Scenario 3 -->
+                    <div class="bg-gray-50 p-8 rounded-xl shadow-sm">
+                        <h3 class="font-bold text-xl mt-4">The Coaches Who Won't Back Down</h3>
+                        <p class="mt-2 text-gray-600 leading-relaxed">"Infield fly rule!"<br>"That wasn't infield fly!"<br>Meanwhile, the players just stand there… waiting.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Features/Solution Section -->
-        <section class="py-16 sm:py-24 px-4">
-             <div class="max-w-5xl mx-auto text-center">
-                <h2 class="text-base font-semibold text-blue-600 tracking-wider uppercase">The Solution</h2>
-                <p class="text-3xl md:text-4xl font-extrabold text-gray-900 mt-2">A Big Step Up for the Game</p>
-                <div class="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 text-center">
-                    <!-- Feature 1 -->
-                    <div class="flex flex-col items-center">
-                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
-                        </div>
-                        <h3 class="font-bold text-xl mt-4">Custom-Trained for Your League</h3>
-                        <p class="mt-2 text-gray-600">Works with Little League, PONY, Babe Ruth, and more. We'll train it on your specific rules.</p>
-                    </div>
-                    <!-- Feature 2 -->
-                     <div class="flex flex-col items-center">
-                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        </div>
-                        <h3 class="font-bold text-xl mt-4">Instant Voice & Text Answers</h3>
-                        <p class="mt-2 text-gray-600">No more guessing or flipping through pages. Just ask your question and get an immediate response.</p>
-                    </div>
-                    <!-- Feature 3 -->
-                     <div class="flex flex-col items-center">
-                        <div class="flex-shrink-0 w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center">
-                           <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        </div>
-                        <h3 class="font-bold text-xl mt-4">Prove It with Rule Citations</h3>
-                        <p class="mt-2 text-gray-600">Every answer includes the exact rule and number, so you can show it on the spot and be confident.</p>
-                    </div>
-                </div>
+        <!-- Superhero Transition Section -->
+        <section class="bg-gray-100 py-16 sm:py-20 px-4">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">The Game Doesn't Need More Noise. <br class="sm:hidden"/> It Needs a Hero.</h2>
+                <p class="mt-4 text-xl md:text-2xl font-bold text-blue-600 italic">
+                    (Spoiler: That hero is YOU.)
+                </p>
             </div>
+        </section>
+
+        <!-- Solution Section -->
+        <section id="solution" class="hero-gradient text-white py-16 sm:py-24 px-4">
+             <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-3xl md:text-5xl font-extrabold">What If You Could…</h2>
+                <div class="mt-10 max-w-2xl mx-auto text-left space-y-6">
+                    <p class="text-xl flex items-start gap-3"><span class="text-blue-300 mt-1">✓</span><span><strong>Silence the Sideline Screaming</strong> with the <em>actual rule</em> in 5 seconds?</span></p>
+                    <p class="text-xl flex items-start gap-3"><span class="text-blue-300 mt-1">✓</span><span><strong>Rescue the Rookie Umpire</strong> by showing him the citation—on the spot?</span></p>
+                    <p class="text-xl flex items-start gap-3"><span class="text-blue-300 mt-1">✓</span><span><strong>Be the Coach Who Ends Arguments</strong> because you've got <em>proof</em> in your pocket?</span></p>
+                </div>
+
+                <!-- UPDATED: Inset Card for the "Superpower" reveal -->
+                <div class="mt-16 bg-black/20 backdrop-blur-sm rounded-2xl p-8 md:p-10 border border-white/20">
+                     <h3 class="text-2xl md:text-3xl font-bold">HeyBLU: Your Superpower for Fair Play</h3>
+                     <p class="mt-4 text-lg text-blue-100 max-w-3xl mx-auto">Ask any rule. Get the <strong>exact answer</strong>—with the <strong>official citation</strong>—instantly. No PDFs. No debates. Just cold, hard, game-saving truth.</p>
+                     <p class="mt-6 font-bold text-xl tracking-wide">Your League's Rules. Your Phone. 5 Seconds.</p>
+                </div>
+                
+                 <div class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <a href="#waitlist-form" class="w-full sm:w-auto bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-4 focus:ring-offset-blue-600 transition duration-200 transform hover:scale-105">
+                        Be the Hero &rarr;
+                    </a>
+                    <a href="/rulebook/" class="w-full sm:w-auto bg-blue-500/50 text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-blue-500/80 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-4 focus:ring-offset-blue-600 transition duration-200">
+                        Try the Demo &rarr;
+                    </a>
+                </div>
+             </div>
         </section>
 
         <!-- Waitlist Form Section -->
         <section id="waitlist-form" class="bg-white py-16 sm:py-24 px-4">
              <div class="max-w-2xl mx-auto">
-                 <!-- Header -->
                 <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Early Access</h2>
-                    <p class="text-lg text-gray-600 mt-3">Join the waitlist and help us train HeyBLU for your league.</p>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Join the Waitlist</h2>
+                    <p class="text-lg text-gray-600 mt-3">Get early access and be the first to bring sanity back to the game.</p>
                 </div>
-
-                <!-- Form Container -->
-                <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8">
+                <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8 border">
                     <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
-                        <!-- Redirect to a custom thank you page -->
-                        <input type="hidden" name="_next" value="https://heyblu.ai/thank-you.html">
-
                         <!-- Email Input -->
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
-                            <input type="email" name="email" id="email" placeholder="you@example.com" required
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                            <input type="email" name="email" id="email" placeholder="you@example.com" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                         </div>
-
                         <!-- Role Checkboxes -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">I'm a:</label>
@@ -163,14 +158,11 @@
                                 <div class="flex items-center"><input id="role-player" name="role" type="checkbox" value="Player" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-player" class="ml-2 block text-sm text-gray-800">Player</label></div>
                             </div>
                         </div>
-
                         <!-- League Input -->
                         <div>
                             <label for="league" class="block text-sm font-medium text-gray-700 mb-1">League + Age (optional)</label>
-                            <input type="text" name="league" id="league" placeholder="e.g. Mill Valley Little League 13U"
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                            <input type="text" name="league" id="league" placeholder="e.g. Mill Valley Little League 13U" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                         </div>
-
                         <!-- Share Rulebook Radio Buttons -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Would you share your league's rulebook?</label>
@@ -179,20 +171,16 @@
                                 <div class="flex items-center"><input id="share-no" name="share_rulebook" type="radio" value="No" class="form-radio h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500"><label for="share-no" class="ml-2 block text-sm text-gray-800">No</label></div>
                             </div>
                         </div>
-
                         <!-- Referral Input -->
                         <div>
                             <label for="referral_email" class="block text-sm font-medium text-gray-700">Want to move up the waitlist?</label>
                             <p class="text-sm text-gray-500 mb-2">Invite one person. We'll bump you up if they sign up too.</p>
-                            <input type="email" name="referral_email" id="referral_email" placeholder="friend@example.com"
-                                class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                            <input type="email" name="referral_email" id="referral_email" placeholder="friend@example.com" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                         </div>
-
                         <!-- Submit Button -->
                         <div>
-                            <button type="submit"
-                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
-                                Join the Waitlist
+                            <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
+                                Be the Hero - Join Free
                             </button>
                         </div>
                     </form>
@@ -210,6 +198,19 @@
              </p>
         </div>
     </footer>
+
+    <script>
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetElement = document.querySelector(this.getAttribute('href'));
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+    </script>
 
 </body>
 </html> 
