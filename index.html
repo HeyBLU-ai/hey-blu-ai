@@ -51,15 +51,30 @@
     <header class="bg-white/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-20 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
-                <div class="flex items-center space-x-3">
+                <a href="/" class="flex items-center space-x-3">
                      <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                         <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
                     </svg>
                     <span class="font-bold text-xl text-gray-900">HeyBLU Rulebook</span>
-                </div>
-                <a href="#waitlist-form" class="hidden sm:inline-block bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
-                    Join Waitlist
                 </a>
+                <div class="hidden sm:flex items-center space-x-4">
+                    <a href="/rulebook/" class="text-gray-600 hover:text-blue-600 font-semibold transition">
+                        Try the Demo
+                    </a>
+                    <a href="#waitlist-form" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
+                        Join Waitlist
+                    </a>
+                </div>
+                <div class="sm:hidden">
+                    <button id="menu-btn" class="text-gray-900 hover:text-blue-600 focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden sm:hidden pb-4">
+                <a href="/rulebook/" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded">Try the Demo</a>
+                <a href="#waitlist-form" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 rounded">Join Waitlist</a>
             </div>
         </div>
     </header>
@@ -223,6 +238,20 @@
                 if (targetElement) {
                     targetElement.scrollIntoView({ behavior: 'smooth' });
                 }
+            });
+        });
+
+        // Hamburger menu toggle
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
             });
         });
     </script>
