@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyBLU Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .slide {
+            scroll-snap-align: start;
+            flex-shrink: 0;
+            transition: transform 0.5s;
+        }
+        .slide-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+        .slide-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slide-indicator {
+            transition: background-color 0.3s;
+        }
+        .active-indicator {
+            background-color: #2563EB; /* blue-600 */
+        }
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+        .icon-shadow {
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.3));
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white overflow-hidden">
+
+    <!-- Slide Navigation -->
+    <div id="slide-indicators" class="fixed right-4 top-1/2 -translate-y-1/2 z-20 flex flex-col space-y-2">
+        <!-- Indicators will be injected here by JS -->
+    </div>
+
+    <!-- Main Container -->
+    <div id="slide-container" class="slide-container">
+
+        <!-- Slide 1: Title -->
+        <div id="slide-1" class="slide w-full h-screen bg-cover bg-center" style="background-image: url('https://placehold.co/1600x900/0a0a0a/ffffff?text=HeyBLU');">
+            <div class="w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
+                <div class="text-center p-8">
+                    <div class="mb-4">
+                        <svg class="w-24 h-24 mx-auto text-blue-500 icon-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V3m0 18v-3M5.636 5.636L4.222 4.222m15.556 15.556l-1.414-1.414M4.222 19.778l1.414-1.414M19.778 4.222l-1.414 1.414"></path><circle cx="12" cy="12" r="4"></circle></svg>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-black uppercase tracking-wider text-shadow">HeyBLU</h1>
+                    <p class="mt-4 text-xl md:text-2xl font-light text-gray-200 text-shadow">The AI Infrastructure for Youth Baseball & Softball</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: The Problem -->
+        <div id="slide-2" class="slide w-full h-screen bg-gray-800 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">The Problem</h2>
+            <p class="text-xl md:text-2xl text-gray-300 mb-12">Youth baseball is trapped in the past.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-gray-700 p-6 rounded-xl">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-red-400 icon-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                    <h3 class="text-xl font-semibold mb-2">No Instant Feedback</h3>
+                    <p class="text-gray-400">Arguments over calls, manual stats, and zero real-time data for training.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-red-400 icon-shadow" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962A3 3 0 0110.5 9.75v-.75a3 3 0 013-3h.75a3 3 0 013 3v.75a3 3 0 01-1.5 2.582m-2.25-6.04a3 3 0 00-3-3h-.75a3 3 0 00-3 3v.75a3 3 0 001.5 2.582m10.5 0A3 3 0 0118 13.5v.75a3 3 0 01-3 3h-.75a3 3 0 01-3-3v-.75a3 3 0 011.5-2.582M12 12a3 3 0 01-3 3H7.5a3 3 0 01-3-3v-.75a3 3 0 011.5-2.582m5.25 0a3 3 0 013 3v.75a3 3 0 01-3 3h-.75a3 3 0 01-3-3v-.75a3 3 0 011.5-2.582M4.5 4.5a3 3 0 013-3h.75a3 3 0 013 3v.75a3 3 0 01-1.5 2.582M15 4.5a3 3 0 013-3h.75a3 3 0 013 3v.75a3 3 0 01-1.5 2.582m-7.5 0a3 3 0 013 3v.75a3 3 0 01-3 3H7.5a3 3 0 01-3-3v-.75a3 3 0 011.5-2.582" /></svg>
+                    <h3 class="text-xl font-semibold mb-2">Umpire Shortage Crisis</h3>
+                    <p class="text-gray-400">50,000 fewer umps since 2019 (NFHS). Games are delayed, canceled, or poorly officiated.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl">
+                    <svg class="w-16 h-16 mx-auto mb-4 text-red-400 icon-shadow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    <h3 class="text-xl font-semibold mb-2">Error-Prone Manual Stats</h3>
+                    <p class="text-gray-400">Parents with scorebooks are the "tech." It's time-consuming and inaccurate.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 3: The Solution -->
+        <div id="slide-3" class="slide w-full h-screen bg-gray-900 slide-content p-8 md:p-16 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 text-left pr-8">
+                <h2 class="text-4xl md:text-5xl font-bold text-blue-400 mb-2">The Solution</h2>
+                <p class="text-xl md:text-2xl text-gray-300 mb-6">AI-powered officiating and stats, starting with just an iPhone.</p>
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 bg-blue-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <p><strong class="text-white">Instant Strike Zone Calls:</strong> Get ball/strike feedback anywhere you can throw a baseball.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 bg-blue-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <p><strong class="text-white">Full-Game Automation:</strong> Evolving to track every pitch, hit, and play—with zero manual input.</p>
+                    </div>
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 h-6 w-6 bg-blue-500 rounded-full flex items-center justify-center mr-4 mt-1">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                        </div>
+                        <p><strong class="text-white">AI Rulebooks:</strong> End on-field disputes in seconds with an AI-powered rules engine.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="md:w-1/2 mt-12 md:mt-0 flex justify-center items-center">
+                 <img src="https://placehold.co/400x800/1F2937/FFFFFF?text=App+UI" alt="HeyBLU App Interface" class="rounded-3xl shadow-2xl max-h-[70vh]">
+            </div>
+        </div>
+
+        <!-- Slide 4: Why Now? -->
+        <div id="slide-4" class="slide w-full h-screen bg-gray-800 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-400 mb-12">Why Now? The Perfect Storm</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                <div class="bg-gray-700 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-2">Tech is Ready</h3>
+                    <p class="text-6xl font-black">95%</p>
+                    <p class="text-gray-400">of teens have smartphone access. The camera in their pocket is all the hardware needed.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-2">Market is Primed</h3>
+                    <p class="text-6xl font-black">300%</p>
+                    <p class="text-gray-400">increase in youth sports tech adoption post-COVID. Parents are actively seeking solutions.</p>
+                </div>
+                <div class="bg-gray-700 p-6 rounded-xl transform hover:scale-105 transition-transform">
+                    <h3 class="text-2xl font-bold text-blue-300 mb-2">Demand is Urgent</h3>
+                    <p class="text-6xl font-black">50K</p>
+                    <p class="text-gray-400">fewer umpires since 2019. Leagues are desperate for a reliable alternative.</p>
+                </div>
+            </div>
+             <p class="text-center mt-12 text-lg text-gray-300">Parents already film games. We just turn their video into valuable data.</p>
+        </div>
+
+        <!-- Slide 5: The Vision -->
+        <div id="slide-5" class="slide w-full h-screen bg-gray-900 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-400 mb-12">Our Vision: From a Single Phone to Full Automation</h2>
+            <div class="relative w-full max-w-4xl mx-auto">
+                <!-- Timeline Line -->
+                <div class="absolute left-1/2 -translate-x-1/2 h-full w-1 bg-blue-800 rounded-full hidden md:block"></div>
+                
+                <!-- Step 1 -->
+                <div class="relative mb-12 md:mb-24 flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                        <h3 class="text-2xl font-bold text-white">Starting Point</h3>
+                        <p class="text-lg text-blue-300">"Strike zone feedback, anywhere you throw."</p>
+                        <p class="text-gray-400">A single iPhone provides instant ball-strike calls for practice, bullpens, and backyard games.</p>
+                    </div>
+                    <div class="absolute left-1/2 -translate-x-1/2 -bottom-6 w-12 h-12 bg-blue-500 rounded-full border-4 border-gray-900 hidden md:flex items-center justify-center">
+                        <span class="text-white font-bold">1</span>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="relative mb-12 md:mb-24 flex flex-col md:flex-row-reverse items-center">
+                    <div class="md:w-1/2 md:pl-8 text-center md:text-left">
+                        <h3 class="text-2xl font-bold text-white">The Near Future</h3>
+                        <p class="text-lg text-blue-300">"Game-ready assistive vision."</p>
+                        <p class="text-gray-400">Multi-camera setup enables live game calls, MPH, exit velocity, and swing detection.</p>
+                    </div>
+                    <div class="absolute left-1/2 -translate-x-1/2 -bottom-6 w-12 h-12 bg-blue-500 rounded-full border-4 border-gray-900 hidden md:flex items-center justify-center">
+                        <span class="text-white font-bold">2</span>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="relative flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 md:pr-8 text-center md:text-right">
+                        <h3 class="text-2xl font-bold text-white">The Ultimate Goal</h3>
+                        <p class="text-lg text-blue-300">"Every play. Every stat. Zero input."</p>
+                        <p class="text-gray-400">AI rulebooks and full-field vision auto-generate stat sheets, resolve disputes, and create replays.</p>
+                    </div>
+                     <div class="absolute left-1/2 -translate-x-1/2 -bottom-6 w-12 h-12 bg-blue-500 rounded-full border-4 border-gray-900 hidden md:flex items-center justify-center">
+                        <span class="text-white font-bold">3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Market Opportunity -->
+        <div id="slide-6" class="slide w-full h-screen bg-gray-800 slide-content p-8 md:p-16 text-center">
+            <h2 class="text-4xl md:text-5xl font-bold text-blue-400 mb-12">A Massive, Underserved Market</h2>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16">
+                <div class="text-center">
+                    <p class="text-7xl md:text-8xl font-black text-white">15M</p>
+                    <p class="text-xl md:text-2xl text-gray-300">Youth Baseball & Softball Players in the U.S.</p>
+                </div>
+                <div class="text-5xl font-thin text-blue-500">&</div>
+                <div class="text-center">
+                    <p class="text-7xl md:text-8xl font-black text-white">$19B</p>
+                    <p class="text-xl md:text-2xl text-gray-300">Annual Spend on Youth Sports</p>
+                </div>
+            </div>
+            <div class="mt-16 bg-gray-700/50 p-6 rounded-xl max-w-3xl mx-auto">
+                <p class="text-2xl text-white">We are creating a new category in a market ripe for disruption, targeting just <strong class="text-blue-400">1%</strong> to build a <strong class="text-blue-400">$100M+</strong> business.</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Path to $100M ARR -->
+        <div id="slide-7" class="slide w-full h-screen bg-gray-900 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-400 mb-12">Path to $100M+ ARR</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <!-- Layer 1 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-blue-800">
+                    <h3 class="text-xl font-bold text-blue-400">Layer 1: Individuals</h3>
+                    <p class="text-3xl font-bold mt-2">$99<span class="text-lg font-normal text-gray-400">/year</span></p>
+                    <p class="text-gray-400 mt-2">Core app for training, replacing $400 radar guns and costly private lessons.</p>
+                    <p class="mt-4 text-sm text-white/50">Target: 500k users = ~$50M ARR</p>
+                </div>
+                <!-- Layer 2 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-blue-700">
+                    <h3 class="text-xl font-bold text-blue-400">Layer 2: Teams</h3>
+                    <p class="text-3xl font-bold mt-2">$299<span class="text-lg font-normal text-gray-400">/year</span></p>
+                    <p class="text-gray-400 mt-2">Game Mode upgrade with multi-cam, pitch/hit tracking, and basic stats.</p>
+                    <p class="mt-4 text-sm text-white/50">Target: 100k teams = ~$30M ARR</p>
+                </div>
+                <!-- Layer 3 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-blue-600">
+                    <h3 class="text-xl font-bold text-blue-400">Layer 3: Leagues</h3>
+                    <p class="text-3xl font-bold mt-2">$5k<span class="text-lg font-normal text-gray-400">/year (avg)</span></p>
+                    <p class="text-gray-400 mt-2">League-wide dashboards, AI umpires, and automated stat management.</p>
+                    <p class="mt-4 text-sm text-white/50">Target: 4k leagues = ~$20M ARR</p>
+                </div>
+                <!-- Layer 4 -->
+                <div class="bg-gray-800 p-6 rounded-xl border border-blue-500">
+                    <h3 class="text-xl font-bold text-blue-400">Layer 4: API & Data</h3>
+                    <p class="text-3xl font-bold mt-2">Rev-Share</p>
+                    <p class="text-gray-400 mt-2">API access for partners like GameChanger, plus high-margin replay tools.</p>
+                    <p class="mt-4 text-sm text-white/50">Adds high-margin growth = $5M+ ARR</p>
+                </div>
+            </div>
+             <p class="text-center mt-10 text-lg text-gray-300">Multiple revenue streams create a defensible business model with clear expansion potential.</p>
+        </div>
+        
+        <!-- Slide 8: Traction -->
+        <div id="slide-8" class="slide w-full h-screen bg-gray-800 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-400 mb-12">Traction & Validation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <p class="text-6xl font-black text-blue-400">92%</p>
+                    <p class="text-xl text-white mt-2">Would Try The App</p>
+                    <p class="text-gray-400 mt-2">Based on a survey of 864 coaches, parents, and league admins.</p>
+                </div>
+                <div class="bg-gray-700 p-8 rounded-xl text-center">
+                    <img src="https://placehold.co/150x50/FFFFFF/000000?text=SF+GIANTS" class="h-12 mx-auto mb-4" alt="SF Giants Logo">
+                    <p class="text-xl text-white mt-2">Pro-Level Validation</p>
+                    <p class="text-gray-400 mt-2">Advised and backed by current SF Giants executives, validating our approach and technology.</p>
+                </div>
+            </div>
+            <div class="mt-12 text-center max-w-4xl mx-auto">
+                <h3 class="text-2xl font-semibold text-white mb-4">Roadmap</h3>
+                <div class="flex justify-center items-center space-x-8 text-white">
+                    <div class="text-center">
+                        <p class="font-bold text-xl text-blue-400">2026</p>
+                        <p>Multi-Cam Game Mode with Pitch & Hit Tracking</p>
+                    </div>
+                    <div class="text-3xl font-thin text-gray-500">&rarr;</div>
+                    <div class="text-center">
+                        <p class="font-bold text-xl text-blue-400">2027</p>
+                        <p>AI Umpire for Leagues & NFHS Partnership Pilots</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: The Team -->
+        <div id="slide-9" class="slide w-full h-screen bg-gray-900 slide-content p-8 md:p-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-center text-blue-400 mb-12">Built by Baseball Obsessives</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <img src="https://placehold.co/150x150/2563EB/FFFFFF?text=Founder" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-700">
+                    <h3 class="text-xl font-bold">Pitcher & Coach</h3>
+                    <p class="text-blue-400">Deeply understands the user's pain points from on-field experience.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <img src="https://placehold.co/150x150/2563EB/FFFFFF?text=Founder" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-700">
+                    <h3 class="text-xl font-bold">IP & Tech Attorney</h3>
+                    <p class="text-blue-400">Player, coach, and expert in building defensible technology moats.</p>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-xl">
+                    <img src="https://placehold.co/150x150/9CA3AF/FFFFFF?text=Advisor" class="w-32 h-32 rounded-full mx-auto mb-4 border-4 border-gray-700">
+                    <h3 class="text-xl font-bold">SF Giants Execs</h3>
+                    <p class="text-blue-400">Advisors providing unparalleled industry access and analytics expertise.</p>
+                </div>
+            </div>
+            <p class="text-center mt-12 text-lg text-gray-300">A perfectly balanced team of product, tech, and market experts.</p>
+        </div>
+
+        <!-- Slide 10: The Ask -->
+        <div id="slide-10" class="slide w-full h-screen bg-blue-600 slide-content p-8 md:p-16 text-center">
+            <h2 class="text-5xl md:text-6xl font-black text-white mb-4">The Ask: $2M Seed</h2>
+            <p class="text-xl md:text-2xl text-blue-100 mb-12">To own the AI umpire race and become the definitive infrastructure for youth baseball.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-left">
+                <div class="bg-blue-700/50 p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">Refine AI Models</h3>
+                    <p class="text-blue-200">Perfect multi-camera tracking and expand data capture capabilities.</p>
+                </div>
+                <div class="bg-blue-700/50 p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">Secure Partnerships</h3>
+                    <p class="text-blue-200">Launch pilots with NFHS teams and major travel ball organizations.</p>
+                </div>
+                <div class="bg-blue-700/50 p-6 rounded-lg">
+                    <h3 class="font-bold text-xl mb-2">Scale Go-to-Market</h3>
+                    <p class="text-blue-200">Hire key sales and marketing roles to accelerate user acquisition.</p>
+                </div>
+            </div>
+            <p class="mt-16 text-2xl md:text-3xl font-bold">Let's build the future of baseball—together.</p>
+            <p class="mt-4 text-xl text-blue-200">contact@heyblu.com</p>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slideContainer = document.getElementById('slide-container');
+            const slides = document.querySelectorAll('.slide');
+            const indicatorsContainer = document.getElementById('slide-indicators');
+            let currentSlide = 0;
+
+            // Create indicators
+            slides.forEach((slide, index) => {
+                const indicator = document.createElement('div');
+                indicator.classList.add('w-3', 'h-3', 'rounded-full', 'bg-gray-600', 'cursor-pointer', 'slide-indicator');
+                indicator.dataset.slideIndex = index;
+                indicator.addEventListener('click', () => {
+                    scrollToSlide(index);
+                });
+                indicatorsContainer.appendChild(indicator);
+            });
+            
+            const indicators = document.querySelectorAll('.slide-indicator');
+
+            function updateIndicators() {
+                const scrollPosition = slideContainer.scrollTop;
+                const slideHeight = window.innerHeight;
+                const newCurrentSlide = Math.round(scrollPosition / slideHeight);
+
+                if (newCurrentSlide !== currentSlide) {
+                    currentSlide = newCurrentSlide;
+                    indicators.forEach((indicator, index) => {
+                        if (index === currentSlide) {
+                            indicator.classList.add('active-indicator');
+                        } else {
+                            indicator.classList.remove('active-indicator');
+                        }
+                    });
+                }
+            }
+            
+            function scrollToSlide(index) {
+                slideContainer.scrollTo({
+                    top: index * window.innerHeight,
+                    behavior: 'smooth'
+                });
+            }
+
+            slideContainer.addEventListener('scroll', updateIndicators);
+            
+            // Keyboard navigation
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+                    e.preventDefault();
+                    if (currentSlide < slides.length - 1) {
+                        scrollToSlide(currentSlide + 1);
+                    }
+                } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+                     e.preventDefault();
+                    if (currentSlide > 0) {
+                        scrollToSlide(currentSlide - 1);
+                    }
+                }
+            });
+
+            // Initial state
+            updateIndicators();
+        });
+    </script>
+</body>
+</html> 
