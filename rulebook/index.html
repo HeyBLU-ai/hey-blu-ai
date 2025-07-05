@@ -45,26 +45,63 @@
 
   <main class="pt-28 px-4 max-w-3xl mx-auto">
     <h1 class="text-4xl font-extrabold gradient-text mb-4 text-center">MLB Rulebook Assistant</h1>
+    <h1 class="text-4xl font-extrabold gradient-text mb-4 text-center">Beta Version</h1>
     <p class="text-center text-gray-600 mb-8">Ask any baseball rule question. Currently supports MLB rules only.</p>
 
     <label for="question-text" class="block text-lg font-semibold mb-2">Your Question</label>
     <input type="text" id="question-text" class="w-full p-4 border border-gray-300 rounded-lg shadow-sm mb-4" placeholder="e.g., What is the infield fly rule?" />
 
-    <button id="ask-button" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
-      Ask
-    </button>
+    <div class="flex gap-4 mb-6">
+      <button id="ask-button" class="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-all">
+        Ask
+      </button>
+      <button id="start-recording" class="bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200">🎤 Ask by Voice</button>
+    </div>
 
     <div id="answer-section" class="mt-8 hidden">
       <div id="loading-indicator" class="flex items-center space-x-4 mb-4 hidden">
         <div class="spinner"></div>
         <span class="text-gray-600">Checking the rulebook...</span>
       </div>
-
       <div id="error-message" class="text-red-600 font-semibold mb-4 hidden"></div>
-
       <div id="answer-output" class="bg-white border border-gray-300 rounded-lg p-6 shadow-md prose"></div>
       <p id="source-note" class="text-sm text-gray-500 mt-2">Sourced from: MLB Rulebook</p>
     </div>
+
+    <!-- Waitlist CTA -->
+    <section class="bg-white rounded-xl shadow-lg p-8 mt-12">
+      <h2 class="text-2xl font-bold mb-2">Be Your League's First Rules Superhero</h2>
+      <p class="text-gray-600 mb-4"><b>Join the waitlist</b> and help us train HeyBLU for your league.</p>
+      <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-4">
+        <input type="hidden" name="_next" value="https://heyblu.ai/thank-you.html">
+        <input type="email" name="email" placeholder="you@example.com" required class="w-full p-3 border rounded-lg" />
+
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-700 mb-2">I'm a:</legend>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-2">
+            <label><input type="checkbox" name="role" value="Coach" class="mr-2">Coach</label>
+            <label><input type="checkbox" name="role" value="Umpire" class="mr-2">Umpire</label>
+            <label><input type="checkbox" name="role" value="Parent" class="mr-2">Parent</label>
+            <label><input type="checkbox" name="role" value="Admin" class="mr-2">Admin</label>
+            <label><input type="checkbox" name="role" value="Player" class="mr-2">Player</label>
+          </div>
+        </fieldset>
+
+        <input type="text" name="league" placeholder="League + Age (optional)" class="w-full p-3 border rounded-lg" />
+
+        <fieldset>
+          <legend class="text-sm font-semibold text-gray-700 mb-2">Would you share your league's rulebook?</legend>
+          <label class="block"><input type="radio" name="share_rulebook" value="Yes" class="mr-2">Yes</label>
+          <label class="block"><input type="radio" name="share_rulebook" value="No" class="mr-2">No</label>
+        </fieldset>
+
+        <label class="block text-sm font-medium text-gray-700 mt-4"><b>Want to move up the waitlist?</b></label>
+        <p class="text-sm text-gray-500 mb-2">Invite one person. We'll bump you up if they sign up too.</p>
+        <input type="email" name="referral_email" placeholder="friend@example.com" class="w-full p-3 border rounded-lg" />
+
+        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 font-bold">Join the Waitlist</button>
+      </form>
+    </section>
   </main>
 
   <footer class="text-center text-gray-500 text-sm py-8 mt-12">
@@ -73,17 +110,19 @@
 
   <script>
     const askButton = document.getElementById("ask-button");
+    const micButton = document.getElementById("start-recording");
     const questionInput = document.getElementById("question-text");
     const answerOutput = document.getElementById("answer-output");
     const answerSection = document.getElementById("answer-section");
     const loadingIndicator = document.getElementById("loading-indicator");
     const errorMessage = document.getElementById("error-message");
 
-    askButton.addEventListener("click", async () => {
+    askButton.addEventListener("click", askQuestion);
+
+    async function askQuestion() {
       const question = questionInput.value.trim();
       if (!question) return;
 
-      // Reset UI
       answerSection.classList.remove("hidden");
       answerOutput.innerHTML = "";
       errorMessage.classList.add("hidden");
@@ -106,7 +145,32 @@
       } finally {
         loadingIndicator.classList.add("hidden");
       }
-    });
+    }
+
+    // Mic input support
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.lang = "en-US";
+
+      micButton.addEventListener("click", () => {
+        recognition.start();
+      });
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        questionInput.value = transcript;
+        askQuestion();
+      };
+
+      recognition.onerror = (event) => {
+        console.error("Speech error:", event);
+      };
+    } else {
+      micButton.disabled = true;
+      micButton.textContent = "🎤 Mic not supported";
+    }
   </script>
 </body>
 </html>
