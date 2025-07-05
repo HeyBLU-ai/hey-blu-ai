@@ -135,13 +135,21 @@
           body: JSON.stringify({ question })
         });
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         const reply = data?.reply || "No answer returned.";
         answerOutput.innerHTML = reply.replace(/\n/g, "<br>");
       } catch (err) {
-        errorMessage.textContent = "Something went wrong. Please try again.";
+        console.error("API Error:", err);
+        if (err.message.includes("CORS") || err.message.includes("Failed to fetch")) {
+          errorMessage.textContent = "Service temporarily unavailable. Please try again later.";
+        } else {
+          errorMessage.textContent = "Something went wrong. Please try again.";
+        }
         errorMessage.classList.remove("hidden");
-        console.error(err);
       } finally {
         loadingIndicator.classList.add("hidden");
       }
@@ -155,17 +163,40 @@
       recognition.lang = "en-US";
 
       micButton.addEventListener("click", () => {
-        recognition.start();
+        try {
+          micButton.textContent = "🎤 Listening...";
+          micButton.disabled = true;
+          recognition.start();
+        } catch (err) {
+          console.error("Speech recognition error:", err);
+          micButton.textContent = "🎤 Error starting";
+          setTimeout(() => {
+            micButton.textContent = "🎤 Ask by Voice";
+            micButton.disabled = false;
+          }, 2000);
+        }
       });
 
       recognition.onresult = (event) => {
         const transcript = event.results[0][0].transcript;
         questionInput.value = transcript;
+        micButton.textContent = "🎤 Ask by Voice";
+        micButton.disabled = false;
         askQuestion();
       };
 
       recognition.onerror = (event) => {
         console.error("Speech error:", event);
+        micButton.textContent = "🎤 Try again";
+        micButton.disabled = false;
+        setTimeout(() => {
+          micButton.textContent = "🎤 Ask by Voice";
+        }, 2000);
+      };
+
+      recognition.onend = () => {
+        micButton.textContent = "🎤 Ask by Voice";
+        micButton.disabled = false;
       };
     } else {
       micButton.disabled = true;
