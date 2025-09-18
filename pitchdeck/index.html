@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyBLU: Interactive Investor Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Cool Blues & Grays -->
+    <!-- Application Structure Plan: The application is designed as a single-page, vertical-scrolling experience to mimic the flow of a presentation while adding interactivity. A sticky navigation bar allows users to jump between key thematic sections: The Opportunity, The Solution, The Market, The Plan, and The Ask. This structure was chosen to guide the user through a logical narrative, from understanding the core problem to seeing the investment opportunity, while allowing non-linear exploration. Key interactions include clickable cards to reveal details, tabs to organize product features, an interactive timeline for the GTM strategy, and dynamic charts for market and financial data, making complex information easily digestible. -->
+    <!-- Visualization & Content Choices: 
+        - Problem Section: Goal: Inform/Empathize. Method: Interactive Cards. Interaction: On-click reveals more detail. Justification: Breaks down the core issues into digestible chunks without overwhelming the user upfront. Method: HTML/CSS/JS.
+        - Features Section: Goal: Organize/Inform. Method: Tabbed Interface. Interaction: Click to switch between features. Justification: Neatly organizes the product's capabilities, preventing a long, scrolling list and allowing users to focus on one feature at a time. Method: HTML/CSS/JS.
+        - Market Opportunity: Goal: Inform/Impress. Method: Donut Chart. Interaction: Hover tooltips. Justification: Visually represents the small market penetration required for significant returns, a powerful message for investors. Method: Chart.js (Canvas).
+        - Go-To-Market Plan: Goal: Organize/Change. Method: Interactive Stepper/Timeline. Interaction: Click to view phase details. Justification: Clearly visualizes the multi-year strategy in a sequential, easy-to-follow format. Method: HTML/CSS/JS.
+        - Financial Projections: Goal: Compare/Change. Method: Combined Bar/Line Chart. Interaction: Hover tooltips with detailed yearly data. Justification: Provides a dynamic view of growth, comparing key metrics like ARR and subscriber growth over time more effectively than a static table. Method: Chart.js (Canvas).
+        - Use of Funds: Goal: Inform/Proportions. Method: Donut Chart. Interaction: Hover tooltips. Justification: Quickly communicates how the investment will be allocated, demonstrating a clear and strategic financial plan. Method: Chart.js (Canvas).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        #profitabilityChart {
+            height: 300px !important;
+        }
+        .section-fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Slide separators */
+        .slide-separator {
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #1e40af, #3b82f6);
+            margin: 3rem 0;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+        }
+        .active-nav {
+            color: #2563eb; /* blue-600 */
+            font-weight: 600;
+        }
+        .inactive-nav {
+            color: #475569; /* slate-600 */
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-6 py-3 flex justify-between items-center">
+            <div class="text-2xl font-bold text-blue-600">
+                Hey<span class="text-slate-800">BLU</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="../rulebook/" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Rulebook</a>
+                <a href="#hero" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Home</a>
+                <a href="#opportunity" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Opportunity</a>
+                <a href="#solution" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Solution</a>
+                <a href="#preview" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Product Preview</a>
+                <a href="#market" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Market</a>
+                <a href="#ip" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">IP</a>
+                <a href="#validation" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Validation</a>
+                <a href="#competition" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Competition</a>
+                <a href="#plan" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Plan</a>
+                <a href="#roadmap" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Roadmap</a>
+                <a href="#financials" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Financials</a>
+                <a href="#team" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Team</a>
+                <a href="#ask" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Ask</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero" class="bg-white">
+            <div class="container mx-auto px-6 py-20 md:py-32">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="text-center md:text-left">
+                        <h1 class="text-4xl md:text-6xl font-bold text-slate-900 leading-tight">The AI Assistant for Amateur Baseball</h1>
+                        <p class="mt-4 text-lg md:text-xl text-slate-600">Restoring trust, fairness, and development to the game with a powerful, on-device AI umpire assistant.</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="images/tripod-blu.jpg" alt="HeyBLU Product" class="max-w-full h-auto rounded-lg shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+                <section id="opportunity" class="py-20 md:py-28 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Opportunity: Amateur Baseball is in Crisis</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">The foundation of the game is being undermined by a perfect storm of systemic issues, creating a significant market opportunity for a technology-driven solution.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                            <span class="text-2xl font-bold">!</span>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Critical Umpire Shortage</h3>
+                        <p class="text-slate-600">Games are frequently played without qualified officials, leading to inconsistent calls and a diminished experience for players and fans.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">Inconsistent Strike Zones</h3>
+                        <p class="text-slate-600">Variable officiating frustrates players and hinders development. Coaches struggle to teach strike zone discipline without objective feedback.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        <div class="flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 text-blue-600 mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                        </div>
+                                                <h3 class="text-xl font-semibold mb-2">Rising On-Field Hostility</h3>
+                        <p class="text-slate-600">Umpires, often volunteers or young adults, face increasing verbal abuse from coaches and parents, leading to high turnover.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+                <section id="solution" class="py-20 md:py-28 bg-white section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Solution: The Agentic AI Umpire Assistant</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">HeyBLU is a smartphone-based AI platform providing the tools to run a smoother, fairer, and more enjoyable game for every stakeholder.</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="mb-8">
+                        <div id="tabs-buttons" class="flex border-b border-slate-200">
+                            <button data-target="tab-features" class="tab-button flex-1 py-4 px-2 text-center font-semibold text-blue-600 border-b-2 border-blue-600">Product Features</button>
+                            <button data-target="tab-tech" class="tab-button flex-1 py-4 px-2 text-center font-semibold text-slate-500">Core Technology</button>
+                        </div>
+                    </div>
+                    
+                    <div id="tabs-content">
+                        <div id="tab-tech" class="tab-content hidden">
+                            <h3 class="text-2xl font-bold text-center mb-6">Powerful, Private, and Instantaneous</h3>
+                            <div class="grid md:grid-cols-3 gap-8 text-center">
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">On-Device & Edge AI</h4>
+                                    <p class="text-slate-600">Leveraging powerful neural processors in modern smartphones for zero latency and full offline capability.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">Privacy by Design</h4>
+                                    <p class="text-slate-600">All audio and video processing happens on the device. No data is sent to the cloud, ensuring total privacy.</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-lg mb-2">"Dashcam" for Incidents</h4>
+                                    <p class="text-slate-600">A rolling audio buffer is only saved when an umpire explicitly initiates an incident report, capturing crucial evidence.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="tab-features" class="tab-content">
+                            <h3 class="text-2xl font-bold text-center mb-6">A Comprehensive Toolkit for the Modern Game</h3>
+                            <ul class="space-y-4">
+                                <li class="bg-slate-50 p-4 rounded-md"><strong>Ball-Strike Assist:</strong> Real-time ball/strike calls delivered discreetly to an earbud, acting as a "co-pilot" to improve accuracy and confidence.</li>
+                                <li class="bg-slate-50 p-4 rounded-md"><strong>AI-Powered Rulebook:</strong> Instant, voice-activated access to league-specific rules (Little League, USSSA, etc.) to resolve disputes quickly.</li>
+                                <li class="bg-slate-50 p-4 rounded-md"><strong>Automated Incident Reporting:</strong> A simple, guided process to log on-field incidents with audio evidence for league officials.</li>
+                                <li class="bg-slate-50 p-4 rounded-md"><strong>Player Development Tools:</strong> Heatmaps, pitch tracking, and performance metrics for data-driven coaching feedback.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+        
+        <section id="preview" class="py-20 md:py-28 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Turning BLU's data into actionable insights</h2>
+                </div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-slate-900 rounded-[28px] p-4 shadow-2xl">
+                            <img src="images/BLU-K-call.jpg" alt="BLU K-Call Interface" class="w-full rounded-[20px] aspect-[16/9] object-cover">
+                        </div>
+                        <div class="bg-slate-900 rounded-[28px] p-4 shadow-2xl">
+                            <img src="images/Visual-K-zone.jpg" alt="Visual K-Zone Analysis" class="w-full rounded-[20px] aspect-[16/9] object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="market" class="py-20 md:py-28 bg-white section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Market: Massive and Underserved</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">With millions of players in organized leagues, even a small market penetration represents a significant revenue opportunity.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="flex justify-center">
+                        <img src="images/TAM-SAM-SOM.jpg" alt="Market Analysis" class="max-w-full h-auto rounded-lg shadow-lg">
+                    </div>
+                    <div class="text-center md:text-left">
+                        <div class="mb-6">
+                            <p class="text-lg text-slate-600">Total Addressable Market (TAM)</p>
+                            <p class="text-4xl font-bold text-blue-600">~5.0M*</p>
+                            <p class="text-slate-500">Youth baseball players in the U.S.</p>
+                            <p class="text-sm text-slate-400 mt-2">*Excludes fast pitch softball, adult baseball, and international baseball</p>
+                        </div>
+                        <div class="mb-6">
+                            <p class="text-lg text-slate-600">Serviceable Addressable Market (SAM)</p>
+                            <p class="text-4xl font-bold text-blue-600">~4.5M</p>
+                            <p class="text-slate-500">Players in organized leagues</p>
+                        </div>
+                        <div>
+                            <p class="text-lg text-slate-600">Our Target for $25M ARR</p>
+                            <p class="text-4xl font-bold text-green-600">~2.8%</p>
+                            <p class="text-slate-500">Penetration of the SAM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="ip" class="py-20 md:py-28 bg-white section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">BLU IP & Trademarks</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">(as of Sept 2025)</p>
+                </div>
+                
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Quadrant 1: Patent Applications -->
+                        <div class="bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-lg border border-red-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Patent Applications</h3>
+                            </div>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <p><strong>Broad platform application filed (2024 priority).</strong></p>
+                                <p><strong>Strategy:</strong> divide into multiple filings (continuations/divisionals) to build a portfolio.</p>
+                                <p><strong>Coverage targets innovations across:</strong></p>
+                                <ul class="ml-4 space-y-1">
+                                    <li>• computer-vision pitch detection & trajectory modeling</li>
+                                    <li>• AR strike-zone calibration</li>
+                                    <li>• multi-camera sync & geometric reconstruction</li>
+                                    <li>• low-latency on-device inference and game-flow UX</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Quadrant 2: Trademarks -->
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Trademarks — brand ownership</h3>
+                            </div>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <p><strong>BLU™ and HEY BLU™</strong> — allowed; proceeding to U.S. Federal Registration.</p>
+                                <p><strong>Protects brand across:</strong></p>
+                                <ul class="ml-4 space-y-1">
+                                    <li>• app</li>
+                                    <li>• rulebook assistant</li>
+                                    <li>• training tools</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Quadrant 3: Trade Secrets -->
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Trade secrets — operational moat</h3>
+                            </div>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <ul class="space-y-2">
+                                    <li>• <strong>Data collection and labeling specifications.</strong></li>
+                                    <li>• <strong>Calibration & correction heuristics;</strong> model tuning/QA.</li>
+                                    <li>• <strong>Hard-negative mining</strong> and a proprietary youth-baseball dataset.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Quadrant 4: Why This Matters -->
+                        <div class="bg-gradient-to-br from-orange-50 to-orange-100 p-6 rounded-lg border border-orange-200">
+                            <div class="flex items-center mb-4">
+                                <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center mr-3">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <h3 class="text-xl font-bold text-slate-800">Why this matters</h3>
+                            </div>
+                            <div class="space-y-3 text-sm text-slate-700">
+                                <p><strong>Enforceable IP family + proprietary data compounds with use.</strong></p>
+                                <p><strong>Reduces copycats, supports licensing, and increases enterprise confidence.</strong></p>
+                                <div class="mt-4 p-3 bg-white rounded border border-orange-200">
+                                    <p class="text-xs font-semibold text-orange-800">Status: Patent app filed (2024 priority). TM marks allowed—registration pending. Trade-secret program ongoing.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="validation" class="py-20 md:py-28 bg-slate-50 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Market Validation & Early Traction</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Evidence of product-market fit and customer demand</p>
+                </div>
+                
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-8 rounded-lg border-2 border-dashed border-green-300">
+                        <div class="text-center">
+                            <div class="mb-6">
+                                <svg class="mx-auto h-16 w-16 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-700 mb-4">Validation Report Coming Soon</h3>
+                            <p class="text-lg text-slate-600 mb-6">This slide will present our market research findings, pilot program results, and early customer feedback.</p>
+                            <div class="bg-white p-4 rounded-lg border border-green-200">
+                                <p class="text-sm text-slate-500 italic">Content to include: Market research data, pilot program results, customer interviews, early adopter feedback, and demand validation metrics</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="competition" class="py-20 md:py-28 bg-slate-50 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">Competitive Landscape</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Tech approaches to ball/sports tracking</p>
+                </div>
+                
+                <div class="max-w-6xl mx-auto">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200 bg-white rounded-lg shadow">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">What it is</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Examples</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Installed multi‑camera systems</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Venue/club installs; high CapEx; pro/academy use</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Hawk‑Eye/Statcast, PlaySight, Toptracer, HitTrax, YakkerTech</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Radar launch monitors</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Portable hardware; training/bullpen focus</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">TrackMan, Rapsodo, FlightScope, SkyTrak</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Pure radar guns</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Speed only; no zone/analytics</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Pocket Radar</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Single‑device mobile CV</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Phone‑only apps; consumer‑friendly</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">SwingVision, HomeCourt, FullTrak AI</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">Sensorized balls/objects</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Embedded IMU/UWB; special balls</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">pitchLogic, SIQ, adidas×Kinexon</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">RF/Hybrid tracking</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">Anchors + tags; pro‑level hybrid</td>
+                                    <td class="px-6 py-4 text-sm text-slate-600">ShotTracker, SMT×Kinexon</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="mt-12 bg-blue-50 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold text-center mb-6">Where <span class="text-blue-600">BLU</span> sits (and why it's different)</h3>
+                        <div class="max-w-4xl mx-auto">
+                            <p class="text-lg text-slate-700 mb-4">
+                                <strong>Single‑device mobile CV for baseball/softball</strong> → calls live <strong>balls/strikes</strong> on a standard iPhone; <strong>no hardware</strong>, <strong>$199/yr personal subscription per phone</strong>, built for <strong>youth game use</strong> (umpire‑assist) with a path to <strong>heatmaps, per‑player stats, incident reporting</strong>.
+                            </p>
+                            <div class="bg-white p-6 rounded-lg border-l-4 border-blue-500">
+                                <p class="text-slate-700 font-medium">
+                                    <strong>Takeaway:</strong> Most competitors require installed systems or dedicated hardware. <strong>BLU</strong> is the <strong>only phone‑only, in‑game ball/strike solution</strong> aimed at the mass youth market—portable, affordable, and viral by design (umpires → nearby leagues → families).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="plan" class="py-20 md:py-28 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Plan: Strategy & Financials</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Our phased go-to-market strategy is designed for capital-efficient growth, leading to a clear path to profitability.</p>
+                </div>
+                
+                <div class="mb-20">
+                    <h3 class="text-2xl font-bold text-center mb-8">Go-To-Market Strategy: A 3-Phase ICP Rollout</h3>
+                    <div class="max-w-4xl mx-auto">
+                        <div class="flex items-center">
+                            <div class="flex-1 text-center gtm-step active" data-gtm="phase1">
+                                <div class="w-10 h-10 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold cursor-pointer">1</div>
+                                <p class="mt-2 font-semibold cursor-pointer">Empower Umpires</p>
+                            </div>
+                            <div class="flex-1 border-t-2 border-slate-300"></div>
+                            <div class="flex-1 text-center gtm-step" data-gtm="phase2">
+                                <div class="w-10 h-10 mx-auto bg-slate-300 text-slate-600 rounded-full flex items-center justify-center font-bold cursor-pointer">2</div>
+                                <p class="mt-2 text-slate-600 font-semibold cursor-pointer">Engage Coaches</p>
+                            </div>
+                            <div class="flex-1 border-t-2 border-slate-300"></div>
+                            <div class="flex-1 text-center gtm-step" data-gtm="phase3">
+                                <div class="w-10 h-10 mx-auto bg-slate-300 text-slate-600 rounded-full flex items-center justify-center font-bold cursor-pointer">3</div>
+                                <p class="mt-2 text-slate-600 font-semibold cursor-pointer">Connect Parents & Leagues</p>
+                            </div>
+                        </div>
+                        <div id="gtm-content" class="mt-8 bg-slate-50 p-6 rounded-lg min-h-[160px]">
+                            <div id="phase1">
+                                <h4 class="font-bold text-lg">Phase 1: Empower Umpires (The Wedge)</h4>
+                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Umpire Associations, Tournament Directors, Training Academies.<br><strong>Strategy:</strong> Launch with an "Elite Beta" program, providing the AI Rulebook & Incident Reporting to solve their most acute pains: safety and authority. This builds credibility and gathers crucial testimonials.</p>
+                            </div>
+                            <div id="phase2" class="hidden">
+                                <h4 class="font-bold text-lg">Phase 2: Engage Coaches & Teams</h4>
+                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Travel Team Coaches, High School Programs.<br><strong>Strategy:</strong> Introduce advanced player development tools. Drive team adoption by showing clear value in player improvement, and pursue API integrations with platforms like GameChanger to become part of their existing workflow.</p>
+                            </div>
+                            <div id="phase3" class="hidden">
+                                <h4 class="font-bold text-lg">Phase 3: Scale to Parents & Leagues</h4>
+                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Youth Leagues (Little League, etc.), Parents.<br><strong>Strategy:</strong> Execute a "National Launch" with parent-focused features (e.g., streaming with strike zone overlay) and league-wide licensing. Drive mass adoption through regional clinics and tournament sponsorships.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div id="roadmap" class="mb-20">
+                    <h3 class="text-2xl font-bold text-center mb-4">BLU: The Path to Becoming Baseball's Operating System</h3>
+                    <p class="text-center text-lg text-slate-600 mb-8 italic">*A 2-Year Roadmap to Validate Scale, Drive Monetization, and Build a Defensible Moat*</p>
+                    
+                    <div class="mb-8 bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <h5 class="font-bold text-slate-700 mb-2">Our Narrative:</h5>
+                        <p class="text-slate-600 italic">Umpires get us on the field → Coaches/parents pay → Data & training deepen value → Leagues institutionalize → Integrations & programs create the moat.</p>
+                    </div>
+                    
+                    <div class="space-y-8">
+                        <!-- H1 2026 -->
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="text-xl font-bold text-blue-600 mb-4">H1 2026 — Launch & Adoption</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Strategic Goal:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Prove willingness to pay and seed on-field usage at scale.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Product:</h5>
+                                    <p class="text-sm text-slate-600">Launch BLU StrikeTech v1 (core accuracy) & Post-Game Report v1. Introduce "Facility Pro" packages.</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Go-to-Market:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Drive adoption via ABCA convention, umpire/coach-led demos, referral programs, and "Dugout Bundles."</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Key Metrics:</h5>
+                                    <p class="text-sm text-slate-600">>750 paid teams by Q1; ~2,500 by Q2. Initial attachment rates.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- H2 2026 -->
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-l-4 border-green-500">
+                            <h4 class="text-xl font-bold text-green-600 mb-4">H2 2026 — Value Expansion & Monetization</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Strategic Goal:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Increase annual contract value (ARPU) and capture the high-value off-season training market.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Product:</h5>
+                                    <p class="text-sm text-slate-600">Introduce Game Intelligence (Statcast-style analytics), Bullpen Mode + MPH Radar, and advanced reports.</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Go-to-Market:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Promote premium feature upgrades, "Facility Pro" tiers, and targeted winter training promotions.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Key Metrics:</h5>
+                                    <p class="text-sm text-slate-600">>30% ARPU lift, >70% renewal rate, achieve profitability.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- H1 2027 -->
+                        <div class="bg-gradient-to-r from-purple-50 to-violet-50 p-6 rounded-lg border-l-4 border-purple-500">
+                            <h4 class="text-xl font-bold text-purple-600 mb-4">H1 2027 — Scale & Retention</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Strategic Goal:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Move upmarket to secure high-value league contracts and lock in annual renewals.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Product:</h5>
+                                    <p class="text-sm text-slate-600">Launch Player Development Cards and pilot League Dashboard with integrated Safety Suite (Pitch Smart alerts).</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Go-to-Market:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Execute early-renewal campaigns, convert individual accounts into team/league packages, and secure district pilots.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Key Metrics:</h5>
+                                    <p class="text-sm text-slate-600">>90% renewal rate, >50% of revenue from team/league packages, 3+ major district pilots.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- H2 2027 -->
+                        <div class="bg-gradient-to-r from-orange-50 to-amber-50 p-6 rounded-lg border-l-4 border-orange-500">
+                            <h4 class="text-xl font-bold text-orange-600 mb-4">H2 2027 — Ecosystem & Moat</h4>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Strategic Goal:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Transition from a product to a platform via network effects and strategic integrations.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Product:</h5>
+                                    <p class="text-sm text-slate-600">Full League Dashboard rollout, API integrations with league admin platforms, and launch of "BLU Verified" Umpire & Facility programs.</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Go-to-Market:</h5>
+                                    <p class="text-sm text-slate-600 mb-4">Partner-driven distribution, statewide showcases, and case studies with pilot districts.</p>
+                                    
+                                    <h5 class="font-semibold text-slate-700 mb-2">Key Metrics:</h5>
+                                    <p class="text-sm text-slate-600">Net Revenue Retention (NRR) > 110%, 5+ key platform integrations, "BLU Verified" programs in 3 major states.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="financials" class="mb-20">
+                    <h3 class="text-2xl font-bold text-center mb-4">Financial Trajectory → Scale Profitability</h3>
+                    <p class="text-center text-lg text-slate-600 mb-8">Projected path to $1.5M+ annualized net income</p>
+                    
+                    <div class="mb-8 bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <h5 class="font-bold text-slate-700 mb-2">Visual Note:</h5>
+                        <p class="text-slate-600 text-sm">This slide is best represented by a simple line chart showing Monthly Revenue crossing over Monthly Opex, with a callout at the breakeven point (Q4 '26). A small bar chart below can show the four Net Income snapshots.</p>
+                    </div>
+                    
+                    <div class="mb-8">
+                        <h4 class="text-xl font-semibold text-slate-700 mb-4">Financial Snapshots</h4>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-200 bg-white rounded-lg shadow">
+                                <thead class="bg-slate-50">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quarter</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Focus</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Paid Users</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Monthly Revenue</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Opex</th>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Net Income</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-slate-200">
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ2 '26</td>
+                                        <td class="px-4 py-4 text-sm text-slate-600">Prove Adoption</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">2,500</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$37k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$90k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-red-600">–$53k</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ4 '26</td>
+                                        <td class="px-4 py-4 text-sm text-slate-600">Breakeven</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">7,600</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$113k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$113k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">~$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ2 '27</td>
+                                        <td class="px-4 py-4 text-sm text-slate-600">Scale & Retain</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">13,000</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$194k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$169k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-600">+$25k</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ4 '27</td>
+                                        <td class="px-4 py-4 text-sm text-slate-600">Moat & Scale</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">19,700</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$294k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$169k</td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-600">+$125k</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-slate-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold text-slate-700 mb-3">Key Assumptions & Credibility</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-2">Core Assumptions:</h5>
+                                    <ul class="space-y-1 text-sm text-slate-600">
+                                        <li>• List price: $199/yr; modeled effective ARPU ≈ $179/yr (10% promos/credits & proration).</li>
+                                        <li>• Billing: Annual; MRR calculated as Paid Users × ARPU / 12.</li>
+                                        <li>• Opex driven by headcount (scaling from 6 to 9) & GTM; software gross margin ≥ 80%.</li>
+                                        <li>• Excludes all upside: travel ball, high school, other states, league fees, facility programs, data/API, and future upsells.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                            <h4 class="text-lg font-semibold text-slate-700 mb-3">Our Investment Thesis:</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-1">Tiny Capture → Big Outcome:</h5>
+                                    <p class="text-sm text-slate-600">Achieving our goal requires capturing just ~20k teams, representing only ~1.3% of the total US youth baseball market.</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-1">Beachhead First:</h5>
+                                    <p class="text-sm text-slate-600">Our model is built conservatively on penetrating only ~6% of the Little League market in just three states (CA, TX, FL).</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-semibold text-slate-700 mb-1">Clear Lever Stack:</h5>
+                                    <p class="text-sm text-slate-600">We have a proven, repeatable growth model: Umpire & coach-led distribution → team bundles → league pilots → platform integrations.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+        
+        <section id="team" class="py-20 md:py-28 bg-white section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold">The Team: Domain Expertise</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <!-- Team Member 1 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-24 h-24 rounded-lg overflow-hidden">
+                                <img src="images/rob.jpg" alt="Rob Regan" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold">Rob Regan</h3>
+                                <p class="text-blue-600 font-semibold">Co-Founder, CEO & President</p>
+                                <div class="mt-3 space-y-1 text-sm text-slate-600">
+                                    <p>• 20+ years as a self-driven real estate entrepreneur</p>
+                                    <p>• 10 years in tech/media ad sales</p>
+                                    <p>• Brings hands-on marketing, sales, and UX insight</p>
+                                    <p>• Drives product and day-to-day execution</p>
+                                    <p class="mt-2 italic">Little League coach and active adult baseball player</p>
+                                </div>
+                                <div class="mt-3 space-y-1 text-xs">
+                                    <p>📧 robr@bigleagueballpark.com</p>
+                                    <p>📞 415-652-3780</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 2 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-24 h-24 rounded-lg overflow-hidden">
+                                <img src="images/jp.jpg" alt="Jonathan Parkhurst" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold">Jonathan (JP) Parkhurst</h3>
+                                <p class="text-blue-600 font-semibold">Chief Revenue Officer</p>
+                                <div class="mt-3 space-y-1 text-sm text-slate-600">
+                                    <p>• Founder-operator 20 year Global Sales and Staffing leader</p>
+                                    <p>• Companies like WeWork, 24 Hour Fitness, Blend, GoPro</p>
+                                    <p>• Turning purpose into traction</p>
+                                    <p>• Proven execution building mission-driven strategies to scale</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 3 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-24 h-24 rounded-lg overflow-hidden">
+                                <img src="images/chris.jpg" alt="Chris Bestwick" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold">Chris Bestwick</h3>
+                                <p class="text-blue-600 font-semibold">UI/UX Engineer</p>
+                                <div class="mt-3 space-y-1 text-sm text-slate-600">
+                                    <p>• MLB At Bat head of product design and management</p>
+                                    <p>• Managed revenue transition from up front fee to subscription model</p>
+                                    <p>• Authored use cases, wireframes, visual designs, and UI animations</p>
+                                    <p>• Defined product roadmaps and strategies</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 4 -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-24 h-24 rounded-lg overflow-hidden">
+                                <img src="images/brian.jpg" alt="Brian Marcus" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold">Brian Marcus</h3>
+                                <p class="text-blue-600 font-semibold">Strategic Advisor, IP & Innovation</p>
+                                <div class="mt-3 space-y-1 text-sm text-slate-600">
+                                    <p>• Lead patent attorney behind the NFL's televised 1st-down marker</p>
+                                    <p>• Filed all BLU patents & trademarks</p>
+                                    <p>• Advises on IP strategy and long-term product defensibility</p>
+                                    <p class="mt-2 italic">Little League Coach & active adult player</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <div class="slide-separator"></div>
+
+        <section id="ask" class="py-20 md:py-28 section-fade-in">
+            <div class="container mx-auto px-6">
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h2 class="text-3xl md:text-4xl font-bold mb-4">The Ask: Seeking $4.5M Series A to Scale</h2>
+                        <p class="text-lg text-slate-600 mb-6">We are seeking a $4.5M Series A investment to be raised in tranches tied to key milestones. This capital will accelerate our product development, expand our market reach, and allow us to build a world-class team.</p>
+                        <div class="bg-white p-6 rounded-lg shadow">
+
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-center mb-4">Use of Funds</h3>
+                        <div class="flex justify-center">
+                            <img src="images/Use-of-Funds.jpg" alt="Use of Funds" class="max-w-full h-auto rounded-lg shadow-lg">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-white">
+        <div class="container mx-auto px-6 py-12 text-center">
+            <h3 class="text-2xl font-bold">Contact Us</h3>
+            <div class="mt-4 space-y-4">
+                <div>
+                    <p class="font-semibold">Rob Regan, CEO, Co-Founder</p>
+            <p>robr@bigleagueballpark.com</p>
+            <p>415-652-3780</p>
+                </div>
+                <div>
+                    <p class="font-semibold">Jonathan Parkhurst, CRO</p>
+                    <p>jp@bigleagueballpark.com</p>
+                    <p>415-342-5853</p>
+                </div>
+            </div>
+            <div class="mt-6 text-slate-400 text-sm">
+                &copy; 2025 HeyBLU. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        const marketData = {
+            labels: ['Target for $25M ARR (2.8%)', 'Rest of SAM (97.2%)'],
+            datasets: [{
+                label: 'Market Share',
+                data: [2.8, 97.2],
+                backgroundColor: [
+                    '#16a34a', // green-600
+                    '#3b82f6', // blue-500
+                ],
+                borderColor: '#f8fafc',
+                borderWidth: 4
+            }]
+        };
+
+        const financialsData = {
+            labels: ['Year 1', 'Year 2', 'Year 3'],
+            datasets: [{
+                type: 'bar',
+                label: 'ARR ($M)',
+                data: [1.5, 2.5, 12.0],
+                backgroundColor: '#3b82f6',
+                yAxisID: 'y'
+            }, {
+                type: 'line',
+                label: 'Paid Subs (in thousands)',
+                data: [7.5, 12.5, 50.0],
+                borderColor: '#16a34a',
+                backgroundColor: '#16a34a',
+                tension: 0.1,
+                yAxisID: 'y1'
+            }]
+        };
+
+        const askData = {
+            labels: ['Product Development', 'Go-To-Market', 'Talent'],
+            datasets: [{
+                label: 'Use of Funds',
+                data: [50, 30, 20],
+                backgroundColor: [
+                    '#2563eb', // blue-600
+                    '#60a5fa', // blue-400
+                    '#93c5fd'  // blue-300
+                ],
+                borderColor: '#f8fafc',
+                borderWidth: 4
+            }]
+        };
+        
+        const financialsFullData = [
+            { year: 'Year 1', subs: '~7,500', arr: '$1.5M', headcount: '6', burn: '$1.35M', milestone: 'Rollout Velocity+ & Family Plan' },
+            { year: 'Year 2', subs: '~12,500', arr: '$2.5M', headcount: '9', burn: '$2.03M', milestone: 'NASO endorsement, 2 counties onboarded' },
+            { year: 'Year 3', subs: '~50,000', arr: '$12.0M', headcount: '9', burn: '$2.03M', milestone: 'Expansion to 10+ counties, positive cash flow' },
+        ];
+
+        // Financial roadmap data from proforma
+        const financialData = [
+            { milestone: 'EOQ1', users: 750, revenue: 11194, net: -33806 },
+            { milestone: 'EOQ2', users: 2500, revenue: 37313, net: -52688 },
+            { milestone: 'EOQ3', users: 5000, revenue: 74625, net: -37875 },
+            { milestone: 'EOQ4', users: 7600, revenue: 113430, net: 930 },
+            { milestone: 'EOQ5', users: 10500, revenue: 156713, net: -12038 },
+            { milestone: 'EOQ6', users: 14000, revenue: 208950, net: 40200 },
+            { milestone: 'EOQ7', users: 18000, revenue: 268650, net: 99900 },
+            { milestone: 'EOQ8', users: 20000, revenue: 298500, net: 129750 }
+        ];
+
+        // Roadmap data from proforma
+        const roadmapData = [
+            {
+                quarter: 'Q1',
+                dev: 'Scorekeeping beta v1; post-game summary; highlight video capture; stability pass.',
+                gtm: 'Founders do live demos to district leaders & leagues; paid pilots; collect testimonials & short clips.'
+            },
+            {
+                quarter: 'Q2',
+                dev: 'Onboarding checklist; multi‑device sharing; one‑click annual web checkout; basic in‑app help.',
+                gtm: 'District‑captain program (one intro → several leagues); referral credits; weekly webinar demos.'
+            },
+            {
+                quarter: 'Q3',
+                dev: 'Coach/Umpire dashboard; QR join for game day; reliability hardening.',
+                gtm: 'Case‑study videos; partner newsletters (umpire orgs/districts); reviews push in App Store.'
+            },
+            {
+                quarter: 'Q4',
+                dev: 'Self‑serve league rollout kit (emails, posters, 10‑slide deck); bulk invites; support response standards.',
+                gtm: 'District‑level deals; ambassador close‑out spiffs before playoffs; local press on fairness/sportsmanship.'
+            },
+            {
+                quarter: 'Q5',
+                dev: 'MPH (pitch‑speed) feature beta; zero‑touch updates; post‑game email recap.',
+                gtm: 'Association bundles; paid ambassadors in top metros; geo‑targeted ads to testimonial pages.'
+            },
+            {
+                quarter: 'Q6',
+                dev: 'Field‑fit warnings; Spanish basics; billing & renewal save flows.',
+                gtm: 'Syndicated playbooks with big orgs; local TV segments; retail/academy referral kit (QR flyers).'
+            },
+            {
+                quarter: 'Q7',
+                dev: 'Performance & battery improvements; one‑tap district‑wide rollout; simple data export for leagues.',
+                gtm: 'District‑to‑district intros; creator program (TikTok/Shorts); Referrals 2.0 (credit toward renewal).'
+            },
+            {
+                quarter: 'Q8',
+                dev: 'Scale readiness (weekly releases); early‑renewal incentives; "Trusted by" logos/case‑studies page.',
+                gtm: 'Statewide virtual showcases to lock pre‑season commitments; customer marketing to renew early; earned‑media round‑up.'
+            }
+        ];
+
+        let marketChart, financialsChart, askChart, profitabilityChart;
+
+        function createMarketChart() {
+            const ctx = document.getElementById('marketChart')?.getContext('2d');
+            if (!ctx) return;
+            marketChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: marketData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: true, text: 'SAM Penetration for $25M ARR' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createFinancialsChart() {
+            const ctx = document.getElementById('financialsChart')?.getContext('2d');
+            if (!ctx) return;
+            financialsChart = new Chart(ctx, {
+                data: financialsData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: { display: true, text: 'ARR ($M)' },
+                            grid: { drawOnChartArea: false }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: { display: true, text: 'Paid Subs (in thousands)' }
+                        }
+                    },
+                    plugins: {
+                        title: { display: true, text: '3-Year Growth Projections' },
+                        tooltip: {
+                            callbacks: {
+                                footer: function(tooltipItems) {
+                                    const index = tooltipItems[0].dataIndex;
+                                    const data = financialsFullData[index];
+                                    return [
+                                        `Headcount: ${data.headcount}`,
+                                        `Burn Rate: ${data.burn}`,
+                                        `Milestone: ${data.milestone.substring(0, 30)}...`
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAskChart() {
+            const ctx = document.getElementById('askChart')?.getContext('2d');
+            if (!ctx) return;
+            askChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: askData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        title: { display: false },
+                        tooltip: {
+                             callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createProfitabilityChart() {
+            const ctx = document.getElementById('profitabilityChart')?.getContext('2d');
+            if (!ctx) return;
+            const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+            
+            profitabilityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: financialData.map(d => d.milestone),
+                    datasets: [
+                        {
+                            label: 'Monthly Revenue',
+                            data: financialData.map(d => d.revenue),
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Net/Month',
+                            data: financialData.map(d => d.net),
+                            borderColor: '#16a34a',
+                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            yAxisID: 'y'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: {
+                                callback: function(value, index, values) {
+                                    return value >= 1000 || value <= -1000 ? (value / 1000) + 'k' : value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += currencyFormatter.format(context.parsed.y);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function populateFinancialTable() {
+            const financialTable = document.getElementById('financial-table');
+            if (!financialTable) {
+                console.log('Financial table not found');
+                return;
+            }
+            
+            console.log('Populating financial table with', financialData.length, 'rows');
+            const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+            const numberFormatter = new Intl.NumberFormat('en-US');
+
+            financialData.forEach(d => {
+                const netColor = d.net >= 0 ? 'text-green-600' : 'text-red-600';
+                const row = `
+                    <tr>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-slate-900">${d.milestone}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-500">${numberFormatter.format(d.users)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm text-slate-500">${currencyFormatter.format(d.revenue)}</td>
+                        <td class="px-4 py-3 whitespace-nowrap text-sm font-semibold ${netColor}">${d.net < 0 ? `(${currencyFormatter.format(Math.abs(d.net))})` : currencyFormatter.format(d.net)}</td>
+                    </tr>
+                `;
+                financialTable.innerHTML += row;
+            });
+        }
+
+        function populateRoadmap() {
+            const roadmapContainer = document.getElementById('roadmap-container');
+            if (!roadmapContainer) {
+                console.log('Roadmap container not found');
+                return;
+            }
+            console.log('Populating roadmap with', roadmapData.length, 'quarters');
+            
+            roadmapData.forEach(item => {
+                const roadmapItem = `
+                    <div class="flex flex-col md:flex-row gap-4 md:gap-8 items-start">
+                        <!-- Quarter -->
+                        <div class="flex-shrink-0 w-full md:w-24">
+                            <div class="bg-blue-600 text-white font-bold text-lg rounded-md flex items-center justify-center h-12 w-24">
+                                ${item.quarter}
+                            </div>
+                        </div>
+                        <!-- Milestones -->
+                        <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Product Dev -->
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="font-semibold text-slate-700 text-md mb-2 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0L7.18 7.83c-.07.29-.26.54-.5.68L2.04 9.98c-1.58.38-2.22 2.36-1.04 3.43l3.53 3.24c.22.2.32.5.26.79l-1.07 4.66c-.32 1.4.98 2.62 2.32 1.88l4.13-2.39c.26-.15.58-.15.84 0l4.13 2.39c1.33.74 2.64-.48 2.32-1.88l-1.07-4.66c-.06-.29.04-.59.26-.79l3.53-3.24c1.18-1.08.54-3.05-1.04-3.43L13.8 8.51c-.24-.14-.43-.39-.5-.68L11.49 3.17z" clip-rule="evenodd" /></svg>
+                                    Product Dev Milestones
+                                </h3>
+                                <p class="text-slate-600 text-sm">${item.dev}</p>
+                            </div>
+                            <!-- GTM -->
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h3 class="font-semibold text-slate-700 text-md mb-2 flex items-center">
+                                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2a6 6 0 00-6 6c0 1.887 1.12 3.526 2.75 4.312.52.26 1.01.442 1.488.583a4.01 4.01 0 011.524 0c.477-.14.968-.322 1.488-.583C14.88 11.526 16 9.887 16 8a6 6 0 00-6-6zm0 12c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z" /><path d="M10 10a2 2 0 100-4 2 2 0 000 4z" /></svg>
+                                    Go-to-Market Milestones
+                                </h3>
+                                <p class="text-slate-600 text-sm">${item.gtm}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                roadmapContainer.innerHTML += roadmapItem;
+            });
+        }
+        
+        function handleTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('text-blue-600', 'border-blue-600');
+                        btn.classList.add('text-slate-500');
+                    });
+                    button.classList.add('text-blue-600', 'border-blue-600');
+                    button.classList.remove('text-slate-500');
+
+                    tabContents.forEach(content => {
+                        content.classList.add('hidden');
+                    });
+                    document.getElementById(button.dataset.target).classList.remove('hidden');
+                });
+            });
+        }
+        
+        function handleGTMSteps() {
+            const gtmSteps = document.querySelectorAll('.gtm-step');
+            const gtmContentDivs = document.querySelectorAll('#gtm-content > div');
+
+            gtmSteps.forEach(step => {
+                step.addEventListener('click', () => {
+                    gtmSteps.forEach(s => {
+                        s.classList.remove('active');
+                        s.querySelector('div').classList.remove('bg-blue-600', 'text-white');
+                        s.querySelector('div').classList.add('bg-slate-300', 'text-slate-600');
+                        s.querySelector('p').classList.add('text-slate-600');
+                    });
+                    step.classList.add('active');
+                    step.querySelector('div').classList.add('bg-blue-600', 'text-white');
+                    step.querySelector('div').classList.remove('bg-slate-300', 'text-slate-600');
+                    step.querySelector('p').classList.remove('text-slate-600');
+                    
+                    gtmContentDivs.forEach(div => div.classList.add('hidden'));
+                    document.getElementById(step.dataset.gtm).classList.remove('hidden');
+                });
+            });
+        }
+        
+        function handlePreviewToggle() {
+            const toggleBall = document.getElementById('toggle-ball');
+            const toggleStrike = document.getElementById('toggle-strike');
+            const pitchPathContainer = document.getElementById('pitch-path-container');
+            const pitchOutcomeText = document.getElementById('pitch-outcome-text');
+            const pitchSpeedText = document.getElementById('pitch-speed-text');
+            const pitchDot = document.getElementById('pitch-dot');
+
+            toggleBall.addEventListener('click', () => {
+                pitchPathContainer.classList.remove('bg-red-500/30', 'border-red-400');
+                pitchPathContainer.classList.add('bg-green-500/30', 'border-green-400');
+                pitchOutcomeText.textContent = 'BALL';
+                pitchOutcomeText.classList.remove('text-green-400');
+                pitchOutcomeText.classList.add('text-yellow-400');
+                pitchSpeedText.textContent = '55.51 MPH';
+                pitchDot.style.left = '75%';
+                pitchDot.style.top = '60%';
+            });
+
+            toggleStrike.addEventListener('click', () => {
+                pitchPathContainer.classList.remove('bg-green-500/30', 'border-green-400');
+                pitchPathContainer.classList.add('bg-red-500/30', 'border-red-400');
+                pitchOutcomeText.textContent = 'STRIKE';
+                pitchOutcomeText.classList.remove('text-yellow-400');
+                pitchOutcomeText.classList.add('text-green-400');
+                pitchSpeedText.textContent = '54.70 MPH';
+                pitchDot.style.left = '55%';
+                pitchDot.style.top = '30%';
+            });
+        }
+
+        function handleImageCarousel() {
+            const carousel = document.getElementById('image-carousel');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const indicator1 = document.getElementById('indicator-1');
+            const indicator2 = document.getElementById('indicator-2');
+            
+            // Check if elements exist
+            if (!carousel || !prevBtn || !nextBtn || !indicator1 || !indicator2) {
+                console.log('Carousel elements not found');
+                return;
+            }
+            
+            const images = [
+                'images/BLU-K-call.jpg',
+                'images/Visual-K-zone.jpg'
+            ];
+            
+            let currentIndex = 0;
+            
+            function updateCarousel() {
+                console.log('Updating carousel to index:', currentIndex);
+                carousel.style.backgroundImage = `url('${images[currentIndex]}')`;
+                
+                // Update indicators
+                if (currentIndex === 0) {
+                    indicator1.classList.remove('bg-white/50');
+                    indicator1.classList.add('bg-white');
+                    indicator2.classList.remove('bg-white');
+                    indicator2.classList.add('bg-white/50');
+                } else {
+                    indicator1.classList.remove('bg-white');
+                    indicator1.classList.add('bg-white/50');
+                    indicator2.classList.remove('bg-white/50');
+                    indicator2.classList.add('bg-white');
+                }
+            }
+            
+            prevBtn.addEventListener('click', () => {
+                console.log('Previous button clicked');
+                currentIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+                updateCarousel();
+            });
+            
+            nextBtn.addEventListener('click', () => {
+                console.log('Next button clicked');
+                currentIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+                updateCarousel();
+            });
+            
+            indicator1.addEventListener('click', () => {
+                console.log('Indicator 1 clicked');
+                currentIndex = 0;
+                updateCarousel();
+            });
+            
+            indicator2.addEventListener('click', () => {
+                console.log('Indicator 2 clicked');
+                currentIndex = 1;
+                updateCarousel();
+            });
+            
+            console.log('Carousel initialized');
+        }
+
+        const sections = document.querySelectorAll('.section-fade-in');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    
+                    if(entry.target.id === 'market' && !marketChart) createMarketChart();
+                    if(entry.target.id === 'plan' && !financialsChart) {
+                        createFinancialsChart();
+                    }
+                    if(entry.target.id === 'plan' && !profitabilityChart) {
+                        createProfitabilityChart();
+                    }
+                    if(entry.target.id === 'ask' && !askChart) createAskChart();
+                    
+                    navLinks.forEach(link => {
+                        link.classList.remove('active-nav');
+                        link.classList.add('inactive-nav');
+                        if (link.getAttribute('href') === `#${entry.target.id}`) {
+                            link.classList.add('active-nav');
+                            link.classList.remove('inactive-nav');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        handleTabs();
+        handleGTMSteps();
+        handlePreviewToggle();
+        handleImageCarousel();
+        
+        // Initialize data population immediately
+        populateFinancialTable();
+        populateRoadmap();
+
+    });
+    </script>
+</body>
+</html>
+
