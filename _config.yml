@@ -1,0 +1,34 @@
+# GitHub Pages Configuration
+title: HeyBLU
+description: AI-Powered Baseball Umpire Assistant
+
+# Enable Jekyll processing
+include:
+  - pitchdeck/
+  - rulebook/
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - .gitignore
+  - .nojekyll
+
+# Collections
+collections:
+  pitchdeck:
+    output: true
+    permalink: /pitchdeck/:path/
+  rulebook:
+    output: true
+    permalink: /rulebook/:path/
+
+# Defaults
+defaults:
+  - scope:
+      path: "pitchdeck"
+    values:
+      layout: default
+  - scope:
+      path: "rulebook"
+    values:
+      layout: default
