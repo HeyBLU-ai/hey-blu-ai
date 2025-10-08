@@ -746,96 +746,46 @@
                 </div>
                 
                 <div class="mb-20">
-                    
-                    <div class="mb-8 bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
-                        <h5 class="font-bold text-slate-700 mb-2">Visual Note:</h5>
-                        <p class="text-slate-600 text-sm">This slide is best represented by a simple line chart showing Monthly Revenue crossing over Monthly Opex, with a callout at the breakeven point (Q4 '26). A small bar chart below can show the four Net Income snapshots.</p>
-                    </div>
-                    
-                    <div class="mb-8">
-                        <h4 class="text-xl font-semibold text-slate-700 mb-4">Financial Snapshots</h4>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full divide-y divide-slate-200 bg-white rounded-lg shadow">
-                                <thead class="bg-slate-50">
-                                    <tr>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Quarter</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Focus</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Paid Users</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Monthly Revenue</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Opex</th>
-                                        <th class="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Net Income</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-slate-200">
-                                    <tr>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ2 '26</td>
-                                        <td class="px-4 py-4 text-sm text-slate-600">Prove Adoption</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">2,500</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$37k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$90k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-red-600">–$53k</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ4 '26</td>
-                                        <td class="px-4 py-4 text-sm text-slate-600">Breakeven</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">7,600</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$113k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$113k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-blue-600">~$0</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ2 '27</td>
-                                        <td class="px-4 py-4 text-sm text-slate-600">Scale & Retain</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">13,000</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$194k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$169k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-600">+$25k</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-medium text-slate-900">EOQ4 '27</td>
-                                        <td class="px-4 py-4 text-sm text-slate-600">Moat & Scale</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">19,700</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">~$294k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-slate-500">$169k</td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm font-semibold text-green-600">+$125k</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <div class="bg-slate-50 p-6 rounded-lg">
-                            <h4 class="text-lg font-semibold text-slate-700 mb-3">Key Assumptions & Credibility</h4>
-                            <div class="space-y-4">
-                                <div>
-                                    <h5 class="font-semibold text-slate-700 mb-2">Core Assumptions:</h5>
-                                    <ul class="space-y-1 text-sm text-slate-600">
-                                        <li>• List price: $199/yr; modeled effective ARPU ≈ $179/yr (10% promos/credits & proration).</li>
-                                        <li>• Billing: Annual; MRR calculated as Paid Users × ARPU / 12.</li>
-                                        <li>• Opex driven by headcount (scaling from 6 to 9) & GTM; software gross margin ≥ 80%.</li>
-                                        <li>• Excludes all upside: travel ball, high school, other states, league fees, facility programs, data/API, and future upsells.</li>
-                                    </ul>
+                    <!-- Visual Chart Section -->
+                    <div class="mb-12">
+                        <div class="bg-white p-8 rounded-lg shadow-lg">
+                            <h4 class="text-xl font-semibold text-slate-700 mb-6 text-center">Path to Profitability</h4>
+                            <div class="chart-container">
+                                <canvas id="profitabilityChart"></canvas>
+                            </div>
+                            <div class="mt-6 flex justify-center space-x-8">
+                                <div class="text-center">
+                                    <div class="w-4 h-4 bg-blue-500 rounded-full mx-auto mb-2"></div>
+                                    <span class="text-sm text-slate-600">Monthly Revenue</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-4 h-4 bg-red-500 rounded-full mx-auto mb-2"></div>
+                                    <span class="text-sm text-slate-600">Monthly Opex</span>
                                 </div>
                             </div>
                         </div>
                         
-                        <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
-                            <h4 class="text-lg font-semibold text-slate-700 mb-3">Our Investment Thesis:</h4>
-                            <div class="space-y-3">
-                                <div>
-                                    <h5 class="font-semibold text-slate-700 mb-1">Tiny Capture → Big Outcome:</h5>
-                                    <p class="text-sm text-slate-600">Achieving our goal requires capturing just ~20k teams, representing only ~1.3% of the total US youth baseball market.</p>
-                                </div>
-                                <div>
-                                    <h5 class="font-semibold text-slate-700 mb-1">Beachhead First:</h5>
-                                    <p class="text-sm text-slate-600">Our model is built conservatively on penetrating only ~6% of the Little League market in just three states (CA, TX, FL).</p>
-                                </div>
-                                <div>
-                                    <h5 class="font-semibold text-slate-700 mb-1">Clear Lever Stack:</h5>
-                                    <p class="text-sm text-slate-600">We have a proven, repeatable growth model: Umpire & coach-led distribution → team bundles → league pilots → platform integrations.</p>
-                                </div>
+                        <!-- Key Milestones -->
+                        <div class="mt-8 grid md:grid-cols-2 gap-6">
+                            <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+                                <h5 class="font-bold text-green-700 mb-2">EOQ4 '26: Breakeven Point</h5>
+                                <p class="text-sm text-slate-600">7,600 paid teams • $113k monthly revenue • $113k opex</p>
                             </div>
+                            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                                <h5 class="font-bold text-blue-700 mb-2">EOQ4 '27: +$125k/mo Net Income</h5>
+                                <p class="text-sm text-slate-600">19,700 paid teams • $294k monthly revenue • $169k opex</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Condensed Investment Thesis -->
+                    <div class="bg-blue-50 p-8 rounded-lg border-l-4 border-blue-500">
+                        <h4 class="text-lg font-semibold text-slate-700 mb-4">Our Investment Thesis</h4>
+                        <p class="text-slate-600 leading-relaxed">
+                            Our thesis is built on capital efficiency. By capturing just 1.3% of the youth baseball market—starting with a focused beachhead in three key states—we can build a highly profitable business. Our proven, umpire-led distribution model gives us a clear and repeatable path to scale.
+                        </p>
+                        <div class="mt-4 text-xs text-slate-500">
+                            <p><strong>Key Assumptions:</strong> $179 effective ARPU • Based on CA, TX, FL markets • 80%+ software gross margin</p>
                         </div>
                     </div>
                 </div>
@@ -1520,7 +1470,7 @@
                     if(entry.target.id === 'plan' && !financialsChart) {
                         createFinancialsChart();
                     }
-                    if(entry.target.id === 'plan' && !profitabilityChart) {
+                    if(entry.target.id === 'financials' && !profitabilityChart) {
                         createProfitabilityChart();
                     }
                     if(entry.target.id === 'ask' && !askChart) createAskChart();
