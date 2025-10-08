@@ -763,9 +763,8 @@
                             </div>
                         </div>
                         
-                        <!-- Combined subtitle and milestones -->
-                        <div class="mt-4 text-center">
-                            <p class="text-lg text-slate-600 mb-4">Projected path to $1.5M+ annualized net income</p>
+                        <!-- Milestones above chart -->
+                        <div class="mb-6 text-center">
                             <div class="inline-flex items-center space-x-8 text-lg">
                                 <div class="text-green-600 font-semibold">
                                     <span class="text-2xl">Q4 '26:</span> Breakeven
@@ -778,8 +777,13 @@
                         </div>
                     </div>
                     
+                    <!-- Subtitle below chart -->
+                    <div class="mt-4 text-center">
+                        <p class="text-lg text-slate-600">Projected path to $1.5M+ annualized net income</p>
+                    </div>
+                    
                     <!-- Simple Investment Thesis -->
-                    <div class="mt-8 text-center">
+                    <div class="mt-6 text-center">
                         <p class="text-lg text-slate-600">
                             <strong>Our thesis:</strong> Capital efficiency through 1.3% market capture in CA, TX, FL. 
                             <span class="text-sm text-slate-500">($179 ARPU • 80%+ gross margin)</span>
@@ -1225,8 +1229,12 @@
                         padding: 0
                     },
                     scales: {
+                        x: {
+                            offset: false
+                        },
                         y: {
                             beginAtZero: true,
+                            offset: false,
                             title: {
                                 display: true,
                                 text: 'Amount ($k)'
