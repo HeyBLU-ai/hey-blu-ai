@@ -746,13 +746,25 @@
                 
                 <div class="mb-20">
                     <!-- Visual Chart Section -->
-                    <div class="mb-8">
-                        <div class="chart-container" style="height: 600px; width: 100%;">
-                            <canvas id="profitabilityChart"></canvas>
+                    <div class="mb-4">
+                        <div class="flex items-start gap-6">
+                            <div class="chart-container flex-1" style="height: 700px;">
+                                <canvas id="profitabilityChart"></canvas>
+                            </div>
+                            <div class="flex flex-col justify-center space-y-4 pt-8">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                                    <span class="text-sm font-medium text-slate-700">Monthly Revenue</span>
+                                </div>
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-4 h-4 bg-red-500 rounded"></div>
+                                    <span class="text-sm font-medium text-slate-700">Monthly Opex</span>
+                                </div>
+                            </div>
                         </div>
                         
                         <!-- Combined subtitle and milestones -->
-                        <div class="mt-6 text-center">
+                        <div class="mt-4 text-center">
                             <p class="text-lg text-slate-600 mb-4">Projected path to $1.5M+ annualized net income</p>
                             <div class="inline-flex items-center space-x-8 text-lg">
                                 <div class="text-green-600 font-semibold">
@@ -1228,12 +1240,7 @@
                     },
                     plugins: {
                         legend: {
-                            position: 'top',
-                            labels: {
-                                font: {
-                                    size: 14
-                                }
-                            }
+                            display: false
                         },
                         tooltip: {
                             callbacks: {
