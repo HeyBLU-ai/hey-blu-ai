@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HeyBLU: Interactive Investor Pitch Deck</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="assets/js/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -1181,7 +1181,11 @@
 
         function createProfitabilityChart() {
             const ctx = document.getElementById('profitabilityChart')?.getContext('2d');
-            if (!ctx) return;
+            if (!ctx) {
+                console.log('Profitability chart canvas not found');
+                return;
+            }
+            console.log('Creating profitability chart...');
             const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
             
             // Chart data for Revenue vs Opex
@@ -1222,10 +1226,14 @@
                     maintainAspectRatio: false,
                     scales: {
                         y: {
-                            beginAtZero: false,
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount ($k)'
+                            },
                             ticks: {
                                 callback: function(value, index, values) {
-                                    return value >= 1000 || value <= -1000 ? (value / 1000) + 'k' : value;
+                                    return '$' + value + 'k';
                                 }
                             }
                         }
