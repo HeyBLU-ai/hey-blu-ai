@@ -747,10 +747,8 @@
                 <div class="mb-20">
                     <!-- Visual Chart Section -->
                     <div class="mb-8">
-                        <div class="bg-white p-4 rounded-lg shadow-lg">
-                            <div class="chart-container" style="height: 500px;">
-                                <canvas id="profitabilityChart"></canvas>
-                            </div>
+                        <div class="chart-container" style="height: 600px; width: 100%;">
+                            <canvas id="profitabilityChart"></canvas>
                         </div>
                         
                         <!-- Combined subtitle and milestones -->
@@ -1211,6 +1209,9 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    layout: {
+                        padding: 0
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
