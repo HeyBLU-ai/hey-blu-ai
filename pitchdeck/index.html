@@ -76,24 +76,112 @@
             <div class="text-2xl font-bold text-blue-600">
                 Hey<span class="text-slate-800">BLU</span>
             </div>
-            <div class="hidden md:flex space-x-8">
-                <a href="../rulebook/" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Rulebook</a>
-                <a href="#hero" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Home</a>
-                <a href="#opportunity" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Opportunity</a>
-                <a href="#solution" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Solution</a>
-                <a href="#how-it-works" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">How BLU Works</a>
-                <a href="#preview" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Product Preview</a>
-                <a href="#market" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Market</a>
-                <a href="#ip" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">IP</a>
-                <a href="#validation" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Validation</a>
-                <a href="#competition" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Competition</a>
-                <a href="#plan" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Plan</a>
-                <a href="#roadmap" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Roadmap</a>
-                <a href="#financials" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Financials</a>
-                <a href="#team" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Team</a>
-                <a href="#ask" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">The Ask</a>
+            <!-- Desktop Navigation -->
+            <div class="hidden lg:flex space-x-6">
+                <!-- Problem & Solution -->
+                <div class="relative group">
+                    <button class="inactive-nav hover:text-blue-600 transition-colors duration-300 flex items-center space-x-1">
+                        <span>Problem & Solution</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div class="py-2">
+                            <a href="#opportunity" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Opportunity</a>
+                            <a href="#solution" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Solution</a>
+                            <a href="#how-it-works" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">How BLU Works</a>
+                            <a href="#preview" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">Product Preview</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Market & Validation -->
+                <div class="relative group">
+                    <button class="inactive-nav hover:text-blue-600 transition-colors duration-300 flex items-center space-x-1">
+                        <span>Market & Validation</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div class="py-2">
+                            <a href="#market" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Market</a>
+                            <a href="#ip" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">IP & Trademarks</a>
+                            <a href="#validation" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">Market Validation</a>
+                            <a href="#competition" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">Competition</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy & Financials -->
+                <div class="relative group">
+                    <button class="inactive-nav hover:text-blue-600 transition-colors duration-300 flex items-center space-x-1">
+                        <span>Strategy & Financials</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div class="py-2">
+                            <a href="#plan" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Plan</a>
+                            <a href="#roadmap" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">Roadmap</a>
+                            <a href="#financials" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">Financials</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Team & Ask -->
+                <div class="relative group">
+                    <button class="inactive-nav hover:text-blue-600 transition-colors duration-300 flex items-center space-x-1">
+                        <span>Team & Ask</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-slate-200 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                        <div class="py-2">
+                            <a href="#team" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Team</a>
+                            <a href="#ask" class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600 nav-link">The Ask</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="flex space-x-4">
+                    <a href="#hero" class="inactive-nav hover:text-blue-600 transition-colors duration-300 nav-link">Home</a>
+                    <a href="../rulebook/" class="text-slate-600 hover:text-blue-600 transition-colors duration-300">Rulebook</a>
+                </div>
             </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="lg:hidden p-2 text-slate-600 hover:text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
         </nav>
+
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="lg:hidden bg-white border-t border-slate-200 hidden">
+            <div class="container mx-auto px-6 py-4 space-y-2">
+                <a href="#hero" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Home</a>
+                <a href="#opportunity" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Opportunity</a>
+                <a href="#solution" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Solution</a>
+                <a href="#how-it-works" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">How BLU Works</a>
+                <a href="#preview" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Product Preview</a>
+                <a href="#market" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Market</a>
+                <a href="#ip" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">IP & Trademarks</a>
+                <a href="#validation" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Market Validation</a>
+                <a href="#competition" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Competition</a>
+                <a href="#plan" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Plan</a>
+                <a href="#roadmap" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Roadmap</a>
+                <a href="#financials" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">Financials</a>
+                <a href="#team" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Team</a>
+                <a href="#ask" class="block py-2 text-slate-600 hover:text-blue-600 nav-link">The Ask</a>
+                <a href="../rulebook/" class="block py-2 text-slate-600 hover:text-blue-600">Rulebook</a>
+            </div>
+        </div>
     </header>
 
     <main>
@@ -963,6 +1051,16 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
         
         const marketData = {
             labels: ['Target for $25M ARR (2.8%)', 'Rest of SAM (97.2%)'],
