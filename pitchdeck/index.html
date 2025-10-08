@@ -28,16 +28,11 @@
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
+            max-width: 900px;
             margin-left: auto;
             margin-right: auto;
-            height: 350px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 400px;
-            }
+            height: 65vh;
+            max-height: 700px;
         }
         #profitabilityChart {
             height: 300px !important;
@@ -737,7 +732,7 @@
         
         <div class="slide-separator"></div>
 
-        <section id="financials" class="min-h-screen flex items-center section-fade-in">
+        <section id="financials" class="py-20 md:py-24 section-fade-in">
             <div class="container mx-auto px-6 w-full relative">
                 <div class="absolute top-6 right-6 text-slate-400 text-sm font-medium">Page 12/14</div>
                 <div class="text-center mb-4">
@@ -759,7 +754,7 @@
                 
                 <!-- Visual Chart Section -->
                 <div class="flex items-start gap-6 mb-4">
-                    <div class="chart-container flex-1" style="height: 900px;">
+                    <div class="chart-container flex-1">
                         <canvas id="profitabilityChart"></canvas>
                     </div>
                     <div class="flex flex-col justify-center space-y-4 pt-8">
