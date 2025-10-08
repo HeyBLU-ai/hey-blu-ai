@@ -2,33 +2,10 @@
 title: HeyBLU
 description: AI-Powered Baseball Umpire Assistant
 
-# Enable Jekyll processing
-include:
-  - pitchdeck/
-  - rulebook/
+# Disable Jekyll processing for better static file serving
+include: []
+exclude: []
 
-# Exclude files from processing
-exclude:
-  - README.md
-  - .gitignore
-  - .nojekyll
-
-# Collections
-collections:
-  pitchdeck:
-    output: true
-    permalink: /pitchdeck/:path/
-  rulebook:
-    output: true
-    permalink: /rulebook/:path/
-
-# Defaults
-defaults:
-  - scope:
-      path: "pitchdeck"
-    values:
-      layout: default
-  - scope:
-      path: "rulebook"
-    values:
-      layout: default
+# Enable directory browsing
+plugins:
+  - jekyll-sitemap
