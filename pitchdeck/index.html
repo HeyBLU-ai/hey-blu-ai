@@ -740,39 +740,37 @@
         <section id="financials" class="min-h-screen flex items-center section-fade-in">
             <div class="container mx-auto px-6 w-full relative">
                 <div class="absolute top-6 right-6 text-slate-400 text-sm font-medium">Page 12/14</div>
-                <div class="text-center mb-8">
+                <div class="text-center mb-4">
                     <h2 class="text-3xl md:text-4xl font-bold">Financial Trajectory → Scale Profitability</h2>
                 </div>
                 
-                <div class="mb-20">
-                    <!-- Visual Chart Section -->
-                    <div class="mb-4">
-                        <div class="flex items-start gap-6">
-                            <div class="chart-container flex-1" style="height: 700px;">
-                                <canvas id="profitabilityChart"></canvas>
-                            </div>
-                            <div class="flex flex-col justify-center space-y-4 pt-8">
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-4 h-4 bg-blue-500 rounded"></div>
-                                    <span class="text-sm font-medium text-slate-700">Monthly Revenue</span>
-                                </div>
-                                <div class="flex items-center space-x-3">
-                                    <div class="w-4 h-4 bg-red-500 rounded"></div>
-                                    <span class="text-sm font-medium text-slate-700">Monthly Opex</span>
-                                </div>
-                            </div>
+                <!-- Milestones above chart -->
+                <div class="mb-4 text-center">
+                    <div class="inline-flex items-center space-x-8 text-lg">
+                        <div class="text-green-600 font-semibold">
+                            <span class="text-2xl">Q4 '26:</span> Breakeven
                         </div>
-                        
-                        <!-- Milestones above chart -->
-                        <div class="mb-6 text-center">
-                            <div class="inline-flex items-center space-x-8 text-lg">
-                                <div class="text-green-600 font-semibold">
-                                    <span class="text-2xl">Q4 '26:</span> Breakeven
-                                </div>
-                                <div class="text-slate-400">→</div>
-                                <div class="text-blue-600 font-semibold">
-                                    <span class="text-2xl">Q4 '27:</span> +$125k/mo
-                                </div>
+                        <div class="text-slate-400">→</div>
+                        <div class="text-blue-600 font-semibold">
+                            <span class="text-2xl">Q4 '27:</span> +$125k/mo
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-8">
+                    <!-- Visual Chart Section -->
+                    <div class="flex items-start gap-6">
+                        <div class="chart-container flex-1" style="height: 800px;">
+                            <canvas id="profitabilityChart"></canvas>
+                        </div>
+                        <div class="flex flex-col justify-center space-y-4 pt-8">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-4 h-4 bg-blue-500 rounded"></div>
+                                <span class="text-sm font-medium text-slate-700">Monthly Revenue</span>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-4 h-4 bg-red-500 rounded"></div>
+                                <span class="text-sm font-medium text-slate-700">Monthly Opex</span>
                             </div>
                         </div>
                     </div>
