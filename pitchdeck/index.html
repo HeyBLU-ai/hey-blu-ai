@@ -1184,26 +1184,34 @@
             if (!ctx) return;
             const currencyFormatter = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
             
+            // Chart data for Revenue vs Opex
+            const chartData = [
+                { quarter: 'Q2 2026', revenue: 37, opex: 90 },
+                { quarter: 'Q4 2026', revenue: 113, opex: 113 },
+                { quarter: 'Q2 2027', revenue: 194, opex: 169 },
+                { quarter: 'Q4 2027', revenue: 294, opex: 169 }
+            ];
+            
             profitabilityChart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: financialData.map(d => d.milestone),
+                    labels: chartData.map(d => d.quarter),
                     datasets: [
                         {
                             label: 'Monthly Revenue',
-                            data: financialData.map(d => d.revenue),
+                            data: chartData.map(d => d.revenue),
                             borderColor: '#2563eb',
                             backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                            fill: true,
+                            fill: false,
                             tension: 0.3,
                             yAxisID: 'y'
                         },
                         {
-                            label: 'Net/Month',
-                            data: financialData.map(d => d.net),
-                            borderColor: '#16a34a',
-                            backgroundColor: 'rgba(22, 163, 74, 0.1)',
-                            fill: true,
+                            label: 'Monthly Opex',
+                            data: chartData.map(d => d.opex),
+                            borderColor: '#dc2626',
+                            backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                            fill: false,
                             tension: 0.3,
                             yAxisID: 'y'
                         }
