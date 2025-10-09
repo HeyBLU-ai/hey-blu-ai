@@ -626,59 +626,48 @@
         
         <div class="slide-separator"></div>
 
-        <section id="plan" class="min-h-screen flex items-center section-fade-in">
+        <section id="plan" class="min-h-screen flex items-center bg-slate-50 section-fade-in">
             <div class="container mx-auto px-6 w-full relative">
                 <div class="absolute top-6 right-6 text-slate-400 text-sm font-medium">Page 10/14</div>
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl md:text-4xl font-bold">The Plan: Strategy & Financials</h2>
-                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Our phased go-to-market strategy is designed for capital-efficient growth, leading to a clear path to profitability.</p>
+                    <h2 class="text-3xl md:text-4xl font-bold">Go-To-Market Strategy</h2>
+                    <p class="mt-3 text-lg text-slate-600 max-w-3xl mx-auto">Our capital-efficient strategy focuses on a specific beachhead market to build a scalable, repeatable growth model.</p>
                 </div>
-                
-                <div class="mb-20">
-                    <h3 class="text-2xl font-bold text-center mb-8">Go-To-Market Strategy: A 3-Phase ICP Rollout</h3>
-                    
-                    <div class="text-center max-w-3xl mx-auto mb-10">
-                        <p class="text-lg text-slate-600"><span class="font-semibold text-slate-800">Our Beachhead:</span> We will achieve this by first capturing just 6% of the Little League market in three key states (CA, TX, FL).</p>
-                    </div>
-                    
-                    <div class="max-w-4xl mx-auto">
-                        <div class="flex items-center">
-                            <div class="flex-1 text-center gtm-step active" data-gtm="phase1">
-                                <div class="w-10 h-10 mx-auto bg-blue-600 text-white rounded-full flex items-center justify-center font-bold cursor-pointer">1</div>
-                                <p class="mt-2 font-semibold cursor-pointer">Empower Umpires</p>
-                            </div>
-                            <div class="flex-1 border-t-2 border-slate-300"></div>
-                            <div class="flex-1 text-center gtm-step" data-gtm="phase2">
-                                <div class="w-10 h-10 mx-auto bg-slate-300 text-slate-600 rounded-full flex items-center justify-center font-bold cursor-pointer">2</div>
-                                <p class="mt-2 text-slate-600 font-semibold cursor-pointer">Engage Coaches</p>
-                            </div>
-                            <div class="flex-1 border-t-2 border-slate-300"></div>
-                            <div class="flex-1 text-center gtm-step" data-gtm="phase3">
-                                <div class="w-10 h-10 mx-auto bg-slate-300 text-slate-600 rounded-full flex items-center justify-center font-bold cursor-pointer">3</div>
-                                <p class="mt-2 text-slate-600 font-semibold cursor-pointer">Connect Parents & Leagues</p>
-                            </div>
+
+                <div class="max-w-6xl mx-auto">
+                    <div class="grid md:grid-cols-3 gap-4 text-center">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-500">
+                            <div class="w-16 h-16 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-2xl mb-4">1</div>
+                            <h3 class="text-xl font-bold mb-2">The Wedge: Empower Umpires</h3>
+                            <p class="text-slate-600 text-sm"><strong>Target:</strong> Umpire Associations & Tournament Directors</p>
+                            <p class="text-slate-600 mt-3">We solve their most acute pains (safety, authority) with our AI Rulebook & Incident Reporting to gain critical on-field presence and testimonials.</p>
                         </div>
-                        <div id="gtm-content" class="mt-8 bg-slate-50 p-6 rounded-lg min-h-[160px]">
-                            <div id="phase1">
-                                <h4 class="font-bold text-lg">Phase 1: Empower Umpires (The Wedge)</h4>
-                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Umpire Associations, Tournament Directors, Training Academies.<br><strong>Strategy:</strong> Launch with an "Elite Beta" program, providing the AI Rulebook & Incident Reporting to solve their most acute pains: safety and authority. This builds credibility and gathers crucial testimonials.</p>
-                            </div>
-                            <div id="phase2" class="hidden">
-                                <h4 class="font-bold text-lg">Phase 2: Engage Coaches & Teams</h4>
-                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Travel Team Coaches, High School Programs.<br><strong>Strategy:</strong> Introduce advanced player development tools. Drive team adoption by showing clear value in player improvement, and pursue API integrations with platforms like GameChanger to become part of their existing workflow.</p>
-                            </div>
-                            <div id="phase3" class="hidden">
-                                <h4 class="font-bold text-lg">Phase 3: Scale to Parents & Leagues</h4>
-                                <p class="mt-2 text-slate-600"><strong>ICP:</strong> Youth Leagues (Little League, etc.), Parents.<br><strong>Strategy:</strong> Execute a "National Launch" with parent-focused features (e.g., streaming with strike zone overlay) and league-wide licensing. Drive mass adoption through regional clinics and tournament sponsorships.</p>
-                            </div>
+
+                        <div class="hidden md:flex items-center justify-center">
+                            <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-500 mt-4 md:mt-0">
+                            <div class="w-16 h-16 mx-auto bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center font-bold text-2xl mb-4">2</div>
+                            <h3 class="text-xl font-bold mb-2">The Hook: Engage Coaches</h3>
+                            <p class="text-slate-600 text-sm"><strong>Target:</strong> Travel Teams & High School Programs</p>
+                            <p class="text-slate-600 mt-3">We introduce premium player development tools (heatmaps, stats) to drive team-level adoption and create clear monetization pathways.</p>
+                        </div>
+
+                         <div class="hidden md:flex items-center justify-center">
+                            <svg class="w-12 h-12 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-green-500 mt-4 md:mt-0">
+                            <div class="w-16 h-16 mx-auto bg-green-100 text-green-600 rounded-full flex items-center justify-center font-bold text-2xl mb-4">3</div>
+                            <h3 class="text-xl font-bold mb-2">The Moat: Scale to Leagues</h3>
+                            <p class="text-slate-600 text-sm"><strong>Target:</strong> Youth Leagues & Parents</p>
+                            <p class="text-slate-600 mt-3">We institutionalize BLU with league-wide licenses, parent features, and platform integrations, creating a defensible ecosystem.</p>
                         </div>
                     </div>
-                    
-                    <!-- Narrative transition to Roadmap -->
-                    <div class="mt-12 text-center">
-                        <p class="text-lg text-slate-600 italic">
-                            Umpires get us on the field → Coaches/parents pay → Data & training deepen value → Leagues institutionalize → Integrations & programs create the moat.
-                        </p>
+
+                    <div class="mt-12 text-center bg-slate-100 p-6 rounded-lg max-w-4xl mx-auto">
+                        <p class="text-slate-700 font-medium"><strong>Our Beachhead:</strong> This entire strategy is predicated on first capturing just 6% of the Little League market in three key states (CA, TX, FL).</p>
                     </div>
                 </div>
             </div>
