@@ -6,13 +6,6 @@ description: AI-Powered Baseball Umpire Assistant
 include: []
 exclude: []
 
-# Enable directory browsing and subdirectory serving
+# Enable directory browsing
 plugins:
   - jekyll-sitemap
-
-# Ensure all directories are served
-collections:
-  pitchdeck:
-    output: true
-  rulebook:
-    output: true
