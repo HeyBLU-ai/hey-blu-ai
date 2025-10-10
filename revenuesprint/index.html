@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyBLU: Sprint to Revenue Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+        }
+        .slide-content {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 1200px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        .page-number {
+            position: absolute;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .metric-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 1.5rem;
+            height: 100%;
+        }
+        .urgency-pill {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2.5rem;
+            padding-bottom: 2rem;
+            border-left: 2px solid #e2e8f0;
+        }
+        .timeline-item:last-child {
+            border-left: 2px solid transparent;
+            padding-bottom: 0;
+        }
+        .timeline-marker {
+            position: absolute;
+            left: -0.7rem;
+            top: 0;
+            height: 1.25rem;
+            width: 1.25rem;
+            border-radius: 9999px;
+            background-color: white;
+            border: 2px solid #4f46e5;
+        }
+        .timeline-marker.current {
+            background-color: #4f46e5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: The Crisis -->
+    <section class="slide" id="slide-1">
+        <div class="slide-content">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">The Crisis: The Umpire Shortage is Canceling Games</h1>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto mb-10">This is no longer an inconvenience. It's an existential threat to youth sports, driven by on-field hostility and a broken support system.</p>
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <div class="metric-card bg-red-50 border-red-200">
+                        <p class="text-6xl font-extrabold text-red-600 mb-4">50,000</p>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Referees Lost Since 2018</h3>
+                        <p class="text-slate-700">"The number one reason is adult behavior." <br>- National Association of Sports Officials</p>
+                    </div>
+                    <div class="metric-card">
+                         <blockquote class="border-l-4 border-slate-300 pl-4 italic text-slate-700">
+                            <p>"We've had to cancel entire weekend tournaments. Not due to weather, but because we physically could not staff the fields with umpires. Parents are furious."</p>
+                            <cite class="block mt-4 not-italic font-semibold text-slate-900">— California Tournament Director</cite>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+            <div class="page-number">1 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 2: The Solution -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Solution: An AI Co-Pilot for Every Umpire</h1>
+                    <p class="text-xl text-slate-600 mb-8">We empower umpires—we don't replace them. Our focus is surgically solving the #1 point of conflict: <span class="font-bold gradient-text">the ball-strike call.</span></p>
+                    <div class="space-y-4">
+                        <div class="metric-card"><h3 class="font-bold text-lg mb-1">✓ Boosts Confidence & Authority</h3><p class="text-slate-600">Discreet, real-time audio calls via earbud give umpires the data to be right, every time.</p></div>
+                        <div class="metric-card"><h3 class="font-bold text-lg mb-1">✓ Defuses Hostility</h3><p class="text-slate-600">The umpire can point to the camera and say, "The system called it there." It shifts the blame from a person to objective tech.</p></div>
+                        <div class="metric-card"><h3 class="font-bold text-lg mb-1">✓ Zero Friction</h3><p class="text-slate-600">Uses an iPhone on a tripod. No expensive hardware, no complex calibration. Set up in 2 minutes.</p></div>
+                    </div>
+                </div>
+                <div class="flex justify-center">
+                    <img src="../pitchdeck/images/tripod-blu.jpg" alt="HeyBLU Product" class="rounded-2xl shadow-2xl max-w-full h-auto">
+                </div>
+            </div>
+            <div class="page-number">2 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Why Now & Why Us -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <div class="text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Why Now? The Perfect Storm is Here.</h1>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto mb-10">What was impossible two years ago is now inevitable. We are positioned to win because we have the right tech, at the right time, with the right backers.</p>
+                <div class="grid md:grid-cols-3 gap-8 mb-10">
+                    <div class="metric-card"><div class="text-4xl mb-4">📱</div><h3 class="text-xl font-bold text-slate-900 mb-2">Ubiquitous Pro Hardware</h3><p class="text-slate-700">Everyone has a high-frame-rate camera and NPU in their pocket.</p></div>
+                    <div class="metric-card"><div class="text-4xl mb-4">🤖</div><h3 class="text-xl font-bold text-slate-900 mb-2">AI Tipping Point</h3><p class="text-slate-700">On-device vision AI is now fast, accurate, and cheap enough for this market.</p></div>
+                    <div class="metric-card"><div class="text-4xl mb-4">⚠️</div><h3 class="text-xl font-bold text-slate-900 mb-2">Market Desperation</h3><p class="text-slate-700">Leagues are actively searching for a solution to their officiating crisis.</p></div>
+                </div>
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-2xl border-2 border-green-300">
+                    <h2 class="text-2xl font-bold text-center text-slate-900">Why Us? Our Insider Backing Proves Belief.</h2>
+                    <p class="text-center text-lg text-slate-700 mt-2">We've secured <span class="font-bold text-green-700">$400,000</span> in initial funding from SF Giants executives, former pro players, and industry veterans who know this problem intimately. They believe we are the team to solve it.</p>
+                </div>
+            </div>
+            <div class="page-number">3 / 8</div>
+        </div>
+    </section>
+    
+    <!-- Slide 4: The Product -->
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                     <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Beta Product</h1>
+                     <p class="text-xl text-slate-600 mb-8">This is not a concept. This is a functional, field-tested beta ready for pilot deployment.</p>
+                     <div class="bg-slate-900 p-4 rounded-2xl shadow-2xl mb-8">
+                        <img src="../pitchdeck/images/new-k-call.jpg" alt="BLU K-Call Interface" class="w-full rounded-xl">
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-6">Our Unfair Advantage: Data & Precision</h2>
+                    <p class="text-lg text-slate-600 mb-6">Any camera can see a pitch. Our advantage is in the data we capture and the precision we deliver, which becomes a powerful, defensible moat.</p>
+                    <ul class="space-y-4 text-slate-700 text-lg">
+                        <li class="flex items-start"><strong class="gradient-text w-10 text-2xl">1.</strong><span><strong>Standardized Calibration:</strong> Our simple on-screen guides ensure every field is measured identically, eliminating variability.</span></li>
+                        <li class="flex items-start"><strong class="gradient-text w-10 text-2xl">2.</strong><span><strong>On-Device Privacy:</strong> All processing happens on the iPhone. No video is sent to the cloud, ensuring total privacy for minors.</span></li>
+                        <li class="flex items-start"><strong class="gradient-text w-10 text-2xl">3.</strong><span><strong>Proprietary Dataset:</strong> Every pitch from our pilots becomes a perfectly labeled data point, making our AI smarter with every game.</span></li>
+                    </ul>
+                </div>
+            </div>
+             <div class="page-number">4 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 5: Path to First Revenue -->
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The 6-Month Sprint to Revenue</h1>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto">This isn't a research project. It's a focused, 6-month commercialization plan to turn our beta into a revenue-generating business.</p>
+            </div>
+            <div>
+                <div class="timeline-item">
+                    <div class="timeline-marker current"></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Months 1-2: Execute Beta Tests</h3>
+                    <p class="text-slate-600">Deploy the beta with our <span class="font-semibold">12 signed pilot organizations.</span> Gather performance data, refine the user experience, and secure testimonials.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Months 3-4: Convert First Customers</h3>
+                    <p class="text-slate-600">Leverage pilot success and pre-agreed terms to convert at least <span class="font-semibold">30% of pilots (~4 orgs)</span> to our first annual contracts at <span class="font-semibold">$1,999/yr.</span></p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-2">Months 5-6: Achieve Target & Scale GTM</h3>
+                    <p class="text-slate-600">Use early revenue and case studies to secure an additional <span class="font-semibold">6 league-wide contracts,</span> achieving our milestone of <span class="font-semibold">$20,000 MRR.</span></p>
+                </div>
+            </div>
+             <div class="page-number">5 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 6: The Team -->
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Lean Machine</h1>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto">We've built this with a tiny, focused team. This is the crew that will execute the 6-month sprint with extreme frugality and speed.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="metric-card text-center"><img src="../pitchdeck/images/Rob.jpg" alt="Rob Regan" class="w-24 h-24 rounded-full mx-auto mb-4"><h3 class="text-lg font-bold">Rob Regan</h3><p class="text-blue-600 font-semibold mb-2">Co-Founder, CEO</p><p class="text-sm text-slate-600">Drives product, execution, and league partnerships.</p></div>
+                <div class="metric-card text-center"><img src="../pitchdeck/images/JP.jpg" alt="Jonathan Parkhurst" class="w-24 h-24 rounded-full mx-auto mb-4"><h3 class="text-lg font-bold">J. Parkhurst</h3><p class="text-blue-600 font-semibold mb-2">CRO</p><p class="text-sm text-slate-600">Leads pilot conversions and initial sales.</p></div>
+                <div class="metric-card text-center"><img src="../pitchdeck/images/chris.jpg" alt="Chris Bestwick" class="w-24 h-24 rounded-full mx-auto mb-4"><h3 class="text-lg font-bold">Chris Bestwick</h3><p class="text-blue-600 font-semibold mb-2">UI/UX Engineer</p><p class="text-sm text-slate-600">Refines the product based on pilot feedback.</p></div>
+                 <div class="metric-card text-center"><div class="w-24 h-24 rounded-full mx-auto mb-4 bg-slate-200 flex items-center justify-center"><span class="text-4xl">🤖</span></div><h3 class="text-lg font-bold">Founding ML Eng.</h3><p class="text-blue-600 font-semibold mb-2">(Acting Head of CV)</p><p class="text-sm text-slate-600">Manages model accuracy and performance.</p></div>
+            </div>
+             <div class="page-number">6 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 7: The Ask -->
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <div class="text-center">
+                 <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">We Are Raising $250,000</h1>
+                 <p class="text-xl text-slate-600 max-w-3xl mx-auto mb-10">This capital is the catalyst to get us to our next major inflection point, proving product-market fit and unlocking our full Seed round.</p>
+                <div class="grid md:grid-cols-2 gap-8 text-left">
+                    <div class="metric-card">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4">Use of Funds (6-Month Runway)</h2>
+                        <ul class="space-y-3 text-slate-700">
+                            <li><strong>Lean Team Salaries:</strong> ~60%</li>
+                            <li><strong>Pilot Support & GTM:</strong> ~25%</li>
+                            <li><strong>Legal & Operations:</strong> ~15%</li>
+                        </ul>
+                    </div>
+                    <div class="metric-card bg-green-50 border-green-200">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4">The Milestone This Unlocks</h2>
+                        <p class="text-6xl font-extrabold text-green-600 mb-4">$20,000</p>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">In Monthly Recurring Revenue</h3>
+                        <p class="text-slate-700">+ 10 signed league contracts. This makes us a no-brainer for our $1.5M Seed Round at a significantly higher valuation.</p>
+                    </div>
+                </div>
+            </div>
+             <div class="page-number">7 / 8</div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Contact -->
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <div class="text-center">
+                <div class="text-6xl font-bold mb-6"><span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span></div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Let's Restore the Game, Together.</h2>
+                <div class="mt-12 grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                    <div class="metric-card"><h3 class="text-xl font-semibold mb-2">Rob Regan, CEO</h3><p class="text-slate-600">robr@bigleagueballpark.com<br>415-652-3780</p></div>
+                    <div class="metric-card"><h3 class="text-xl font-semibold mb-2">Jonathan Parkhurst, CRO</h3><p class="text-slate-600">jp@bigleagueballpark.com<br>415-342-5853</p></div>
+                </div>
+            </div>
+            <div class="page-number">8 / 8</div>
+        </div>
+    </section>
+
+</body>
+</html>
