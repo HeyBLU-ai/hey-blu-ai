@@ -31,6 +31,11 @@
     { "src": "rulebook/legal.html", "use": "@vercel/static" },
     { "src": "rulebook/manifest.json", "use": "@vercel/static" },
     { "src": "rulebook/service-worker.js", "use": "@vercel/static" },
+    { "src": "pitchdeck/index.html", "use": "@vercel/static" },
+    { "src": "pitchdeck2/index.html", "use": "@vercel/static" },
+    { "src": "pitchdeck3/index.html", "use": "@vercel/static" },
+    { "src": "pitchdeck/assets/**", "use": "@vercel/static" },
+    { "src": "pitchdeck/images/**", "use": "@vercel/static" },
     { "src": "vision/index.html", "use": "@vercel/static" },
     { "src": "thank-you.html", "use": "@vercel/static" },
     { "src": "images/**", "use": "@vercel/static" }
@@ -47,6 +52,10 @@
     { "src": "/rulebook/manifest.json", "dest": "/rulebook/manifest.json" },
     { "src": "/rulebook/service-worker.js", "dest": "/rulebook/service-worker.js" },
     { "src": "/rulebook", "dest": "/rulebook/index.html" },
+    { "src": "/pitchdeck", "dest": "/pitchdeck/index.html" },
+    { "src": "/pitchdeck2", "dest": "/pitchdeck2/index.html" },
+    { "src": "/pitchdeck3", "dest": "/pitchdeck3/index.html" },
+    { "src": "/pitchdeck/**", "dest": "/pitchdeck/$1" },
     { "src": "/vision", "dest": "/vision/index.html" },
     { "src": "/thank-you", "dest": "/thank-you.html" },
     { "src": "/", "dest": "/index.html" }
