@@ -1,0 +1,224 @@
+[
+  {
+    "id": "1",
+    "title": "Governing Rules",
+    "text": "All National Little League rules are in effect per 2024 “Official Regulations and Playing Rules” which can be downloaded from Little League International (www.littleleague.org), or viewed on the Little League Rulebook app, except as noted below.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "2",
+    "title": "Game times",
+    "text": "During weekday games (Monday-Friday) where there is only one scheduled game or the final games on Saturdays, teams should strive to complete a full game. There is no 2 hour limit, but games must end by 8PM. No new inning should start after 7:45pm. Umpires may decide to end a game earlier if it is determined to be unsafe due to darkness or weather conditions. During Saturday or weekday games when there is a game to follow, games must end no later than 2 hours after the scheduled start time to allow for transitions of teams, field prep and warmups. No new inning should start after 1:45 after the scheduled start time. In all circumstances, refer to Rules 4.11 and 4.12 for games halted during an inning. Essentially, the final score will be the score at the end of the last completed full inning (a complete game is 4 innings). Games that are over 1 hour 45 minutes are complete games irrespective of the innings played.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "3",
+    "title": "Rain",
+    "text": "When a field has not been closed by the City per the City’s website (https://www.millvalleylibrary.org/477/Fields), teams are expected to show up at the field 45 minutes before the scheduled start. Our fields drain very well and showers in the morning may not result in cancellation. If a team does not appear and the field is playable, that team will be subject to a forfeit at the discretion of the MVLL Board. The AAA Commissioner or his/her designee will make the final decision regarding whether a field is playable.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "4",
+    "title": "Dugouts",
+    "text": "Home teams as designated by the schedule shall occupy the 1st base dugout, visitors the 3rd base dugout.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "5",
+    "title": "Batting Practice on Game Day Field",
+    "text": "Batting practice, soft toss, pepper, or any other drills involving swinging bats are prohibited on any game day field prior to scheduled start time. No On-Deck or practice swings are allowed ever. According to Little League International rules Appendix B - Safety Code for Little League: \"Regulations prohibit on-deck batters. This means no player should handle a bat, even while in an enclosure, until it is their time at bat. This applies to Little League Majors, Minors [AAA], and Tee-Ball.\"",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "6",
+    "title": "Continuous Batting Order",
+    "text": "Players attending the game shall bat in a continuous order throughout the entire game regardless of when they play in the field. (Note: 7.14(a) Special Pinch Runner and 7.14(b) Courtesy Runner do not apply).",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "7",
+    "title": "5-run Rule (Inning Mercy)",
+    "text": "The inning ends once a team has scored 5 runs. The 5-run rule does not apply in the final inning of a game.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "8",
+    "title": "10-run Rule (Game Mercy)",
+    "text": "If after 4 innings (3.5 innings if home team ahead) one team has a lead of 10 or more runs, the losing team shall concede the victory to the opponent. If the teams wish to continue as a scrimmage, without interfering with a following game, they may do so, but the umpires will be excused at the completion of the regulation game. The 10-run rule does not apply in the final inning of a game.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "9",
+    "title": "Playing Time Local Rule",
+    "text": "Every player on the team roster will participate in each game for a minimum of half the scheduled innings in the field or three (3) complete innings. A complete inning is three (3) consecutive outs. A player who does not start in a game must start in the following game. Players can be alternated in consecutive innings.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "10",
+    "title": "Adult Coaches",
+    "text": "Teams may have no more than 3 approved/certified adults within the confines of the field during a game. Adults may coach in the coach’s boxes at 1st and 3rd bases when the team is on offense. When the team is not on offense all adults must be in the dugout. A team may have a scorekeeper sitting in the stands, but coaching should not be done from the stands or other field areas. One adult must be in the dugout at all times. Only adults within the confines of the field at the time of first pitch will be permitted. All adults on the field must have registered as a Volunteer through MVLL Registration, and must have successfully completed a background check as required by Little League International and the State of California.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "11",
+    "title": "Offensive Time Outs",
+    "text": "Local: in the interest of time, only one offensive time out will be granted per inning.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "12",
+    "title": "Defensive Time Outs",
+    "text": "Only one defensive time out will be granted per inning.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "13",
+    "title": "Mound Visits",
+    "text": "In AAA, the manager or coach may visit a pitcher twice per inning; if there is a third visit in the inning to the same pitcher, the pitcher must be removed. Furthermore, the manager or coach can only visit a pitcher two times per game; if there is a third visit in the game to the same pitcher, the pitcher must be removed. See Rule 8.06.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "14",
+    "title": "Runner Must Avoid Fielder/Sliding",
+    "text": "A runner must slide or attempt to go around a fielder who has the ball and is waiting to make a tag. Headfirst slides are illegal unless returning back to the base. Defensive players without the ball cannot block the base path. See Rules 7.08 and 7.09.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "15",
+    "title": "Leadoffs",
+    "text": "There are no leadoffs in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "16",
+    "title": "Stealing",
+    "text": "There is no stealing until each team has played four games. If, in a game, one team has played four games but the other has not, no stealing is allowed during that game. After all teams have played four games, the no-stealing rule is suspended. Runners are allowed to steal every base EXCEPT HOME. The ball must be put into play by a batter for a runner to advance to home. A runner must stop at third if there is an overthrow on a steal attempt. This rule is to develop the defensive skills of pitchers, catchers, and infielders. No leads are allowed at any time. Runners may only leave the base when the ball crosses home plate.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "17",
+    "title": "Dropped 3rd Strike",
+    "text": "The “Dropped third strike” rule does not apply in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "18",
+    "title": "Infield Fly Rule",
+    "text": "There is no Infield Fly Rule in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "19",
+    "title": "Slash Bunts",
+    "text": "Slash bunts (where a batter fakes a bunt and then swings away) are not allowed in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "20",
+    "title": "Pitching",
+    "text": "When a pitcher is in contact with the pitcher’s plate and in possession of the ball AND the catcher is in the catcher’s box ready to assume the receiving position, base runners shall not leave their bases until the ball has been delivered and has reached the batter. Runners who are more than halfway to the next base at that time may continue to that base, but not advance farther. If the catcher overthrows the pitcher, the runners may advance at their own risk. Delayed steals (when the base runner takes off when the catcher throws back to the pitcher but before the pitcher has the ball) are allowed in AAA after the stealing prohibition has been lifted early in the season.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "21",
+    "title": "Pitching Local",
+    "text": "During the regular season, a pitcher may pitch a maximum of 2 innings or 6 consecutive outs. The 6 outs may span 3 innings. A pitcher may take another field position immediately under both National and local rules. A pitcher may not return to pitch having been removed from that position earlier in the game. A player may not pitch in more than one game in a day. During the postseason, a pitcher may pitch a maximum of 3 innings or 9 consecutive outs (the 9 outs may span 4 innings). Under all circumstances, teams must follow National rules regarding pitch count (refer to Regular Season Pitching Rules – Baseball).",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "22",
+    "title": "Pitcher/Catcher",
+    "text": "A pitcher who throws 40 or more pitches in a game may not play in the catcher position. If the pitcher reaches 39 pitches while facing a batter, they may continue to pitch until that at-bat is completed, and then thereafter play the position of catcher for the remainder of that game. A catcher who catches less than 4 innings in a game may pitch. For the purposes of this rule, the catcher shall be considered to have caught 4 innings as soon as they receive the first pitch of the 4th inning, and then becomes ineligible to pitch in that game. A player who played the position of catcher for three (3) innings or less, moves to the pitcher position, and delivers 21 pitches or more (15- and 16-year-olds: 31 pitches or more) in the same day, may not return to the catcher position on that calendar day.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "23",
+    "title": "Walks",
+    "text": "At the beginning of the season, there are no walks. On ball 4, a batting tee will be brought out and the strike count continues. A ball put in play off the tee can result in a foul ball, an out, or a single. The batter-runner may not advance past first base on that play. If the batter contacts only the tee, “foul ball” shall be ruled. The tee will be used at the beginning of the season until each team has played four games. If, in a game, one team has played four games but the other has not, the tee rule is to be used during that game. After all teams have played four games using the tee rule, the rule is suspended and normal Ball/Strike count rules apply.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "24",
+    "title": "Intentional Walks",
+    "text": "Intentional walks are not allowed in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "25",
+    "title": "Balks",
+    "text": "In AAA, a balk called by the umpire will result in a warning and be ruled “no pitch”, as with any other illegal pitch. See Rule 8.05. Runners do not advance on balks in AAA.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "26",
+    "title": "Pitch Count Rules",
+    "text": "Detail regarding the pitch count rules as provided by LL International are included at the end of these Rules. A pitch is defined as a “ball delivered to the batter by the pitcher”. For example: if a batter fouls off three pitches on a full count. All three are added to the pitch count even though the ball/strike count remains full at 3 and 2. Warm up pitches at the start of an inning do not count towards pitch count. Managers are responsible for keeping an accurate count of pitches thrown by each pitcher. Managers will designate a pitch counter for his or her team who will use a paper Baseball Game Pitch Log (the “Pitch Log”) to keep track of pitches thrown. Managers should reconcile pitch counts on the ½ inning. Managers are required to confer at the end of the game, before the umpires leave the field, and review and agree on the pitch counts recorded for each pitcher on each team. The Baseball Pitcher Eligibility Tracking Form (the “Eligibility Tracking Form”) must be filled out by each team and dated and signed by both Managers. The agreed pitch counts cannot be overturned once the managers have left the field. Pitcher eligibility will consider pitches thrown competitively in both Little League and non-Little League (e.g., travel ball) games. Managers should make a reasonable effort to determine non-Little League pitch counts, either through established sharing mechanisms or through inquiries made of parents and players. Managers are required to keep the Pitch Logs and Eligibility Tracking Forms and have them available at each game for inspection by the umpires should questions of pitcher eligibility arise. If the Eligibility Tracking Form is not completed and signed by both Managers and a pitcher is challenged in the next game, that pitcher shall be deemed ineligible to pitch in that next game. At the beginning of each game, the Eligibility Tracking Form shall be presented to the opposing Manager and Home Plate Umpire. This will indicate any pitchers not eligible for that game. Managers are not prohibited from using Gamechanger for their own purposes, but the official record of the pitch count will be the paper Pitch Log. The individuals tracking pitches for the Pitch Log cannot also be running Gamechanger for the team; these are two separate jobs and require two separate individuals. For regular season games, if the managers cannot agree on the final pitch counts, the AAA Commissioner should be notified immediately. Thereafter, the teams can leave the field; the AAA Commissioner will review the available data and render a decision within 24 hours of notification. Should either manager continue to disagree with the decision of the Commissioner, Little League protest rules would engage, as per Rule 4.19. For post-season games in AAA, the managers should contact the AAA Commissioner to immediately resolve the issue. Game play will not resume until the pitch count discrepancy is resolved. The AAA Commissioner will use available data to determine the actual pitch count. Should either manager continue to disagree with the decision of the Commissioner, Little League protest rules would engage, as per Rule 4.19.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "27",
+    "title": "Bats and Helmets",
+    "text": "Bats used in practices or games cannot be more than 33” in length; nor more than 2-5/8” in diameter. A bat must meet the USA Baseball Bat standards (see https://www.littleleague.org/help-center/usa-baseball-bat-standard-faqs/) for more information. Helmets must be affixed with the NOCSAE symbol, be free of cracks or other visible damage, and all of the internal padding must not be missing, tattered, torn or frayed. Managers are responsible for confirming that equipment conforms to this standard.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "28",
+    "title": "Vocal Harassment",
+    "text": "Organized chatter, taunting or uniform cadenced speech intended to unnerve opposing players is not allowed by players or fans in the stands. Managers are responsible for maintaining the decorum of their players, coaches and parents/fans. Positive cheering is always encouraged. Repeated vocal harassment (i.e., continuing after a warning to stop) can result in ejection from the game.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "29",
+    "title": "Umpires",
+    "text": "Harassment of umpires by managers, coaches, players or parents/fans will not be tolerated. Managers, coaches, players and parents/fans will not shout “safe” or “out” or give the “safe” or “out” sign from the coach’s boxes or shout “good pitch” in advance of umpire making a call. Such behavior shall be subject to warnings and/or ejection from the game. Any umpire’s decision which involves judgment, such as, but not limited to, whether a batted ball is fair or foul, whether a pitch is a ball or strike, or whether a runner is safe or out, is final. No player, manager, coach or parent/fan shall object to any judgment decision. Coaches may not leave the dugout to approach an umpire unless the umpire grants time out first. Umpire calls may not be “appealed”.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "30",
+    "title": "Clean Up/Post-Game Field Maintenance",
+    "text": "Each team is responsible for cleaning up litter in the dugout and stands before vacating the field. Managers should have a team parent encourage families to assist clean-up of the stands area before leaving. The home team drags and waters the field at the end of the game and covers the mound and home plate with the provided tarps.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "31",
+    "title": "Outfield Fence Line - Friends Field",
+    "text": "A) The outfield fence line is to be set at the Little League recommended 180 feet from the back corner of home plate prior to the start of the game. Cones or markers will be set by the umpires signifying the fence line. Once the first pitch has been thrown, the fence line will remain unchanged throughout the game even if it has been set shorter or longer than the recommended 180 feet. B) When a batted fair ball lands over the outfield home run line on a fly it is deemed to be a home run. C) A fair ball touched or caught on the fly by a fielder standing beyond the home run line is a home run. D) A batted fair ball that travels over the fence line, whether touched by a fielder or not, is a ground rule double. E) When a ball travels over the home run line the outfielder nearest the ball should raise both hands over their head to signal to the umpire that it went over the line. Umpires are solely responsible for making these calls. The home team shall retrieve and store the fence line markers after the game.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "32",
+    "title": "Number of Players",
+    "text": "A team must have 9 players to start a game. If a team does not have 9 players, the team may be subject to a forfeit, with the decision resting with the MVLL Board per LL International Rules. If a team starts with 9 players but drops to 8 or less during the game, the game must stop. The team with less than 9 players may be subject to a forfeit, with the decision resting with the MVLL Board per LL International Rules. It is the manager’s responsibility to determine how many players will be available for his or her game, and to request a pool player if the team will only have 9 players or less (see MVLL Pool Player Rules for more information). Managers should encourage all players to participate (except in the case of illness, injury, or mandatory school event). “Differentials” (the difference between the number of players on each team) will be ignored.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "33",
+    "title": "Playoffs",
+    "text": "Seeding: Unless the Commissioner decides otherwise, the seedings for playoffs will be determined by a) Win/Loss Percentage, b) head-to-head records and c) average runs against per game. The final tie-breaker will be a coin toss if needed. Number of Players: Pool players can only be used to avoid having less than 9 players at the beginning of the game. “Differentials” (the difference between the number of players on each team) will be ignored; automatic outs will not be imposed. Extra Innings: If a playoff game is tied after 6 innings, the 7th inning will be played using the same rules as the 6th. If additional innings are required to break a tie (i.e. 8th inning or more), each team will begin their respective at-bat by placing the player who made the last batted out in the previous inning at 2nd base.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "34",
+    "title": "Conflicts/Protests",
+    "text": "National rules allow for a game to be played under protest. MVLL discourages formal protests as they often result in a game having to be re-played from the point of the alleged infraction, and with schedules so tight, this is not easy. MVLL encourages trying to solve the problem at game time. Using a cell phone both Managers and the Head Umpire should initiate a phone call to the Commissioner. Protests are governed by Rule 4.19; the procedure is outlined at Protest Rules. Protests that cannot be resolved by the umpires at the game and the Commissioner will be resolved by the MVLL Protest Committee.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "35",
+    "title": "Use of Livestream",
+    "text": "MVLL provides livestreaming of games played at Boyle and Alto. Post-game replays from Livestream may only be used by the Protest Committee to adjudicate Rule 4.19 protests (specifically, violations or interpretations of a playing rule, the use of an ineligible pitcher, or the use of an ineligible player).",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "36",
+    "title": "Questions",
+    "text": "Any questions should be directed to the AAA League Commissioner, Jeff O’Brien.",
+    "fallback_to": "Little League International"
+  },
+  {
+    "id": "Regulation VI",
+    "title": "Regular Season Baseball Pitching Rules",
+    "text": "(a) Any player on a regular season team may pitch. Exception: Any player who has played the position of catcher in four (4) or more innings in a game is not eligible to pitch on that calendar day. A player who played the position of catcher for three (3) innings or less, moves to the pitcher position, and delivers 21 pitches or more (15- and 16-year-olds: 31 pitches or more) in the same day, may not return to the catcher position on that calendar day. EXCEPTION: If the pitcher reaches the 20-pitch limit (15- and 16-year-olds: 30-pitch limit) while facing a batter, the pitcher may continue to pitch, and maintain their eligibility to return to the catcher position, until any one of the following conditions occur: (1) that batter reaches base; (2) that batter is retired; (3) the third out is made to complete the half-inning or the game; or (4) the pitcher is removed from the mound prior to the batter completing his/her at-bat. Approved Ruling: The catcher receiving one pitch to a batter in the fourth inning constitutes having caught four (4) innings. Warm-up pitches do not count, only when the ball is live will the pitches count toward innings caught. (b) A pitcher once removed from the mound cannot return as a pitcher. Intermediate (50-70) Division, Junior League, and Senior League only: A pitcher remaining on defense in the game, but moving to a different position, can return as a pitcher anytime in the remainder of the game, but only once per game. (c) The manager must remove the pitcher when said pitcher reaches the limit for his/her age group as noted below, but the pitcher may remain in the game at another position: League Age 6–8: 50 Pitches, League Age 9–10: 75 Pitches, League Age 11–12: 85 Pitches, League Age 13–16: 95 Pitches. Exception: If a pitcher reaches the limit imposed in Regulation VI(c) for his/her league age while facing a batter, the pitcher may continue to pitch until any one of the following conditions occurs: The batter reaches base; The batter is put out; The third out is made to complete the half-inning of the game; The pitcher is removed from the mound prior to the batter completing his/her at bat. NOTE: If a pitcher reaches 40 pitches while facing a batter, the pitcher may continue to pitch, and maintain their eligibility to play the position of catcher for the remainder of that day, until any one of the following conditions occurs:(1) that batter reaches base; (2) that batter is retired; (3) the third out is made to complete the half inning or the game; or (4) the pitcher is removed from the mound prior to the batter completing his/her at-bat. The pitcher would be allowed to play the catcher position provided that pitcher is moved, removed, or the game is completed before delivering a pitch to another batter. If a player delivers 41 or more pitches, and is not covered under the threshold exception, the player may not play the position of catcher for the remainder of that day. (d) Pitchers league age 14 and under must adhere to the following rest requirements: If a player pitches 66 or more pitches in a day, four (4) calendar days of rest must be observed. If a player pitches 51-65 pitches in a day, three (3) calendar days of rest must be observed. If a player pitches 36-50 pitches in a day, two (2) calendar days of rest must be observed. If a player pitches 21-35 pitches in a day, one (1) calendar day of rest must be observed. If a player pitches 1-20 pitches in a day, no (0) calendar day of rest is required. NOTE 1: Under no circumstance shall a player pitch in three (3) consecutive days. NOTE 2: A pitcher’s pitch count for the purposes of day(s) rest threshold is determined by the first pitch thrown to a batter. The pitcher may not start a new batter once the limit imposed in Regulation VI(c) has been met. Pitchers league age 15-16 must adhere to the following rest requirements: If a player pitches 76 or more pitches in a day, four (4) calendar days of rest must be observed. If a player pitches 61-75 pitches in a day, three (3) calendar days of rest must be observed. If a player pitches 46-60 pitches in a day, two (2) calendar days of rest must be observed. If a player pitches 31-45 pitches in a day, one (1) calendar day of rest must be observed. If a player pitches 1-30 pitches in a day, no (0) calendar day of rest is required. NOTE 1: Under no circumstance shall a player pitch in three (3) consecutive days. NOTE 2: A pitcher’s pitch count for the purposes of day(s) rest threshold is determined by the first pitch thrown to a batter. The pitcher may not start a new batter once the limit imposed in Regulation VI(c) has been met. (e) Each league must designate the scorekeeper or another game official as the official pitch count recorder. (f) The pitch count recorder must provide the current pitch count for any pitcher when requested by either manager or any umpire. However, the manager is responsible for knowing when his/her pitcher must be removed. (g) The official pitch count recorder should inform the Umpire-in-Chief when a pitcher has delivered his/her maximum limit of pitches for the game, as noted in Regulation VI(c). The Umpire-in-Chief will inform the pitcher’s manager that the pitcher must be removed in accordance with Regulation VI(c). However, the failure by the pitch count recorder to notify the Umpire-in-Chief, and/or the failure of the Umpire-in-Chief to notify the manager, does not relieve the manager of his/her responsibility to remove a pitcher when that pitcher is no longer eligible. (h) Violation of any section of this regulation can result in protest of the game in which it occurs. Protest shall be made in accordance with Playing Rule 4.19. (j) Minor League: A player who has attained the league age of twelve (12) is not eligible to pitch. (See Regulation V – Selection of Players) Junior League: A local league Board may prohibit 15-year-olds from pitching within the Junior Division. (k) Pitching in more than one game in a day: Minor League, Little League (Majors), and Intermediate (50-70) Division – A player may not pitch in more than one game in a day; Junior League and Senior League – A player may be used as a pitcher in up to two games in a day. EXCEPTION: A 12-year-old playing in the Junior and/or Senior Division is not eligible to pitch in two games in a day. NOTE: If a pitcher reaches 30 pitches while facing a batter in the first game, the pitcher may continue to pitch, and maintain their eligibility to pitch in the second game on that day, until any one of the following conditions occurs: (1) that batter reaches base; (2) that batter is retired; (3) the third out is made to complete the half-inning or the game; or (4) the pitcher is removed from the mound prior to the batter completing his/her at-bat. The pitcher would be allowed to pitch in a second game provided that pitcher is moved, removed, or the game is completed before delivering a pitch to another batter. If a player delivers 31 or more pitches in the first game, and is not covered under the threshold exception, the player may not pitch in the second game that day); Approved Ruling: If a Junior or Senior League pitcher pitches in more than one game in a day, and has not pitched 31 or more pitches in the first game except as noted under the threshold, the total number of pitches that pitcher may pitch in both games combined is the daily maximum of 95. NOTES: The withdrawal of an ineligible pitcher after that pitcher is announced, or after a warm-up pitch is delivered, but before that player has pitched a ball to a batter, shall not be considered a violation. Little League officials are urged to take precautions to prevent protests. When a protest situation is imminent, the potential offender should be notified immediately. Approved Ruling: Minor League and Little League (Majors): When warming up, if a pitcher is discovered to be ineligible, he/she must be removed and the previous pitcher of record may not return. Pitches delivered in games declared “Regulation Tie Games” or “Suspended Games” shall be charged against pitcher’s eligibility. In suspended games resumed on another day, the pitchers of record at the time the game was halted may continue to pitch to the extent of their eligibility for that day, provided said pitcher has observed the required days of rest. Example 1: A league age 12 pitcher delivers 70 pitches in a game on Monday when the game is suspended. The game resumes on the following Thursday. The pitcher is not eligible to pitch in the resumption of the game because he/she has not observed the required days of rest. Example 2: A league age 12 pitcher delivers 70 pitches in a game on Monday when the game is suspended. The game resumes on Saturday. The pitcher is eligible to pitch up to 85 more pitches in the resumption of the game because he/she has observed the required days of rest. Example 3: A league age 12 pitcher delivers 70 pitches in a game on Monday when the game is suspended. The game resumes two weeks later. The pitcher is eligible to pitch up to 85 more pitches in the resumption of the game, provided he/she is eligible based on his/her pitching record during the previous four days.",
+    "fallback_to": "Little League International"
+  }
+]

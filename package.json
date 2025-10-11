@@ -1,0 +1,26 @@
+{
+  "name": "rulebook-api",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "api/ask.js",
+  "scripts": {
+    "start": "node api/ask.js",
+    "build": "tsc",
+    "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
+    "vercel-build": "npm run build && npm run build:css"
+  },
+  "dependencies": {
+    "dotenv": "^17.1.0",
+    "openai": "^4.104.0",
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.6",
+    "@vercel/node": "^5.3.4",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.8.3",
+    "vercel": "^44.3.0"
+  }
+}

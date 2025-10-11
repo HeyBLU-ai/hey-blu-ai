@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/ask.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/data/**"]
+      }
+    },
+    { 
+      "src": "api/shorten.ts", 
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/data/**"]
+      }
+    },
+    { 
+      "src": "api/retrieve.ts", 
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/data/**"]
+      }
+    },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "manifest.json", "use": "@vercel/static" },
+    { "src": "service-worker.js", "use": "@vercel/static" },
+    { "src": "dist/output.css", "use": "@vercel/static" },
+    { "src": "rulebook/index.html", "use": "@vercel/static" },
+    { "src": "rulebook/share.html", "use": "@vercel/static" },
+    { "src": "rulebook/legal.html", "use": "@vercel/static" },
+    { "src": "rulebook/manifest.json", "use": "@vercel/static" },
+    { "src": "rulebook/service-worker.js", "use": "@vercel/static" },
+    { "src": "vision/index.html", "use": "@vercel/static" },
+    { "src": "thank-you.html", "use": "@vercel/static" },
+    { "src": "images/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/ask", "dest": "api/ask.js" },
+    { "src": "/api/shorten", "dest": "api/shorten.ts" },
+    { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
+    { "src": "/manifest.json", "dest": "/manifest.json" },
+    { "src": "/service-worker.js", "dest": "/service-worker.js" },
+    { "src": "/dist/output.css", "dest": "/dist/output.css" },
+    { "src": "/rulebook/share.html", "dest": "/rulebook/share.html" },
+    { "src": "/rulebook/legal.html", "dest": "/rulebook/legal.html" },
+    { "src": "/rulebook/manifest.json", "dest": "/rulebook/manifest.json" },
+    { "src": "/rulebook/service-worker.js", "dest": "/rulebook/service-worker.js" },
+    { "src": "/rulebook", "dest": "/rulebook/index.html" },
+    { "src": "/vision", "dest": "/vision/index.html" },
+    { "src": "/thank-you", "dest": "/thank-you.html" },
+    { "src": "/", "dest": "/index.html" }
+  ]
+}
