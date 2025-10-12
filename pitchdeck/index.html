@@ -1607,6 +1607,12 @@
             observer.observe(section);
         });
 
+        // Make first few sections visible immediately
+        const firstSections = document.querySelectorAll('#hero, #opportunity, #solution');
+        firstSections.forEach(section => {
+            section.classList.add('visible');
+        });
+
         handleTabs();
         handleGTMSteps();
         handlePreviewToggle();
