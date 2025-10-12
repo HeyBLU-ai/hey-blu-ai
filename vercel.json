@@ -36,6 +36,10 @@
     { "src": "pitchdeck3/index.html", "use": "@vercel/static" },
     { "src": "pitchdeck/assets/**", "use": "@vercel/static" },
     { "src": "pitchdeck/images/**", "use": "@vercel/static" },
+    { "src": "pitchdeck2/assets/**", "use": "@vercel/static" },
+    { "src": "pitchdeck2/images/**", "use": "@vercel/static" },
+    { "src": "pitchdeck3/assets/**", "use": "@vercel/static" },
+    { "src": "pitchdeck3/images/**", "use": "@vercel/static" },
     { "src": "vision/index.html", "use": "@vercel/static" },
     { "src": "thank-you.html", "use": "@vercel/static" },
     { "src": "images/**", "use": "@vercel/static" }
@@ -55,7 +59,9 @@
     { "src": "/pitchdeck", "dest": "/pitchdeck/index.html" },
     { "src": "/pitchdeck2", "dest": "/pitchdeck2/index.html" },
     { "src": "/pitchdeck3", "dest": "/pitchdeck3/index.html" },
-    { "src": "/pitchdeck/**", "dest": "/pitchdeck/$1" },
+    { "src": "/pitchdeck/(.*)", "dest": "/pitchdeck/$1" },
+    { "src": "/pitchdeck2/(.*)", "dest": "/pitchdeck2/$1" },
+    { "src": "/pitchdeck3/(.*)", "dest": "/pitchdeck3/$1" },
     { "src": "/vision", "dest": "/vision/index.html" },
     { "src": "/thank-you", "dest": "/thank-you.html" },
     { "src": "/", "dest": "/index.html" }
