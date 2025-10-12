@@ -1607,9 +1607,8 @@
             observer.observe(section);
         });
 
-        // Make first few sections visible immediately
-        const firstSections = document.querySelectorAll('#hero, #opportunity, #solution');
-        firstSections.forEach(section => {
+        // Make all sections visible immediately to fix image loading
+        sections.forEach(section => {
             section.classList.add('visible');
         });
 
