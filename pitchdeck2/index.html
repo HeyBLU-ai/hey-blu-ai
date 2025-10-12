@@ -518,23 +518,14 @@
         }, 1000);
 
         function createProfitabilityChart() {
-            if (window.profitabilityChart) {
-                console.log('Profitability chart already exists, skipping...');
-                return;
-            }
-            console.log('Creating profitability chart...');
             const ctx = document.getElementById('profitabilityChart')?.getContext('2d');
-            if (!ctx) {
-                console.error('Profitability chart canvas not found');
-                return;
-            }
+            if (!ctx) return;
             const chartData = {
                 labels: ['EOQ2 \'26', 'EOQ3 \'26', 'EOQ4 \'26', 'EOQ1 \'27', 'EOQ2 \'27', 'EOQ3 \'27', 'EOQ4 \'27'],
                 revenue: [37, 75, 113, 157, 194, 269, 294],
                 opex: [90, 112, 113, 169, 169, 169, 169]
             };
-            try {
-                window.profitabilityChart = new Chart(ctx, {
+            window.profitabilityChart = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: chartData.labels,
@@ -549,25 +540,12 @@
                         plugins: { legend: { position: 'bottom' } }
                     }
                 });
-                console.log('Profitability chart created successfully');
-            } catch (error) {
-                console.error('Error creating profitability chart:', error);
-            }
         }
 
         function createAskChart() {
-            if (window.askChart) {
-                console.log('Ask chart already exists, skipping...');
-                return;
-            }
-            console.log('Creating ask chart...');
             const ctx = document.getElementById('askChart')?.getContext('2d');
-            if (!ctx) {
-                console.error('Ask chart canvas not found');
-                return;
-            }
-            try {
-                window.askChart = new Chart(ctx, {
+            if (!ctx) return;
+            window.askChart = new Chart(ctx, {
                     type: 'doughnut',
                     data: {
                         labels: ['Product Development & R&D', 'Go-To-Market (Sales & Mktg)', 'Team Expansion & G&A'],
@@ -583,10 +561,6 @@
                         plugins: { legend: { position: 'bottom' } }
                     }
                 });
-                console.log('Ask chart created successfully');
-            } catch (error) {
-                console.error('Error creating ask chart:', error);
-            }
         }
     });
     </script>
