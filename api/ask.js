@@ -313,7 +313,9 @@ Answer:
 
   } catch (err) {
     console.error("ASK API ERROR:", err);
-    res.status(500).json({ error: "Something went wrong processing the rules." });
+    console.error("Error details:", err.message);
+    console.error("Stack trace:", err.stack);
+    res.status(500).json({ error: "Something went wrong processing the rules.", details: err.message });
   }
 };
 
