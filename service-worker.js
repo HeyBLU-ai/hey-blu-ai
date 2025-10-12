@@ -21,14 +21,23 @@ self.addEventListener('install', (event) => {
     caches.open(STATIC_CACHE)
       .then((cache) => {
         console.log('Service Worker: Caching static files');
-        return cache.addAll(STATIC_FILES);
+        // Cache files individually to handle 404s gracefully
+        return Promise.allSettled(
+          STATIC_FILES.map(url => 
+            cache.add(url).catch(err => {
+              console.warn(`Service Worker: Failed to cache ${url}:`, err);
+              return null; // Continue with other files
+            })
+          )
+        );
       })
       .then(() => {
-        console.log('Service Worker: Static files cached');
+        console.log('Service Worker: Static files cached (with errors handled)');
         return self.skipWaiting();
       })
       .catch((error) => {
         console.error('Service Worker: Error caching static files', error);
+        return self.skipWaiting(); // Continue even if caching fails
       })
   );
 });

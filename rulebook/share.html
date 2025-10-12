@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shared Rulebook Answer | HeyBLU.ai</title>
+    <link href="/dist/output.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            /* Subtle background pattern that evokes a blueprint or game plan */
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)),
+                linear-gradient(45deg, #eef2ff 25%, transparent 25%),
+                linear-gradient(-45deg, #eef2ff 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #eef2ff 75%),
+                linear-gradient(-45deg, transparent 75%, #eef2ff 75%);
+            background-size: 100%, 100%, 40px 40px, 40px 40px, 40px 40px, 40px 40px;
+        }
+        .hero-gradient-text {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        /* Animation for the card to appear gracefully */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+        /* Style for the answer content */
+        .answer-content p {
+            margin-bottom: 1rem;
+        }
+        .answer-content blockquote {
+            font-style: italic;
+            border-left: 4px solid #3b82f6;
+            padding-left: 1rem;
+            margin: 1.5rem 0;
+            color: #475569;
+        }
+        .answer-content .rule-quote {
+             font-style: italic;
+             color: #374151;
+             margin-top: 1.5rem;
+             padding-top: 1.5rem;
+             border-top: 1px solid #e5e7eb;
+             font-size: 1rem;
+             line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased">
+
+    <!-- Header -->
+    <header class="bg-white/80 backdrop-blur-lg sticky top-0 z-20 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3">
+                     <svg class="w-8 h-8 text-blue-600" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M21 6c0-1.657-1.343-3-3-3h-12c-1.657 0-3 1.343-3 3v8c0 1.657 1.343 3 3 3h2v4l5-4h5c1.657 0 3-1.343 3-3v-8z"/>
+                    </svg>
+                    <span class="font-bold text-xl text-gray-900">HeyBLU.ai</span>
+                </a>
+                <a href="/rulebook/" class="bg-blue-600 text-white font-bold py-2 px-5 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 transform hover:scale-105">
+                    Ask a Rule
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center py-12 md:py-20 px-4">
+        
+        <div class="text-center mb-8 max-w-2xl">
+            <p class="text-lg text-gray-600">A rule clarification was shared with you.</p>
+            <h1 class="text-4xl md:text-5xl font-extrabold hero-gradient-text mt-2">End the Debate.</h1>
+        </div>
+
+        <!-- The main Q&A card -->
+        <div id="qa-container" class="bg-white rounded-2xl p-6 sm:p-10 shadow-2xl max-w-2xl w-full border border-gray-200 fade-in">
+            <div class="flex items-center gap-4 mb-4">
+                <div class="bg-blue-100 text-blue-700 p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800" id="question"></h2>
+            </div>
+            
+            <hr class="my-6 border-gray-200">
+            
+            <div id="answer" class="text-gray-700 text-lg leading-relaxed answer-content"></div>
+            
+            <!-- Listen Button -->
+            <div class="mt-4 flex justify-center">
+                <button id="listen-button" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 flex items-center gap-2">
+                    <span>🔈</span>
+                    <span>Listen</span>
+                </button>
+            </div>
+
+            <!-- Per-Answer Disclaimer -->
+            <div id="rule-disclaimer" class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg" style="display: none;">
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    <strong>Disclaimer:</strong> This answer references <span id="disclaimer-league" class="font-medium"></span> rules. 
+                    For the complete, official rulebook, visit <a id="disclaimer-link" href="#" target="_blank" rel="noopener" class="text-blue-600 hover:underline">official website</a>. 
+                    This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
+                </p>
+            </div>
+
+            <div class="mt-8 pt-6 border-t-2 border-dashed border-gray-200">
+                <p class="text-md text-gray-500">
+                    Verified for <b id="league" class="text-blue-600 font-semibold"></b> rules by HeyBLU.ai
+                </p>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="bg-white/80 backdrop-blur-lg border border-gray-200 rounded-2xl p-8 shadow-xl max-w-2xl w-full mt-12 text-center fade-in" style="animation-delay: 0.2s;">
+            <h3 class="text-2xl md:text-3xl font-bold text-gray-900">Tired of sideline arguments?</h3>
+            <p class="text-lg text-gray-600 mt-3 max-w-xl mx-auto">
+                HeyBLU is an AI Umpire that gives you instant, official answers to any rule question. For any league.
+            </p>
+            <a href="/rulebook/" class="mt-6 inline-block px-8 py-4 bg-blue-600 text-white rounded-lg text-lg font-bold shadow-lg hover:bg-blue-700 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-blue-300 transition-all duration-200">
+                Ask Your Own Question &rarr;
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-transparent py-8 text-center">
+        <div class="max-w-2xl mx-auto px-4">
+            <p class="text-gray-500 text-sm mb-2">
+                &copy; <span id="year"></span> HeyBLU.ai &mdash; All rights reserved.
+            </p>
+            <div class="flex justify-center gap-4 text-sm">
+                <a href="/" class="text-blue-600 hover:underline">Home</a>
+                <a href="/rulebook/legal.html" class="text-blue-600 hover:underline">Legal Information</a>
+            </div>
+            <p class="text-gray-400 text-xs mt-2">
+                This tool provides rule interpretations for educational purposes only. 
+                For official rules, please refer to the respective governing bodies.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // --- TEXT-TO-SPEECH FUNCTION ---
+        function speakFirstSentence(text) {
+            if (!text) return;
+            
+            try {
+                // Extract only the natural language explanation (before "Rule X:")
+                let naturalLanguage = text;
+                const ruleMatch = text.match(/Rule \d+:/);
+                if (ruleMatch) {
+                    naturalLanguage = text.split(ruleMatch[0])[0].trim();
+                }
+                // Remove any markdown or HTML tags if present
+                const strippedText = naturalLanguage.replace(/<[^>]*>/g, '').trim();
+                // Only speak the first sentence or two (roughly 200 characters max)
+                const shortText = strippedText.split(/[.?!]/).slice(0, 2).join('. ') + '.';
+                const utterance = new SpeechSynthesisUtterance(shortText);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                utterance.pitch = 1.05;
+                utterance.volume = 0.95;
+                // Always use the preferred American English voice if available
+                const voices = speechSynthesis.getVoices();
+                const preferred = voices.find(v => v.name === 'English United States (en_US)');
+                if (preferred) {
+                    utterance.voice = preferred;
+                    console.log('Using preferred voice:', preferred.name);
+                }
+                speechSynthesis.speak(utterance);
+            } catch (error) {
+                console.error('Error in speakFirstSentence:', error);
+                console.error('Text that caused error:', text);
+            }
+        }
+
+        // This function formats the answer text, looking for rule citations.
+        // It's a simplified version from your rulebook page for consistency.
+        function formatAnswerText(text) {
+            const parts = text.split(/Rule \d+:/);
+            if (parts.length > 1) {
+                const ruleMatch = text.match(/Rule \d+:/);
+                const ruleNumber = ruleMatch[0];
+                const naturalLanguage = parts[0].trim();
+                const quotedRule = ruleNumber + parts[1].trim();
+                return `<p>${naturalLanguage}</p><div class="rule-quote">${quotedRule}</div>`;
+            }
+            // If no specific "Rule X:" format, just wrap in a paragraph.
+            return `<p>${text}</p>`;
+        }
+
+        // League-specific disclaimer information
+        const leagueDisclaimers = {
+            'MLB': {
+                name: 'Major League Baseball (MLB)',
+                link: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
+                text: 'MLB Official Rules'
+            },
+            'Little League': {
+                name: 'Little League International',
+                link: 'https://www.littleleague.org/playing-rules/',
+                text: 'Little League Official Rules'
+            },
+            'Little League International': {
+                name: 'Little League International',
+                link: 'https://www.littleleague.org/playing-rules/',
+                text: 'Little League Official Rules'
+            },
+            'USSSA': {
+                name: 'USSSA (United States Specialty Sports Association)',
+                link: 'https://www.usssa.com/baseball/rules/',
+                text: 'USSSA Baseball Rules'
+            },
+            'Mill Valley AAA': {
+                name: 'Mill Valley AAA',
+                link: 'https://www.littleleague.org/playing-rules/',
+                text: 'Little League Official Rules (with local modifications)'
+            },
+            'BAMSBL': {
+                name: 'BAMSBL',
+                link: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
+                text: 'MLB Official Rules (with local modifications)'
+            }
+        };
+
+        window.onload = () => {
+            const params = new URLSearchParams(window.location.search);
+            let question = 'No question provided.';
+            let answer = 'No answer provided.';
+            let league = 'Not specified';
+            
+            // Store the answer text for speech functionality
+            let answerTextForSpeech = '';
+
+            // Use try-catch blocks for robust Base64 decoding
+            try {
+                // The 'q', 'a', and 'l' parameters are expected to be Base64 encoded
+                const qParam = params.get('q');
+                if (qParam) question = atob(qParam);
+            } catch (e) { 
+                console.error("Failed to decode question:", e);
+                question = 'Error: Invalid question format.';
+            }
+
+            try {
+                const aParam = params.get('a');
+                if (aParam) {
+                    answer = atob(aParam);
+                    answerTextForSpeech = answer; // Store for speech functionality
+                }
+            } catch (e) { 
+                console.error("Failed to decode answer:", e);
+                answer = 'Error: Invalid answer format.';
+                answerTextForSpeech = answer;
+            }
+
+            try {
+                const lParam = params.get('l');
+                if (lParam) league = atob(lParam);
+            } catch (e) { 
+                console.error("Failed to decode league:", e);
+                league = 'Error: Invalid league format.';
+            }
+            
+            // Populate the elements on the page with the decoded data
+            document.getElementById('question').textContent = question;
+            // Use marked.parse to safely render any markdown from the answer
+            document.getElementById('answer').innerHTML = marked.parse(formatAnswerText(answer));
+            document.getElementById('league').textContent = league;
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Set up the per-answer disclaimer
+            const disclaimerDiv = document.getElementById('rule-disclaimer');
+            const disclaimerLeague = document.getElementById('disclaimer-league');
+            const disclaimerLink = document.getElementById('disclaimer-link');
+            
+            // Find the appropriate disclaimer info for this league
+            const disclaimerInfo = leagueDisclaimers[league] || {
+                name: league,
+                link: 'https://heyblu.ai/legal.html',
+                text: 'official rulebook'
+            };
+            
+            // Populate the disclaimer
+            disclaimerLeague.textContent = disclaimerInfo.name;
+            disclaimerLink.href = disclaimerInfo.link;
+            disclaimerLink.textContent = disclaimerInfo.text;
+            
+            // Show the disclaimer
+            disclaimerDiv.style.display = 'block';
+            
+            // Add event listener for the Listen button
+            const listenButton = document.getElementById('listen-button');
+            if (listenButton) {
+                listenButton.addEventListener('click', () => {
+                    console.log("Listen button clicked, text:", answerTextForSpeech);
+                    speakFirstSentence(answerTextForSpeech);
+                });
+            }
+        };
+    </script>
+</body>
+</html>
