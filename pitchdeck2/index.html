@@ -511,7 +511,17 @@
 
         slides.forEach(slide => observer.observe(slide));
 
+        // Create charts immediately on page load (fallback)
+        setTimeout(() => {
+            createProfitabilityChart();
+            createAskChart();
+        }, 1000);
+
         function createProfitabilityChart() {
+            if (window.profitabilityChart) {
+                console.log('Profitability chart already exists, skipping...');
+                return;
+            }
             console.log('Creating profitability chart...');
             const ctx = document.getElementById('profitabilityChart')?.getContext('2d');
             if (!ctx) {
@@ -546,6 +556,10 @@
         }
 
         function createAskChart() {
+            if (window.askChart) {
+                console.log('Ask chart already exists, skipping...');
+                return;
+            }
             console.log('Creating ask chart...');
             const ctx = document.getElementById('askChart')?.getContext('2d');
             if (!ctx) {
