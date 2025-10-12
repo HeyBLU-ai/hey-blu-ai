@@ -6,8 +6,8 @@
   <title>HeyBLU.AI Rulebook Assistant</title>
   
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="/images/BLU_B_logo2.png">
-  <link rel="shortcut icon" href="/images/BLU_B_logo2.png">
+  <link rel="icon" type="image/x-icon" href="/images/BLU_B_logo2.png">
+  <link rel="shortcut icon" type="image/x-icon" href="/images/BLU_B_logo2.png">
   
   <!-- PWA Meta Tags -->
   <meta name="description" content="Instant baseball and softball rule answers powered by AI">
@@ -24,10 +24,7 @@
   <link rel="manifest" href="./manifest.json">
   
   <!-- Apple Touch Icons -->
-  <link rel="apple-touch-icon" href="/images/BLU_B_logo2.png">
-  <link rel="apple-touch-icon" sizes="152x152" href="/images/BLU_B_logo2.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/BLU_B_logo2.png">
-  <link rel="apple-touch-icon" sizes="167x167" href="/images/BLU_B_logo2.png">
   
   <!-- iOS Splash Screens -->
   <link rel="apple-touch-startup-image" href="/images/BLU_B_logo2.png">
@@ -41,8 +38,6 @@
   <!-- iOS Web App Title -->
   <meta name="apple-mobile-web-app-title" content="HeyBLU">
   
-  <!-- iOS Icon Precomposed (prevents iOS from adding effects) -->
-  <link rel="apple-touch-icon-precomposed" href="/images/BLU_B_logo2.png">
   <link href="/dist/output.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
@@ -51,6 +46,7 @@
   <style>
     /* Base styles from index.html (modern design) */
     body { font-family: 'Inter', sans-serif; background: #f5f7fa; color: #1e293b; margin: 0; padding: 0; }
+    
     .gradient-text {
       background: -webkit-linear-gradient(45deg, #3b82f6, #1e40af);
       -webkit-background-clip: text;
@@ -533,8 +529,8 @@
                         <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
                             Request My League
                         </button>
-                    </div>
-                </form>
+          </div>
+      </form>
             </div>
          </div>
     </section>
@@ -1060,7 +1056,7 @@
       recognition.lang = "en-US";
       recognition.interimResults = true; // Enable interim results for silence detection
       recognition.maxAlternatives = 1;
-      
+
       // Silence detection variables
       let silenceTimer;
       let lastSpeechTime;
@@ -1082,8 +1078,8 @@
           
         } catch (err) {
           console.error("Voice recognition error:", err);
-          micButton.textContent = "🎤 Ask by Voice";
-          micButton.disabled = false;
+            micButton.textContent = "🎤 Ask by Voice";
+            micButton.disabled = false;
           submitButton.disabled = false;
           questionInput.disabled = false;
           clearTimeout(silenceTimer);
@@ -1094,9 +1090,9 @@
         
         // Check if this is a final result
         if (event.results[0].isFinal) {
-          const transcript = event.results[0][0].transcript;
+        const transcript = event.results[0][0].transcript;
           console.log("Final transcript:", transcript);
-          questionInput.value = transcript;
+        questionInput.value = transcript;
           micButton.textContent = "🎤 Ask by Voice";
           micButton.disabled = false;
           submitButton.disabled = false;
@@ -1124,7 +1120,7 @@
         clearTimeout(silenceTimer);
         silenceTimer = null;
       };
-      
+
       recognition.onerror = (event) => {
         console.error("Voice recognition error:", event.error);
         console.error("Error details:", event);
