@@ -1,5 +1,5 @@
 {
-  "name": "rulebook-api",
+  "name": "hey-blu-ai",
   "version": "1.0.0",
   "type": "module",
   "main": "api/ask.js",
@@ -7,7 +7,8 @@
     "start": "node api/ask.js",
     "build": "tsc",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
-    "vercel-build": "npm run build && npm run build:css"
+    "vercel-build": "npm run build && npm run build:css",
+    "dev": "vercel dev"
   },
   "dependencies": {
     "dotenv": "^17.1.0",
