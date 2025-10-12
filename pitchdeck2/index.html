@@ -512,49 +512,67 @@
         slides.forEach(slide => observer.observe(slide));
 
         function createProfitabilityChart() {
+            console.log('Creating profitability chart...');
             const ctx = document.getElementById('profitabilityChart')?.getContext('2d');
-            if (!ctx) return;
+            if (!ctx) {
+                console.error('Profitability chart canvas not found');
+                return;
+            }
             const chartData = {
                 labels: ['EOQ2 \'26', 'EOQ3 \'26', 'EOQ4 \'26', 'EOQ1 \'27', 'EOQ2 \'27', 'EOQ3 \'27', 'EOQ4 \'27'],
                 revenue: [37, 75, 113, 157, 194, 269, 294],
                 opex: [90, 112, 113, 169, 169, 169, 169]
             };
-            window.profitabilityChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [
-                        { label: 'Monthly Revenue ($k)', data: chartData.revenue, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 },
-                        { label: 'Monthly Opex ($k)', data: chartData.opex, borderColor: '#e11d48', backgroundColor: 'rgba(225, 29, 72, 0.1)', fill: false, tension: 0.3 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: { y: { beginAtZero: true, ticks: { callback: value => '$' + value + 'k' } } },
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
+            try {
+                window.profitabilityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            { label: 'Monthly Revenue ($k)', data: chartData.revenue, borderColor: '#4f46e5', backgroundColor: 'rgba(79, 70, 229, 0.1)', fill: true, tension: 0.3 },
+                            { label: 'Monthly Opex ($k)', data: chartData.opex, borderColor: '#e11d48', backgroundColor: 'rgba(225, 29, 72, 0.1)', fill: false, tension: 0.3 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { beginAtZero: true, ticks: { callback: value => '$' + value + 'k' } } },
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+                console.log('Profitability chart created successfully');
+            } catch (error) {
+                console.error('Error creating profitability chart:', error);
+            }
         }
 
         function createAskChart() {
+            console.log('Creating ask chart...');
             const ctx = document.getElementById('askChart')?.getContext('2d');
-            if (!ctx) return;
-            window.askChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Product Development & R&D', 'Go-To-Market (Sales & Mktg)', 'Team Expansion & G&A'],
-                    datasets: [{
-                        data: [50, 30, 20],
-                        backgroundColor: ['#4f46e5', '#7c3aed', '#a78bfa'],
-                        borderColor: '#ffffff',
-                        borderWidth: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { position: 'bottom' } }
-                }
-            });
+            if (!ctx) {
+                console.error('Ask chart canvas not found');
+                return;
+            }
+            try {
+                window.askChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Product Development & R&D', 'Go-To-Market (Sales & Mktg)', 'Team Expansion & G&A'],
+                        datasets: [{
+                            data: [50, 30, 20],
+                            backgroundColor: ['#4f46e5', '#7c3aed', '#a78bfa'],
+                            borderColor: '#ffffff',
+                            borderWidth: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { position: 'bottom' } }
+                    }
+                });
+                console.log('Ask chart created successfully');
+            } catch (error) {
+                console.error('Error creating ask chart:', error);
+            }
         }
     });
     </script>
