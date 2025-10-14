@@ -326,6 +326,51 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/heyblu_dev
 - Export to Beehiiv for newsletter campaigns
 - Track conversion rates
 
+## 🖼️ Image Serving Issues & Solutions
+
+### Common Image Problems
+
+#### External Image URLs Not Loading
+**Problem**: Images from external sources (Google Cloud Storage, etc.) may not load due to CORS restrictions or billing issues.
+
+**Solution**: Always use local images in the project directory structure:
+```html
+<!-- ❌ Don't use external URLs -->
+<img src="https://storage.googleapis.com/context-images/image.jpg" alt="...">
+
+<!-- ✅ Use local images -->
+<img src="images/image.jpg" alt="...">
+```
+
+#### Image Directory Structure
+For pitchdecks, create a local `images/` directory:
+```
+pitchdeck4/
+├── index.html
+└── images/
+    ├── image1.jpg
+    └── image2.jpg
+```
+
+#### Vercel Configuration for Images
+Ensure `vercel.json` includes static asset routing:
+```json
+{
+  "builds": [
+    { "src": "pitchdeck4/images/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/pitchdeck4/(.*)", "dest": "/pitchdeck4/$1" }
+  ]
+}
+```
+
+### Image Optimization Best Practices
+- Use WebP format when possible
+- Compress images before adding to repository
+- Use descriptive alt text for accessibility
+- Test image loading in production environment
+
 ## 🚨 Error Handling & Monitoring
 
 ### Vercel Function Logs
