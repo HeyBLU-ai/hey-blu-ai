@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyBLU: The AI Assistant for Amateur Baseball - Investor Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        .slide-content {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            max-width: 1400px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            position: relative;
+        }
+        .page-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .metric-card {
+            background: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.2);
+        }
+        .proof-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #ecfdf5; /* green-50 */
+            color: #059669; /* green-700 */
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: 1px solid #6ee7b7; /* green-300 */
+        }
+        .urgency-pill {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
+        }
+        .vision-arrow {
+            font-size: 2rem;
+            color: #9ca3af; /* gray-400 */
+            margin: 0 1rem;
+            align-self: center;
+        }
+        nav {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1; /* slate-300 */
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active {
+            background: #1e3a8a; /* blue-800 */
+            transform: scale(1.3);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide 1: Title -->
+    <section class="slide" id="slide-1">
+        <div class="slide-content">
+            <div class="page-number">1/10</div>
+            <div class="text-center">
+                <h1 style="font-size: 48px; font-weight: bold; color: #1e3a8a;">HeyBLU</h1>
+                <p style="font-size: 24px; color: #334155;">The AI Assistant for Amateur Baseball</p>
+                <p class="text-lg text-slate-600 mt-6 max-w-3xl mx-auto">
+                    Delivering automated, accurate ball & strike calls to every field using just an iPhone.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 2: The Vision -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="page-number">2/10</div>
+            <div class="text-center">
+                <h2 style="font-size: 36px; font-weight: bold; color: #1e3a8a;">We're Not Just Calling Pitches. We're Building the OS for Baseball.</h2>
+                <p class="text-xl text-slate-600 mt-8 max-w-4xl mx-auto">
+                    Our vision is to become the essential technology platform for amateur baseball. We start by solving the umpire's biggest problem—the ball-strike call—which unlocks the objective data that every other stakeholder in the game craves.
+                </p>
+                
+                <div class="grid md:grid-cols-3 gap-8 mt-12">
+                    <div class="metric-card text-center">
+                        <div class="text-4xl mb-4">👨‍⚖️</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">For Officials</h3>
+                        <p class="text-slate-600">Restore confidence and authority with a powerful AI co-pilot.</p>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-4xl mb-4">🏆</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">For Coaches & Players</h3>
+                        <p class="text-slate-600">Unlock pro-level analytics to accelerate development and gain a competitive edge.</p>
+                    </div>
+                    <div class="metric-card text-center">
+                        <div class="text-4xl mb-4">⚾</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">For Leagues</h3>
+                        <p class="text-slate-600">Bring fairness, transparency, and a solution to the umpire shortage back to the field.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: The Problem -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <div class="page-number">3/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Problem</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    According to the National Federation of State High School Associations (NFHS), nearly 80% of officials quit within their first two years, largely due to verbal abuse from parents and coaches. This trend is creating a critical shortage across all youth sports.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">❌</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Game Cancellations</h3>
+                    <p class="text-slate-600">Leagues are increasingly forced to cancel or reschedule games due to a lack of certified umpires.</p>
+                </div>
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">⚠️</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Inconsistent Officiating</h3>
+                    <p class="text-slate-600">Parents and coaches with no training are often forced to officiate, leading to inconsistent strike zones and rising on-field disputes.</p>
+                </div>
+                <div class="metric-card">
+                    <div class="text-4xl mb-4">🔄</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">High Turnover</h3>
+                    <p class="text-slate-600">The high-pressure, low-support environment makes it nearly impossible to recruit and retain new umpires, worsening the cycle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: The Solution -->
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <div class="page-number">4/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Solution</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    HeyBLU is an AI-powered iPhone app that gives umpires a perfect view of the strike zone. It acts as a co-pilot, not a replacement, delivering discreet, real-time ball-and-strike calls via an earbud. The umpire remains in complete control, backed by objective data.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">⚡</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Instant & Objective</h3>
+                    <p class="text-slate-600">On-device AI delivers calls instantly, removing human bias from the most contentious part of the game.</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Effortless Setup</h3>
+                    <p class="text-slate-600">Setup in seconds: position your tripod, perform a brief field scan with the app, and press play.</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">👥</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Recruit & Retain Umpires</h3>
+                    <p class="text-slate-600">By reducing on-field conflict and providing a powerful training tool, BLU makes it easier to recruit and retain the next generation of officials.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: How It Works (Product) -->
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <div class="page-number">5/10</div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 style="font-size: 24px; font-weight: bold; color: #1e3a8a;">Key Features & Technology</h3>
+                    <ul class="space-y-4 mt-6">
+                        <li class="flex items-start">
+                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                            <div>
+                                <strong>Adaptive Strike Zone:</strong> AI automatically adjusts the strike zone for each batter's height and stance.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                            <div>
+                                <strong>On-Device Processing:</strong> Core ball/strike calls run entirely on the iPhone, requiring no Wi-Fi or cell service for in-game use. Premium analytics like heatmaps sync to the cloud post-game.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                            <div>
+                                <strong>Privacy by Design:</strong> No video is sent to the cloud, ensuring total privacy for minors.
+                            </div>
+                        </li>
+                    </ul>
+                    
+                    <h3 style="font-size: 24px; font-weight: bold; color: #1e3a8a; margin-top: 20px;">Upcoming Milestones</h3>
+                    <ul class="space-y-2 mt-4">
+                        <li class="flex items-start">
+                            <span class="text-green-600 mr-3 mt-1">•</span>
+                            <div>
+                                <strong>November 15, 2025:</strong> New CV model and UI complete, initiating beta testing with signed pilot organizations.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <img src="https://storage.googleapis.com/context-images/2025-blu-pitch-deck-page-4.jpg" alt="A screenshot of the BLU app interface showing the strike zone overlay during a baseball game." style="width: 100%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Traction & Credibility (De-Risking) -->
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <div class="page-number">6/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Traction & Credibility (De-Risking)</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Market Belief & Insider Backing</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong>$329k Raised</strong> on a $400k SAFE from friends, family, and strategic insiders.</li>
+                        <li><strong>Investment secured</strong> from MLB SF Giants executives and former pro baseball players.</li>
+                    </ul>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Technical Viability & Defensibility</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong>Successful Proof of Concept</strong> with on-field performance that proves the core technology is viable on standard iPhones.</li>
+                        <li><strong>Patent-pending Umpire Assist technology</strong> filed to protect our unique approach and create a strong moat.</li>
+                    </ul>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Commercial Momentum</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong>Clear 90-Day Roadmap</strong> to Revenue with a full commercial launch planned for Q1 2026.</li>
+                        <li><strong>Beta testing slots confirmed</strong> with pilot organizations, ready for deployment post-November 15.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Go-to-Market Plan -->
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <div class="page-number">7/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Go-to-Market Plan</h2>
+            </div>
+            
+            <div class="space-y-8">
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 1: The Wedge (Empower Umpires - Free)</h3>
+                    <p class="text-slate-600 mb-4">Distribute the Umpire Assist feature for free to officials and associations starting in Q1 2026.</p>
+                    <p class="text-slate-600"><strong>Goal:</strong> Get on every field and become the trusted "co-pilot," making games fairer and reducing conflict.</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 2: The Hook (Monetize Data - Paid Team Subscriptions)</h3>
+                    <p class="text-slate-600 mb-4">Every pitch generates valuable data (heatmaps, location tendencies). Coaches in both dugouts see this data is available and can upgrade to a premium team subscription to unlock it for in-game strategy and post-game analysis.</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 3: The Catalyst & Scale (Jan-April 2026)</h3>
+                    <ul class="space-y-2 text-slate-600">
+                        <li><strong>Jan 5-8:</strong> Publicly launch and take pre-orders at the ABCA Convention.</li>
+                        <li><strong>March/April:</strong> Fulfill pre-orders for "Opening Day" and launch targeted ads to scale the user base. As teams adopt the tech, pressure builds for entire leagues and tournaments to standardize on BLU.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Market Opportunity -->
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <div class="page-number">8/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Market Opportunity</h2>
+            </div>
+            
+            <div class="flex items-center justify-center gap-16 mb-12">
+                <div class="text-center">
+                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">5M+</p>
+                    <p style="font-size: 18px; color: #334155;">Youth Baseball Players</p>
+                </div>
+                <div class="text-center">
+                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">600k+</p>
+                    <p style="font-size: 18px; color: #334155;">Organized Teams</p>
+                </div>
+                <div class="text-center">
+                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">$500M+</p>
+                    <p style="font-size: 18px; color: #334155;">Spent Annually on Umpire Fees</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    Our beachhead is the 4.5 million players in organized leagues. Capturing just ~3% of this market puts us on a clear path to achieving over <strong>$25M in Annual Recurring Revenue</strong>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: The Team -->
+    <section class="slide" id="slide-9">
+        <div class="slide-content">
+            <div class="page-number">9/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Team</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Rob Regan, Co-Founder & CEO</h3>
+                    <p class="text-slate-600">20+ years as a real estate entrepreneur and 10 years in tech/media ad sales. Drives product vision, marketing, and day-to-day execution. A Little League coach and active adult baseball player.</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Jonathan (JP) Parkhurst, CRO</h3>
+                    <p class="text-slate-600">20+ year global sales leader with a proven record of scaling revenue at companies like WeWork and GoPro. Expert in building mission-driven GTM strategies.</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Mike Milmoe, Co-Founder & Strategic Advisor</h3>
+                    <p class="text-slate-600">Former professional baseball player and Nigerian National Head Coach. Brings deep SaaS and FinTech expertise.</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">Brian Marcus, Strategic Advisor, IP & Innovation</h3>
+                    <p class="text-slate-600">The lead patent attorney behind the NFL's televised 1st-down marker. Advises on IP strategy and has filed all BLU patents and trademarks.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: The Ask & Use of Funds -->
+    <section class="slide" id="slide-10">
+        <div class="slide-content">
+            <div class="page-number">10/10</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Ask & Use of Funds</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    We are closing the final $71k of our $400k SAFE round and are seeking a strategic investor to lead our upcoming Seed Round. We believe in milestone-driven funding and welcome a discussion around a tranche-based investment structure. An initial investment will provide an 18-month runway to execute our GTM plan and achieve the key milestones that de-risk the opportunity for a larger round.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h3 style="font-size: 24px; font-weight: bold; color: #1e3a8a;">Our Partnership Ask</h3>
+                    <ul class="space-y-3 mt-4 text-slate-600">
+                        <li><strong>Anchor the Round:</strong> Provide the initial, catalytic capital to fund our 90-day GTM launch.</li>
+                        <li><strong>Tranche-Based Investment:</strong> Structure a larger round with follow-on capital tied to achieving key milestones (e.g., successful ABCA launch, 100+ pre-orders, 10+ paid league contracts).</li>
+                        <li><strong>Strategic Introductions:</strong> We highly value partners who can provide "big intros" to their investor network.</li>
+                    </ul>
+                </div>
+                <div class="text-center">
+                    <h3 style="font-size: 24px; font-weight: bold; color: #1e3a8a;">Use of Funds</h3>
+                    <img src="https://storage.googleapis.com/context-images/2025-blu-pitch-deck-page-11.jpg" alt="A pie chart showing the allocation of funds: 85% to Engineering & Development, 10% to Sales & Marketing, and 5% to Operations & Legal." style="width: 80%; margin: 0 auto;">
+                    <p style="font-size: 14px; color: #334155;"><strong>85% Engineering & Development</strong> | <strong>10% Sales & Marketing</strong> | <strong>5% Operations & Legal</strong></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <nav id="nav-dots"></nav>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.slide');
+        const navContainer = document.getElementById('nav-dots');
+
+        slides.forEach((slide, index) => {
+            const dot = document.createElement('a');
+            dot.href = `#${slide.id}`;
+            dot.classList.add('nav-dot');
+            if (index === 0) dot.classList.add('active');
+            navContainer.appendChild(dot);
+        });
+
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const activeDot = document.querySelector(`.nav-dot[href="#${id}"]`);
+                    
+                    navDots.forEach(d => d.classList.remove('active'));
+                    if(activeDot) activeDot.classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => observer.observe(slide));
+    });
+    </script>
+</body>
+</html>
