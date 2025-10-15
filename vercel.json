@@ -37,7 +37,6 @@
     { "src": "pitchdeck3/index.html", "use": "@vercel/static" },
     { "src": "pitchdeck4/index.html", "use": "@vercel/static" },
     { "src": "pitchdeck5/index.html", "use": "@vercel/static" },
-    { "src": "pitchdeck5/output.css", "use": "@vercel/static" },
     { "src": "revenuesprint/index.html", "use": "@vercel/static" },
     { "src": "pitchdeck/assets/**", "use": "@vercel/static" },
     { "src": "pitchdeck/images/**", "use": "@vercel/static" },
