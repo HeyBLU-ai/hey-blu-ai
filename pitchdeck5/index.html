@@ -15,23 +15,35 @@
             background-color: #f1f5f9; /* slate-100 */
         }
         .slide {
-            height: 85vh;
+            min-height: 85vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 1rem;
             position: relative;
             margin-bottom: 15vh;
         }
+        @media (min-width: 768px) {
+            .slide {
+                height: 85vh;
+                padding: 2rem;
+            }
+        }
         .slide-content {
             background: white;
-            border-radius: 24px;
-            padding: 3rem;
+            border-radius: 16px;
+            padding: 1.5rem;
             max-width: 1400px;
             width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             border: 1px solid #e2e8f0;
             position: relative;
+        }
+        @media (min-width: 768px) {
+            .slide-content {
+                border-radius: 24px;
+                padding: 3rem;
+            }
         }
         .page-number {
             position: absolute;
@@ -46,6 +58,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            color: #1e3a8a; /* Fallback for browsers that don't support background-clip: text */
+        }
+        @supports not (background-clip: text) {
+            .gradient-text {
+                background: none;
+                color: #1e3a8a;
+            }
         }
         .metric-card {
             background: #f8fafc; /* slate-50 */
@@ -88,17 +107,34 @@
         }
         nav {
             position: fixed;
-            bottom: 2rem;
+            bottom: 1rem;
             left: 50%;
             transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
-            padding: 0.75rem 1.5rem;
+            -webkit-backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
             border-radius: 999px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             z-index: 50;
             display: flex;
-            gap: 0.5rem;
+            gap: 0.25rem;
+            max-width: 90vw;
+            overflow-x: auto;
+        }
+        @supports not (backdrop-filter: blur(10px)) {
+            nav {
+                background: rgba(255, 255, 255, 0.98);
+            }
+        }
+        @media (min-width: 768px) {
+            nav {
+                bottom: 2rem;
+                padding: 0.75rem 1.5rem;
+                gap: 0.5rem;
+                max-width: none;
+                overflow-x: visible;
+            }
         }
         .nav-dot {
             width: 12px;
@@ -120,15 +156,15 @@
     <section class="slide" id="slide-1">
         <div class="slide-content">
                 <div class="page-number">1/12</div>
-            <div class="grid md:grid-cols-2 gap-12 items-center h-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center h-full">
                 <!-- Left side: Text content -->
-                <div class="space-y-8">
+                <div class="space-y-6 md:space-y-8">
                     <div>
-                        <h1 style="font-size: 72px; font-weight: 900; margin-bottom: 1rem; letter-spacing: -0.02em; line-height: 0.9;"><span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span></h1>
-                        <p style="font-size: 36px; color: #334155; font-weight: 600; margin-bottom: 2rem; line-height: 1.1;">The AI Assistant for Amateur Baseball</p>
+                        <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight leading-tight"><span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span></h1>
+                        <p class="text-xl md:text-3xl lg:text-4xl text-slate-600 font-semibold mb-8 leading-tight">The AI Assistant for Amateur Baseball</p>
                     </div>
                     
-                    <p class="text-2xl text-slate-600 leading-relaxed">
+                    <p class="text-lg md:text-xl lg:text-2xl text-slate-600 leading-relaxed">
                         Delivering automated ball &amp; strike calls to every field using just an iPhone.
                     </p>
                     
@@ -141,7 +177,7 @@
                     
                     <!-- Call to action button -->
                     <div class="pt-4">
-                        <a href="https://drive.google.com/file/d/1y-vXa0esXfRkS4JFED2_GbL0mKLtw6TX/view?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-full text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                        <a href="https://drive.google.com/file/d/1y-vXa0esXfRkS4JFED2_GbL0mKLtw6TX/view?usp=sharing" target="_blank" class="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 md:px-8 md:py-4 rounded-full text-base md:text-lg font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
                             See It In Action →
                         </a>
                     </div>
@@ -163,9 +199,9 @@
     <section class="slide" id="slide-2">
         <div class="slide-content">
                 <div class="page-number">2/12</div>
-            <div class="grid md:grid-cols-2 gap-12 items-center h-full">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center h-full">
                 <!-- Left side: Problem content -->
-                <div class="space-y-8">
+                <div class="space-y-6 md:space-y-8">
                     <div>
                         <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">The Problem</h2>
                         <p class="text-2xl text-slate-600 leading-relaxed">
@@ -224,7 +260,7 @@
                 <img src="images/blu-heatmap.jpg" alt="HeyBLU heatmap showing pitch analysis and data insights" class="max-w-4xl h-auto rounded-lg shadow-lg">
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="metric-card text-center">
                     <div class="text-4xl mb-4">⚡</div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Instant &amp; Objective</h3>
@@ -251,7 +287,7 @@
             <div class="text-center mb-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">How it Works</h2>
             </div>
-            <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
                     <h3 class="text-2xl font-bold text-slate-900 mb-4">Key Features &amp; Technology</h3>
                     <ul class="space-y-4 mt-6">
@@ -343,7 +379,7 @@
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Traction &amp; Credibility (De-Risking)</h2>
             </div>
 
-            <div class="grid md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="metric-card">
                     <h3 class="text-xl font-bold text-slate-900 mb-4">Market Belief &amp; Insider Backing</h3>
                     <ul class="space-y-3 text-slate-600">
@@ -414,7 +450,7 @@
             <div class="space-y-8">
                 <!-- Phase 1 -->
                 <div class="metric-card">
-                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
                         <div>
                             <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 1: The Wedge (Validate with Umpires — Free Beta)</h3>
                             <p class="text-slate-600 mb-4">Distribute the Umpire Assist feature for free to our 12 pilot partners in Q1 2026.</p>
@@ -428,7 +464,7 @@
 
                 <!-- Phase 2 -->
                 <div class="metric-card">
-                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
                         <div>
                             <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 2: The Hook (Monetize Data — Paid Team Subscriptions)</h3>
                             <p class="text-slate-600 mb-4">Every pitch generates valuable data (heatmaps, location tendencies). Coaches in both dugouts see this data is available and can upgrade to a premium team subscription for in-game strategy and post-game analysis.</p>
@@ -441,7 +477,7 @@
 
                 <!-- Phase 3 -->
                 <div class="metric-card">
-                    <div class="grid md:grid-cols-2 gap-6 items-center">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
                         <div>
                             <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 3: The Catalyst &amp; Scale (Jan–Apr 2026)</h3>
                             <ul class="space-y-2 text-slate-600">
@@ -466,18 +502,18 @@
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Market Opportunity</h2>
             </div>
 
-            <div class="flex items-center justify-center gap-16 mb-12">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-8 md:gap-16 mb-12">
                 <div class="text-center">
-                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">5M+</p>
-                    <p style="font-size: 18px; color: #334155;">Youth Baseball Players</p>
+                    <p class="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600">5M+</p>
+                    <p class="text-sm md:text-base lg:text-lg text-slate-600">Youth Baseball Players</p>
                 </div>
                 <div class="text-center">
-                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">600k+</p>
-                    <p style="font-size: 18px; color: #334155;">Organized Teams</p>
+                    <p class="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600">600k+</p>
+                    <p class="text-sm md:text-base lg:text-lg text-slate-600">Organized Teams</p>
                 </div>
                 <div class="text-center">
-                    <p style="font-size: 48px; font-weight: bold; color: #1d4ed8;">$500M+</p>
-                    <p style="font-size: 18px; color: #334155;">Spent Annually on Umpire Fees</p>
+                    <p class="text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600">$500M+</p>
+                    <p class="text-sm md:text-base lg:text-lg text-slate-600">Spent Annually on Umpire Fees</p>
                 </div>
             </div>
 
