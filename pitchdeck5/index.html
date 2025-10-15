@@ -14,6 +14,17 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9; /* slate-100 */
         }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Mobile image loading optimization */
+        @media (max-width: 768px) {
+            img {
+                image-rendering: -webkit-optimize-contrast;
+                image-rendering: crisp-edges;
+            }
+        }
         .slide {
             min-height: 85vh;
             display: flex;
@@ -161,18 +172,18 @@
                 <div class="space-y-6 md:space-y-8">
                     <div>
                         <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-4 tracking-tight leading-tight"><span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span></h1>
-                        <p class="text-xl md:text-3xl lg:text-4xl text-slate-600 font-semibold mb-8 leading-tight">The AI Assistant for Amateur Baseball</p>
+                        <p class="text-xl md:text-3xl lg:text-4xl text-slate-600 font-semibold mb-8 leading-tight">Pro-Level Strike Calls for Amateur Baseball.</p>
                     </div>
                     
                     <p class="text-lg md:text-xl lg:text-2xl text-slate-600 leading-relaxed">
-                        Delivering automated ball &amp; strike calls to every field using just an iPhone.
+                        The first AI umpire that works on any field, right from your iPhone.
                     </p>
                     
                     <!-- Key features badges -->
                     <div class="flex gap-4 flex-wrap">
-                        <div class="proof-badge">✓ Real-Time Ball/Strike Calls</div>
-                        <div class="proof-badge">✓ Instant On-Device Processing</div>
-                        <div class="proof-badge">✓ Umpire-Friendly Design</div>
+                        <div class="proof-badge">✓ Instant, accurate calls</div>
+                        <div class="proof-badge">✓ Sets up in seconds</div>
+                        <div class="proof-badge">✓ Works with or without an umpire</div>
                     </div>
                     
                     <!-- Call to action button -->
@@ -186,7 +197,7 @@
                 <!-- Right side: Image -->
                 <div class="flex justify-center items-center">
                     <div class="relative">
-                        <img src="images/onboard.jpg" alt="HeyBLU app onboarding interface" class="max-w-full h-auto rounded-3xl shadow-2xl border-8 border-white transform hover:scale-105 transition-transform duration-300">
+                        <img src="images/onboard.jpg" alt="HeyBLU app onboarding interface" class="max-w-full h-auto rounded-3xl shadow-2xl border-8 border-white transform hover:scale-105 transition-transform duration-300" loading="eager" decoding="async">
                         <!-- Add a subtle glow effect -->
                         <div class="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-xl -z-10"></div>
                     </div>
@@ -236,7 +247,7 @@
                 <!-- Right side: Image -->
                 <div class="flex justify-center items-center">
                     <div class="relative">
-                        <img src="images/yelling.jpg" alt="Parents and coaches yelling at umpires" class="max-w-full h-auto rounded-2xl shadow-2xl border-4 border-red-200">
+                        <img src="images/yelling.jpg" alt="Parents and coaches yelling at umpires" class="max-w-full h-auto rounded-2xl shadow-2xl border-4 border-red-200" loading="lazy" decoding="async">
                         <!-- Add a subtle red glow effect to emphasize the problem -->
                         <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-red-500/20 to-orange-500/20 blur-xl -z-10"></div>
                     </div>
@@ -250,31 +261,31 @@
         <div class="slide-content">
                 <div class="page-number">3/12</div>
             <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Solution</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Umpire's Co-pilot</h2>
                 <p class="text-xl text-slate-600 max-w-4xl mx-auto">
-                    Real-time ball-and-strike calls with a single iPhone. An umpire's Co-pilot with discreetly delivered calls to earbuds.
+                    HeyBLU empowers officials with instant, objective calls delivered discreetly to an earpiece, removing pressure and increasing confidence on every pitch.
                 </p>
             </div>
 
             <div class="flex justify-center mb-12">
-                <img src="images/blu-heatmap.jpg" alt="HeyBLU heatmap showing pitch analysis and data insights" class="max-w-4xl h-auto rounded-lg shadow-lg">
+                <img src="images/blu-heatmap.jpg" alt="HeyBLU heatmap showing pitch analysis and data insights" class="max-w-4xl h-auto rounded-lg shadow-lg" loading="lazy" decoding="async">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 <div class="metric-card text-center">
                     <div class="text-4xl mb-4">⚡</div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Instant &amp; Objective</h3>
-                    <p class="text-slate-600">Tech enabled umpires deliver a superior experience for players, coaches and fans.</p>
+                    <p class="text-slate-600">Eliminate arguments with a fair and consistent strike zone. Enhance the game experience for players, coaches, and fans.</p>
                 </div>
                 <div class="metric-card text-center">
                     <div class="text-4xl mb-4">🚀</div>
                     <h3 class="text-xl font-bold text-slate-900 mb-3">Effortless Setup</h3>
-                    <p class="text-slate-600">Fast setup, automated calls and a zone that adjusts with batter height</p>
+                    <p class="text-slate-600">Set up behind the plate in under a minute. Our AI automatically calibrates a custom strike zone for every batter's height.</p>
                 </div>
                 <div class="metric-card text-center">
                     <div class="text-4xl mb-4">👥</div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-3">A Tool to Recruit &amp; Retain Umpires</h3>
-                    <p class="text-slate-600">Tech enabled umpires show up more confident than ever.</p>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Recruit &amp; Retain Umpires</h3>
+                    <p class="text-slate-600">Lower the barrier for new umpires and reduce the stress on veterans. Give every official the tools to succeed and stay in the game.</p>
                 </div>
             </div>
         </div>
@@ -285,53 +296,38 @@
         <div class="slide-content">
                 <div class="page-number">4/12</div>
             <div class="text-center mb-8">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">How it Works</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Our Technical Moat</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    We solved three core challenges to make professional-grade AI accessible on any field.
+                </p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
                 <div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Key Features &amp; Technology</h3>
-                    <ul class="space-y-4 mt-6">
-                        <li class="flex items-start">
-                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                    <div class="space-y-8">
+                        <div class="flex items-start">
+                            <div class="text-4xl mr-4">🧠</div>
                             <div>
-                                <strong>Adaptive Strike Zone:</strong> Automatically adjusts for each batter's height and stance.
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Proprietary Vision AI</h3>
+                                <p class="text-slate-600">Trained on our exclusive dataset of 1M+ frames from real-world amateur games, giving us unparalleled accuracy in any condition.</p>
                             </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="text-4xl mr-4">🛰️</div>
                             <div>
-                                <strong>On-Device Processing:</strong> Core ball/strike calls run on the iPhone; post-game, premium analytics like heatmaps can sync to the cloud.
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Single-Camera 3D Analysis</h3>
+                                <p class="text-slate-600">Our algorithms reconstruct the pitch's full 3D path using monocular depth estimation—allowing a safe, offset camera placement.</p>
                             </div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-blue-600 mr-3 mt-1">•</span>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="text-4xl mr-4">🔬</div>
                             <div>
-                                <strong>Repeatable Setup:</strong> Standardized placement and per-batter calibration enable consistent behavior across venues and iPhone models.
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Intelligent Filtering</h3>
+                                <p class="text-slate-600">A physics-aware engine validates every trajectory to eliminate false positives like catcher throw-backs or batted balls.</p>
                             </div>
-                        </li>
-                    </ul>
-
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4 mt-6">Current Status</h3>
-                    <ul class="space-y-3 mt-4">
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">•</span>
-                            <div><strong>Working prototype:</strong> end-to-end, on-device ball/strike calls in controlled on-field sessions</div>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-600 mr-3 mt-1">•</span>
-                            <div><strong>Privately demonstrated:</strong> shown live to select advisors and stakeholders</div>
-                        </li>
-                    </ul>
-
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4 mt-6">Upcoming Milestones</h3>
-                    <ul class="space-y-2 mt-4">
-                        <li class="flex items-start">
-                            <span class="text-blue-600 mr-3 mt-1">•</span>
-                            <div>
-                                <strong>November 15, 2025:</strong> New CV model complete; begin independent validation and beta program.
-                            </div>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="flex justify-center">
                     <img src="images/adjustable-zone.jpg" alt="HeyBLU adjustable strike zone technology" style="width: 40%; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -345,7 +341,7 @@
         <div class="slide-content">
                 <div class="page-number">5/12</div>
             <div class="text-center">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">We're Not Just Calling Pitches. We're Building the OS for Baseball.</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Operating System for Amateur Baseball.</h2>
                 <p class="text-xl text-slate-600 mt-8 max-w-4xl mx-auto">
                     Our vision is to become the essential technology platform for amateur baseball. We start by solving the umpire's biggest problem—the ball-strike call—which unlocks the objective data that every other stakeholder in the game craves.
                 </p>
@@ -376,7 +372,7 @@
         <div class="slide-content">
                 <div class="page-number">6/12</div>
             <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Traction &amp; Credibility (De-Risking)</h2>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Traction</h2>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -494,10 +490,49 @@
         </div>
     </section>
 
-    <!-- Slide 8: Market Opportunity -->
+    <!-- Slide 8: A Simple SaaS Model -->
     <section class="slide" id="slide-8">
         <div class="slide-content">
                 <div class="page-number">8/12</div>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">A Simple SaaS Model</h2>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <div class="space-y-8">
+                    <!-- Phase 1 -->
+                    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 1: Umpire Adoption (Free)</h3>
+                        <p class="text-slate-700 text-lg">
+                            HeyBLU Umpire Assist is free for individual umpires, driving adoption and generating data.
+                        </p>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 2: Team & League Subscriptions (Revenue)</h3>
+                        <p class="text-slate-700 text-lg mb-4">
+                            Teams and leagues subscribe for premium features:
+                        </p>
+                        <div class="space-y-4">
+                            <div class="bg-white p-4 rounded-lg border border-green-200">
+                                <h4 class="text-xl font-semibold text-slate-900 mb-2">Team Subscription: $199/year per team.</h4>
+                                <p class="text-slate-600">Access to in-game analytics, heatmaps, and player development reports.</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-lg border border-green-200">
+                                <p class="text-slate-600 font-medium">League-wide packages available.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Market Opportunity -->
+    <section class="slide" id="slide-9">
+        <div class="slide-content">
+                <div class="page-number">9/12</div>
             <div class="text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Market Opportunity</h2>
             </div>
@@ -548,10 +583,10 @@
         </div>
     </section>
 
-    <!-- Slide 9: Competition -->
-    <section class="slide" id="slide-9">
+    <!-- Slide 10: Competition -->
+    <section class="slide" id="slide-10">
         <div class="slide-content">
-                <div class="page-number">9/12</div>
+                <div class="page-number">10/12</div>
             <div class="text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The BLU Advantage</h2>
                 <p class="text-xl text-slate-600 max-w-3xl mx-auto">On-device 3D strike-zone modeling</p>
@@ -568,11 +603,11 @@
                 </div>
                 <div class="metric-card">
                     <h3 class="text-xl font-bold text-slate-900 mb-4">Our Unique Position</h3>
-                    <ul class="space-y-3 text-slate-600">
-                        <li><strong>Single-camera depth estimation on iPhone</strong> reconstructs the pitch path in 3D. No sensors required.</li>
-                        <li><strong>Per-batter adjustable strike-zone</strong> with pose-estimation.</li>
-                        <li><strong>Vision-based pitch tracking</strong> with trajectory filtering using custom ML models</li>
-                    </ul>
+                    <p class="text-slate-600">
+                        Pro-level 3D accuracy on a consumer device.<br>
+                        Automated and objective—no sensors or manual setup.<br>
+                        Purpose-built for officiating, not just stat tracking.
+                    </p>
                 </div>
             </div>
 
@@ -598,10 +633,10 @@
         </div>
     </section>
 
-    <!-- Slide 10: The Team -->
-    <section class="slide" id="slide-10">
+    <!-- Slide 11: The Team -->
+    <section class="slide" id="slide-11">
         <div class="slide-content">
-                <div class="page-number">10/12</div>
+                <div class="page-number">11/12</div>
             <div class="text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The Team</h2>
                 <p class="text-xl text-slate-600 max-w-3xl mx-auto italic">"As coaches and parents, we've lived the frustration of inconsistent calls. We started BLU not just to build a product, but to restore fairness and respect to the game we love."</p>
@@ -671,10 +706,10 @@
         </div>
     </section>
 
-    <!-- Slide 11: The Ask & Use of Funds -->
-    <section class="slide" id="slide-11">
+    <!-- Slide 12: The Ask & Use of Funds -->
+    <section class="slide" id="slide-12">
         <div class="slide-content">
-                <div class="page-number">11/12</div>
+                <div class="page-number">12/12</div>
             <div class="text-center mb-12">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">The Ask: $1.25M Seed Round</h2>
                 <p class="text-2xl text-slate-600 max-w-3xl mx-auto">
@@ -708,10 +743,10 @@
         </div>
     </section>
 
-    <!-- Slide 12: Contact & Closing -->
-    <section class="slide" id="slide-12">
+    <!-- Slide 13: Contact & Closing -->
+    <section class="slide" id="slide-13">
         <div class="slide-content">
-            <div class="page-number">12/12</div>
+            <div class="page-number">13/13</div>
             <div class="text-center">
                 <div class="text-6xl font-bold mb-6"><span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span></div>
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Let's Build the Future of Sports, Together.</h2>
@@ -720,6 +755,73 @@
                     <div class="metric-card"><h3 class="text-xl font-semibold mb-2">Jonathan Parkhurst, CRO</h3><p class="text-slate-600">jp@bigleagueballpark.com<br>415-342-5853</p></div>
                 </div>
                 <div class="mt-8 text-sm text-slate-500">Delaware C-Corp; all IP assigned to the company.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Strategic Partner Ask Slide (Unnumbered) -->
+    <section class="slide" id="slide-partner">
+        <div class="slide-content">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Seeking a Strategic Partner to Lead our Series A</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">
+                    We are capitalizing the company with a $1.25M Seed Extension to achieve the key milestones required for a successful Series A in 2026.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- The Capital -->
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">The Capital: $1.25M Seed Extension</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Structure:</h4>
+                            <p class="text-slate-600">SAFE or Convertible Note ($10M-$12M cap).</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Purpose:</h4>
+                            <p class="text-slate-600">Provides 18+ months of runway to execute our beta program, validate the technology, and secure initial commercial contracts.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Milestones -->
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Key Milestones this Round Unlocks:</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Technical:</h4>
+                            <p class="text-slate-600">Complete independent, third-party validation achieving &lt;2-inch margin of error.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Commercial:</h4>
+                            <p class="text-slate-600">Successfully convert 10+ pilot partners to paid contracts, representing &gt;$150k in initial ARR.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Team:</h4>
+                            <p class="text-slate-600">Hire key roles in engineering and league partnerships.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What We Look For -->
+                <div class="metric-card">
+                    <h3 class="text-2xl font-bold text-slate-900 mb-4">What We Look For in a Partner:</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Domain Expertise:</h4>
+                            <p class="text-slate-600">Deep connections within amateur sports associations (e.g., Little League, USSSA) and youth tech.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Series A Guidance:</h4>
+                            <p class="text-slate-600">An experienced partner to help syndicate and close our institutional Series A round.</p>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-semibold text-slate-800 mb-2">Strategic Value:</h4>
+                            <p class="text-slate-600">Active involvement beyond capital to help us scale and navigate the market.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
