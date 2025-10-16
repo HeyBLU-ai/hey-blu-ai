@@ -2,7 +2,7 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><span class="text-blue-600">Hey</span><span class="text-slate-900">BLU</span>: The AI Assistant for Amateur Baseball - Investor Deck (Revised)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,12 +14,34 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9; /* slate-100 */
         }
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+        /* Mobile Safari fixes */
+        @media (max-width: 768px) {
+            img {
+                max-height: 50vh;
+                width: auto;
+            }
+            .slide {
+                padding: 0.5rem;
+            }
+            .slide-content {
+                padding: 0.75rem 1rem;
+                min-height: calc(100dvh - 1rem);
+            }
+        }
         .slide {
-            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 1rem;
+            padding-top: env(safe-area-inset-top, 1rem);
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
             position: relative;
             scroll-snap-align: start;
         }
@@ -34,12 +56,23 @@
         .slide-content {
             background: white;
             border-radius: 24px;
-            padding: 2rem 3rem;
+            padding: 1rem 1.5rem;
             max-width: 1400px;
             width: 100%;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
             border: 1px solid #e2e8f0;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100dvh - 2rem);
+            overflow-y: auto;
+        }
+        @media (min-width: 768px) {
+            .slide-content {
+                padding: 2rem 3rem;
+                min-height: calc(100dvh - 4rem);
+            }
         }
         .page-number {
             position: absolute;
