@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title><span class="text-blue-600">Hey</span><span class="text-slate-900">BLU</span>: The AI Assistant for Amateur Baseball - Investor Deck (Revised)</title>
+    <title>HeyBLU: The AI Assistant for Amateur Baseball - Investor Deck (Revised)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +63,6 @@
         }
         .slide {
             min-height: 100dvh;
-            max-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -72,7 +71,6 @@
             padding-bottom: env(safe-area-inset-bottom, 1rem);
             position: relative;
             scroll-snap-align: start;
-            overflow: hidden;
         }
         html {
             scroll-snap-type: y mandatory;
@@ -95,14 +93,12 @@
             flex-direction: column;
             justify-content: center;
             min-height: calc(100dvh - 2rem);
-            max-height: calc(100dvh - 2rem);
             overflow-y: auto;
         }
         @media (min-width: 768px) {
             .slide-content {
                 padding: 2rem 3rem;
                 min-height: calc(100dvh - 4rem);
-                max-height: calc(100dvh - 4rem);
             }
         }
         .page-number {
