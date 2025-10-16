@@ -31,8 +31,6 @@
             }
             .slide-content {
                 padding: 0.75rem 1rem;
-                min-height: calc(100dvh - 1rem);
-                max-height: calc(100dvh - 1rem);
             }
             /* Scale down large text on mobile */
             h1 { font-size: 2.5rem !important; }
@@ -92,13 +90,10 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            min-height: calc(100dvh - 2rem);
-            overflow-y: auto;
         }
         @media (min-width: 768px) {
             .slide-content {
                 padding: 2rem 3rem;
-                min-height: calc(100dvh - 4rem);
             }
         }
         .page-number {
@@ -276,7 +271,7 @@
             <div class="text-center mb-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">How it Works</h2>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
                 <!-- Left Half: Tech Stack Cards -->
                 <div class="space-y-3">
                     <!-- Tech Stack Item 1 -->
@@ -324,7 +319,7 @@
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The OS for Amateur Baseball</h2>
                 <p class="text-xl text-slate-600 max-w-4xl mx-auto">We start by solving the umpire's biggest problem—the ball-strike call—which unlocks the objective data that every other stakeholder in the game craves.</p>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 items-center">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-2 items-center">
                 <!-- Left Half: OS Diagram -->
                 <div class="flex justify-center">
                     <div class="relative w-[426px] h-[426px]">
