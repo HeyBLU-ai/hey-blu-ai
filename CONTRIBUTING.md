@@ -10,6 +10,7 @@ Thank you for your interest in contributing to HeyBLU AI! This guide will help y
 - **Git** - [Download here](https://git-scm.com/)
 - **Code Editor** - VS Code recommended
 - **OpenAI API Key** - [Get one here](https://platform.openai.com/)
+- **Mobile Testing Devices** - iPhone, Android device, or browser dev tools
 
 ### Local Development
 
@@ -142,6 +143,58 @@ function handleQ(q, l) {
 - **Custom CSS**: Only when Tailwind doesn't provide the needed functionality
 - **Responsive Design**: Use responsive prefixes (`sm:`, `md:`, `lg:`)
 - **Consistent Spacing**: Use Tailwind's spacing scale
+
+### Mobile Responsiveness Requirements
+
+**CRITICAL**: All pitchdeck HTML files MUST include mobile responsiveness fixes to prevent cross-platform issues.
+
+#### Required Viewport Meta Tag
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+```
+
+#### Required CSS for Slides
+```css
+.slide {
+    min-height: 100dvh;           /* Use dynamic viewport height */
+    max-height: 100dvh;           /* Prevent overflow on mobile */
+    overflow: hidden;             /* Hide scrollbars on slides */
+    padding-top: env(safe-area-inset-top, 1rem);     /* iOS notch */
+    padding-bottom: env(safe-area-inset-bottom, 1rem); /* iOS home bar */
+}
+
+.slide-content {
+    min-height: calc(100dvh - 2rem);  /* Account for padding */
+    max-height: calc(100dvh - 2rem);  /* Prevent content overflow */
+    overflow-y: auto;                 /* Allow scrolling within content */
+}
+```
+
+#### Mobile-Specific CSS (Required)
+```css
+@media (max-width: 768px) {
+    .slide {
+        padding: 0.5rem;
+        min-height: 100dvh;
+        max-height: 100dvh;
+    }
+    .slide-content {
+        padding: 0.75rem;
+        min-height: calc(100dvh - 1rem);
+        max-height: calc(100dvh - 1rem);
+    }
+    /* Scale down large text */
+    h1 { font-size: 2.5rem !important; }
+    h2 { font-size: 2rem !important; }
+    .text-4xl { font-size: 1.875rem !important; }
+    .text-5xl { font-size: 2.25rem !important; }
+}
+```
+
+#### Testing Requirements
+- **MUST test on**: iPhone Safari, Android Chrome, Mac Safari, Windows Chrome
+- **MUST verify**: No content cut-off, no unwanted scrollbars, natural scrolling
+- **Reference**: See `DEPLOYMENT.md` for complete mobile responsiveness guide
 
 ```css
 /* ✅ Good - Custom CSS for complex animations */

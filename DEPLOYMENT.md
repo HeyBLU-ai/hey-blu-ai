@@ -326,6 +326,86 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/heyblu_dev
 - Export to Beehiiv for newsletter campaigns
 - Track conversion rates
 
+## 📱 Mobile Responsiveness & Cross-Platform Issues
+
+### Critical CSS Requirements for All Devices
+
+#### Viewport Configuration
+**Essential for all devices:**
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+```
+
+#### CSS Layout Requirements
+**For proper cross-platform compatibility, slides MUST include:**
+
+```css
+.slide {
+    min-height: 100dvh;           /* Use dynamic viewport height */
+    max-height: 100dvh;           /* Prevent overflow on mobile */
+    overflow: hidden;             /* Hide scrollbars on slides */
+    padding-top: env(safe-area-inset-top, 1rem);     /* iOS notch */
+    padding-bottom: env(safe-area-inset-bottom, 1rem); /* iOS home bar */
+}
+
+.slide-content {
+    min-height: calc(100dvh - 2rem);  /* Account for padding */
+    max-height: calc(100dvh - 2rem);  /* Prevent content overflow */
+    overflow-y: auto;                 /* Allow scrolling within content */
+}
+```
+
+#### Mobile-Specific CSS
+**Required for mobile devices:**
+```css
+@media (max-width: 768px) {
+    .slide {
+        padding: 0.5rem;
+        min-height: 100dvh;
+        max-height: 100dvh;
+    }
+    .slide-content {
+        padding: 0.75rem;
+        min-height: calc(100dvh - 1rem);
+        max-height: calc(100dvh - 1rem);
+    }
+    /* Scale down large text */
+    h1 { font-size: 2.5rem !important; }
+    h2 { font-size: 2rem !important; }
+    .text-4xl { font-size: 1.875rem !important; }
+    .text-5xl { font-size: 2.25rem !important; }
+}
+```
+
+#### Common Mobile Issues & Solutions
+
+**Problem**: Content cut off at top on mobile
+- **Cause**: Missing `viewport-fit=cover` and safe-area padding
+- **Solution**: Add `viewport-fit=cover` and `env(safe-area-inset-*)` padding
+
+**Problem**: Unwanted scrollbars on Android
+- **Cause**: Missing `overflow: hidden` on `.slide` or incorrect height constraints
+- **Solution**: Ensure `.slide` has `overflow: hidden` and proper height constraints
+
+**Problem**: Content overlapping on iOS Safari
+- **Cause**: Using `100vh` instead of `100dvh` (doesn't account for browser chrome)
+- **Solution**: Always use `100dvh` for dynamic viewport height
+
+**Problem**: Text too large on mobile
+- **Cause**: No responsive text scaling
+- **Solution**: Add mobile-specific font-size overrides
+
+### Testing Checklist for New Pitchdecks
+
+- [ ] Test on iPhone Safari (iOS)
+- [ ] Test on Android Chrome
+- [ ] Test on Mac Safari
+- [ ] Test on Windows Chrome
+- [ ] Verify no content cut-off
+- [ ] Verify no unwanted scrollbars
+- [ ] Verify natural scrolling behavior
+- [ ] Verify text scales appropriately
+
 ## 🖼️ Image Serving Issues & Solutions
 
 ### Common Image Problems
