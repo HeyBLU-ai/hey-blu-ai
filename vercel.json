@@ -48,6 +48,7 @@
     { "src": "pitchdeck4/images/**", "use": "@vercel/static" },
     { "src": "pitchdeck5/assets/**", "use": "@vercel/static" },
     { "src": "pitchdeck5/images/**", "use": "@vercel/static" },
+    { "src": "pitchdeck5/videos/**", "use": "@vercel/static" },
     { "src": "vision/index.html", "use": "@vercel/static" },
     { "src": "thank-you.html", "use": "@vercel/static" },
     { "src": "images/**", "use": "@vercel/static" }
