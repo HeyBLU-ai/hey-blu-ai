@@ -20,10 +20,10 @@
             object-fit: contain;
             object-position: center;
         }
-        /* Mobile Safari fixes */
+        /* Responsive scaling for different screen sizes */
         @media (max-width: 768px) {
             img {
-                max-height: 50vh;
+                max-height: 40vh;
                 width: auto;
             }
             .slide {
@@ -32,10 +32,38 @@
             .slide-content {
                 padding: 0.75rem 1rem;
                 min-height: calc(100dvh - 1rem);
+                max-height: calc(100dvh - 1rem);
+            }
+            /* Scale down large text on mobile */
+            h1 { font-size: 2.5rem !important; }
+            h2 { font-size: 2rem !important; }
+            .text-4xl { font-size: 1.875rem !important; }
+            .text-5xl { font-size: 2.25rem !important; }
+        }
+        
+        /* Medium screens */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            img {
+                max-height: 60vh;
+                width: auto;
+            }
+            /* Slightly smaller text on medium screens */
+            h1 { font-size: 3.5rem !important; }
+            h2 { font-size: 2.5rem !important; }
+            .text-4xl { font-size: 2.25rem !important; }
+            .text-5xl { font-size: 3rem !important; }
+        }
+        
+        /* Large screens - ensure content doesn't overflow */
+        @media (min-width: 1025px) {
+            img {
+                max-height: 70vh;
+                width: auto;
             }
         }
         .slide {
             min-height: 100dvh;
+            max-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -44,6 +72,7 @@
             padding-bottom: env(safe-area-inset-bottom, 1rem);
             position: relative;
             scroll-snap-align: start;
+            overflow: hidden;
         }
         html {
             scroll-snap-type: y mandatory;
@@ -66,12 +95,14 @@
             flex-direction: column;
             justify-content: center;
             min-height: calc(100dvh - 2rem);
+            max-height: calc(100dvh - 2rem);
             overflow-y: auto;
         }
         @media (min-width: 768px) {
             .slide-content {
                 padding: 2rem 3rem;
                 min-height: calc(100dvh - 4rem);
+                max-height: calc(100dvh - 4rem);
             }
         }
         .page-number {
@@ -246,38 +277,44 @@
     <section class="slide" id="slide-4">
         <div class="slide-content">
             <div class="page-number">4/12</div>
-            <div class="text-center mb-12">
+            <div class="text-center mb-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">How it Works</h2>
             </div>
-            <div class="flex justify-center">
-                <div class="w-full max-w-3xl space-y-2">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Left Half: Tech Stack Cards -->
+                <div class="space-y-3">
                     <!-- Tech Stack Item 1 -->
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                        <div class="flex items-start"><div class="text-3xl mr-4 pt-1">🧠</div>
-                            <div><h3 class="text-xl font-bold text-slate-900">Proprietary Vision AI</h3><p class="text-slate-600">Proprietary custom trained data model; 1M+ frames, dozens of fields</p></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="flex items-start"><div class="text-2xl mr-3 pt-1">🧠</div>
+                            <div><h3 class="text-lg font-bold text-slate-900">Proprietary Vision AI</h3><p class="text-slate-600 text-sm">Proprietary custom trained data model; 1M+ frames, dozens of fields</p></div>
                         </div>
                     </div>
-                    <div class="text-center text-2xl text-slate-300 font-light">↓</div>
+                    <div class="text-center text-xl text-slate-300 font-light">↓</div>
                     <!-- Tech Stack Item 2 -->
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                        <div class="flex items-start"><div class="text-3xl mr-4 pt-1">🛰️</div>
-                            <div><h3 class="text-xl font-bold text-slate-900">Single-Camera 3D Analysis</h3><p class="text-slate-600">Patent pending monocular depth estimation allows for safe, offset camera placement.</p></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="flex items-start"><div class="text-2xl mr-3 pt-1">🛰️</div>
+                            <div><h3 class="text-lg font-bold text-slate-900">Single-Camera 3D Analysis</h3><p class="text-slate-600 text-sm">Patent pending monocular depth estimation allows for safe, offset camera placement.</p></div>
                         </div>
                     </div>
-                    <div class="text-center text-2xl text-slate-300 font-light">↓</div>
+                    <div class="text-center text-xl text-slate-300 font-light">↓</div>
                     <!-- Tech Stack Item 3 -->
-                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                        <div class="flex items-start"><div class="text-3xl mr-4 pt-1">🔬</div>
-                            <div><h3 class="text-xl font-bold text-slate-900">Intelligent Filtering</h3><p class="text-slate-600">Physics-aware engine eliminates false positives like catcher throw-backs.</p></div>
+                    <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div class="flex items-start"><div class="text-2xl mr-3 pt-1">🔬</div>
+                            <div><h3 class="text-lg font-bold text-slate-900">Intelligent Filtering</h3><p class="text-slate-600 text-sm">Physics-aware engine eliminates false positives like catcher throw-backs.</p></div>
                         </div>
                     </div>
-                    <div class="text-center text-2xl text-slate-300 font-light">↓</div>
+                    <div class="text-center text-xl text-slate-300 font-light">↓</div>
                     <!-- Tech Stack Item 4 -->
-                    <div class="bg-blue-50 p-6 rounded-xl border-2 border-blue-200">
-                        <div class="flex items-start"><div class="text-3xl mr-4 pt-1">🎯</div>
-                            <div><h3 class="text-xl font-bold text-slate-900">Result: Accurate, Objective Call</h3><p class="text-blue-800 font-medium">Pro-level accuracy on a consumer device</p><p class="text-blue-600 font-semibold">First Mover Advantage</p></div>
+                    <div class="bg-blue-50 p-4 rounded-xl border-2 border-blue-200">
+                        <div class="flex items-start"><div class="text-2xl mr-3 pt-1">🎯</div>
+                            <div><h3 class="text-lg font-bold text-slate-900">Result: Accurate, Objective Call</h3><p class="text-blue-800 font-medium text-sm">Pro-level accuracy on a consumer device</p><p class="text-blue-600 font-semibold text-sm">First Mover Advantage</p></div>
                         </div>
                     </div>
+                </div>
+                
+                <!-- Right Half: Onboard Image -->
+                <div class="flex justify-center lg:justify-end">
+                    <img src="/pitchdeck6/images/onboard.jpg" alt="HeyBLU Onboarding Experience" class="w-full max-w-md rounded-xl shadow-lg object-cover">
                 </div>
             </div>
         </div>
@@ -287,10 +324,13 @@
     <section class="slide" id="slide-5">
         <div class="slide-content">
             <div class="page-number">5/12</div>
-            <div class="text-center">
+            <div class="text-center mb-8">
                 <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The OS for Amateur Baseball</h2>
                 <p class="text-xl text-slate-600 max-w-4xl mx-auto">We start by solving the umpire's biggest problem—the ball-strike call—which unlocks the objective data that every other stakeholder in the game craves.</p>
-                <div class="flex justify-center my-8">
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Left Half: OS Diagram -->
+                <div class="flex justify-center">
                     <div class="relative w-[426px] h-[426px]">
                         <div class="absolute inset-0 flex items-center justify-center">
                             <div class="w-52 h-52 bg-blue-600 rounded-full flex items-center justify-center text-white shadow-2xl">
@@ -309,6 +349,14 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Right Half: Data Heatmap -->
+                <div class="flex justify-center lg:justify-end">
+                    <div class="text-center">
+                        <img src="/pitchdeck6/images/heatmap.jpg" alt="Data Heatmap Example" class="w-full max-w-sm rounded-xl shadow-lg object-cover mb-4">
+                        <p class="text-sm text-slate-600 italic">Example of the data insights generated by HeyBLU</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -323,8 +371,20 @@
                 <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-4">Technical Viability & IP</h3><ul class="space-y-3 text-slate-600"><li><strong>Patents Pending & Trademarks issued</strong> (BLU and <span class="text-blue-600 font-bold">Hey</span><span class="text-slate-900 font-bold">BLU</span>)</li><li><strong>Working Prototype:</strong> precision calls at Alto Field, Mill Valley, CA</li><li><strong>Independent Validation Scheduled:</strong> Blinded review vs. certified panel.</li></ul></div>
                 <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-4">Strategic Backing</h3>
                     <div class="space-y-4">
-                        <div class="flex items-center space-x-4"><img src="/pitchdeck6/images/alfie.jpg" alt="Alfonso Felder" class="w-16 h-16 rounded-full object-cover shadow-lg"><p class="font-semibold text-slate-700">Alfonso Felder<br><span class="text-sm font-normal text-slate-500">COO, SF Giants</span></p></div>
-                        <div class="flex items-center space-x-4"><img src="/pitchdeck6/images/sara.jpg" alt="Sara Grauf" class="w-16 h-16 rounded-full object-cover shadow-lg"><p class="font-semibold text-slate-700">Sara Grauf<br><span class="text-sm font-normal text-slate-500">SVP, SF Giants</span></p></div>
+                        <div class="flex items-center space-x-4">
+                            <img src="/pitchdeck6/images/alfie.jpg" alt="Alfonso Felder" class="w-16 h-16 rounded-full object-cover shadow-lg">
+                            <div class="flex-1">
+                                <p class="font-semibold text-slate-700">Alfonso Felder<br><span class="text-sm font-normal text-slate-500">Chief Operations & Experience Officer, SF Giants</span></p>
+                                <a href="https://www.mlb.com/giants/team/front-office/alfonso-felder" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Profile →</a>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <img src="/pitchdeck6/images/sara.jpg" alt="Sara Grauf" class="w-16 h-16 rounded-full object-cover shadow-lg">
+                            <div class="flex-1">
+                                <p class="font-semibold text-slate-700">Sara Grauf<br><span class="text-sm font-normal text-slate-500">Senior Vice President, Experience Development, SF Giants</span></p>
+                                <a href="https://www.mlb.com/giants/team/front-office/sara-grauf" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm font-medium">View Profile →</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -393,16 +453,14 @@
                 </div>
 
                 <!-- Phase 3 -->
-                <div class="metric-card">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
-                        <div>
-                    <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 3: Coach adoption = parent/player demand.</h3>
-                    <p class="text-slate-600 mb-4">Post ABCA convention into "Opening Day" build buzz through social media, prep player cards, heatmaps and hero stats for players.</p>
-                    <p class="text-slate-600"><strong>March/April Opening Day:</strong> Amateur baseball transforms forever.</p>
-                        </div>
-                        <div class="flex justify-center">
-                            <img src="/pitchdeck6/images/opening-day-logo.jpg" alt="Opening Day 2026" class="w-48 h-36 object-contain rounded-lg shadow-lg" loading="lazy" decoding="async">
-                        </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 items-center">
+                    <div class="metric-card">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-4">Phase 3: Coach adoption = parent/player demand.</h3>
+                        <p class="text-slate-600 mb-4">Post ABCA convention into "Opening Day" build buzz through social media, prep player cards, heatmaps and hero stats for players.</p>
+                        <p class="text-slate-600"><strong>March/April Opening Day:</strong> Amateur baseball transforms forever.</p>
+                    </div>
+                    <div class="flex justify-center">
+                        <img src="/pitchdeck6/images/opening-day-logo.jpg" alt="Opening Day 2026" class="w-48 h-36 object-contain rounded-lg shadow-lg" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
@@ -441,22 +499,46 @@
     <section class="slide" id="slide-10">
         <div class="slide-content">
             <div class="page-number">10/12</div>
-            <div class="text-center mb-8"><h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">Our Competitive Advantage</h2></div>
-            <div class="flex justify-center">
-                <div class="relative w-full max-w-2xl aspect-square border-l-2 border-b-2 border-slate-300">
-                    <!-- Labels -->
-                    <p class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-slate-500 font-semibold">Accessibility & Cost</p>
-                    <p class="absolute -left-12 top-1/2 -translate-y-1/2 -rotate-90 text-slate-500 font-semibold">Accuracy & Utility</p>
-                    <!-- Quadrants -->
-                    <div class="absolute top-4 left-4 text-slate-400">Low Cost / 2D Stats</div>
-                    <div class="absolute top-4 right-4 text-slate-400">High Cost / Pro-Level</div>
-                    <!-- Competitors -->
-                    <div class="absolute bottom-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 text-center"><p class="font-bold text-slate-700">GameChanger</p><p class="text-sm text-slate-500">Manual Scoring</p></div>
-                    <div class="absolute top-1/4 right-1/4 -translate-x-1/2 -translate-y-1/2 text-center"><p class="font-bold text-slate-700">TrackMan</p><p class="text-sm text-slate-500">$50k+ Hardware</p></div>
-                    <!-- HeyBLU -->
-                    <div class="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 p-4 bg-blue-100 border-2 border-blue-500 rounded-lg shadow-lg text-center">
-                        <p class="font-black text-blue-700 text-lg"><span class="gradient-text">Hey</span>BLU</p>
-                        <p class="text-sm text-blue-800">Officiating Grade AI<br>on an iPhone</p>
+            <div class="text-center mb-12">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">The BLU Advantage</h2>
+                <p class="text-xl text-slate-600 max-w-3xl mx-auto">On-device 3D strike-zone modeling</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 mb-12">
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">The Competition Gap</h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li><strong>Pro Systems ($500K+):</strong> Too expensive for youth leagues</li>
+                        <li><strong>Consumer Apps:</strong> 2D tracking only, no 3D spatial zones</li>
+                        <li><strong>Sports Platforms:</strong> Focus on scoring/stats, not officiating</li>
+                    </ul>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Our Unique Position</h3>
+                    <p class="text-slate-600">
+                        Pro-level 3D accuracy on a consumer device.<br>
+                        Automated and objective—no sensors or manual setup.<br>
+                        Purpose-built for officiating, not just stat tracking.
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <div class="bg-gradient-to-r from-amber-50 to-red-50 p-8 rounded-2xl border-2 border-amber-200">
+                    <h3 class="text-xl font-bold text-slate-900 mb-6">Market Risks & Mitigation</h3>
+                    <div class="grid md:grid-cols-3 gap-6 text-left">
+                        <div>
+                            <h4 class="font-semibold text-slate-800 mb-2">Umpire Resistance</h4>
+                            <p class="text-sm text-slate-600">"Human element" preference vs. objective calls. <strong>Mitigation:</strong> Free tool, optional use, confidence building.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-800 mb-2">Distribution Pivot</h4>
+                            <p class="text-sm text-slate-600">GameChanger's 1M+ user base could pivot to officiating. <strong>Mitigation:</strong> 2-year patent head start, specialized focus.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold text-slate-800 mb-2">Tech Incumbents</h4>
+                            <p class="text-sm text-slate-600">TrackMan/RECON could target amateur market. <strong>Mitigation:</strong> Consumer pricing impossible at their cost structure.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -472,11 +554,61 @@
                 <p class="text-xl text-slate-600 max-w-3xl mx-auto italic">"As coaches and parents, we've lived the frustration. We started BLU to restore fairness and respect to the game we love."</p>
             </div>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="metric-card border-2 border-blue-300"><h3 class="text-xl font-bold text-slate-900 mb-2">Rob Regan, Co-Founder & CEO</h3><p class="text-slate-600">20+ years as a real estate entrepreneur & tech sales leader. Drives product vision, marketing, and execution.</p></div>
-                <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-2">Jonathan (JP) Parkhurst, CRO</h3><p class="text-slate-600">20+ year global sales leader scaling revenue at companies like WeWork and GoPro.</p></div>
-                <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-2">Hemant Goyal, ML Engineer</h3><p class="text-slate-600">AI specialist & founder at NextWaveAI. Expert in computer vision & YOLO models for BLU's core technology.</p></div>
-                <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-2">Chris Bestwick, UI/UX Engineer</h3><p class="text-slate-600">Head of Product Design for MLB At Bat. Architected their subscription model.</p></div>
-                <div class="metric-card"><h3 class="text-xl font-bold text-slate-900 mb-2">Brian Marcus, Strategic Advisor</h3><p class="text-slate-600">Lead patent attorney behind the NFL's televised 1st-down marker. Advises on IP strategy.</p></div>
+                <div class="metric-card border-2 border-blue-300">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck6/images/Rob.jpg" alt="Rob Regan" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Rob Regan, Co-Founder & CEO</h3>
+                            <p class="text-slate-600">20+ years as a real estate entrepreneur & tech sales leader. Drives product vision, marketing, and execution.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck6/images/JP.jpg" alt="Jonathan Parkhurst" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Jonathan (JP) Parkhurst, CRO</h3>
+                            <p class="text-slate-600">20+ year global sales leader scaling revenue at companies like WeWork and GoPro.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck6/images/hemant.jpg" alt="Hemant Goyal" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Hemant Goyal, ML Engineer</h3>
+                            <p class="text-slate-600">AI specialist & founder at NextWaveAI. Expert in computer vision & YOLO models for BLU's core technology.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck6/images/chris.jpg" alt="Chris Bestwick" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Chris Bestwick, UI/UX Engineer</h3>
+                            <p class="text-slate-600">Head of Product Design for MLB At Bat. Architected their subscription model.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck6/images/Brian.jpg" alt="Brian Marcus" class="w-full h-full object-cover" loading="lazy" decoding="async">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Brian Marcus, Strategic Advisor</h3>
+                            <p class="text-slate-600">Lead patent attorney behind the NFL's televised 1st-down marker. Advises on IP strategy.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

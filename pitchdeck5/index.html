@@ -20,7 +20,7 @@
             object-fit: contain;
             object-position: center;
         }
-        /* Mobile Safari fixes */
+        /* Responsive scaling for different screen sizes */
         @media (max-width: 768px) {
             img {
                 image-rendering: -webkit-optimize-contrast;
@@ -29,16 +29,44 @@
                 backface-visibility: hidden;
                 -webkit-transform: translateZ(0);
                 transform: translateZ(0);
-                max-height: 50vh;
+                max-height: 40vh;
                 width: auto;
             }
             .slide {
                 padding: 0.5rem;
                 min-height: 100dvh;
+                max-height: 100dvh;
             }
             .slide-content {
                 padding: 0.75rem;
                 min-height: calc(100dvh - 1rem);
+                max-height: calc(100dvh - 1rem);
+            }
+            /* Scale down large text on mobile */
+            h1 { font-size: 2.5rem !important; }
+            h2 { font-size: 2rem !important; }
+            .text-4xl { font-size: 1.875rem !important; }
+            .text-5xl { font-size: 2.25rem !important; }
+        }
+        
+        /* Medium screens */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            img {
+                max-height: 60vh;
+                width: auto;
+            }
+            /* Slightly smaller text on medium screens */
+            h1 { font-size: 3.5rem !important; }
+            h2 { font-size: 2.5rem !important; }
+            .text-4xl { font-size: 2.25rem !important; }
+            .text-5xl { font-size: 3rem !important; }
+        }
+        
+        /* Large screens - ensure content doesn't overflow */
+        @media (min-width: 1025px) {
+            img {
+                max-height: 70vh;
+                width: auto;
             }
         }
         /* Image loading fallbacks */
@@ -50,6 +78,7 @@
         }
         .slide {
             min-height: 100dvh;
+            max-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -58,6 +87,7 @@
             padding-bottom: env(safe-area-inset-bottom, 1rem);
             position: relative;
             margin-bottom: 0;
+            overflow: hidden;
         }
         @media (min-width: 768px) {
             .slide {
@@ -78,6 +108,7 @@
             flex-direction: column;
             justify-content: center;
             min-height: calc(100dvh - 2rem);
+            max-height: calc(100dvh - 2rem);
             overflow-y: auto;
         }
         @media (min-width: 768px) {
@@ -85,6 +116,7 @@
                 border-radius: 24px;
                 padding: 2rem;
                 min-height: calc(100dvh - 4rem);
+                max-height: calc(100dvh - 4rem);
             }
         }
         .page-number {
