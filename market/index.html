@@ -1,438 +1,210 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Market Opportunity - HeyBLU AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f1f5f9; /* slate-100 */
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            object-fit: contain;
-            object-position: center;
-        }
-        /* Responsive scaling for different screen sizes */
-        @media (max-width: 768px) {
-            img {
-                image-rendering: -webkit-optimize-contrast;
-                image-rendering: crisp-edges;
-                -webkit-backface-visibility: hidden;
-                backface-visibility: hidden;
-                -webkit-transform: translateZ(0);
-                transform: translateZ(0);
-                max-height: 40vh;
-                width: auto;
-            }
-            .slide {
-                padding: 0.5rem;
-                min-height: 100dvh;
-                max-height: 100dvh;
-            }
-            .slide-content {
-                padding: 0.75rem;
-                min-height: calc(100dvh - 1rem);
-                max-height: calc(100dvh - 1rem);
-            }
-            /* Scale down large text on mobile */
-            h1 { font-size: 2.5rem !important; }
-            h2 { font-size: 2rem !important; }
-            .text-4xl { font-size: 1.875rem !important; }
-            .text-5xl { font-size: 2.25rem !important; }
-        }
-        
-        /* Medium screens */
-        @media (min-width: 769px) and (max-width: 1024px) {
-            img {
-                max-height: 60vh;
-                width: auto;
-            }
-            /* Slightly smaller text on medium screens */
-            h1 { font-size: 3.5rem !important; }
-            h2 { font-size: 2.5rem !important; }
-            .text-4xl { font-size: 2.25rem !important; }
-            .text-5xl { font-size: 3rem !important; }
-        }
-        
-        /* Large screens - ensure content doesn't overflow */
-        @media (min-width: 1025px) {
-            img {
-                max-height: 70vh;
-                width: auto;
-            }
-        }
-        /* Image loading fallbacks */
-        img {
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-        }
-        .slide {
-            min-height: 100dvh;
-            max-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-            padding-top: env(safe-area-inset-top, 1rem);
-            padding-bottom: env(safe-area-inset-bottom, 1rem);
-            position: relative;
-            margin-bottom: 0;
-            overflow: hidden;
-        }
-        @media (min-width: 768px) {
-            .slide {
-                min-height: 100dvh;
-                padding: 2rem;
-            }
-        }
-        .slide-content {
-            background: white;
-            border-radius: 16px;
-            padding: 1rem;
-            max-width: 1400px;
-            width: 100%;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
-            border: 1px solid #e2e8f0;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: calc(100dvh - 2rem);
-            max-height: calc(100dvh - 2rem);
-            overflow-y: auto;
-        }
-        @media (min-width: 768px) {
-            .slide-content {
-                border-radius: 24px;
-                padding: 2rem;
-                min-height: calc(100dvh - 4rem);
-                max-height: calc(100dvh - 4rem);
-            }
-        }
-        .page-number {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            color: #94a3b8; /* slate-400 */
-            font-size: 0.875rem;
-            font-weight: 500;
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: #1e3a8a; /* Fallback for browsers that don't support background-clip: text */
-        }
-        @supports not (background-clip: text) {
-            .gradient-text {
-                background: none;
-                color: #1e3a8a;
-            }
-        }
-        .metric-card {
-            background: #f8fafc; /* slate-50 */
-            border: 1px solid #e2e8f0; /* slate-200 */
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            height: 100%;
-        }
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.2);
-        }
-        .proof-badge {
-            display: inline-flex;
-            align-items: center;
-            background: #ecfdf5; /* green-50 */
-            color: #059669; /* green-700 */
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            border: 1px solid #6ee7b7; /* green-300 */
-        }
-        .urgency-pill {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 999px;
-            font-weight: 700;
-            font-size: 1rem;
-            display: inline-block;
-            box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
-        }
-        .vision-arrow {
-            font-size: 2rem;
-            color: #9ca3af; /* gray-400 */
-            margin: 0 1rem;
-            align-self: center;
-        }
-        nav {
-            position: fixed;
-            bottom: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-            z-index: 50;
-            display: flex;
-            gap: 0.25rem;
-            max-width: 90vw;
-            overflow-x: auto;
-        }
-        @supports not (backdrop-filter: blur(10px)) {
-            nav {
-                background: rgba(255, 255, 255, 0.98);
-            }
-        }
-        @media (min-width: 768px) {
-            nav {
-                bottom: 2rem;
-                padding: 0.75rem 1.5rem;
-            gap: 0.5rem;
-                max-width: none;
-                overflow-x: visible;
-            }
-        }
-        .nav-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #cbd5e1; /* slate-300 */
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .nav-dot.active {
-            background: #1e3a8a; /* blue-800 */
-            transform: scale(1.3);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Market Opportunity - HeyBLU AI (Fixed)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{font-family:'Inter',sans-serif;background-color:#f1f5f9}
+    .slide{min-height:100dvh;max-height:100dvh;display:flex;align-items:center;justify-content:center;padding:1rem;position:relative;overflow:hidden}
+    @media(min-width:768px){.slide{padding:2rem}}
+    .slide-content{background:#fff;border-radius:24px;padding:2rem;max-width:1400px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.15);border:1px solid #e2e8f0;position:relative;display:flex;flex-direction:column;justify-content:center;min-height:calc(100dvh - 4rem);max-height:calc(100dvh - 4rem);overflow-y:auto}
+    .page-number{position:absolute;top:1.5rem;right:1.5rem;color:#94a3b8;font-size:.875rem;font-weight:500}
+    nav{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.95);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:.75rem 1rem;border-radius:999px;box-shadow:0 10px 40px rgba(0,0,0,.15);z-index:50;display:flex;gap:.5rem}
+    .nav-dot{width:12px;height:12px;border-radius:50%;background:#cbd5e1;cursor:pointer;transition:all .3s}
+    .nav-dot.active{background:#1e3a8a;transform:scale(1.3)}
+  </style>
 </head>
 <body>
 
-    <!-- Slide 1: Market Opportunity Overview -->
-    <section class="slide" id="slide-1">
-        <div class="slide-content">
-            <div class="page-number">1/2</div>
-            <header class="text-center mb-8">
-                <h2 class="text-3xl md:text-5xl font-bold text-slate-800">
-                    Market Opportunity — Built Around Free for Umpires
-                </h2>
-                <p class="text-lg md:text-xl text-slate-600 mt-3 max-w-4xl mx-auto">
-                    We grow by giving the app away to umpires. Audio calls (ball/strike) are free; 
-                    families and leagues pay for premium visualizations (per‑pitch location heatmaps, MPH) 
-                    and reports. Umpire fees are unchanged.
-                </p>
-            </header>
+  <!-- Slide 1: Market Opportunity Overview (aligned & de-jargonized) -->
+  <section class="slide" id="slide-1">
+    <div class="slide-content">
+      <div class="page-number">1/2</div>
+      <header class="text-center mb-8">
+        <h2 class="text-3xl md:text-5xl font-bold text-slate-800">Market Opportunity — Built Around Free for Umpires</h2>
+        <p class="text-lg md:text-xl text-slate-600 mt-3 max-w-4xl mx-auto">
+          We grow by giving the app away to umpires. Audio calls (ball/strike) are free; families and leagues pay for premium visualizations (per‑pitch location heatmaps, MPH) and reports. <span class="font-semibold">Umpire fees are unchanged.</span>
+        </p>
+      </header>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
-                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Addressable Market (TAM)</h3>
-                    <p class="text-5xl font-extrabold text-indigo-600 my-2">$50B+</p>
-                    <p class="text-slate-600">U.S. organized youth sports household spend (context for ability to pay).</p>
-                    <p class="text-xs text-slate-500 mt-2">[A] Aspen Project Play; other market snapshots.</p>
-                </div>
-
-                <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
-                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Addressable (SAM)</h3>
-                    <p class="text-5xl font-extrabold text-indigo-600 my-2">≈$1.2B</p>
-                    <p class="text-slate-600">Youth sports software/apps (management, stats, analytics). Our wedge is per‑pitch <span class="font-semibold">diamond data</span>.</p>
-                    <p class="text-xs text-slate-500 mt-2">[B] Market research on youth sports software/apps.</p>
-                </div>
-
-                <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
-                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Obtainable (SOM)</h3>
-                    <p class="text-5xl font-extrabold text-indigo-600 my-2">$150–300M</p>
-                    <p class="text-slate-600">Initial obtainable spend from premium visuals & per‑pitch reports purchased by families/leagues; no change to umpire fees.</p>
-                    <p class="text-xs text-slate-500 mt-2">[C] Bottom‑up model below.</p>
-                </div>
-            </div>
-
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="rounded-xl border border-slate-200 p-6">
-                    <h4 class="text-base font-semibold text-slate-700">Why this scales fast</h4>
-                    <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
-                        <li>Free for umpires → rapid adoption at the point of play.</li>
-                        <li>Solves the hardest task (ball/strike) with audio only.</li>
-                        <li>Each pitch produces shareable <em>data exhaust</em> families value.</li>
-                    </ul>
-                </div>
-                <div class="rounded-xl border border-slate-200 p-6">
-                    <h4 class="text-base font-semibold text-slate-700">Validated ability to pay</h4>
-                    <p class="text-slate-600 mt-3">Households already spend <span class="font-bold">$1,016</span> per child per year on a primary sport; a $99–$199 digital add‑on is a small, proven upsell.</p>
-                    <p class="text-xs text-slate-500 mt-2">[D] Aspen Project Play 2024/25 survey.</p>
-                </div>
-                <div class="rounded-xl border border-slate-200 p-6">
-                    <h4 class="text-base font-semibold text-slate-700">Why now</h4>
-                    <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
-                        <li>Persistent youth umpire shortages; tech assists recruitment/retention.</li>
-                        <li>Normalization of AI in amateur sports (video, stats, wearables).</li>
-                        <li>Record youth sports participation; mobile‑first workflows.</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mt-8 bg-indigo-50 border-t-4 border-indigo-500 rounded-xl p-6">
-                <h4 class="text-lg font-bold text-indigo-900">Positioning</h4>
-                <p class="text-indigo-800 mt-2">"Umpire co‑pilot" for accuracy & confidence (free), unlocking premium visuals & diamond‑data products for families and leagues (paid). <span class="font-semibold">We do not change or replace umpire fees.</span></p>
-            </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Addressable Market (TAM)</h3>
+          <p class="text-5xl font-extrabold text-indigo-600 my-2">$50B+</p>
+          <p class="text-slate-600">U.S. organized youth sports household spend (context for ability to pay).</p>
+          <p class="text-xs text-slate-500 mt-2">[A] Aspen Project Play; other market snapshots.</p>
         </div>
-    </section>
 
-    <!-- Slide 2: Bottom-Up Financial Model -->
-    <section class="slide" id="slide-2">
-        <div class="slide-content">
-            <div class="page-number">2/2</div>
-            <header class="mb-6">
-                <h3 class="text-2xl md:text-4xl font-bold text-slate-800">Bottom‑Up: Games × Coverage × Take‑Rate × ARPU</h3>
-                <p class="text-slate-600 mt-2">Focus: 8U–18U games with umpires (rec, travel, school). Figures reflect conservative, base, and ambitious scenarios.</p>
-            </header>
-
-            <div class="overflow-x-auto">
-                <table class="min-w-full text-left text-sm">
-                    <thead>
-                        <tr class="text-slate-500 uppercase text-xs">
-                            <th class="py-2 pr-4">Assumption</th>
-                            <th class="py-2 pr-4">Conservative</th>
-                            <th class="py-2 pr-4">Base</th>
-                            <th class="py-2 pr-4">Ambitious</th>
-                        </tr>
-                    </thead>
-                    <tbody class="text-slate-700">
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Annual games with umpires (8U–18U)</td>
-                            <td class="py-2 pr-4">2.8M</td>
-                            <td class="py-2 pr-4">4.0M</td>
-                            <td class="py-2 pr-4">5.3M</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Game coverage by BLU (at least audio)</td>
-                            <td class="py-2 pr-4">6%</td>
-                            <td class="py-2 pr-4">12%</td>
-                            <td class="py-2 pr-4">20%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Viewers per covered game (households)</td>
-                            <td class="py-2 pr-4">12</td>
-                            <td class="py-2 pr-4">18</td>
-                            <td class="py-2 pr-4">24</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Household conversion to premium visuals</td>
-                            <td class="py-2 pr-4">3%</td>
-                            <td class="py-2 pr-4">5%</td>
-                            <td class="py-2 pr-4">8%</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Household ARPU (annual)</td>
-                            <td class="py-2 pr-4">$79</td>
-                            <td class="py-2 pr-4">$99</td>
-                            <td class="py-2 pr-4">$149</td>
-                        </tr>
-                        <tr class="border-t font-semibold">
-                            <td class="py-2 pr-4">Household revenue</td>
-                            <td class="py-2 pr-4">$8–12M</td>
-                            <td class="py-2 pr-4">$32–48M</td>
-                            <td class="py-2 pr-4">$95–140M</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">League/team dashboards (optional add‑on)</td>
-                            <td class="py-2 pr-4">Low pilot</td>
-                            <td class="py-2 pr-4">Selective</td>
-                            <td class="py-2 pr-4">Broader</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-2 pr-4">Add‑on ARPU (annual per org)</td>
-                            <td class="py-2 pr-4">$199</td>
-                            <td class="py-2 pr-4">$299</td>
-                            <td class="py-2 pr-4">$499</td>
-                        </tr>
-                        <tr class="border-t font-semibold">
-                            <td class="py-2 pr-4">Org revenue (range)</td>
-                            <td class="py-2 pr-4">$1–3M</td>
-                            <td class="py-2 pr-4">$6–12M</td>
-                            <td class="py-2 pr-4">$16–30M</td>
-                        </tr>
-                        <tr class="border-t bg-indigo-50 font-bold">
-                            <td class="py-2 pr-4">Total obtainable (SOM)</td>
-                            <td class="py-2 pr-4">$10–15M</td>
-                            <td class="py-2 pr-4">$40–60M</td>
-                            <td class="py-2 pr-4">$110–170M</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="rounded-xl border border-slate-200 p-6">
-                    <h4 class="text-base font-semibold text-slate-700">Adoption flywheel</h4>
-                    <ol class="list-decimal list-inside text-slate-600 mt-2 space-y-1">
-                        <li>Free co‑pilot reduces stress & abuse for umpires → supply grows.</li>
-                        <li>More covered games → more per‑pitch data exhaust.</li>
-                        <li>Families want visuals & MPH → premium conversion.</li>
-                        <li>Revenue funds further umpire recruitment & product quality.</li>
-                    </ol>
-                </div>
-                <div class="rounded-xl border border-slate-200 p-6">
-                    <h4 class="text-base font-semibold text-slate-700">Methodology & sources</h4>
-                    <ul class="list-disc list-inside text-slate-600 mt-2 space-y-1">
-                        <li>Games: 2.8–5.3M est. (8U–18U, rec/travel/school) with umpires.</li>
-                        <li>Household spend: $1,016 per child/year validates digital add‑ons.</li>
-                        <li>Software SAM ≈ $1.2B; TAM ≈ $50B+ youth ecosystem context.</li>
-                        <li>We do not model or impact umpire fees; value captured from premium data products.</li>
-                    </ul>
-                    <p class="text-xs text-slate-500 mt-3">References: Aspen Project Play surveys; NFHS participation reports; major platform disclosures (TeamSnap, GameChanger, SportsEngine); market research on youth sports software/apps.</p>
-                </div>
-            </div>
+        <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Addressable (SAM)</h3>
+          <p class="text-5xl font-extrabold text-indigo-600 my-2">≈$1.2B</p>
+          <p class="text-slate-600">Youth sports software/apps (management, stats, analytics). Our wedge is per‑pitch <span class="font-semibold">diamond data</span>.</p>
+          <p class="text-xs text-slate-500 mt-2">[B] Market research on youth sports software/apps.</p>
         </div>
-    </section>
 
-    <nav id="nav-dots"></nav>
+        <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+          <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Obtainable (SOM — Base)</h3>
+          <p class="text-5xl font-extrabold text-indigo-600 my-2">$40–60M</p>
+          <p class="text-slate-600">Near‑term obtainable from premium visuals & per‑pitch reports purchased by families/leagues; no change to umpire fees.</p>
+          <p class="text-xs text-slate-500 mt-2">[C] Matches base case in the bottom‑up model.</p>
+        </div>
+      </div>
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const slides = document.querySelectorAll('.slide');
-        const navContainer = document.getElementById('nav-dots');
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="rounded-xl border border-slate-200 p-6">
+          <h4 class="text-base font-semibold text-slate-700">Why this scales fast</h4>
+          <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
+            <li>Free for umpires → rapid adoption at the point of play.</li>
+            <li>Solves the hardest task (ball/strike) with audio only.</li>
+            <li>Each pitch yields <em>per‑pitch data captured automatically</em> that families value.</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-6">
+          <h4 class="text-base font-semibold text-slate-700">Validated ability to pay</h4>
+          <p class="text-slate-600 mt-3">Households already spend <span class="font-bold">$1,016</span> per child per year on a primary sport; a $99–$199 digital add‑on is a small, proven upsell.</p>
+          <p class="text-xs text-slate-500 mt-2">[D] Aspen Project Play 2024/25 survey.</p>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-6">
+          <h4 class="text-base font-semibold text-slate-700">Why now</h4>
+          <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
+            <li>Persistent youth umpire shortages; tech assists leagues & associations with recruitment/retention.</li>
+            <li>Normalization of AI in amateur sports (video, stats, wearables).</li>
+            <li>Record youth sports participation; mobile‑first workflows.</li>
+          </ul>
+        </div>
+      </div>
 
-        slides.forEach((slide, index) => {
-            const dot = document.createElement('a');
-            dot.href = `#${slide.id}`;
-            dot.classList.add('nav-dot');
-            if (index === 0) dot.classList.add('active');
-            navContainer.appendChild(dot);
-        });
+      <div class="mt-8 bg-indigo-50 border-t-4 border-indigo-500 rounded-xl p-6">
+        <h4 class="text-lg font-bold text-indigo-900">Positioning</h4>
+        <p class="text-indigo-800 mt-2">“Umpire co‑pilot” for accuracy & confidence (free), unlocking premium visuals & diamond‑data products for families and leagues (paid). <span class="font-semibold">We do not change or replace umpire fees.</span></p>
+      </div>
+    </div>
+  </section>
 
-        const navDots = document.querySelectorAll('.nav-dot');
+  <!-- Slide 2: Bottom-Up Financial Model (terms clarified) -->
+  <section class="slide" id="slide-2">
+    <div class="slide-content">
+      <div class="page-number">2/2</div>
+      <header class="mb-6">
+        <h3 class="text-2xl md:text-4xl font-bold text-slate-800">Bottom‑Up: Games × Coverage × Households × Conversion × ARPU</h3>
+        <p class="text-slate-600 mt-2">Focus: 8U–18U games with umpires (rec, travel, school). Figures reflect conservative, base, and ambitious scenarios.</p>
+      </header>
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const id = entry.target.id;
-                    const activeDot = document.querySelector(`.nav-dot[href="#${id}"]`);
+      <div class="overflow-x-auto">
+        <table class="min-w-full text-left text-sm">
+          <thead>
+            <tr class="text-slate-500 uppercase text-xs">
+              <th class="py-2 pr-4">Assumption</th>
+              <th class="py-2 pr-4">Conservative</th>
+              <th class="py-2 pr-4">Base</th>
+              <th class="py-2 pr-4">Ambitious</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-700">
+            <tr class="border-t">
+              <td class="py-2 pr-4">Annual games with umpires (8U–18U)</td>
+              <td class="py-2 pr-4">2.8M</td>
+              <td class="py-2 pr-4">4.0M</td>
+              <td class="py-2 pr-4">5.3M</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">Game coverage by BLU (at least audio)</td>
+              <td class="py-2 pr-4">6%</td>
+              <td class="py-2 pr-4">12%</td>
+              <td class="py-2 pr-4">20%</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">Households per covered game</td>
+              <td class="py-2 pr-4">12</td>
+              <td class="py-2 pr-4">18</td>
+              <td class="py-2 pr-4">24</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">Household conversion to premium</td>
+              <td class="py-2 pr-4">3%</td>
+              <td class="py-2 pr-4">5%</td>
+              <td class="py-2 pr-4">8%</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">Household ARPU (annual)</td>
+              <td class="py-2 pr-4">$79</td>
+              <td class="py-2 pr-4">$99</td>
+              <td class="py-2 pr-4">$149</td>
+            </tr>
+            <tr class="border-t font-semibold">
+              <td class="py-2 pr-4">Household revenue (calc)</td>
+              <td class="py-2 pr-4">$8–12M</td>
+              <td class="py-2 pr-4">$32–48M</td>
+              <td class="py-2 pr-4">$95–140M</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">League/team dashboards (optional add‑on)</td>
+              <td class="py-2 pr-4">Low pilot</td>
+              <td class="py-2 pr-4">Selective</td>
+              <td class="py-2 pr-4">Broader</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-2 pr-4">Org add‑on ARPU (annual)</td>
+              <td class="py-2 pr-4">$199</td>
+              <td class="py-2 pr-4">$299</td>
+              <td class="py-2 pr-4">$499</td>
+            </tr>
+            <tr class="border-t font-semibold">
+              <td class="py-2 pr-4">Org revenue (range)</td>
+              <td class="py-2 pr-4">$1–3M</td>
+              <td class="py-2 pr-4">$6–12M</td>
+              <td class="py-2 pr-4">$16–30M</td>
+            </tr>
+            <tr class="border-t bg-indigo-50 font-bold">
+              <td class="py-2 pr-4">Total obtainable (SOM)</td>
+              <td class="py-2 pr-4">$10–15M</td>
+              <td class="py-2 pr-4">$40–60M</td>
+              <td class="py-2 pr-4">$110–170M</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-                    navDots.forEach(d => d.classList.remove('active'));
-                    if(activeDot) activeDot.classList.add('active');
-                }
-            });
-        }, { threshold: 0.5 });
+      <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="rounded-xl border border-slate-200 p-6">
+          <h4 class="text-base font-semibold text-slate-700">Adoption flywheel</h4>
+          <ol class="list-decimal list-inside text-slate-600 mt-2 space-y-1">
+            <li>Free co‑pilot reduces stress for umpires → more covered games.</li>
+            <li>More covered games → more <em>per‑pitch data captured automatically</em>.</li>
+            <li>Families value visuals & MPH → premium conversion.</li>
+            <li>Revenue fuels product quality & growth; leagues/associations benefit on recruitment/retention.</li>
+          </ol>
+        </div>
+        <div class="rounded-xl border border-slate-200 p-6">
+          <h4 class="text-base font-semibold text-slate-700">Methodology & sources</h4>
+          <ul class="list-disc list-inside text-slate-600 mt-2 space-y-1">
+            <li>Games: 2.8–5.3M est. (8U–18U, rec/travel/school) with umpires.</li>
+            <li>Coverage = % of games where free audio is used. Households = families connected to both teams.</li>
+            <li>Conversion = % of those households purchasing premium in a season; ARPU from planned pricing tiers.</li>
+            <li>We do not model or impact umpire fees; value captured from premium data products.</li>
+          </ul>
+          <p class="text-xs text-slate-500 mt-3">References: Aspen Project Play surveys; NFHS participation reports; major platform disclosures (TeamSnap, GameChanger, SportsEngine); market research on youth sports software/apps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        slides.forEach(slide => observer.observe(slide));
+  <nav id="nav-dots"></nav>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function(){
+      const slides=document.querySelectorAll('.slide');
+      const nav=document.getElementById('nav-dots');
+      slides.forEach((s,i)=>{const a=document.createElement('a');a.href=`#${s.id}`;a.className='nav-dot'+(i===0?' active':'');nav.appendChild(a)});
+      const dots=document.querySelectorAll('.nav-dot');
+      const io=new IntersectionObserver((entries)=>{entries.forEach(entry=>{if(entry.isIntersecting){const id=entry.target.id;dots.forEach(d=>d.classList.remove('active'));const active=document.querySelector(`.nav-dot[href="#${id}"]`);if(active)active.classList.add('active')}})},{threshold:0.5});
+      slides.forEach(s=>io.observe(s));
     });
-    </script>
+  </script>
 </body>
 </html>
