@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>HeyBLU: The AI Assistant for Amateur Baseball - Investor Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+            object-position: center;
+        }
+        /* Responsive scaling for different screen sizes */
+        @media (max-width: 768px) {
+            img {
+                max-height: 40vh;
+                width: auto;
+        }
+        .slide {
+                padding: 0.5rem;
+                min-height: 100dvh;
+                max-height: 100dvh;
+            }
+            .slide-content {
+                padding: 0.75rem;
+                min-height: calc(100dvh - 1rem);
+                max-height: calc(100dvh - 1rem);
+            }
+            /* Scale down large text on mobile */
+            h1 { font-size: 2.5rem !important; }
+            h2 { font-size: 2rem !important; }
+            .text-4xl { font-size: 1.875rem !important; }
+            .text-5xl { font-size: 2.25rem !important; }
+        }
+        
+        /* Medium screens */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            img {
+                max-height: 60vh;
+                width: auto;
+            }
+            /* Slightly smaller text on medium screens */
+            h1 { font-size: 3.5rem !important; }
+            h2 { font-size: 2.5rem !important; }
+            .text-4xl { font-size: 2.25rem !important; }
+            .text-5xl { font-size: 3rem !important; }
+        }
+        
+        /* Large screens - ensure content doesn't overflow */
+        @media (min-width: 1025px) {
+            img {
+                max-height: 70vh;
+                width: auto;
+            }
+        }
+        .slide {
+            min-height: 100dvh;
+            max-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            padding-top: env(safe-area-inset-top, 1rem);
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
+            position: relative;
+            margin-bottom: 0;
+            overflow: hidden;
+            scroll-snap-align: start;
+        }
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        @media (min-width: 768px) {
+            .slide {
+                min-height: 100dvh;
+                padding: 2rem;
+            }
+        }
+        .slide-content {
+            background: white;
+            border-radius: 24px;
+            padding: 1rem 1.5rem;
+            max-width: 1400px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: calc(100dvh - 2rem);
+            max-height: calc(100dvh - 2rem);
+            overflow-y: auto;
+        }
+        @media (min-width: 768px) {
+            .slide-content {
+                border-radius: 24px;
+                padding: 2rem;
+                min-height: calc(100dvh - 4rem);
+                max-height: calc(100dvh - 4rem);
+            }
+        }
+        .page-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .metric-card {
+            background: #f8fafc; /* slate-50 */
+            border: 1px solid #e2e8f0; /* slate-200 */
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            height: 100%;
+        }
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.2);
+        }
+        .proof-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #ecfdf5; /* green-50 */
+            color: #059669; /* green-700 */
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            border: 1px solid #6ee7b7; /* green-300 */
+        }
+        nav {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1; /* slate-300 */
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active {
+            background: #1e3a8a; /* blue-800 */
+            transform: scale(1.3);
+        }
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .play-overlay:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        .play-icon {
+            width: 0;
+            height: 0;
+            border-left: 20px solid white;
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            margin-left: 4px;
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Slide 1: Cover -->
+    <section class="slide" id="slide-1">
+        <div class="slide-content text-center">
+            <div class="page-number">1/9</div>
+            <div class="inline-block mb-6">
+                 <h1 class="text-6xl md:text-8xl font-black tracking-tight leading-none">
+                    <span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span>
+                </h1>
+                <p class="text-sm md:text-lg lg:text-xl text-slate-900 font-semibold mb-6 leading-tight ml-36 md:ml-44 lg:ml-52 -mt-2">Big League Umpire</p>
+            </div>
+            <p class="text-lg md:text-2xl text-slate-600 font-medium mb-8 max-w-4xl mx-auto">Delivering AI-powered strike calls to any amateur field, right from your iPhone.</p>
+            
+            <div class="flex justify-center my-8">
+                <div class="relative w-full max-w-4xl bg-black rounded-[2rem] p-2 shadow-2xl aspect-video">
+                    <div class="w-full h-full bg-white rounded-[1.5rem] overflow-hidden">
+                        <!-- Static hero frame with play overlay -->
+                        <img src="/pitchdeck7/images/BLU_phone_screenshot.png" alt="HeyBLU Demo" class="w-full h-full object-cover">
+                        <div class="play-overlay" onclick="window.open('/pitchdeck7/videos/BLU Demo video cropped.mp4', '_blank')">
+                            <div class="play-icon"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 justify-center flex-wrap">
+                <div class="proof-badge">✓ On-device</div>
+                <div class="proof-badge">✓ Umpire's co-pilot</div>
+                <div class="proof-badge">✓ No field hardware</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 2: What BLU does -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="page-number">2/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">What BLU Does</h2>
+                <p class="text-xl text-slate-600 max-w-4xl mx-auto">Discreet audio to umpire's earbud; umpire remains in control.</p>
+            </div>
+
+            <div class="flex justify-center items-center">
+                <div class="w-full max-w-5xl">
+                    <div class="relative">
+                        <!-- Main app frame -->
+                        <img src="/pitchdeck7/images/onboard.jpg" alt="HeyBLU App Interface" class="w-full rounded-xl shadow-2xl">
+                        
+                        <!-- Callout arrows and labels -->
+                        <div class="absolute top-8 left-8 bg-blue-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                            📱 iPhone records
+                        </div>
+                        <div class="absolute top-1/2 left-8 bg-green-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                            🧠 On-device CV
+                        </div>
+                        <div class="absolute bottom-8 left-8 bg-purple-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                            🎧 Audio cue
+                        </div>
+                        <div class="absolute bottom-8 right-8 bg-orange-600 text-white px-3 py-2 rounded-lg text-sm font-semibold">
+                            ✅ Umpire confirms
+                        </div>
+                        
+                        <!-- Flow arrows -->
+                        <div class="absolute top-16 left-32 text-2xl text-blue-600">→</div>
+                        <div class="absolute top-1/2 left-32 text-2xl text-green-600">→</div>
+                        <div class="absolute bottom-16 left-32 text-2xl text-purple-600">→</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: Status → Validation -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content">
+            <div class="page-number">3/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Status → Validation</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <div class="metric-card">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">What Works Today</h3>
+                        <p class="text-slate-600">Working prototype: real-time ball/strike calls in controlled on-field sessions.</p>
+                        <p class="text-slate-600 mt-2">Privately demonstrated to advisors.</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">What We're Measuring Next</h3>
+                        <p class="text-slate-600"><strong>Independent study begins Dec 2025:</strong> blinded vs certified panel</p>
+                        <p class="text-slate-600 mt-2">Endpoints: agreement %, within-zone precision, decision-time distribution</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <div class="relative">
+                        <img src="/pitchdeck7/images/umpire-catcher.jpg" alt="Phone setup on field" class="w-full max-w-sm rounded-xl shadow-lg">
+                        <div class="absolute bottom-2 left-2 bg-slate-800 text-white px-2 py-1 rounded text-xs">
+                            Controlled session
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Why Now -->
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <div class="page-number">4/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Strong Tailwinds</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-6">
+                    <div class="metric-card">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">ABS Awareness Arrived</h3>
+                        <p class="text-slate-600">What was niche last year is expected this year.</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Acute Need</h3>
+                        <p class="text-slate-600">Officiating shortages make ball/strike the priority use case.</p>
+                    </div>
+                    
+                    <div class="metric-card">
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Deployment Fit</h3>
+                        <p class="text-slate-600">Works on existing iPhones; zero field hardware.</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center">
+                    <img src="/pitchdeck7/images/opening-day-logo.jpg" alt="Timeline showing progression from obscure to expected" class="w-full max-w-md rounded-xl shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: GTM Wedge → Unit of Sale -->
+    <section class="slide" id="slide-5">
+        <div class="slide-content">
+            <div class="page-number">5/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Free for Umpires → Team Subscriptions</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">👨‍⚖️</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Wedge</h3>
+                    <p class="text-slate-600">Free Audio Assist for umpires (adoption driver)</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">🧢</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Hook</h3>
+                    <p class="text-slate-600">Teams upgrade for analytics during/after games</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">💰</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Unit of Sale</h3>
+                    <p class="text-slate-600">Team subscription (League = custom)</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-blue-50 border border-blue-200 p-6 rounded-lg max-w-2xl mx-auto">
+                    <h3 class="text-2xl font-bold text-slate-900">$199 / year</h3>
+                    <p class="text-slate-600">Per Team Subscription (Price under test)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: What This Unlocks -->
+    <section class="slide" id="slide-6">
+        <div class="slide-content">
+            <div class="page-number">6/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">What This Unlocks</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="flex justify-center">
+                    <img src="/pitchdeck7/images/onboard.jpg" alt="HeyBLU Product Interface" class="w-full max-w-sm rounded-xl shadow-lg">
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="relative">
+                        <img src="/pitchdeck7/images/data-heatmap.jpg" alt="Pitch Analytics Heatmap" class="w-full rounded-xl shadow-lg">
+                        <div class="absolute top-2 left-2 bg-slate-800 text-white px-2 py-1 rounded text-xs">
+                            Illustrative (MLB)
+                        </div>
+                    </div>
+                    <p class="text-slate-600 text-center">BLU enables similar analytics for youth teams</p>
+                    <p class="text-slate-600 text-center text-sm">Post-game reports and season-long trends with team subscription</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 7: Competition -->
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+            <div class="page-number">7/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Competition</h2>
+            </div>
+
+            <div class="max-w-4xl mx-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b-2 border-slate-200">
+                            <th class="py-4 pr-6 text-lg font-bold text-slate-900">Category</th>
+                            <th class="py-4 text-lg font-bold text-slate-900">In-Game Officiation</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-slate-700">
+                        <tr class="border-b border-slate-100">
+                            <td class="py-4 pr-6 font-semibold">Broadcast/scorekeeping (GameChanger)</td>
+                            <td class="py-4">❌ No in-game officiation</td>
+                        </tr>
+                        <tr class="border-b border-slate-100">
+                            <td class="py-4 pr-6 font-semibold">Training vision apps (SwingVision, etc)</td>
+                            <td class="py-4">❌ Practice analytics ≠ live calls</td>
+                        </tr>
+                        <tr class="border-b border-slate-100">
+                            <td class="py-4 pr-6 font-semibold">Pro rigs (Hawk-Eye, TrackMan)</td>
+                            <td class="py-4">❌ Staffed/costly; not youth-field viable</td>
+                        </tr>
+                        <tr class="border-b border-slate-100">
+                            <td class="py-4 pr-6 font-semibold">Status quo</td>
+                            <td class="py-4">❌ Human inconsistency; no audit trail</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 8: Team & IP -->
+    <section class="slide" id="slide-8">
+        <div class="slide-content">
+            <div class="page-number">8/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Team & IP</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="metric-card border-2 border-blue-300">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck7/images/Rob.jpg" alt="Rob Regan" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Rob Regan, Founder/CEO</h3>
+                            <p class="text-slate-600">20+ years as a real estate entrepreneur & tech ad sales leader.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck7/images/JP.jpg" alt="Jonathan Parkhurst" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Jonathan Parkhurst, CRO</h3>
+                            <p class="text-slate-600">20+ year global sales leader scaling revenue at WeWork and GoPro.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+                            <img src="/pitchdeck7/images/Brian.jpg" alt="Brian Marcus" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-900 mb-2">Brian Marcus, Strategic Advisor</h3>
+                            <p class="text-slate-600">Lead patent attorney behind the NFL's televised 1st-down marker.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center bg-slate-50 p-6 rounded-xl">
+                <p class="text-slate-700 font-semibold">Delaware C-Corp; all IP assigned to the company</p>
+                <p class="text-slate-600 mt-2">Monocular depth & 3D zone modeling — owned in-house; model iteration led by Hemant Goyal</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: Tranche-2 Ask & Milestones -->
+    <section class="slide" id="slide-9">
+        <div class="slide-content">
+            <div class="page-number">9/9</div>
+            <div class="text-center mb-8">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">Raising Tranche-2 to Prove Accuracy & Convert Pilots</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">🔧</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">All-fields model active</h3>
+                    <p class="text-slate-600 font-semibold">Nov '25</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">📊</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Independent study complete</h3>
+                    <p class="text-slate-600 font-semibold">Dec '25/Jan '26</p>
+                </div>
+                <div class="metric-card text-center">
+                    <div class="text-4xl mb-4">🚀</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-3">Beta pilots live & LOIs</h3>
+                    <p class="text-slate-600 font-semibold">Q1 '26</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <p class="text-slate-600">Use: model hardening, study ops, pilot support, minimal GTM for ABCA</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPENDIX: Table of Contents -->
+    <section class="slide" id="appendix-toc">
+        <div class="slide-content">
+            <div class="page-number">Appendix</div>
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">Appendix</h1>
+                <p class="text-xl text-slate-600">Supporting Documentation</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Left Column -->
+                    <div class="space-y-4">
+                        <div class="border-b border-slate-200 pb-3">
+                            <h2 class="text-lg font-bold text-slate-900 mb-2">A. Market Analysis</h2>
+                            <ul class="space-y-1 text-sm text-slate-700">
+                                <li>A1. TAM/SAM/SOM Framework</li>
+                                <li>A2. Bottom-Up Financial Model</li>
+                                <li>A3. Geographic Rollout Strategy</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="border-b border-slate-200 pb-3">
+                            <h2 class="text-lg font-bold text-slate-900 mb-2">B. Competitive Landscape</h2>
+                            <ul class="space-y-1 text-sm text-slate-700">
+                                <li>B1. Technology Modality Analysis</li>
+                                <li>B2. Direct Competitor Profiles</li>
+                                <li>B3. Strategic Moat</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 mb-2">C. Product & Technology</h2>
+                            <ul class="space-y-1 text-sm text-slate-700">
+                                <li>C1. Core Technology & IP Protection</li>
+                                <li>C2. Product Roadmap</li>
+                                <li>C3. User Experience Design</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column -->
+                    <div class="space-y-4">
+                        <div class="border-b border-slate-200 pb-3">
+                            <h2 class="text-lg font-bold text-slate-900 mb-2">D. Financial Projections</h2>
+                            <ul class="space-y-1 text-sm text-slate-700">
+                                <li>D1. Unit Economics</li>
+                                <li>D2. Revenue Projections</li>
+                                <li>D3. Use of Funds</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h2 class="text-lg font-bold text-slate-900 mb-2">E. Exit Strategy</h2>
+                            <ul class="space-y-1 text-sm text-slate-700">
+                                <li>E1. Strategic Acquirers</li>
+                                <li>E2. Financial Acquirers</li>
+                                <li>E3. Brand Acquirers</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPENDIX A: Market Analysis -->
+    <section class="slide" id="appendix-a">
+        <div class="slide-content">
+            <div class="page-number">A1/3</div>
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-slate-600 mb-2">APPENDIX A: Market Analysis</h1>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">TAM/SAM/SOM Framework</h2>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Addressable Market (TAM)</h3>
+                        <p class="text-5xl font-extrabold text-indigo-600 my-2">$50B+</p>
+                        <p class="text-slate-600">U.S. youth sports spending (validates ability to pay).</p>
+                        <p class="text-xs text-slate-500 mt-2">[A] Aspen Project Play; other market snapshots.</p>
+                    </div>
+
+                    <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Addressable (SAM)</h3>
+                        <p class="text-5xl font-extrabold text-indigo-600 my-2">≈$1.2B</p>
+                        <p class="text-slate-600">Youth sports software. Our wedge: per‑pitch <span class="font-semibold">diamond data</span>.</p>
+                        <p class="text-xs text-slate-500 mt-2">[B] Market research on youth sports software/apps.</p>
+                    </div>
+
+                    <div class="rounded-xl border border-slate-200 p-6 bg-slate-50">
+                        <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Serviceable Obtainable (SOM — Base)</h3>
+                        <p class="text-5xl font-extrabold text-indigo-600 my-2">$40–60M</p>
+                        <p class="text-slate-600">Near‑term revenue from premium data.</p>
+                        <p class="text-xs text-slate-500 mt-2">[C] Matches base case in the bottom‑up model.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="rounded-xl border border-slate-200 p-6">
+                        <h4 class="text-base font-semibold text-slate-700">Why this scales fast</h4>
+                        <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
+                            <li>Free for umpires → rapid adoption.</li>
+                            <li>Solves ball/strike calls with audio only.</li>
+                            <li>Each pitch generates valuable data.</li>
+                        </ul>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-6">
+                        <h4 class="text-base font-semibold text-slate-700">Validated ability to pay</h4>
+                        <p class="text-slate-600 mt-3">Households spend <span class="font-bold">$1,016</span>/child/year on sports; $99–$199 is proven.</p>
+                        <p class="text-xs text-slate-500 mt-2">[D] Aspen Project Play 2024/25 survey.</p>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-6">
+                        <h4 class="text-base font-semibold text-slate-700">Why now</h4>
+                        <ul class="mt-3 list-disc list-inside text-slate-600 space-y-1">
+                            <li>Umpire shortages; tech helps recruitment.</li>
+                            <li>AI normalization in amateur sports.</li>
+                            <li>Record participation; mobile‑first workflows.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPENDIX A2: Bottom-Up Financial Model -->
+    <section class="slide" id="appendix-a2">
+        <div class="slide-content">
+            <div class="page-number">A2/3</div>
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-slate-600 mb-2">APPENDIX A: Market Analysis</h1>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Bottom‑Up: Games × Coverage × Households × Conversion × ARPU</h2>
+                <p class="text-slate-600 mt-2">8U–18U games with umpires (excludes adult amateur, college, fast pitch softball, international). Conservative, base, and ambitious scenarios.</p>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="overflow-x-auto mb-8">
+                    <table class="min-w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-slate-500 uppercase text-xs">
+                                <th class="py-2 pr-4">Assumption</th>
+                                <th class="py-2 pr-4">Conservative</th>
+                                <th class="py-2 pr-4">Base</th>
+                                <th class="py-2 pr-4">Ambitious</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-slate-700">
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Annual games with umpires (8U–18U)</td>
+                                <td class="py-2 pr-4">2.8M</td>
+                                <td class="py-2 pr-4">4.0M</td>
+                                <td class="py-2 pr-4">5.3M</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Game coverage by BLU (at least audio)</td>
+                                <td class="py-2 pr-4">6%</td>
+                                <td class="py-2 pr-4">12%</td>
+                                <td class="py-2 pr-4">20%</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Households (both teams) per covered game</td>
+                                <td class="py-2 pr-4">12</td>
+                                <td class="py-2 pr-4">18</td>
+                                <td class="py-2 pr-4">24</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Household conversion to premium</td>
+                                <td class="py-2 pr-4">3%</td>
+                                <td class="py-2 pr-4">5%</td>
+                                <td class="py-2 pr-4">8%</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Household ARPU (annual)</td>
+                                <td class="py-2 pr-4">$79</td>
+                                <td class="py-2 pr-4">$99</td>
+                                <td class="py-2 pr-4">$149</td>
+                            </tr>
+                            <tr class="border-t font-semibold">
+                                <td class="py-2 pr-4">Household (per player) revenue (calc)</td>
+                                <td class="py-2 pr-4">$8–12M</td>
+                                <td class="py-2 pr-4">$32–48M</td>
+                                <td class="py-2 pr-4">$95–140M</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">League/team dashboards (optional add‑on)</td>
+                                <td class="py-2 pr-4">Low pilot</td>
+                                <td class="py-2 pr-4">Selective</td>
+                                <td class="py-2 pr-4">Broader</td>
+                            </tr>
+                            <tr class="border-t">
+                                <td class="py-2 pr-4">Org add‑on ARPU (annual)</td>
+                                <td class="py-2 pr-4">$199</td>
+                                <td class="py-2 pr-4">$299</td>
+                                <td class="py-2 pr-4">$499</td>
+                            </tr>
+                            <tr class="border-t font-semibold">
+                                <td class="py-2 pr-4">Org revenue (range)</td>
+                                <td class="py-2 pr-4">$1–3M</td>
+                                <td class="py-2 pr-4">$6–12M</td>
+                                <td class="py-2 pr-4">$16–30M</td>
+                            </tr>
+                            <tr class="border-t bg-indigo-50 font-bold">
+                                <td class="py-2 pr-4">Total obtainable (SOM)</td>
+                                <td class="py-2 pr-4">$10–15M</td>
+                                <td class="py-2 pr-4">$40–60M</td>
+                                <td class="py-2 pr-4">$110–170M</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="rounded-xl border border-slate-200 p-6">
+                        <h4 class="text-base font-semibold text-slate-700">Adoption flywheel</h4>
+                        <ol class="list-decimal list-inside text-slate-600 mt-2 space-y-1">
+                            <li>Free co‑pilot → more covered games.</li>
+                            <li>More games → more data.</li>
+                            <li>Coaches and families value data → premium conversion.</li>
+                            <li>Revenue fuels growth.</li>
+                        </ol>
+                    </div>
+                    <div class="rounded-xl border border-slate-200 p-6">
+                        <h4 class="text-base font-semibold text-slate-700">Methodology & sources</h4>
+                        <ul class="list-disc list-inside text-slate-600 mt-2 space-y-1">
+                            <li>Games: 2.8–5.3M (8U–18U) with umpires.</li>
+                            <li>Coverage = % using free audio. Access = both teams' coaches, players, families.</li>
+                            <li>Conversion = % purchasing premium (last 10 pitches free; full data premium).</li>
+                            <li>Revenue from premium data.</li>
+                        </ul>
+                        <p class="text-xs text-slate-500 mt-3">Sources: Aspen Project Play, NFHS, TeamSnap, GameChanger, SportsEngine, youth sports software research.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- APPENDIX A3: Geographic Rollout Strategy -->
+    <section class="slide" id="appendix-a3">
+        <div class="slide-content">
+            <div class="page-number">A3/3</div>
+            <div class="text-center mb-8">
+                <h1 class="text-2xl font-bold text-slate-600 mb-2">APPENDIX A: Market Analysis</h1>
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">3-Year Phased Geographic Rollout</h2>
+            </div>
+            
+            <div class="max-w-6xl mx-auto">
+                <div class="space-y-8">
+                    <!-- Unit Economics Section -->
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">Unit Economics - The Foundation</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-bold text-slate-900 mb-3">The League Structure</h4>
+                                <div class="space-y-2 text-slate-700">
+                                    <p class="text-sm"><strong>1 average league:</strong> 4 age divisions × 4 teams/division × 12 players/team = <strong>192 players</strong></p>
+                                    <p class="text-sm"><strong>Revenue per league:</strong> 192 players × $199/year = <strong>$38,208 ARR</strong></p>
+                                </div>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg">
+                                <h4 class="text-lg font-bold text-slate-900 mb-3">Scaling Math</h4>
+                                <div class="space-y-2 text-slate-700">
+                                    <p class="text-sm"><strong>Target calculation:</strong> $25M ÷ $38,208 = <strong>654 leagues needed</strong></p>
+                                    <p class="text-sm"><strong>Geographic breakdown:</strong> 654 leagues ÷ 7 leagues per county = <strong>94 counties</strong></p>
+                                    <p class="text-sm"><strong>Market penetration:</strong> Only <strong>3%</strong> of 4.5M serviceable market</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 3-Year Phased Rollout -->
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-4">3-Year Phased Geographic Rollout</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Year 1: California</h4>
+                                <p class="text-sm text-slate-700 mb-2"><strong>~58 counties</strong></p>
+                                <p class="text-sm text-slate-700">Pilot & expansion in Northern & Southern CA. Establish repeatable GTM playbook.</p>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Year 2: Texas & Florida</h4>
+                                <p class="text-sm text-slate-700 mb-2"><strong>~321 counties</strong></p>
+                                <p class="text-sm text-slate-700">Leverage CA playbook for largest markets. Texas alone: 1,700+ potential leagues.</p>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 p-4 rounded-lg">
+                                <h4 class="text-lg font-bold text-slate-900 mb-2">Year 3: NY, IL & National</h4>
+                                <p class="text-sm text-slate-700 mb-2"><strong>Complete top 5 states</strong></p>
+                                <p class="text-sm text-slate-700">National outreach. Top 3 states: 2,600+ potential leagues (4x target).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <nav id="nav-dots"></nav>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.slide');
+        const navContainer = document.getElementById('nav-dots');
+
+        slides.forEach((slide, index) => {
+            const dot = document.createElement('a');
+            dot.href = `#${slide.id}`;
+            dot.classList.add('nav-dot');
+            if (index === 0) dot.classList.add('active');
+            navContainer.appendChild(dot);
+        });
+
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const activeDot = document.querySelector(`.nav-dot[href="#${id}"]`);
+                    navDots.forEach(d => d.classList.remove('active'));
+                    if(activeDot) activeDot.classList.add('active');
+                }
+            });
+        }, { threshold: 0.5 });
+
+        slides.forEach(slide => observer.observe(slide));
+    });
+    </script>
+</body>
+</html>
