@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>HeyBLU: The AI Assistant for Amateur Baseball - Investor Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9; /* slate-100 */
+        }
+        .slide {
+            min-height: 100vh;
+            max-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            position: relative;
+            scroll-snap-align: start;
+        }
+        html {
+            scroll-snap-type: y mandatory;
+        }
+        .slide-content {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            max-width: 1400px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0; /* slate-200 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: calc(100vh - 2rem);
+        }
+        .page-number {
+            position: absolute;
+            top: 1.5rem;
+            right: 2rem;
+            color: #94a3b8; /* slate-400 */
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+         nav {
+            position: fixed;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            z-index: 50;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e1; /* slate-300 */
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-dot.active {
+            background: #1e3a8a; /* blue-800 */
+            transform: scale(1.3);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- Slide 1: Title -->
+    <section class="slide" id="slide-1">
+        <div class="slide-content text-center">
+            <div class="page-number">1 / 13</div>
+            <h1 class="text-6xl md:text-8xl font-black tracking-tight">
+                <span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span>
+            </h1>
+            <p class="text-2xl md:text-3xl text-slate-600 font-medium mt-4">The AI Assistant for Amateur Baseball</p>
+            
+            <!-- Video from pitchdeck6 -->
+            <div class="flex justify-center my-8">
+                <div class="relative w-full max-w-4xl bg-black rounded-[2rem] p-2 shadow-2xl aspect-video">
+                    <div class="w-full h-full bg-white rounded-[1.5rem] overflow-hidden">
+                        <video autoplay muted loop playsinline class="w-full h-full object-cover">
+                            <source src="/pitchdeck8/videos/BLU Demo video cropped.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 2: The Problem -->
+    <section class="slide" id="slide-2">
+        <div class="slide-content">
+            <div class="page-number">2 / 13</div>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">The Amateur Umpire Crisis.</h2>
+                    <p class="text-xl text-slate-600 mt-6">A severe shortage of officials, fueled by on-field abuse, threatens the foundation of youth baseball.</p>
+                </div>
+                <div class="flex justify-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/yelling.jpg" alt="Coach yelling at an umpire" class="rounded-2xl shadow-xl border-4 border-white">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 3: The Opportunity -->
+    <section class="slide" id="slide-3">
+        <div class="slide-content text-center">
+            <div class="page-number">3 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">A Massive, Underserved Market.</h2>
+            <div class="mt-12">
+                <p class="text-8xl md:text-9xl font-black text-blue-600">5 Million+</p>
+                <p class="text-2xl md:text-3xl text-slate-600 font-medium mt-4">Youth Baseball Games Played Annually in the U.S.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 4: Our Solution -->
+    <section class="slide" id="slide-4">
+        <div class="slide-content">
+            <div class="page-number">4 / 13</div>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="flex justify-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/BLU_phone_screenshot.png" alt="HeyBLU app interface showing strike zone" class="rounded-2xl shadow-xl max-w-sm">
+                </div>
+                <div class="text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">An AI Co-Pilot for Every Umpire.</h2>
+                    <p class="text-xl text-slate-600 mt-6">We empower umpires with instant, objective ball-strike calls, delivered discreetly to an earpiece.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 5: How It Works -->
+    <section class="slide" id="slide-5">
+        <div class="slide-content text-center">
+            <div class="page-number">5 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-16">Simple. Instant. On-Device.</h2>
+            <div class="grid md:grid-cols-3 gap-8 items-start">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">📱</div>
+                    <h3 class="text-2xl font-bold">1. Set Up iPhone</h3>
+                    <p class="text-slate-600 mt-2">Position a single iPhone on the backstop. That's it. No other hardware needed.</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl mb-4">🧠</div>
+                    <h3 class="text-2xl font-bold">2. AI Analyzes Pitch</h3>
+                    <p class="text-slate-600 mt-2">Our on-device computer vision model tracks the pitch in 3D, in real-time.</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-6xl mb-4">🎧</div>
+                    <h3 class="text-2xl font-bold">3. Umpire Gets Cue</h3>
+                    <p class="text-slate-600 mt-2">An instant, discreet audio cue is sent to the umpire's earpiece. The umpire makes the final call.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 6: Why Now? -->
+    <section class="slide" id="slide-6">
+        <div class="slide-content text-center">
+            <div class="page-number">6 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">The Perfect Storm for Innovation.</h2>
+            <div class="grid md:grid-cols-3 gap-8 mt-16 max-w-5xl mx-auto">
+                <div>
+                    <h3 class="text-2xl font-bold">Ubiquitous Hardware</h3>
+                    <p class="text-slate-600 mt-2">Modern iPhones have the processing power to run our complex AI models on-device.</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">Mature On-Device AI</h3>
+                    <p class="text-slate-600 mt-2">Computer vision is finally fast and accurate enough for real-time sports applications.</p>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold">Acute Market Need</h3>
+                    <p class="text-slate-600 mt-2">The umpire shortage has reached a crisis point. Leagues are desperate for a solution.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Slide 7: Our Progress -->
+    <section class="slide" id="slide-7">
+        <div class="slide-content">
+             <div class="page-number">7 / 13</div>
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="text-center md:text-left">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">Our Progress: The POC.</h2>
+                    <p class="text-xl text-slate-600 mt-6">We've built a working Proof of Concept. Our custom computer vision model, trained on 10,000 images, successfully calls balls and strikes on a single field.</p>
+                    <p class="text-lg text-slate-500 mt-4 italic">It works.</p>
+                </div>
+                <div class="flex justify-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/onboard.jpg" alt="On-field setup of HeyBLU" class="rounded-2xl shadow-xl border-4 border-white">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Slide 8: The Next 60 Days -->
+    <section class="slide" id="slide-8">
+        <div class="slide-content text-center">
+            <div class="page-number">8 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">The Next 60 Days: The "All-Fields" Model.</h2>
+             <p class="text-xl text-slate-600 mt-6 max-w-4xl mx-auto">We are now training a robust model on a new dataset of 30,000 images from ~20 different fields to prove our technology works anywhere.</p>
+             <div class="flex justify-center mt-8">
+                 <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/map.png" alt="Map of the US showing multiple field locations" class="max-w-2xl">
+             </div>
+        </div>
+    </section>
+
+    <!-- Slide 9: The Path to Beta -->
+    <section class="slide" id="slide-9">
+        <div class="slide-content text-center">
+            <div class="page-number">9 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-16">Our Path to Beta.</h2>
+            <div class="flex justify-center items-center space-x-8 text-slate-500 font-semibold">
+                <div class="text-center">
+                    <div class="text-2xl p-4 bg-blue-100 text-blue-700 rounded-full inline-block">1</div>
+                    <p class="mt-2 text-slate-800 font-bold">Validate "All-Fields" Model</p>
+                </div>
+                <div class="text-4xl font-light text-slate-300">→</div>
+                 <div class="text-center">
+                    <div class="text-2xl p-4 bg-blue-100 text-blue-700 rounded-full inline-block">2</div>
+                    <p class="mt-2 text-slate-800 font-bold">UI/UX Cleanup & Polish</p>
+                </div>
+                <div class="text-4xl font-light text-slate-300">→</div>
+                 <div class="text-center">
+                    <div class="text-2xl p-4 bg-blue-100 text-blue-700 rounded-full inline-block">3</div>
+                    <p class="mt-2 text-slate-800 font-bold">Begin Beta Testing</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 10: The Vision -->
+    <section class="slide" id="slide-10">
+        <div class="slide-content text-center">
+            <div class="page-number">10 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-16">The Vision: The OS for Amateur Baseball.</h2>
+            <div class="flex flex-col md:flex-row items-center justify-center space-y-8 md:space-y-0 md:space-x-8 text-slate-600">
+                <div class="p-8 border rounded-lg">
+                    <h3 class="text-2xl font-bold text-slate-800">Umpire Assist</h3>
+                    <p>(Our Wedge)</p>
+                </div>
+                <div class="text-4xl font-light text-slate-300">→</div>
+                 <div class="p-8 border rounded-lg">
+                    <h3 class="text-2xl font-bold text-slate-800">Objective Pitch Data</h3>
+                </div>
+                <div class="text-4xl font-light text-slate-300">→</div>
+                 <div class="p-8 border rounded-lg bg-blue-50">
+                    <h3 class="text-2xl font-bold text-blue-700">Tools for Coaches, Players, & Leagues</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 11: The Team -->
+    <section class="slide" id="slide-11">
+        <div class="slide-content text-center">
+             <div class="page-number">11 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 mb-12">Built by Baseball Insiders.</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
+                <div class="text-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/Rob.jpg" alt="Rob Regan" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="font-bold">Rob Regan</h3>
+                    <p class="text-sm text-slate-500">Founder/CEO</p>
+                </div>
+                 <div class="text-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/JP.jpg" alt="Jonathan Parkhurst" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="font-bold">Jonathan Parkhurst</h3>
+                    <p class="text-sm text-slate-500">CRO/Co-Founder</p>
+                </div>
+                 <div class="text-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/Brian.jpg" alt="Brian Marcus" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="font-bold">Brian Marcus</h3>
+                    <p class="text-sm text-slate-500">Strategic Advisor</p>
+                </div>
+                 <div class="text-center">
+                    <img src="https://storage.googleapis.com/aai-web-template-assets/hey-blu/hemant.jpg" alt="Hemant Goyal" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                    <h3 class="font-bold">Hemant Goyal</h3>
+                    <p class="text-sm text-slate-500">ML Engineer</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Slide 12: The Ask -->
+    <section class="slide" id="slide-12">
+        <div class="slide-content text-center">
+            <div class="page-number">12 / 13</div>
+            <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900">Seeking Seed Investment from Strategic Partners.</h2>
+            <p class="text-xl text-slate-600 mt-8 max-w-3xl mx-auto">We are raising seed capital to transition from a successful POC to a market-ready beta product. This funding will allow us to validate our "All-Fields" model and secure our first pilot agreements. We're looking for experienced partners who can provide strategic guidance as we build the future of amateur baseball.</p>
+        </div>
+    </section>
+    
+    <!-- Slide 13: Contact -->
+    <section class="slide" id="slide-13">
+        <div class="slide-content text-center">
+             <div class="page-number">13 / 13</div>
+             <h1 class="text-6xl md:text-8xl font-black tracking-tight">
+                <span class="gradient-text">Hey</span><span class="text-slate-900">BLU</span>
+            </h1>
+            <p class="text-2xl text-slate-600 mt-8">Rob Regan | Founder & CEO</p>
+            <p class="text-lg text-slate-500">robr@bigleagueballpark.com</p>
+        </div>
+    </section>
+
+    <nav id="nav-dots"></nav>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const slides = document.querySelectorAll('.slide');
+        const navContainer = document.getElementById('nav-dots');
+
+        slides.forEach((slide, index) => {
+            const dot = document.createElement('a');
+            dot.href = `#${slide.id}`;
+            dot.classList.add('nav-dot');
+            if (index === 0) dot.classList.add('active');
+            navContainer.appendChild(dot);
+        });
+
+        const navDots = document.querySelectorAll('.nav-dot');
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    const activeDot = document.querySelector(`.nav-dot[href="#${id}"]`);
+                    navDots.forEach(d => d.classList.remove('active'));
+                    if(activeDot) activeDot.classList.add('active');
+                }
+            });
+        }, { threshold: 0.7 });
+
+        slides.forEach(slide => observer.observe(slide));
+    });
+    </script>
+</body>
+</html>
+
