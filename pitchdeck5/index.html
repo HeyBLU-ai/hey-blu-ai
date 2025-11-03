@@ -106,10 +106,11 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: flex-start;
             min-height: calc(100dvh - 2rem);
             max-height: calc(100dvh - 2rem);
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         @media (min-width: 768px) {
             .slide-content {
@@ -117,6 +118,30 @@
                 padding: 2rem;
                 min-height: calc(100dvh - 4rem);
                 max-height: calc(100dvh - 4rem);
+                justify-content: flex-start;
+            }
+        }
+        /* Safari-specific fixes */
+        @supports (-webkit-appearance: none) {
+            .slide-content {
+                justify-content: flex-start;
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            .metric-card {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+        }
+        /* Grid fallback for older Safari */
+        @media (min-width: 640px) {
+            .grid.sm\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+        @media (min-width: 1024px) {
+            .grid.lg\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
             }
         }
         .page-number {
@@ -145,6 +170,8 @@
             border: 1px solid #e2e8f0; /* slate-200 */
             border-radius: 16px;
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
             transition: transform 0.2s, box-shadow 0.2s;
             height: 100%;
         }
