@@ -176,7 +176,7 @@ def populate_readme(ws, styles):
 
         ("3.", "All other cells contain formulas and will update automatically."),
 
-        ("4.", "'Funnel_Model' is a bottom-up revenue projection model starting with umpires as the sensor network."),
+        ("4.", "Look at the 'Funnel_Model' tab. This is the engine of the entire spreadsheet. It projects a 3-year forecast starting with 'New Umpires Acquired' as the main input, calculates 'Total Freemium Users Reached' (our viral loop), and then 'Total ARR' based on our B2C conversion rates. All other tabs pull their data from this Funnel_Model."),
 
         ("5.", "'Tranche_Detail' and 'Cash_Runway' allocate funds and project cash flow."),
 
