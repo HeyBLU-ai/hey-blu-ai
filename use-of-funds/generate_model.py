@@ -509,13 +509,12 @@ def populate_tranche_detail(ws, styles):
         # Sales Salary = index 18 → row 21 → Column C = C21
         # Founder Stage 1 = index 19 → row 22 → Column C = C22 ($90k annual = $7.5k/month - CURRENT PAY)
         # Founder Stage 2 = index 20 → row 23 → Column C = C23 ($120k annual = $10k/month - triggers at $10k MRR)
-        # Founder Stage 3 = index 21 → row 24 → Column C = C24 ($250k annual - only if $50k MRR achieved)
         # Summary sheet: Row 3=Tranche A (9 months), Row 4=Tranche B (12 months), Row 5=Tranche C (12 months)
-        # Founder Pay Progression (scales UP over time, tied to milestones):
+        # Founder Pay Progression (scales UP with milestones, stays at Stage 2 through Tranche C):
         # Tranche A: Stage 1 ($90k annual × 2 founders × 9/12 months) = $135k
         # Tranche B: Stage 1 for first 6 months, Stage 2 for last 6 months (when $10k MRR milestone hit)
-        # Tranche C: Stage 2 for full period (conservative - caps at $150k annual if performance slow)
-        # Note: Prioritizing Engineers and growth expenses over founder pay
+        # Tranche C: Stage 2 for full period ($120k annual × 2 founders × 12/12 months) = $240k
+        # This demonstrates founder alignment - prioritizing company growth and capital efficiency over personal compensation
 
         ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C22*2*(6/12))+(Assumptions!C23*2*(6/12))", f"=Assumptions!C23*2*(Summary!C5/12)", "=SUM(C3:E3)"),
 
