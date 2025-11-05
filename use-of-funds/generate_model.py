@@ -234,17 +234,17 @@ def populate_assumptions(ws, styles):
 
         ("Conversion", "Parent App Conversion %", 0.02, 0.01, 0.03, "Freemium to Paid ($199/yr)"),
 
-        ("Conversion", "Coach App Conversion %", 0.10, 0.05, 0.15, "Freemium to Paid ($199/yr)"),
+        ("Conversion", "Coach App Conversion %", 0.03, 0.02, 0.05, "Freemium to Paid ($199/yr)"),
 
         ("Conversion", "Paid User Churn Rate (Annual)", 0.33, 0.40, 0.25, "Annual churn rate for paid users (inverse of 3yr lifetime)"),
 
-        ("Conversion", "League/Org Conversion % (Yr 1)", 0.05, 0.03, 0.08, "Leagues converting to B2B platform"),
+        ("Conversion", "League/Org Conversion % (Yr 1)", 0.00, 0.00, 0.00, "B2C-only strategy - no organization revenue"),
 
         # Pricing
 
         ("Pricing", "Coach/Parent App (Annual)", 199, 199, 249, "Annual subscription"),
 
-        ("Pricing", "Organization Price (Annual Avg)", 5000, 3500, 7500, "Per league, custom pricing"),
+        ("Pricing", "Organization Price (Annual Avg)", 0, 0, 0, "B2C-only strategy - no organization revenue"),
 
         # Unit Economics
 
@@ -260,7 +260,7 @@ def populate_assumptions(ws, styles):
 
         ("CAC", "CAC - Social/Digital ($/user)", 80, 100, 70, "Paid user (parent/coach)"),
 
-        ("CAC", "CAC - Organization ($/league)", 1200, 1500, 1000, "League B2B sale"),
+        ("CAC", "CAC - Organization ($/league)", 0, 0, 0, "B2C-only strategy - no organization CAC"),
 
         # Team & Ops
 
@@ -360,7 +360,7 @@ def populate_summary(ws, styles):
 
         ("Tranche B", f"=Assumptions!C31", 12, "Achieve Product-Market Fit (Coach/Parent App)", "Tranche A Milestones Met (5 Leagues, 100 Umpires, $3-5k MRR)"),
 
-        ("Tranche C", f"=Assumptions!C32", 12, "Drive Scalable Growth (Organization Sales)", "Tranche B Milestones Met ($35k MRR, 2% Conversion)"),
+        ("Tranche C", f"=Assumptions!C32", 12, "Scale B2C Engine", "Tranche B Milestones Met ($35k MRR, 2% Conversion)"),
 
     ]
 
@@ -524,17 +524,20 @@ def populate_tranche_detail(ws, styles):
 
         ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C4:E4)"),
 
-        ("Payroll", "Sales (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*1*(1+Assumptions!C19)*((Summary!C5-3)/12)+Assumptions!C21*2*(1+Assumptions!C19)*(3/12)", "=SUM(C5:E5)"),
+        ("Payroll", "Growth & Partnerships (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*1*(1+Assumptions!C19)*((Summary!C5-3)/12)+Assumptions!C21*2*(1+Assumptions!C19)*(3/12)", "=SUM(C5:E5)"),
 
         ("Payroll", "Total Payroll", "=SUM(C3:C5)", "=SUM(D3:D5)", "=SUM(E3:E5)", "=SUM(F3:F5)"),
 
         # S&M
 
-        ("Sales & Marketing", "CAC - Ambassador", 10000, 50000, 50000, "=SUM(C7:E7)"),
+        # S&M - Dynamic CAC based on Funnel_Model new paid users
+        # Formula: (New Paid Parents + New Paid Coaches) × CAC per user from Assumptions
+        # Tranche A uses Year 1, Tranche B uses Year 2, Tranche C uses Year 3
+        ("Sales & Marketing", "CAC - Ambassador", f"=(Funnel_Model!B22+Funnel_Model!B23)*Assumptions!C17", f"=(Funnel_Model!C22+Funnel_Model!C23)*Assumptions!C17", f"=(Funnel_Model!D22+Funnel_Model!D23)*Assumptions!C17", "=SUM(C7:E7)"),
 
-        ("Sales & Marketing", "CAC - Social/Digital", 20000, 75000, 100000, "=SUM(C8:E8)"),
+        ("Sales & Marketing", "CAC - Social/Digital", f"=(Funnel_Model!B22+Funnel_Model!B23)*Assumptions!C18", f"=(Funnel_Model!C22+Funnel_Model!C23)*Assumptions!C18", f"=(Funnel_Model!D22+Funnel_Model!D23)*Assumptions!C18", "=SUM(C8:E8)"),
 
-        ("Sales & Marketing", "CAC - Organization", 5000, 30000, 60000, "=SUM(C9:E9)"),
+        ("Sales & Marketing", "CAC - Organization", 0, 0, 0, "=SUM(C9:E9)"),
 
         ("Sales & Marketing", "Total S&M", "=SUM(C7:C9)", "=SUM(D7:D9)", "=SUM(E7:E9)", "=SUM(F7:F9)"),
 
