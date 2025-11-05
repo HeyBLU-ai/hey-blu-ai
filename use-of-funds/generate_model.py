@@ -488,7 +488,7 @@ def populate_funnel_model(ws, styles):
     
     # Add note about top-of-funnel
     ws['A19'].font = styles['subheader']
-    ws['A19'].comment = "This is our new, realistic top-of-funnel"
+    # Note: Comment removed - Excel doesn't require it for functionality
 
 
 
