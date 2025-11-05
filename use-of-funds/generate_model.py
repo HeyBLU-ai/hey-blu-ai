@@ -362,7 +362,7 @@ def populate_summary(ws, styles):
 
         ("Tranche B", f"=Assumptions!C31", 12, "Achieve Product-Market Fit (Coach/Parent App)", "Tranche A Milestones Met (5 Leagues, 100 Umpires, $3-5k MRR)"),
 
-        ("Tranche C", f"=Assumptions!C32", 12, "Scale B2C Engine", "Tranche B Milestones Met ($35k MRR, 2% Conversion)"),
+        ("Tranche C", f"=Assumptions!C32", 12, "Scale the B2C Engine", "Tranche B Milestones Met ($35k MRR, 2% Conversion)"),
 
     ]
 
