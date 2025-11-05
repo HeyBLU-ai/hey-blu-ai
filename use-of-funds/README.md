@@ -24,7 +24,7 @@ The generated Excel file contains 13 sheets:
 - **Assumptions**: All key inputs (cells in blue are editable)
 - **Summary**: Funding tranche overview
 - **Tranche_Detail**: Detailed use of funds breakdown
-- **County_League_Model**: User growth and ARR projections
+- **Funnel_Model**: Bottom-up revenue projections starting with umpires as the sensor network
 - **Unit_Economics**: LTV, CAC, and payback calculations
 - **Cash_Runway**: Monthly cash flow and runway analysis
 - **Pay_Triggers**: Founder compensation milestones

@@ -32,405 +32,301 @@
         }
         
         .brand-blu {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: #1e3a8a; /* Fallback for browsers that don't support background-clip: text */
-            font-weight: 700;
+            color: #ffffff;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
-        
-        @supports not (background-clip: text) {
-            .brand-blu {
-                background: none;
-                color: #1e3a8a;
-            }
-        }
-        
+
         .container {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 60px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 30px 40px;
+            color: #ffffff;
         }
         
-        .header {
+        header {
             text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-        
-        h1 {
-            color: #1a202c;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            color: #718096;
-            font-size: 1.2rem;
             margin-bottom: 30px;
         }
         
-        .download-section {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        header p {
+            font-size: 1.15rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .section-content {
+            background: #ffffff;
+            color: #1e3a8a;
+            border-radius: 8px;
             padding: 30px;
-            border-radius: 12px;
-            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            border-bottom: 3px solid #60a5fa;
+            padding-bottom: 8px;
             margin-bottom: 20px;
+            color: #1e3a8a;
         }
         
-        .download-section p {
-            color: white;
-            opacity: 0.95;
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            margin-top: 20px;
+            margin-bottom: 10px;
         }
         
-        .download-section h2 {
+        ul, ol {
+            margin-left: 20px;
+            padding-left: 10px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        p {
             margin-bottom: 15px;
-            font-size: 1.5rem;
+            color: #374151;
+        }
+        
+        strong {
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+
+        em {
+            font-style: italic;
+            color: #4b5563;
+        }
+
+        .download-section {
+            text-align: center;
         }
         
         .download-button {
             display: inline-block;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 12px 24px;
+            background-color: #2563eb;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 14px 28px;
             border-radius: 8px;
             text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
         
         .download-button:hover {
+            background-color: #1d4ed8;
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.3);
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
         }
-        
-        .content {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .content h2 {
-            color: #2d3748;
-            font-size: 2rem;
-            margin-top: 50px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .content h3 {
-            color: #4a5568;
-            font-size: 1.5rem;
-            margin-top: 30px;
-            margin-bottom: 15px;
-        }
-        
-        .content h4 {
-            color: #718096;
-            font-size: 1.2rem;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-        
-        .content p {
-            color: #4a5568;
-            margin-bottom: 15px;
-            font-size: 1.05rem;
-        }
-        
-        .content ul, .content ol {
-            margin-left: 30px;
-            margin-bottom: 20px;
-            color: #4a5568;
-        }
-        
-        .content li {
-            margin-bottom: 10px;
-            font-size: 1.05rem;
-        }
-        
-        .highlight-box {
-            background: #f0f9ff;
-            border-left: 4px solid #3b82f6;
-            padding: 20px;
-            margin: 25px 0;
-            border-radius: 4px;
-        }
-        
-        .tranche-box {
-            background: #edf2f7;
-            border: 2px solid #cbd5e0;
-            border-radius: 8px;
-            padding: 25px;
-            margin: 20px 0;
-        }
-        
-        .tranche-box h4 {
-            color: #1e3a8a;
-            margin-top: 0;
-        }
-        
-        .milestone-list {
-            list-style: none;
-            margin-left: 0;
-        }
-        
-        .milestone-list li:before {
-            content: "✓ ";
-            color: #3b82f6;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin: 25px 0;
-        }
-        
-        .kpi-item {
-            background: #f0f9ff;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #3b82f6;
-        }
-        
-        .kpi-item strong {
-            color: #2d3748;
-            display: block;
-            margin-bottom: 8px;
-        }
-        
+
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 30px 20px;
+            body {
+                padding: 20px 10px;
             }
-            
-            h1 {
+            .container {
+                padding: 20px;
+            }
+            header h1 {
                 font-size: 2rem;
             }
-            
-            .content h2 {
+            header p {
+                font-size: 1rem;
+            }
+            h2 {
                 font-size: 1.5rem;
             }
-            
-            .kpi-grid {
-                grid-template-columns: 1fr;
+            h3 {
+                font-size: 1.15rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1><span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span>: Use of Funds & Growth Plan</h1>
-            <p class="subtitle">Strategic Investment Plan - Milestone-Based Tranche Structure</p>
-        </div>
+        <header>
+            <h1>
+                <span class="brand-text">
+                    <span class="brand-hey">Hey</span><span class="brand-blu">BLU</span>
+                </span>
+                Use of Funds & Growth Plan
+            </h1>
+            <p>This document outlines our $2M strategic investment plan, connecting our B2C-focused growth strategy directly to our detailed financial model.</p>
+        </header>
         
-        <div class="content">
+        <main>
             <section>
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; flex-wrap: wrap; gap: 20px;">
-                    <h2 style="margin: 0; flex: 1; min-width: 200px;">1. Executive Summary</h2>
-                    <div style="flex-shrink: 0; text-align: right; min-width: 200px;">
-                        <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download style="display: inline-block; font-size: 0.95rem; padding: 12px 24px; margin-bottom: 6px;">
-                            📊 Download Financial Model
-                        </a>
-                        <p style="color: #718096; font-size: 0.85rem; margin: 0; font-style: italic;">Interactive Excel workbook</p>
-                    </div>
-                </div>
-                
-                <p>This plan outlines a <strong>milestone-based tranche funding structure</strong> designed to scale <span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span> as the new standard for youth sports officiating and analytics. We've structured funding in three tranches, each tied to specific performance milestones, enabling capital to be deployed efficiently as we achieve key growth targets.</p>
-                
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
-                    <div class="tranche-box" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #3b82f6;">
-                        <h4 style="color: #1e3a8a; margin-top: 0;">Tranche A: $250,000</h4>
-                        <p style="margin-bottom: 8px;"><strong>Duration:</strong> 9 months</p>
-                        <p style="margin-bottom: 8px;"><strong>Milestone:</strong> MVP Launch, Pilot Success & Early Revenue</p>
-                        <p style="margin-bottom: 0;"><strong>Focus:</strong> Build Umpire MVP, secure 5+ pilot leagues, onboard 100+ umpires, generate $3-5k MRR from early adopters</p>
-                    </div>
-                    
-                    <div class="tranche-box" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #3b82f6;">
-                        <h4 style="color: #1e3a8a; margin-top: 0;">Tranche B: $750,000</h4>
-                        <p style="margin-bottom: 8px;"><strong>Duration:</strong> 12 months</p>
-                        <p style="margin-bottom: 8px;"><strong>Milestone:</strong> $35k MRR & Product-Market Fit</p>
-                        <p style="margin-bottom: 0;"><strong>Focus:</strong> Launch Coach/Parent app, validate conversion models, scale revenue 8-10x from Tranche A</p>
-                    </div>
-                    
-                    <div class="tranche-box" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 4px solid #3b82f6;">
-                        <h4 style="color: #1e3a8a; margin-top: 0;">Tranche C: $1,000,000</h4>
-                        <p style="margin-bottom: 8px;"><strong>Duration:</strong> 12 months</p>
-                        <p style="margin-bottom: 8px;"><strong>Milestone:</strong> $100k MRR & Scalable Growth</p>
-                        <p style="margin-bottom: 0;"><strong>Focus:</strong> Scale organization sales, expand nationally, drive toward profitability</p>
-                    </div>
-                </div>
-                
-                <div class="highlight-box" style="margin-top: 20px;">
-                    <p><strong>Total Funding Structure:</strong> Up to $2 million across three independent, milestone-driven tranches over approximately 33 months. Each tranche is independent, meaning we proceed to the next tranche only upon achieving specific performance targets. The first two tranches ($1 million total) fund us through product-market fit and initial revenue generation. Tranche C provides additional capital for scaling once we've validated our business model.</p>
-                </div>
-                
-                <div class="highlight-box" style="margin-top: 20px;">
-                    <p><strong>Product Phases:</strong></p>
-                    <p style="margin-bottom: 8px;"><strong>MVP (Umpire):</strong> Onboard umpires with a free, high-value data-capture tool.</p>
-                    <p style="margin-bottom: 8px;"><strong>Pilot (Coach/Parent):</strong> Launch a freemium analytics app to monetize our user base.</p>
-                    <p style="margin-bottom: 0;"><strong>Scale (Organization):</strong> Secure B2B contracts with leagues and districts for sustainable, long-term revenue.</p>
+                <div class="section-content">
+                    <h2>Executive Summary: A B2C Data Company</h2>
+                    <p>This plan details the $2 million strategic investment to launch and scale <span class="brand-hey">Hey</span><span class="brand-blu">BLU</span> as a dominant B2C data company for youth sports. Our model is simple, sharp, and focused:</p>
+                    <ol>
+                        <li><strong>Acquire Umpires (Our Sensors):</strong> We provide a 100% free, high-value ball/strike calling app to umpires. This is our "sensor network" and our primary marketing and acquisition cost.</li>
+                        <li><strong>Viral Distribution (K-Factor):</strong> One umpire using our app in a game virally exposes the <span class="brand-hey">Hey</span><span class="brand-blu">BLU</span> platform to 25+ players and their associated coaches and parents—our *actual* customers.</li>
+                        <li><strong>Monetize B2C Users (Our Data Product):</strong> We convert this virally-acquired audience of parents and coaches from a freemium app to a paid subscription ($99-$199/yr) that unlocks the pitch location data, analytics, and heat maps.</li>
+                    </ol>
+                    <p>This raise provides 24-30 months of runway to prove this B2C-only model: acquire a critical mass of umpires, validate our conversion funnel, and scale the B2C engine.</p>
                 </div>
             </section>
             
             <section>
-                <h2>2. Product & Growth Phases</h2>
-                <p>Our growth model is designed to build a strong data foundation and user base before scaling monetization.</p>
-                
-                <div class="tranche-box">
-                    <h4>Phase 1: Umpire MVP & Pilot (Tranche A)</h4>
-                    <p><strong>Product:</strong> A free mobile application for umpires that captures officiating data and audio.</p>
-                    <p><strong>Value:</strong> Provides umpires with tools for review, training, and validation. For <span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span>, it builds our core data asset and a direct channel to leagues.</p>
-                    <p><strong>Goal:</strong> Establish a strong foothold in pilot counties, prove product utility, and gather data.</p>
-                </div>
-                
-                <div class="tranche-box">
-                    <h4>Phase 2: Coach & Parent App (Tranche B)</h4>
-                    <p><strong>Product:</strong> A freemium analytics application for coaches and parents, with paid tiers unlocking advanced insights, player metrics, and game analysis.</p>
-                    <p><strong>Pricing:</strong> $99/season or $199/year.</p>
-                    <p><strong>Goal:</strong> Achieve product-market fit, validate conversion models (Target: 2% parents, 10% coaches), and build our first significant revenue stream.</p>
-                </div>
-                
-                <div class="tranche-box">
-                    <h4>Phase 3: Organization & League Sales (Tranche C)</h4>
-                    <p><strong>Product:</strong> A customized B2B platform for leagues, districts, and organizations.</p>
-                    <p><strong>Pricing:</strong> Custom annual contracts based on league size and features.</p>
-                    <p><strong>Goal:</strong> Secure long-term, high-value ARR, establish <span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span> as essential infrastructure for youth sports, and drive toward profitability.</p>
+                <div class="section-content">
+                    <h2>Product & Growth Phases: A B2C Data Strategy</h2>
+                    
+                    <h3>Phase 1: Umpire Adoption (Our Sensor Network)</h3>
+                    <p>
+                        <strong>Product:</strong> A free mobile application for umpires that accurately calls balls and strikes using audio data.
+                        <strong>Value:</strong> For umpires, it's a tool for in-game assistance, training, and reducing sideline conflict. For <span class="brand-hey">Hey</span><span class="brand-blu">BLU</span>, this is our data collection asset and our single most important marketing channel.
+                        <strong>Goal:</strong> Achieve mass adoption by umpires. Our primary cost in this phase is marketing and partnerships to get this free tool into the hands of 1,000+ umpires.
+                    </p>
+
+                    <h3>Phase 2: B2C Product-Market Fit (The Data Product)</h3>
+                    <p>
+                        <strong>Product:</strong> A freemium analytics application for parents and coaches, distributed virally during games. The paid tiers unlock the valuable pitch location data, player heat maps, and historical analytics.
+                        <strong>Goal:</strong> Prove that a percentage of virally-acquired free users will pay for this data. This phase is entirely focused on optimizing the freemium-to-paid conversion funnel and validating our LTV/CAC.
+                    </p>
+
+                    <h3>Phase 3: Scaling the B2C Engine</h3>
+                    <p>
+                        <strong>Product:</strong> Advanced data features, comparative analytics, and social sharing tools to increase the value of the paid subscription.
+                        <strong>Goal:</strong> Pour fuel on the fire. With a proven B2C funnel, this phase is about scaling the two levers that matter:
+                        <ol>
+                            <li><strong>Minimize Umpire CAC:</strong> Drive down the cost of acquiring one active umpire (our 'sensor').</li>
+                            <li><strong>Maximize LTV:</strong> Improve the B2C conversion rate and increase the lifetime value of each paying parent/coach.</li>
+                        </ol>
+                        This is a marketing and product-led scale-up, not a sales-led one.
+                    </p>
                 </div>
             </section>
-            
+
             <section>
-                <h2>3. Funding Tranches & Milestones</h2>
-                <p>This funding structure is organized across three tranches, each tied to performance milestones. The detailed Excel model shows exactly how each dollar would be allocated during each tranche's duration, ensuring transparency and accountability. The first two tranches ($1 million total) fund us through product-market fit and initial revenue generation. Tranche C provides additional capital for scaling operations once we've validated our business model and achieved key milestones. The "Surplus/Deficit" row in the spreadsheet indicates any buffer or adjustment needed to align allocations with the tranche amounts.</p>
-                
-                <div class="tranche-box">
-                    <h4>Tranche A: $250,000 (MVP & Pilot)</h4>
-                    <p><strong>Primary Use:</strong> Fund the core team (Founders, 2 Engineers) to build and launch the Umpire MVP. Secure initial league partnerships and run successful pilots.</p>
-                    <p><strong>Key Milestones:</strong></p>
-                    <ul class="milestone-list">
-                        <li>Umpire MVP application complete.</li>
-                        <li>100+ active umpires onboarded.</li>
-                        <li>5+ pilot leagues secured and active.</li>
-                        <li>Generate $3-5k MRR from early B2B pilot deals and initial adopters.</li>
+                <div class="section-content">
+                    <h2>Funding Tranches & Milestones</h2>
+                    <p>This $2M raise is allocated across three tranches, aligning capital with performance in our B2C-only model.</p>
+                    
+                    <h3>Tranche A: $250,000 (MVP & Sensor Network)</h3>
+                    <ul>
+                        <li><strong>Primary Use:</strong> Fund the core team (Founders, 2 Engineers) to build and launch the Umpire MVP and the freemium Parent/Coach App.</li>
+                        <li><strong>Key Milestones:</strong>
+                            <ul>
+                                <li>Umpire MVP application complete and live.</li>
+                                <li>100+ active umpires onboarded (our first 100 "sensors").</li>
+                                <li>5+ league partnerships active (for viral distribution, not sales).</li>
+                                <li>Generate $3-5k MRR from early adopters.</li>
+                            </ul>
+                        </li>
                     </ul>
-                </div>
-                
-                <div class="tranche-box">
-                    <h4>Tranche B: $750,000 (Product-Market Fit)</h4>
-                    <p><strong>Trigger:</strong> Successful completion of Tranche A milestones including early revenue validation.</p>
-                    <p><strong>Primary Use:</strong> Develop and launch the Coach/Parent freemium app. Expand the team with initial sales and marketing hires. Scale to 50+ leagues.</p>
-                    <p><strong>Key Milestones:</strong></p>
-                    <ul class="milestone-list">
-                        <li>Achieve 2% parent and 10% coach free-to-paid conversion rates.</li>
-                        <li>Reach $35,000 in Monthly Recurring Revenue (MRR).</li>
-                        <li>Validate unit economics (LTV/CAC > 3:1).</li>
+
+                    <h3>Tranche B: $750,000 (B2C Product-Market Fit)</h3>
+                    <ul>
+                        <li><strong>Trigger:</strong> Successful completion of Tranche A milestones.</li>
+                        <li><strong>Primary Use:</strong> Fund growth marketing to acquire more umpires. A/B test and optimize the B2C conversion funnel.</li>
+                        <li><strong>Key Milestones:</strong>
+                            <ul>
+                                <li>Achieve 2% parent and 10% coach free-to-paid conversion rates.</li>
+                                <li>Reach $35,000 in stable Monthly Recurring Revenue (MRR).</li>
+                                <li>Validate unit economics (LTV/CAC > 3:1).</li>
+                            </ul>
+                        </li>
                     </ul>
-                </div>
-                
-                <div class="tranche-box">
-                    <h4>Tranche C: $1,000,000 (Scalable Growth)</h4>
-                    <p><strong>Trigger:</strong> Reaching Tranche B MRR and conversion milestones.</p>
-                    <p><strong>Primary Use:</strong> Scale the organization-level sales team. Invest in data science to enhance product value. Expand marketing for a national footprint.</p>
-                    <p><strong>Key Milestones:</strong></p>
-                    <ul class="milestone-list">
-                        <li>Achieve $100,000 in MRR (3x growth from Tranche B).</li>
-                        <li>Secure 10+ multi-league organization or district contracts.</li>
-                        <li>Establish a repeatable, scalable sales process.</li>
+
+                    <h3>Tranche C: $1,000,000 (Scaling the B2C Engine)</h3>
+                    <ul>
+                        <li><strong>Trigger:</strong> Reaching Tranche B MRR and conversion milestones.</li>
+                        <li><strong>Primary Use:</strong> Scale the Umpire acquisition marketing budget. Expand the team with growth marketers and community managers.</li>
+                        <li><strong>Key Milestones:</strong>
+                            <ul>
+                                <li>Achieve $100,000 in MRR.</li>
+                                <li>Scale active umpire network to 5,000+.</li>
+                                <li>Establish a positive, blended Umpire-to-Paid-User ratio (1 Umpire = 1+ Paying Customer).</li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </section>
-            
+
             <section>
-                <h2>4. Key Performance Indicators (KPIs)</h2>
-                <p>We will measure success through a focused set of metrics:</p>
-                
-                <div class="kpi-grid">
-                    <div class="kpi-item">
-                        <strong>Acquisition</strong>
-                        <p>Umpires Onboarded<br>New Leagues Acquired<br>App Downloads</p>
-                    </div>
-                    <div class="kpi-item">
-                        <strong>Activation</strong>
-                        <p>Percentage of Active Umpires<br>Free-to-Paid Conversion Rate (Parent/Coach)</p>
-                    </div>
-                    <div class="kpi-item">
-                        <strong>Revenue</strong>
-                        <p>Monthly Recurring Revenue (MRR)<br>Annual Recurring Revenue (ARR)<br>Blended Average Revenue Per User (ARPU)</p>
-                    </div>
-                    <div class="kpi-item">
-                        <strong>Economics</strong>
-                        <p>LTV to CAC Ratio (Target 3:1+)<br>Payback Period (Target < 12 months)<br>Gross Margin (Target 55%+)</p>
-                    </div>
+                <div class="section-content">
+                    <h2>Key Performance Indicators (KPIs)</h2>
+                    <p>Our focus is on a few core B2C metrics. We will live and die by these numbers.</p>
+                    <ul>
+                        <li><strong>Umpire Acquisition Cost (U-CAC):</strong> Our primary "cost of goods" for data.</li>
+                        <li><strong>Active Umpire Count:</strong> The size of our "sensor network."</li>
+                        <li><strong>Umpire-to-Freemium-User Ratio (K-Factor):</strong> Measures the efficiency of our viral loop.</li>
+                        <li><strong>Freemium-to-Paid Conversion Rate:</strong> The efficiency of our monetization.</li>
+                        <li><strong>Monthly Recurring Revenue (MRR):</strong> The ultimate measure of B2C product-market fit.</li>
+                        <li><strong>LTV / CAC Ratio:</strong> The long-term health of the business.</li>
+                    </ul>
                 </div>
             </section>
-            
+
             <section>
-                <h2>5. Hiring & Compensation Plan</h2>
-                <p><strong>Philosophy:</strong> We are building a lean, expert team, aligning compensation directly with company performance and milestones.</p>
-                
-                <h3>Core Team (Tranche A)</h3>
-                <p>2 Founders, 2 Engineers.</p>
-                
-                <h3>Expansion Team (Tranche B/C)</h3>
-                <p>We will add talent methodically in Sales (Org Sales, Partner Managers), Marketing, Customer Support, and Data Science as we achieve revenue and product milestones.</p>
-                
-                <h3>Founder Compensation</h3>
-                <p>Founder compensation is structured to align with company milestones while prioritizing capital efficiency and growth. We scale our pay modestly as we achieve key revenue targets, demonstrating our commitment to building a sustainable, capital-efficient business.</p>
-                
-                <div class="tranche-box">
-                    <h4>Stage 1 (Tranche A - Current Pay)</h4>
-                    <p><strong>$7,500 per month</strong> (each), or $90,000 annually. This is our current compensation level, maintained during the MVP and pilot phase while we validate product-market fit.</p>
-                </div>
-                
-                <div class="tranche-box">
-                    <h4>Stage 2 (Tranche B & C - Triggers at $10k MRR)</h4>
-                    <p><strong>$10,000 per month</strong> (each), or $120,000 annually. This increase occurs when we hit $10,000 in Monthly Recurring Revenue, demonstrating product-market fit. We maintain this compensation level through Tranche C, ensuring maximum capital is allocated to Engineers, sales, marketing, and growth initiatives that drive sustainable scaling.</p>
-                </div>
-                
-                <div class="highlight-box" style="margin-top: 20px;">
-                    <p><strong>Capital Efficiency Focus:</strong> By keeping founder compensation at $120,000 annually through all growth stages, we ensure that every dollar of funding is optimized for company growth. This approach demonstrates our alignment with investor interests and our commitment to building a capital-efficient, scalable business.</p>
+                <div class="section-content">
+                    <h2>Hiring & Compensation Plan</h2>
+                    <p>Our hiring plan reflects our B2C-only focus. We are building a lean, expert team in product and growth, not sales.</p>
+                    <ul>
+                        <li><strong>Core Team (Tranche A):</strong> 2 Founders, 2 Engineers.</li>
+                        <li><strong>Expansion Team (Tranche B/C):</strong> We will add talent methodically in **Growth & Partnerships** (Community Managers for umpire outreach, Growth Marketers for B2C funnel optimization) and **Product** (Data Science, UI/UX).</li>
+                        <li><strong>Founder Compensation:</strong> Founder pay is staged to preserve capital and aligns directly with performance milestones, as detailed in the "Pay_Triggers" tab of the model.</li>
+                    </ul>
                 </div>
             </section>
-            
-            <section style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">
-                <h2>How to Read the Financial Model</h2>
-                <p>The Excel spreadsheet provides a detailed, line-item breakdown of how funds are allocated across each tranche. Here's how to interpret it:</p>
-                
-                <div class="highlight-box">
-                    <p><strong>Time-Bound Allocations:</strong> Each tranche column (A, B, C) shows costs incurred <em>only during that tranche's specific time period</em>. For example, Tranche C founders' pay ($240k) represents 12 months of Stage 2 compensation ($120k annual × 2 founders × 12/12 months).</p>
+
+            <section>
+                <div class="section-content">
+                    <h2>How to Read the Connected Financial Model</h2>
+                    <p>This web page is the "why" (the narrative). The linked Excel file is the "how" (the numbers). The Excel model has been updated to reflect this B2C-only strategy, with a few key tabs to note:</p>
                     
-                    <p><strong>Total Alignment:</strong> The "Total Allocation" row (row 19) sums all costs across all three tranches. The "Tranche Amount" row (row 20) shows the total funding ($2M). The "Surplus/Deficit" row (row 21) indicates whether allocations match the total raise—a small surplus provides a buffer, while a deficit would require adjustments.</p>
+                    <p><strong>The "Funnel_Model" Tab:</strong>
+                        <br>This is the new engine of our model. <em>(It replaces the old "County_League_Model" tab)</em>. It shows our true GTM: a bottom-up forecast starting with <strong>"New Umpires Acquired"</strong> (our "sensor network") and flowing through to "Freemium Users Reached" and finally "Paid Conversions." This is the core of our B2C plan.</p>
                     
-                    <p><strong>Why These Two Documents Work Together:</strong> This web page provides the strategic narrative—what we're building, why, and when. The Excel model provides the financial precision—exactly how each dollar is allocated during each time period. Together, they tell a complete, transparent story of capital efficiency and disciplined growth.</p>
+                    <p><strong>The "Tranche_Detail" Tab:</strong>
+                        <br>This tab allocates the $2M across Tranches A (MVP), B (B2C Fit), and C (B2C Scale). It reflects hiring plans for engineering and **growth/partnerships** and ensures all spending aligns with the strategy. Notice that "CAC - Organization" is now $0, and the S&M budget is driven by B2C acquisition costs.</p>
+                    
+                    <p><strong>The "Cash_Runway" Tab:</strong>
+                        <br>This tab shows our monthly cash flow, net burn, and remaining runway. It is linked to all our assumptions and proves this $2M raise provides 24-30 months of runway to hit our B2C milestones.</p>
+                    
+                    <p><strong>The "Unit_Economics" Tab:</strong>
+                        <br>This breaks down the LTV, CAC, and Payback Period for our two core paying customers: **Parents and Coaches.**</p>
+                    
+                    <p><strong>Why These Two Documents Work Together:</strong> This web page provides the strategic narrative—what we're building, why, and when. The Excel model provides the financial precision—exactly how we will acquire users and how each dollar is allocated. Together, they tell a complete, transparent story of capital efficiency and disciplined B2C growth.</p>
                 </div>
                 
-                <p><em>Note: The model is designed to be interactive—you can adjust assumptions in the "Assumptions" sheet to see how changes impact the overall allocation and runway.</em></p>
+                <p style="text-align: center; color: white; opacity: 0.8; margin-top: 20px;"><em>Note: The model is interactive—adjust inputs in the "Assumptions" tab to see how changes impact the B2C-only model.</em></p>
             </section>
             
-            <section style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e2e8f0;">
+            <section style="margin-top: 50px; padding-top: 30px; border-top: 2px solid rgba(255, 255, 255, 0.2);">
                 <div class="download-section">
-                    <h2>📊 Download Financial Model</h2>
-                    <p style="margin-bottom: 20px; color: white; opacity: 0.95;">Interactive Excel workbook with detailed projections, scenarios, and use of funds breakdown</p>
-                    <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download>
+                    <h2 style="color: white; border: none; padding: 0; margin-bottom: 15px;">📊 Download Financial Model</h2>
+                    <p style="margin-bottom: 20px; color: white; opacity: 0.95;">Interactive Excel workbook with our B2C-only projections, funnel model, and use of funds.</p>
+                    <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download="BLU Use-of-Funds Model (B2C-Only).xlsx">
                         Download Excel Model
                     </a>
                 </div>
             </section>
-        </div>
+        </main>
     </div>
 </body>
 </html>
