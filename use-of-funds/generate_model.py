@@ -507,16 +507,19 @@ def populate_tranche_detail(ws, styles):
         # Employer Burden = index 16 → row 19 → Column C = C19
         # Engineer Salary = index 17 → row 20 → Column C = C20
         # Sales Salary = index 18 → row 21 → Column C = C21
-        # Founder Stage 1 = index 19 → row 22 → Column C = C22
-        # Founder Stage 2 = index 20 → row 23 → Column C = C23
-        # Founder Stage 3 = index 21 → row 24 → Column C = C24
+        # Founder Stage 1 = index 19 → row 22 → Column C = C22 ($90k annual = $7.5k/month - CURRENT PAY)
+        # Founder Stage 2 = index 20 → row 23 → Column C = C23 ($120k annual = $10k/month - triggers at $10k MRR)
+        # Founder Stage 3 = index 21 → row 24 → Column C = C24 ($250k annual - only if $50k MRR achieved)
         # Summary sheet: Row 3=Tranche A (9 months), Row 4=Tranche B (12 months), Row 5=Tranche C (12 months)
-        # Tranche C: Phase in Stage 3 pay - first 6 months at Stage 2, last 6 months at Stage 3
-        # This aligns Stage 3 pay with revenue milestones and preserves capital
+        # Founder Pay Progression (scales UP over time, tied to milestones):
+        # Tranche A: Stage 1 ($90k annual × 2 founders × 9/12 months) = $135k
+        # Tranche B: Stage 1 for first 6 months, Stage 2 for last 6 months (when $10k MRR milestone hit)
+        # Tranche C: Stage 2 for full period (conservative - caps at $150k annual if performance slow)
+        # Note: Prioritizing Engineers and growth expenses over founder pay
 
-        ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C23*2*(3/12))+(Assumptions!C24*2*(9/12))", f"=(Assumptions!C23*2*(6/12))+(Assumptions!C24*2*(6/12))", "=SUM(C3:E3)"),
+        ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C22*2*(6/12))+(Assumptions!C23*2*(6/12))", f"=Assumptions!C23*2*(Summary!C5/12)", "=SUM(C3:E3)"),
 
-        ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*((Summary!C5-3)/12)", "=SUM(C4:E4)"),
+        ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C4:E4)"),
 
         ("Payroll", "Sales (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*1*(1+Assumptions!C19)*((Summary!C5-3)/12)+Assumptions!C21*2*(1+Assumptions!C19)*(3/12)", "=SUM(C5:E5)"),
 
