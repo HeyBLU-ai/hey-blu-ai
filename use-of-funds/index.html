@@ -96,21 +96,21 @@
         
         .download-button {
             display: inline-block;
-            background: white;
-            color: #1e3a8a;
-            padding: 16px 32px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 12px 24px;
             border-radius: 8px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 1.1rem;
-            margin: 10px;
+            font-size: 0.95rem;
             transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
         }
         
         .download-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            background: #f0f9ff;
+            box-shadow: 0 8px 16px rgba(30, 58, 138, 0.3);
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
         }
         
         .content {
@@ -236,18 +236,18 @@
         <div class="header">
             <h1><span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span>: Use of Funds & Growth Plan</h1>
             <p class="subtitle">Strategic Investment Plan - Milestone-Based Tranche Structure</p>
-            
-            <div class="download-section">
-                <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download>
-                    📊 Download Financial Model
-                </a>
-                <p style="margin-top: 15px; margin-bottom: 0; color: white; opacity: 0.95; font-size: 0.9rem;">Interactive Excel workbook with detailed projections, scenarios, and use of funds breakdown</p>
-            </div>
         </div>
         
         <div class="content">
             <section>
-                <h2>1. Executive Summary</h2>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px; flex-wrap: wrap; gap: 20px;">
+                    <h2 style="margin: 0; flex: 1; min-width: 200px;">1. Executive Summary</h2>
+                    <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download style="flex-shrink: 0; font-size: 0.95rem; padding: 12px 24px;">
+                        📊 Download Financial Model
+                    </a>
+                </div>
+                <p style="color: #718096; font-size: 0.95rem; margin-bottom: 25px;">Interactive Excel workbook with detailed projections, scenarios, and use of funds breakdown</p>
+                
                 <p>This plan outlines a <strong>milestone-based tranche funding structure</strong> designed to scale <span class="brand-text"><span class="brand-hey">Hey</span><span class="brand-blu">BLU</span></span> as the new standard for youth sports officiating and analytics. We've structured funding in three tranches, each tied to specific performance milestones, enabling capital to be deployed efficiently as we achieve key growth targets.</p>
                 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
