@@ -171,7 +171,12 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines and code stand
 
 ## 🚀 Deployment
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for hosting setup and deployment procedures.
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide including:
+- DNS configuration (GoDaddy/Vercel)
+- Common issues and troubleshooting
+- Mobile responsiveness requirements
+- Image serving best practices
+- Step-by-step deployment procedures
 
 ## 🏛️ Architecture
 

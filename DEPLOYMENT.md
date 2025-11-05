@@ -1,6 +1,60 @@
 # Deployment Guide - HeyBLU AI
 
-This guide covers the complete deployment process for HeyBLU AI, including hosting architecture, DNS configuration, and third-party service integration.
+**Last Updated:** January 2025  
+**Purpose:** Complete reference for deploying HeyBLU AI to Vercel with custom domain
+
+---
+
+## 📋 Table of Contents
+
+- [🚨 CRITICAL: DNS Configuration](#-critical-dns-configuration)
+- [🏗️ Hosting Architecture](#️-hosting-architecture)
+- [🚀 Deployment Process](#-deployment-process)
+- [🔧 Common Issues & Troubleshooting](#-common-issues--troubleshooting)
+- [⚙️ Vercel Configuration](#️-vercel-configuration)
+- [📱 Mobile & Cross-Platform Issues](#-mobile--cross-platform-issues)
+- [🖼️ Image Serving](#️-image-serving)
+- [🗄️ Database Setup](#️-database-setup)
+- [🔌 Third-Party Services](#-third-party-services)
+- [🚨 Error Handling & Monitoring](#-error-handling--monitoring)
+- [📋 Deployment Checklist](#-deployment-checklist)
+
+---
+
+## 🚨 CRITICAL: DNS Configuration
+
+### Domain Nameservers Must Be Changed at GoDaddy
+
+**The #1 Issue:** Your domain `heyblu.ai` is registered with **GoDaddy**, not Cloudflare. Cloudflare is just managing DNS, but the nameservers are controlled by GoDaddy.
+
+#### Step 1: Change Nameservers at GoDaddy
+
+1. **Log into GoDaddy.com**
+2. **Go to "My Products" → "Domains"**
+3. **Click on `heyblu.ai`**
+4. **Click "DNS" or "Manage DNS"**
+5. **Look for "Nameservers" section**
+6. **Click "Change" or "Edit"**
+7. **Select "Custom" nameservers**
+8. **Replace with Vercel's nameservers:**
+   - `ns1.vercel-dns.com`
+   - `ns2.vercel-dns.com`
+9. **Save changes**
+
+#### Step 2: Configure in Vercel
+
+1. **Go to Vercel Dashboard → Your Project → Settings → Domains**
+2. **Click "Configure Automatically" under `heyblu.ai`**
+3. **Wait 5-60 minutes for DNS propagation**
+
+### Domain Management Reference
+
+**GoDaddy:** Where domain is registered, change nameservers here  
+**Cloudflare:** Currently managing DNS, will be bypassed after nameserver change  
+**Vercel:** Where app is deployed, will manage DNS after nameserver change  
+**GitHub:** Where code is stored, triggers Vercel deployments
+
+---
 
 ## 🏗️ Hosting Architecture
 
@@ -28,8 +82,17 @@ heyblu.ai (Primary Domain)
 ├── www.heyblu.ai (Redirect to heyblu.ai)
 ├── heyblu.ai/rulebook (PWA Application)
 ├── heyblu.ai/pitchdeck (Investor Materials)
+├── heyblu.ai/use-of-funds (Financial Model)
 └── heyblu.ai/api/* (API Endpoints)
 ```
+
+### SSL Certificate
+
+- **Automatic**: Vercel provides free SSL certificates
+- **Auto-renewal**: Certificates renew automatically
+- **HTTPS Redirect**: All HTTP traffic redirects to HTTPS
+
+---
 
 ## 🚀 Deployment Process
 
@@ -70,152 +133,7 @@ heyblu.ai (Primary Domain)
 - **Feature Branches**: Auto-deploys to preview URLs
 - **Pull Requests**: Creates preview deployments
 
-### 2. Domain Configuration
-
-#### DNS Settings (Bluehost)
-
-**A Records:**
-```
-Type: A
-Name: @
-Value: 76.76.19.61 (Vercel IP)
-TTL: 3600
-
-Type: A  
-Name: www
-Value: 76.76.19.61 (Vercel IP)
-TTL: 3600
-```
-
-**CNAME Records:**
-```
-Type: CNAME
-Name: api
-Value: cname.vercel-dns.com
-TTL: 3600
-```
-
-#### Vercel Domain Configuration
-
-1. **Add Domain in Vercel Dashboard**
-   - Go to Project Settings → Domains
-   - Add `heyblu.ai`
-   - Add `www.heyblu.ai`
-
-2. **Configure Redirects**
-   ```json
-   // vercel.json
-   {
-     "redirects": [
-       {
-         "source": "/www.heyblu.ai/(.*)",
-         "destination": "https://heyblu.ai/$1",
-         "permanent": true
-       }
-     ]
-   }
-   ```
-
-### 3. SSL Certificate
-
-- **Automatic**: Vercel provides free SSL certificates
-- **Auto-renewal**: Certificates renew automatically
-- **HTTPS Redirect**: All HTTP traffic redirects to HTTPS
-
-## 🔧 Environment Configuration
-
-### Production Environment Variables
-
-```env
-# Required
-OPENAI_API_KEY=sk-...
-DATABASE_URL=postgresql://...
-
-# Optional
-NODE_ENV=production
-VERCEL_ENV=production
-```
-
-### Environment-Specific Settings
-
-#### Development
-```env
-NODE_ENV=development
-VERCEL_ENV=development
-```
-
-#### Preview
-```env
-NODE_ENV=preview
-VERCEL_ENV=preview
-```
-
-#### Production
-```env
-NODE_ENV=production
-VERCEL_ENV=production
-```
-
-## 📊 Monitoring & Analytics
-
-### Vercel Analytics
-
-- **Performance Metrics**: Core Web Vitals
-- **Function Metrics**: API response times
-- **Error Tracking**: Function errors and logs
-- **Usage Analytics**: Page views and user behavior
-
-### Custom Analytics
-
-```javascript
-// Example: Custom event tracking
-function trackEvent(eventName, properties) {
-  if (typeof gtag !== 'undefined') {
-    gtag('event', eventName, properties);
-  }
-}
-
-// Usage
-trackEvent('rule_question_asked', {
-  league: 'MLB',
-  question_type: 'infield_fly'
-});
-```
-
-## 🔄 CI/CD Pipeline
-
-### GitHub Actions (Optional)
-
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy to Vercel
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '18'
-      - run: npm ci
-      - run: npm run build
-      - run: npm run build:css
-      - uses: amondnet/vercel-action@v20
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.ORG_ID }}
-          vercel-project-id: ${{ secrets.PROJECT_ID }}
-          vercel-args: '--prod'
-```
-
-### Manual Deployment Process
+### 2. Manual Deployment Process
 
 1. **Pre-deployment Checklist**
    - [ ] All tests passing
@@ -251,6 +169,305 @@ jobs:
    # 5. Verify deployment
    curl https://heyblu.ai/api/ask
    ```
+
+### 3. CI/CD Pipeline (Optional)
+
+GitHub Actions example:
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - run: npm ci
+      - run: npm run build
+      - run: npm run build:css
+      - uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          vercel-args: '--prod'
+```
+
+---
+
+## 🔧 Common Issues & Troubleshooting
+
+### Issue 1: "Invalid Configuration" in Vercel
+**Cause:** Nameservers still pointing to Cloudflare instead of Vercel  
+**Solution:** Change nameservers at GoDaddy (see [DNS Configuration](#-critical-dns-configuration) section)
+
+### Issue 2: Cloudflare Error 522 "Connection timed out"
+**Cause:** Cloudflare trying to proxy traffic to old hosting  
+**Solution:** Wait for DNS propagation after changing nameservers to Vercel (5-60 minutes)
+
+### Issue 3: Pitch Deck 404 Errors
+**Cause:** Missing routes in vercel.json OR files not committed to git  
+**Solution:** 
+- Ensure vercel.json includes all pitchdeck routes (see [Vercel Configuration](#️-vercel-configuration))
+- **Critical:** Verify files are committed to git - Vercel only deploys committed files
+  ```bash
+  git ls-files pitchdeck/  # Check if files are tracked
+  git add pitchdeck/ vercel.json
+  git commit -m "Add pitchdeck"
+  git push
+  ```
+
+### Issue 4: Rulebook "Something went wrong"
+**Cause:** Missing environment variables or wrong API endpoint  
+**Solution:** 
+- Add environment variables in Vercel Dashboard
+- Ensure rulebook uses `/api/ask` (relative path, not absolute)
+
+### Issue 5: Old content showing
+**Cause:** Browser caching  
+**Solution:** Hard refresh (Ctrl+F5 or Cmd+Shift+R) or use incognito mode
+
+### Issue 6: New Pages/Directories Return 404 After Adding to vercel.json
+**Cause:** Files exist locally but are not committed to git  
+**Solution:** 
+1. **Check if files are tracked in git:**
+   ```bash
+   git ls-files your-directory/
+   ```
+   If empty, files are not tracked.
+
+2. **Add and commit files:**
+   ```bash
+   git add your-directory/
+   git add vercel.json
+   git commit -m "Add new page/directory"
+   git push
+   ```
+
+3. **Verify deployment:** Vercel only deploys files that are in your git repository. Local-only files will never be deployed.
+
+**Key Lesson:** Always commit new files to git before expecting them to appear on the deployed site. Vercel builds from your git repository, not your local filesystem.
+
+### Issue 7: Images Not Loading
+**Cause:** External URLs or missing static asset configuration  
+**Solution:** 
+- Always use local images in project directory
+- Ensure `vercel.json` includes static asset routing (see [Image Serving](#️-image-serving) section)
+
+---
+
+## ⚙️ Vercel Configuration
+
+### vercel.json Structure
+
+The `vercel.json` file configures builds and routes. Key sections:
+
+```json
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/ask.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/data/**"]
+      }
+    },
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "pitchdeck/index.html", "use": "@vercel/static" },
+    { "src": "pitchdeck/images/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/ask", "dest": "api/ask.js" },
+    { "src": "/pitchdeck", "dest": "/pitchdeck/index.html" },
+    { "src": "/pitchdeck/(.*)", "dest": "/pitchdeck/$1" }
+  ]
+}
+```
+
+### Adding New Routes
+
+When adding a new page/directory:
+
+1. **Add to builds:**
+   ```json
+   { "src": "your-directory/index.html", "use": "@vercel/static" },
+   { "src": "your-directory/**", "use": "@vercel/static" }
+   ```
+
+2. **Add to routes:**
+   ```json
+   { "src": "/your-directory", "dest": "/your-directory/index.html" },
+   { "src": "/your-directory/", "dest": "/your-directory/index.html" },
+   { "src": "/your-directory/(.*)", "dest": "/your-directory/$1" }
+   ```
+
+3. **Commit to git** (see Issue 6 above)
+
+### Environment Variables
+
+**Vercel Dashboard → Settings → Environment Variables:**
+
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `OPENAI_API_KEY` | OpenAI API key for GPT-4 and embeddings | Yes |
+| `DATABASE_URL` | PostgreSQL connection string | No |
+| `NODE_ENV` | Environment (production/development) | Optional |
+
+### Environment-Specific Settings
+
+**Development:**
+```env
+NODE_ENV=development
+VERCEL_ENV=development
+```
+
+**Production:**
+```env
+NODE_ENV=production
+VERCEL_ENV=production
+```
+
+---
+
+## 📱 Mobile & Cross-Platform Issues
+
+### Critical CSS Requirements
+
+#### Viewport Configuration
+**Essential for all devices:**
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+```
+
+#### CSS Layout Requirements
+**For proper cross-platform compatibility, slides MUST include:**
+
+```css
+.slide {
+    min-height: 100dvh;           /* Use dynamic viewport height */
+    max-height: 100dvh;           /* Prevent overflow on mobile */
+    overflow: hidden;             /* Hide scrollbars on slides */
+    padding-top: env(safe-area-inset-top, 1rem);     /* iOS notch */
+    padding-bottom: env(safe-area-inset-bottom, 1rem); /* iOS home bar */
+}
+
+.slide-content {
+    min-height: calc(100dvh - 2rem);  /* Account for padding */
+    max-height: calc(100dvh - 2rem);  /* Prevent content overflow */
+    overflow-y: auto;                 /* Allow scrolling within content */
+}
+```
+
+#### Mobile-Specific CSS
+**Required for mobile devices:**
+```css
+@media (max-width: 768px) {
+    .slide {
+        padding: 0.5rem;
+        min-height: 100dvh;
+        max-height: 100dvh;
+    }
+    .slide-content {
+        padding: 0.75rem;
+        min-height: calc(100dvh - 1rem);
+        max-height: calc(100dvh - 1rem);
+    }
+    /* Scale down large text */
+    h1 { font-size: 2.5rem !important; }
+    h2 { font-size: 2rem !important; }
+    .text-4xl { font-size: 1.875rem !important; }
+    .text-5xl { font-size: 2.25rem !important; }
+}
+```
+
+### Common Mobile Issues & Solutions
+
+**Problem**: Content cut off at top on mobile
+- **Cause**: Missing `viewport-fit=cover` and safe-area padding
+- **Solution**: Add `viewport-fit=cover` and `env(safe-area-inset-*)` padding
+
+**Problem**: Unwanted scrollbars on Android
+- **Cause**: Missing `overflow: hidden` on `.slide` or incorrect height constraints
+- **Solution**: Ensure `.slide` has `overflow: hidden` and proper height constraints
+
+**Problem**: Content overlapping on iOS Safari
+- **Cause**: Using `100vh` instead of `100dvh` (doesn't account for browser chrome)
+- **Solution**: Always use `100dvh` for dynamic viewport height
+
+**Problem**: Text too large on mobile
+- **Cause**: No responsive text scaling
+- **Solution**: Add mobile-specific font-size overrides
+
+### Testing Checklist for New Pitchdecks
+
+- [ ] Test on iPhone Safari (iOS)
+- [ ] Test on Android Chrome
+- [ ] Test on Mac Safari
+- [ ] Test on Windows Chrome
+- [ ] Verify no content cut-off
+- [ ] Verify no unwanted scrollbars
+- [ ] Verify natural scrolling behavior
+- [ ] Verify text scales appropriately
+
+---
+
+## 🖼️ Image Serving
+
+### Common Image Problems
+
+#### External Image URLs Not Loading
+**Problem**: Images from external sources (Google Cloud Storage, etc.) may not load due to CORS restrictions or billing issues.
+
+**Solution**: Always use local images in the project directory structure:
+```html
+<!-- ❌ Don't use external URLs -->
+<img src="https://storage.googleapis.com/context-images/image.jpg" alt="...">
+
+<!-- ✅ Use local images -->
+<img src="images/image.jpg" alt="...">
+```
+
+#### Image Directory Structure
+For pitchdecks, create a local `images/` directory:
+```
+pitchdeck4/
+├── index.html
+└── images/
+    ├── image1.jpg
+    └── image2.jpg
+```
+
+#### Vercel Configuration for Images
+Ensure `vercel.json` includes static asset routing:
+```json
+{
+  "builds": [
+    { "src": "pitchdeck4/images/**", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/pitchdeck4/(.*)", "dest": "/pitchdeck4/$1" }
+  ]
+}
+```
+
+### Image Optimization Best Practices
+- Use WebP format when possible
+- Compress images before adding to repository
+- Use descriptive alt text for accessibility
+- Test image loading in production environment
+
+---
 
 ## 🗄️ Database Setup
 
@@ -305,6 +522,8 @@ docker run --name heyblu-postgres \
 DATABASE_URL=postgresql://postgres:password@localhost:5432/heyblu_dev
 ```
 
+---
+
 ## 🔌 Third-Party Services
 
 ### OpenAI API
@@ -339,130 +558,7 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/heyblu_dev
 - Export to Beehiiv for newsletter campaigns
 - Track conversion rates
 
-## 📱 Mobile Responsiveness & Cross-Platform Issues
-
-### Critical CSS Requirements for All Devices
-
-#### Viewport Configuration
-**Essential for all devices:**
-```html
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-```
-
-#### CSS Layout Requirements
-**For proper cross-platform compatibility, slides MUST include:**
-
-```css
-.slide {
-    min-height: 100dvh;           /* Use dynamic viewport height */
-    max-height: 100dvh;           /* Prevent overflow on mobile */
-    overflow: hidden;             /* Hide scrollbars on slides */
-    padding-top: env(safe-area-inset-top, 1rem);     /* iOS notch */
-    padding-bottom: env(safe-area-inset-bottom, 1rem); /* iOS home bar */
-}
-
-.slide-content {
-    min-height: calc(100dvh - 2rem);  /* Account for padding */
-    max-height: calc(100dvh - 2rem);  /* Prevent content overflow */
-    overflow-y: auto;                 /* Allow scrolling within content */
-}
-```
-
-#### Mobile-Specific CSS
-**Required for mobile devices:**
-```css
-@media (max-width: 768px) {
-    .slide {
-        padding: 0.5rem;
-        min-height: 100dvh;
-        max-height: 100dvh;
-    }
-    .slide-content {
-        padding: 0.75rem;
-        min-height: calc(100dvh - 1rem);
-        max-height: calc(100dvh - 1rem);
-    }
-    /* Scale down large text */
-    h1 { font-size: 2.5rem !important; }
-    h2 { font-size: 2rem !important; }
-    .text-4xl { font-size: 1.875rem !important; }
-    .text-5xl { font-size: 2.25rem !important; }
-}
-```
-
-#### Common Mobile Issues & Solutions
-
-**Problem**: Content cut off at top on mobile
-- **Cause**: Missing `viewport-fit=cover` and safe-area padding
-- **Solution**: Add `viewport-fit=cover` and `env(safe-area-inset-*)` padding
-
-**Problem**: Unwanted scrollbars on Android
-- **Cause**: Missing `overflow: hidden` on `.slide` or incorrect height constraints
-- **Solution**: Ensure `.slide` has `overflow: hidden` and proper height constraints
-
-**Problem**: Content overlapping on iOS Safari
-- **Cause**: Using `100vh` instead of `100dvh` (doesn't account for browser chrome)
-- **Solution**: Always use `100dvh` for dynamic viewport height
-
-**Problem**: Text too large on mobile
-- **Cause**: No responsive text scaling
-- **Solution**: Add mobile-specific font-size overrides
-
-### Testing Checklist for New Pitchdecks
-
-- [ ] Test on iPhone Safari (iOS)
-- [ ] Test on Android Chrome
-- [ ] Test on Mac Safari
-- [ ] Test on Windows Chrome
-- [ ] Verify no content cut-off
-- [ ] Verify no unwanted scrollbars
-- [ ] Verify natural scrolling behavior
-- [ ] Verify text scales appropriately
-
-## 🖼️ Image Serving Issues & Solutions
-
-### Common Image Problems
-
-#### External Image URLs Not Loading
-**Problem**: Images from external sources (Google Cloud Storage, etc.) may not load due to CORS restrictions or billing issues.
-
-**Solution**: Always use local images in the project directory structure:
-```html
-<!-- ❌ Don't use external URLs -->
-<img src="https://storage.googleapis.com/context-images/image.jpg" alt="...">
-
-<!-- ✅ Use local images -->
-<img src="images/image.jpg" alt="...">
-```
-
-#### Image Directory Structure
-For pitchdecks, create a local `images/` directory:
-```
-pitchdeck4/
-├── index.html
-└── images/
-    ├── image1.jpg
-    └── image2.jpg
-```
-
-#### Vercel Configuration for Images
-Ensure `vercel.json` includes static asset routing:
-```json
-{
-  "builds": [
-    { "src": "pitchdeck4/images/**", "use": "@vercel/static" }
-  ],
-  "routes": [
-    { "src": "/pitchdeck4/(.*)", "dest": "/pitchdeck4/$1" }
-  ]
-}
-```
-
-### Image Optimization Best Practices
-- Use WebP format when possible
-- Compress images before adding to repository
-- Use descriptive alt text for accessibility
-- Test image loading in production environment
+---
 
 ## 🚨 Error Handling & Monitoring
 
@@ -533,130 +629,6 @@ export default function handler(req, res) {
 }
 ```
 
-## 🔒 Security Considerations
-
-### API Security
-
-1. **CORS Configuration**
-   ```javascript
-   // Only allow specific origins
-   const allowedOrigins = [
-     'https://heyblu.ai',
-     'https://www.heyblu.ai'
-   ];
-   ```
-
-2. **Rate Limiting**
-   ```javascript
-   // Implement rate limiting
-   const rateLimit = new Map();
-   const RATE_LIMIT = 100; // requests per hour
-   ```
-
-3. **Input Validation**
-   ```javascript
-   // Validate all inputs
-   if (!question || typeof question !== 'string') {
-     return res.status(400).json({ error: 'Invalid question' });
-   }
-   ```
-
-### Environment Security
-
-- **Never commit secrets** to version control
-- **Use Vercel's environment variables** for sensitive data
-- **Rotate API keys** regularly
-- **Monitor access logs** for suspicious activity
-
-## 📈 Performance Optimization
-
-### Vercel Optimizations
-
-1. **Function Configuration**
-   ```json
-   // vercel.json
-   {
-     "functions": {
-       "api/ask.js": {
-         "maxDuration": 30
-       }
-     }
-   }
-   ```
-
-2. **Caching Strategy**
-   ```javascript
-   // Set appropriate cache headers
-   res.setHeader('Cache-Control', 'public, max-age=3600');
-   ```
-
-3. **CDN Configuration**
-   - Static assets served from Vercel's CDN
-   - Images optimized automatically
-   - Gzip compression enabled
-
-### Database Optimization
-
-1. **Connection Pooling**
-   ```javascript
-   // Use connection pooling
-   const pool = new Pool({
-     connectionString: process.env.DATABASE_URL,
-     max: 20,
-     idleTimeoutMillis: 30000,
-     connectionTimeoutMillis: 2000,
-   });
-   ```
-
-2. **Query Optimization**
-   ```sql
-   -- Add indexes for common queries
-   CREATE INDEX idx_question_logs_created_at ON question_logs(created_at);
-   CREATE INDEX idx_question_logs_rulebook ON question_logs(rulebook);
-   ```
-
-## 🔄 Backup & Recovery
-
-### Database Backups
-
-1. **Automated Backups** (Supabase)
-   - Daily automated backups
-   - Point-in-time recovery
-   - Cross-region replication
-
-2. **Manual Backups**
-   ```bash
-   # Export database
-   pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
-   ```
-
-### Code Backups
-
-- **Git Repository**: Primary backup
-- **Vercel Deployments**: Automatic deployment history
-- **Local Backups**: Regular local repository clones
-
-## 🚀 Rollback Procedures
-
-### Vercel Rollback
-
-```bash
-# List deployments
-vercel ls
-
-# Rollback to previous deployment
-vercel rollback [deployment-url]
-```
-
-### Database Rollback
-
-```bash
-# Restore from backup
-psql $DATABASE_URL < backup_20240101.sql
-```
-
-## 📞 Support & Maintenance
-
 ### Monitoring Checklist
 
 - [ ] Check Vercel dashboard daily
@@ -682,6 +654,8 @@ psql $DATABASE_URL < backup_20240101.sql
    - Review connection logs
    - Restore from backup if needed
 
+---
+
 ## 📋 Deployment Checklist
 
 ### Pre-Deployment
@@ -706,6 +680,43 @@ psql $DATABASE_URL < backup_20240101.sql
 - [ ] Mobile responsiveness verified
 - [ ] Analytics tracking working
 
+### Testing Checklist
+
+After deployment, test these URLs:
+- [ ] `https://heyblu.ai` - Main landing page
+- [ ] `https://heyblu.ai/rulebook` - Advanced rulebook with league selection
+- [ ] `https://heyblu.ai/pitchdeck` - Pitch deck 1
+- [ ] `https://heyblu.ai/pitchdeck2` - Pitch deck 2
+- [ ] `https://heyblu.ai/pitchdeck3` - Pitch deck 3
+- [ ] `https://heyblu.ai/use-of-funds` - Financial model
+- [ ] Ask a question in rulebook - Should work without "something went wrong"
+
+---
+
+## 🚫 What NOT to Do
+
+1. **Don't edit DNS records in Cloudflare** - Change nameservers at GoDaddy instead
+2. **Don't use absolute URLs** for API calls - Use relative paths like `/api/ask`
+3. **Don't forget environment variables** - API won't work without them
+4. **Don't test with cached browser** - Use incognito mode for testing
+5. **Don't expect local-only files to deploy** - Always commit to git first
+
+---
+
+## 📞 Quick Reference
+
+**Key Files:**
+- `vercel.json` - Vercel routing configuration
+- `rulebook/index.html` - Advanced rulebook frontend
+- `api/ask.js` - Main API endpoint
+
+**Key URLs:**
+- Vercel Dashboard: `https://vercel.com/dashboard`
+- GoDaddy: `https://dcc.godaddy.com/`
+- Test Domain: `https://heyblu.ai`
+
 ---
 
 **Need Help?** Contact the development team or check the [Architecture Guide](ARCHITECTURE.md) for technical details.
+
+*This document consolidates all deployment lessons learned to prevent future confusion and save hours of troubleshooting.*
