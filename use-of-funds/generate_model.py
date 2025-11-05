@@ -503,15 +503,17 @@ def populate_tranche_detail(ws, styles):
     data = [
 
         # Payroll
-        # Note: Row numbers = data index + 3 (row 1=title, row 2=headers, row 3+=data)
-        # Employer Burden = index 16 → row 19 = C19
-        # Engineer Salary = index 17 → row 20 = C20
-        # Sales Salary = index 18 → row 21 = C21
-        # Founder Stage 1 = index 19 → row 22 = C23
-        # Founder Stage 2 = index 20 → row 23 = C24
-        # Founder Stage 3 = index 21 → row 24 = C25
+        # Note: Row numbers in Assumptions sheet = data index + 3 (row 1=title, row 2=headers, row 3+=data)
+        # Employer Burden = index 16 → row 19 → Column C = C19
+        # Engineer Salary = index 17 → row 20 → Column C = C20
+        # Sales Salary = index 18 → row 21 → Column C = C21
+        # Founder Stage 1 = index 19 → row 22 → Column C = C22
+        # Founder Stage 2 = index 20 → row 23 → Column C = C23
+        # Founder Stage 3 = index 21 → row 24 → Column C = C24
+        # Summary sheet: Row 3=Tranche A (9 months), Row 4=Tranche B (12 months), Row 5=Tranche C (12 months)
+        # Tranche C should use Founder Stage 3 ($250k annual) for the full 12 months
 
-        ("Payroll", "Founders (2)", f"=Assumptions!C23*2*(Summary!C3/12)", f"=(Assumptions!C24*2*(3/12))+(Assumptions!C25*2*(9/12))", f"=Assumptions!C25*2*(Summary!C5/12)", "=SUM(C3:E3)"),
+        ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C23*2*(3/12))+(Assumptions!C24*2*(9/12))", f"=Assumptions!C24*2*(Summary!C5/12)", "=SUM(C3:E3)"),
 
         ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C4:E4)"),
 
@@ -521,43 +523,47 @@ def populate_tranche_detail(ws, styles):
 
         # S&M
 
-        ("Sales & Marketing", "CAC - Ambassador", 10000, 50000, 100000, "=SUM(C8:E8)"),
+        ("Sales & Marketing", "CAC - Ambassador", 10000, 50000, 100000, "=SUM(C7:E7)"),
 
-        ("Sales & Marketing", "CAC - Social/Digital", 20000, 75000, 150000, "=SUM(C9:E9)"),
+        ("Sales & Marketing", "CAC - Social/Digital", 20000, 75000, 150000, "=SUM(C8:E8)"),
 
-        ("Sales & Marketing", "CAC - Organization", 5000, 30000, 60000, "=SUM(C10:E10)"),
+        ("Sales & Marketing", "CAC - Organization", 5000, 30000, 60000, "=SUM(C9:E9)"),
 
-        ("Sales & Marketing", "Total S&M", "=SUM(C8:C10)", "=SUM(D8:D10)", "=SUM(E8:E10)", "=SUM(F8:F10)"),
+        ("Sales & Marketing", "Total S&M", "=SUM(C7:C9)", "=SUM(D7:D9)", "=SUM(E7:E9)", "=SUM(F7:F9)"),
 
         # R&D
 
-        ("R&D", "Software & Services", 15000, 30000, 50000, "=SUM(C13:E13)"),
+        ("R&D", "Software & Services", 15000, 30000, 50000, "=SUM(C11:E11)"),
 
-        ("R&D", "Total R&D", "=C13", "=D13", "=E13", "=F13"),
+        ("R&D", "Total R&D", "=C11", "=D11", "=E11", "=F11"),
 
         # Infra
 
-        ("Infra", "Hosting & Data", f"=Infra_Estimates!F6* (Summary!C3/12)", f"=Infra_Estimates!F6", f"=Infra_Estimates!F6*1.5", "=SUM(C16:E16)"), # Simplified
+        ("Infra", "Hosting & Data", f"=Infra_Estimates!F6*(Summary!C3/12)", f"=Infra_Estimates!F6", f"=Infra_Estimates!F6*1.5", "=SUM(C13:E13)"), # Simplified
 
-        ("Infra", "Total Infra", "=C16", "=D16", "=E16", "=F16"),
+        ("Infra", "Total Infra", "=C13", "=D13", "=E13", "=F13"),
 
         # G&A
 
-        ("G&A", "Legal & Admin", 20000, 30000, 40000, "=SUM(C19:E19)"),
+        ("G&A", "Legal & Admin", 20000, 30000, 40000, "=SUM(C15:E15)"),
 
-        ("G&A", "Office & Misc", 10000, 20000, 30000, "=SUM(C20:E20)"),
+        ("G&A", "Office & Misc", 10000, 20000, 30000, "=SUM(C16:E16)"),
 
-        ("G&A", "Total G&A", "=SUM(C19:C20)", "=SUM(D19:D20)", "=SUM(E19:E20)", "=SUM(F19:F20)"),
+        ("G&A", "Total G&A", "=SUM(C15:C16)", "=SUM(D15:D16)", "=SUM(E15:E16)", "=SUM(F15:F16)"),
 
         # Totals
+        # Row structure: 1=title, 2=headers, 3=Founders, 4=Engineers, 5=Sales, 6=Payroll Total,
+        # 7=Ambassador, 8=Social, 9=Org, 10=S&M Total, 11=Software, 12=R&D Total,
+        # 13=Hosting, 14=Infra Total, 15=Legal, 16=Office, 17=G&A Total,
+        # 18=(blank), 19=Total Allocation, 20=Tranche Amount, 21=Surplus
 
         ("", "", "", "", "", ""),
 
-        ("Total Allocation", "", "=SUM(C6,C11,C14,C17,C21)", "=SUM(D6,D11,D14,D17,D21)", "=SUM(E6,E11,E14,E17,E21)", "=SUM(F6,F11,F14,F17,F21)"),
+        ("Total Allocation", "", "=SUM(C6,C10,C12,C14,C17)", "=SUM(D6,D10,D12,D14,D17)", "=SUM(E6,E10,E12,E14,E17)", "=SUM(F6,F10,F12,F14,F17)"),
 
-        ("Tranche Amount", "", f"=Assumptions!C30", f"=Assumptions!C31", f"=Assumptions!C32", "=SUM(C24:E24)"),
+        ("Tranche Amount", "", f"=Assumptions!C30", f"=Assumptions!C31", f"=Assumptions!C32", "=SUM(C20:E20)"),
 
-        ("Surplus / Deficit", "", "=C24-C23", "=D24-D23", "=E24-E23", "=F24-F23"),
+        ("Surplus / Deficit", "", "=C20-C19", "=D20-D19", "=E20-E19", "=F20-F19"),
 
     ]
 
@@ -683,15 +689,15 @@ def populate_cash_runway(ws, styles):
 
     ws['O3'] = "Tranche A Monthly Burn"
 
-    ws['P3'] = f"=(Tranche_Detail!C23) / Summary!C3"
+    ws['P3'] = f"=(Tranche_Detail!C19) / Summary!C3"
 
     ws['O4'] = "Tranche B Monthly Burn"
 
-    ws['P4'] = f"=(Tranche_Detail!D23) / Summary!C4"
+    ws['P4'] = f"=(Tranche_Detail!D19) / Summary!C4"
 
     ws['O5'] = "Tranche C Monthly Burn"
 
-    ws['P5'] = f"=(Tranche_Detail!E23) / Summary!C5"
+    ws['P5'] = f"=(Tranche_Detail!E19) / Summary!C5"
 
     
 
@@ -701,7 +707,7 @@ def populate_cash_runway(ws, styles):
 
     ws['O8'] = "Tranche A Monthly S&M"
 
-    ws['P8'] = f"=(Tranche_Detail!C11) / Summary!C3"
+    ws['P8'] = f"=(Tranche_Detail!C10) / Summary!C3"
 
     # ... and so on for all categories
 
@@ -721,13 +727,13 @@ def populate_cash_runway(ws, styles):
 
     ws['F3'] = f"=(Tranche_Detail!C6) / Summary!C3"  # Payroll T-A
 
-    ws['G3'] = f"=(Tranche_Detail!C11) / Summary!C3" # S&M T-A
+    ws['G3'] = f"=(Tranche_Detail!C10) / Summary!C3" # S&M T-A
 
-    ws['H3'] = f"=(Tranche_Detail!C14) / Summary!C3" # R&D T-A
+    ws['H3'] = f"=(Tranche_Detail!C12) / Summary!C3" # R&D T-A
 
-    ws['I3'] = f"=(Tranche_Detail!C17) / Summary!C3" # Infra T-A
+    ws['I3'] = f"=(Tranche_Detail!C14) / Summary!C3" # Infra T-A
 
-    ws['J3'] = f"=(Tranche_Detail!C21) / Summary!C3" # G&A T-A
+    ws['J3'] = f"=(Tranche_Detail!C17) / Summary!C3" # G&A T-A
 
     ws['K3'] = "=SUM(F3:J3)"
 
@@ -781,13 +787,13 @@ def populate_cash_runway(ws, styles):
 
         payroll_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C6)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D6)/Summary!C4, (Tranche_Detail!E6)/Summary!C5))"
 
-        sm_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C11)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D11)/Summary!C4, (Tranche_Detail!E11)/Summary!C5))"
+        sm_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C10)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D10)/Summary!C4, (Tranche_Detail!E10)/Summary!C5))"
 
-        rd_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C14)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D14)/Summary!C4, (Tranche_Detail!E14)/Summary!C5))"
+        rd_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C12)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D12)/Summary!C4, (Tranche_Detail!E12)/Summary!C5))"
 
-        infra_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C17)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D17)/Summary!C4, (Tranche_Detail!E17)/Summary!C5))"
+        infra_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C14)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D14)/Summary!C4, (Tranche_Detail!E14)/Summary!C5))"
 
-        ga_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C21)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D21)/Summary!C4, (Tranche_Detail!E21)/Summary!C5))"
+        ga_formula = f"=IF(A{row}<=Summary!C3, (Tranche_Detail!C17)/Summary!C3, IF(A{row}<=(Summary!C3+Summary!C4), (Tranche_Detail!D17)/Summary!C4, (Tranche_Detail!E17)/Summary!C5))"
 
 
 
@@ -845,11 +851,11 @@ def populate_pay_triggers(ws, styles):
 
     data = [
 
-        (1, f"=Assumptions!C24", 0, "Tranche A", "MVP & Pilot Phase"),
+        (1, f"=Assumptions!C22", 0, "Tranche A", "MVP & Pilot Phase"),
 
-        (2, f"=Assumptions!C25", f"=Assumptions!C27", "Tranche B", "PMF Phase"),
+        (2, f"=Assumptions!C23", f"=Assumptions!C25", "Tranche B", "PMF Phase"),
 
-        (3, f"=Assumptions!C26", f"=Assumptions!C28", "Tranche C", "Scale Phase"),
+        (3, f"=Assumptions!C24", f"=Assumptions!C26", "Tranche C", "Scale Phase"),
 
     ]
 
@@ -1115,7 +1121,7 @@ def populate_sales_comp(ws, styles):
 
     data = [
 
-        ("Org Sales Rep (Tranche B)", f"=Assumptions!C22", 0.10, 20000, "10% of 1st Year ACV. Bonus on 100% quota."),
+        ("Org Sales Rep (Tranche B)", f"=Assumptions!C21", 0.10, 20000, "10% of 1st Year ACV. Bonus on 100% quota."),
 
         ("Partner Manager (Tranche C)", 90000, 0.05, 15000, "5% of ACV from league partners."),
 
