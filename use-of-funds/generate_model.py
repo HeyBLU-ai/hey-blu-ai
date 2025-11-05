@@ -356,9 +356,9 @@ def populate_summary(ws, styles):
 
         ("Tranche A", f"=Assumptions!C30", 9, "Build Umpire MVP & Launch Pilots", "Initial Close"),
 
-        ("Tranche B", f"=Assumptions!C31", 12, "Achieve Product-Market Fit (Coach/Parent App)", "Tranche A Milestones Met (5 Leagues, 100 Umpires)"),
+        ("Tranche B", f"=Assumptions!C31", 12, "Achieve Product-Market Fit (Coach/Parent App)", "Tranche A Milestones Met (5 Leagues, 100 Umpires, $3-5k MRR)"),
 
-        ("Tranche C", f"=Assumptions!C32", 12, "Drive Scalable Growth (Organization Sales)", "Tranche B Milestones Met ($15k MRR, 2% Conversion)"),
+        ("Tranche C", f"=Assumptions!C32", 12, "Drive Scalable Growth (Organization Sales)", "Tranche B Milestones Met ($35k MRR, 2% Conversion)"),
 
     ]
 
@@ -920,23 +920,27 @@ def populate_milestones(ws, styles):
 
         ("A", "Pilot Leagues Secured", "Leagues", 5, f"=County_League_Model!B5", "=IF(E5>=D5,\"Met\",\"Pending\")"),
 
-        
-
-        ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(F5=\"Met\",1,0)", "=IF(E6>=D6,\"Met\",\"Pending\")"),
-
-        ("B", "Achieve $15k MRR", "MRR", 15000, f"=County_League_Model!D22", "=IF(E7>=D7,\"Met\",\"Pending\")"),
-
-        ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E8>=D8,\"Met\",\"Pending\")"),
-
-        ("B", "Coach Conversion", "%", f"=Assumptions!C9", f"=Assumptions!C9", "=IF(E9>=D9,\"Met\",\"Pending\")"),
+        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=County_League_Model!D22", "=IF(E6>=D6,\"Met\",\"Pending\")"),
 
         
 
-        ("C", "Tranche B Milestones Met", "Status", 1, f"=IF(AND(F7=\"Met\",F8=\"Met\",F9=\"Met\"),1,0)", "=IF(E10>=D10,\"Met\",\"Pending\")"),
+        ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(AND(F5=\"Met\",F6=\"Met\"),1,0)", "=IF(E7>=D7,\"Met\",\"Pending\")"),
 
-        ("C", "Achieve $100k MRR", "MRR", 100000, f"=County_League_Model!D22", "=IF(E11>=D11,\"Met\",\"Pending\")"),
+        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=County_League_Model!D22", "=IF(E5>=D5,\"Met\",\"Pending\")"),
 
-        ("C", "Org Contracts", "Count", 10, f"=County_League_Model!D15", "=IF(E12>=D12,\"Met\",\"Pending\")"),
+        ("B", "Achieve $35k MRR", "MRR", 35000, f"=County_League_Model!D22", "=IF(E7>=D7,\"Met\",\"Pending\")"),
+
+        ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E9>=D9,\"Met\",\"Pending\")"),
+
+        ("B", "Coach Conversion", "%", f"=Assumptions!C9", f"=Assumptions!C9", "=IF(E10>=D10,\"Met\",\"Pending\")"),
+
+        
+
+        ("C", "Tranche B Milestones Met", "Status", 1, f"=IF(AND(F8=\"Met\",F9=\"Met\",F10=\"Met\"),1,0)", "=IF(E11>=D11,\"Met\",\"Pending\")"),
+
+        ("C", "Achieve $100k MRR", "MRR", 100000, f"=County_League_Model!D22", "=IF(E12>=D12,\"Met\",\"Pending\")"),
+
+        ("C", "Org Contracts", "Count", 10, f"=County_League_Model!D15", "=IF(E13>=D13,\"Met\",\"Pending\")"),
 
     ]
 
