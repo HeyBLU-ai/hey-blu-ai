@@ -503,12 +503,19 @@ def populate_tranche_detail(ws, styles):
     data = [
 
         # Payroll
+        # Note: Row numbers = data index + 3 (row 1=title, row 2=headers, row 3+=data)
+        # Employer Burden = index 16 → row 19 = C19
+        # Engineer Salary = index 17 → row 20 = C20
+        # Sales Salary = index 18 → row 21 = C21
+        # Founder Stage 1 = index 19 → row 22 = C23
+        # Founder Stage 2 = index 20 → row 23 = C24
+        # Founder Stage 3 = index 21 → row 24 = C25
 
-        ("Payroll", "Founders (2)", f"=Assumptions!C24*2* (Summary!C3/12)", f"=(Assumptions!C25*2*(3/12)) + (Assumptions!C26*2*(9/12))", f"=Assumptions!C26*2*(Summary!C5/12)", "=SUM(C3:E3)"),
+        ("Payroll", "Founders (2)", f"=Assumptions!C23*2*(Summary!C3/12)", f"=(Assumptions!C24*2*(3/12))+(Assumptions!C25*2*(9/12))", f"=Assumptions!C25*2*(Summary!C5/12)", "=SUM(C3:E3)"),
 
-        ("Payroll", "Engineers (2)", f"=(Assumptions!C21*2*(1+Assumptions!C20)) * (Summary!C3/12)", f"=(Assumptions!C21*2*(1+Assumptions!C20)) * (Summary!C4/12)", f"=(Assumptions!C21*2*(1+Assumptions!C20)) * (Summary!C5/12)", "=SUM(C4:E4)"),
+        ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C4:E4)"),
 
-        ("Payroll", "Sales (1 -> 2)", 0, f"=(Assumptions!C22*1*(1+Assumptions!C20)) * (Summary!C4/12)", f"=(Assumptions!C22*2*(1+Assumptions!C20)) * (Summary!C5/12)", "=SUM(C5:E5)"),
+        ("Payroll", "Sales (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C5:E5)"),
 
         ("Payroll", "Total Payroll", "=SUM(C3:C5)", "=SUM(D3:D5)", "=SUM(E3:E5)", "=SUM(F3:F5)"),
 
