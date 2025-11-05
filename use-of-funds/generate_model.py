@@ -38,7 +38,9 @@ def setup_workbook():
 
         "Unit_Economics", "Cash_Runway", "Pay_Triggers", "Milestones",
 
-        "Scenarios", "Scenarios_Output", "Sales_Comp", "Infra_Estimates"
+        "Scenarios", "Scenarios_Output", "Sales_Comp", "Infra_Estimates",
+
+        "Financial_Summary", "KPI_Summary", "Funding_Overview"
 
     ]
 
@@ -851,21 +853,39 @@ def populate_cash_runway(ws, styles):
 
 def populate_pay_triggers(ws, styles):
 
-    ws['A1'] = "Founder Pay Triggers"
+    ws['A1'] = "Founder Compensation (OpEx)"
+
+    ws['A1'].font = styles['title']
 
     
 
-    ws.append(["Stage", "Annual Salary (per Founder)", "MRR Trigger", "Tranche Trigger", "Notes"])
+    ws.append(["Stage", "MRR Trigger", "Per-Founder Annual", "Combined Annual Cost", "Monthly Impact"])
+
+    ws[2][0].font = styles['header']
+
+    ws[2][1].font = styles['header']
+
+    ws[2][2].font = styles['header']
+
+    ws[2][3].font = styles['header']
+
+    ws[2][4].font = styles['header']
+
+    for cell in ws[2]:
+
+        cell.fill = styles['header_fill']
+
+        cell.alignment = Alignment(horizontal="center", vertical="center")
 
     
 
     data = [
 
-        (1, f"=Assumptions!C22", 0, "Tranche A", "MVP & Pilot Phase"),
+        (1, 0, f"=Assumptions!C22", f"=Assumptions!C22*2", f"=Assumptions!C22*2/12"),
 
-        (2, f"=Assumptions!C23", f"=Assumptions!C25", "Tranche B", "PMF Phase"),
+        (2, f"=Assumptions!C25", f"=Assumptions!C23", f"=Assumptions!C23*2", f"=Assumptions!C23*2/12"),
 
-        (3, f"=Assumptions!C24", f"=Assumptions!C26", "Tranche C", "Scale Phase"),
+        (3, f"=Assumptions!C26", f"=Assumptions!C24", f"=Assumptions!C24*2", f"=Assumptions!C24*2/12"),
 
     ]
 
@@ -875,23 +895,13 @@ def populate_pay_triggers(ws, styles):
 
         ws.append(row_data)
 
-        
+    # Format currency columns
 
-    ws['A7'] = "Current Status"
+    for row in range(3, 6):
 
-    ws['A7'].font = styles['subheader']
+        for col in ['C', 'D', 'E']:
 
-    ws['A8'] = "Current MRR"
-
-    ws['B8'] = f"=Funnel_Model!D31"  # Using Year 3 Avg MRR
-
-    ws['A9'] = "Current Annual Pay (per)"
-
-    ws['B9'] = f"=IF(B8>=C4, B4, IF(B8>=C3, B3, B2))"
-
-    ws['A10'] = "Total Founder Payroll (Annual)"
-
-    ws['B10'] = f"=B9*2"
+            ws[f'{col}{row}'].style = 'currency'
 
     
 
@@ -915,37 +925,39 @@ def populate_milestones(ws, styles):
 
     
 
-    ws.append(["Tranche", "Milestone", "Metric", "Target", "Current", "Status"])
+    ws.append(["Tranche", "Milestone", "Metric", "Target", "Current", "Status", "Completion Date"])
 
     
 
+    # Calculate completion dates based on tranche start + duration
+    # Assuming Tranche A starts at initial close, Tranche B starts after A completes, etc.
     data = [
 
-        ("A", "MVP Launch", "App Live", 1, 1, "=IF(E3>=D3,\"Met\",\"Pending\")"),
+        ("A", "MVP Launch", "App Live", 1, 1, "=IF(E3>=D3,\"Met\",\"Pending\")", "Apr 2025"),
 
-        ("A", "Umpires Onboarded", "Users", 100, 0, "=IF(E4>=D4,\"Met\",\"Pending\")"),
+        ("A", "Umpires Onboarded", "Users", 100, 0, "=IF(E4>=D4,\"Met\",\"Pending\")", "Jun 2025"),
 
-        ("A", "Pilot Leagues Secured", "Leagues", 5, 0, "=IF(E5>=D5,\"Met\",\"Pending\")"),  # Note: League tracking may need separate model
+        ("A", "Pilot Leagues Secured", "Leagues", 5, 0, "=IF(E5>=D5,\"Met\",\"Pending\")", "Jul 2025"),  # Note: League tracking may need separate model
 
-        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=Funnel_Model!D31", "=IF(E6>=D6,\"Met\",\"Pending\")"),
-
-        
-
-        ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(AND(F5=\"Met\",F6=\"Met\"),1,0)", "=IF(E7>=D7,\"Met\",\"Pending\")"),
-
-        ("B", "Achieve $35k MRR", "MRR", 35000, f"=Funnel_Model!D31", "=IF(E8>=D8,\"Met\",\"Pending\")"),
-
-        ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E9>=D9,\"Met\",\"Pending\")"),
-
-        ("B", "Coach Conversion", "%", f"=Assumptions!C9", f"=Assumptions!C9", "=IF(E10>=D10,\"Met\",\"Pending\")"),
+        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=Funnel_Model!D31", "=IF(E6>=D6,\"Met\",\"Pending\")", "Jan 2026"),
 
         
 
-        ("C", "Tranche B Milestones Met", "Status", 1, f"=IF(AND(F8=\"Met\",F9=\"Met\",F10=\"Met\"),1,0)", "=IF(E11>=D11,\"Met\",\"Pending\")"),
+        ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(AND(F5=\"Met\",F6=\"Met\"),1,0)", "=IF(E7>=D7,\"Met\",\"Pending\")", "Jan 2026"),
 
-        ("C", "Achieve $100k MRR", "MRR", 100000, f"=Funnel_Model!D31", "=IF(E12>=D12,\"Met\",\"Pending\")"),
+        ("B", "Achieve $35k MRR", "MRR", 35000, f"=Funnel_Model!D31", "=IF(E8>=D8,\"Met\",\"Pending\")", "Dec 2026"),
 
-        ("C", "Org Contracts", "Count", 10, 0, "=IF(E13>=D13,\"Met\",\"Pending\")"),  # Note: Organization revenue tracking may need separate model
+        ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E9>=D9,\"Met\",\"Pending\")", "Dec 2026"),
+
+        ("B", "Coach Conversion", "%", f"=Assumptions!C9", f"=Assumptions!C9", "=IF(E10>=D10,\"Met\",\"Pending\")", "Dec 2026"),
+
+        
+
+        ("C", "Tranche B Milestones Met", "Status", 1, f"=IF(AND(F8=\"Met\",F9=\"Met\",F10=\"Met\"),1,0)", "=IF(E11>=D11,\"Met\",\"Pending\")", "Dec 2026"),
+
+        ("C", "Achieve $100k MRR", "MRR", 100000, f"=Funnel_Model!D31", "=IF(E12>=D12,\"Met\",\"Pending\")", "Dec 2027"),
+
+        ("C", "Org Contracts", "Count", 10, 0, "=IF(E13>=D13,\"Met\",\"Pending\")", "Dec 2027"),  # Note: Organization revenue tracking may need separate model
 
     ]
 
@@ -1234,6 +1246,145 @@ def populate_infra_estimates(ws, styles):
 
 
 
+def populate_financial_summary(ws, styles):
+    """Top-line financial summary showing capital-to-ARR ratio by tranche."""
+    ws['A1'] = "Financial Summary - Capital Efficiency"
+    ws['A1'].font = styles['title']
+    
+    ws.append(["Tranche", "Capital Invested", "Projected ARR", "Projected MRR", "Capital-to-ARR Ratio"])
+    
+    # Header formatting
+    for cell in ws[2]:
+        cell.font = styles['header']
+        cell.fill = styles['header_fill']
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+    
+    # Tranche A: 9 months, Year 1 ARR
+    ws.append(["Tranche A", f"=Assumptions!C30", f"=Funnel_Model!B30", f"=Funnel_Model!B30/12", f"=B3/C3"])
+    
+    # Tranche B: Cumulative (A+B), Year 2 ARR
+    ws.append(["Tranche B", f"=Assumptions!C30+Assumptions!C31", f"=Funnel_Model!C30", f"=Funnel_Model!C30/12", f"=B4/C4"])
+    
+    # Tranche C: Total ($2M), Year 3 ARR
+    ws.append(["Tranche C", f"=Assumptions!C30+Assumptions!C31+Assumptions!C32", f"=Funnel_Model!D30", f"=Funnel_Model!D30/12", f"=B5/C5"])
+    
+    # Totals row
+    ws.append(["", "", "", "", ""])
+    ws['A7'] = "Total"
+    ws['A7'].font = styles['subheader']
+    ws['B7'] = "=B5"
+    ws['C7'] = "=C5"
+    ws['D7'] = "=D5"
+    ws['E7'] = "=B7/C7"
+    
+    # Formatting
+    for row in range(3, 8):
+        for col in ['B', 'C', 'D', 'E']:
+            cell = ws[f'{col}{row}']
+            if col == 'E':  # Ratio column
+                cell.number_format = '0.00'
+            else:
+                cell.style = 'currency'
+    
+    style_sheet(ws, styles, {'A': 20, 'B': 18, 'C': 18, 'D': 18, 'E': 18})
+
+
+def populate_kpi_summary(ws, styles):
+    """Quarterly KPI dashboard showing key metrics."""
+    ws['A1'] = "KPI Summary - Quarterly Metrics"
+    ws['A1'].font = styles['title']
+    
+    ws.append(["Metric", "Q1", "Q2", "Q3", "Q4", "Year 1 Avg", "Year 2 Avg", "Year 3 Avg"])
+    
+    # Header formatting
+    for cell in ws[2]:
+        cell.font = styles['header']
+        cell.fill = styles['header_fill']
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+    
+    # U-CAC (Umpire Acquisition Cost) - simplified to annual
+    ws.append(["U-CAC ($/umpire)", "=Assumptions!C17", "=Assumptions!C17", "=Assumptions!C17", "=Assumptions!C17", "=Assumptions!C17", "=Assumptions!C17", "=Assumptions!C17"])
+    
+    # Conversion % - Parent (row 3)
+    ws.append(["Parent Conversion %", f"=Assumptions!C8", f"=Assumptions!C8", f"=Assumptions!C8", f"=Assumptions!C8", f"=Assumptions!C8", f"=Assumptions!C8", f"=Assumptions!C8"])
+    
+    # Conversion % - Coach (row 4)
+    ws.append(["Coach Conversion %", f"=Assumptions!C9", f"=Assumptions!C9", f"=Assumptions!C9", f"=Assumptions!C9", f"=Assumptions!C9", f"=Assumptions!C9", f"=Assumptions!C9"])
+    
+    # ARPU (row 5)
+    ws.append(["ARPU (Annual)", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C11", f"=Unit_Economics!E3"])
+    
+    # LTV (row 6)
+    ws.append(["LTV", f"=Unit_Economics!B7", f"=Unit_Economics!B7", f"=Unit_Economics!B7", f"=Unit_Economics!B7", f"=Unit_Economics!B7", f"=Unit_Economics!B7", f"=Unit_Economics!E7"])
+    
+    # LTV/CAC Ratio (row 7)
+    ws.append(["LTV/CAC Ratio", f"=Unit_Economics!B10", f"=Unit_Economics!B10", f"=Unit_Economics!B10", f"=Unit_Economics!B10", f"=Unit_Economics!B10", f"=Unit_Economics!B10", f"=Unit_Economics!E10"])
+    
+    # Payback Period (Months) (row 8)
+    ws.append(["Payback Period (Months)", f"=Unit_Economics!B11", f"=Unit_Economics!B11", f"=Unit_Economics!B11", f"=Unit_Economics!B11", f"=Unit_Economics!B11", f"=Unit_Economics!B11", f"=Unit_Economics!E11"])
+    
+    # Gross Margin (row 9)
+    ws.append(["Gross Margin", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15"])
+    
+    # Formatting
+    for row in range(3, 11):
+        for col in ['B', 'C', 'D', 'E', 'F', 'G', 'H']:
+            cell = ws[f'{col}{row}']
+            if row in [3, 4]:  # Conversion % rows (Parent and Coach)
+                cell.style = 'percent'
+            elif row == 5:  # ARPU
+                cell.style = 'currency'
+            elif row == 6:  # LTV
+                cell.style = 'currency'
+            elif row == 7:  # LTV/CAC
+                cell.number_format = '0.00'
+            elif row == 8:  # Payback
+                cell.number_format = '0.0'
+            elif row == 9:  # Gross Margin
+                cell.style = 'percent'
+            elif row == 2:  # U-CAC
+                cell.style = 'currency'
+    
+    style_sheet(ws, styles, {'A': 25, 'B': 15, 'C': 15, 'D': 15, 'E': 15, 'F': 15, 'G': 15, 'H': 15})
+
+
+def populate_funding_overview(ws, styles):
+    """Timeline overview of funding tranches with deliverables."""
+    ws['A1'] = "Funding Overview - Timeline"
+    ws['A1'].font = styles['title']
+    
+    ws.append(["Tranche", "Amount", "Start Date", "End Date", "Duration", "Major Deliverable"])
+    
+    # Header formatting
+    for cell in ws[2]:
+        cell.font = styles['header']
+        cell.fill = styles['header_fill']
+        cell.alignment = Alignment(horizontal="center", vertical="center")
+    
+    # Tranche A: MVP
+    ws.append(["Tranche A → MVP", f"=Assumptions!C30", "Jan 2025", "Sep 2025", "9 months", "Umpire MVP, 100+ umpires, $3-5k MRR"])
+    
+    # Tranche B: Pilot Scale
+    ws.append(["Tranche B → Pilot Scale", f"=Assumptions!C31", "Jan 2026", "Dec 2026", "12 months", "$35k MRR, 2% parent / 3% coach conversion"])
+    
+    # Tranche C: Growth
+    ws.append(["Tranche C → Growth", f"=Assumptions!C32", "Jan 2027", "Dec 2027", "12 months", "$100k MRR, scalable B2C engine"])
+    
+    # Total
+    ws.append(["", "", "", "", "", ""])
+    ws['A7'] = "Total"
+    ws['A7'].font = styles['subheader']
+    ws['B7'] = f"=Assumptions!C30+Assumptions!C31+Assumptions!C32"
+    ws['E7'] = "33 months"
+    
+    # Formatting
+    for row in range(3, 6):
+        ws[f'B{row}'].style = 'currency'
+    
+    ws['B7'].style = 'currency'
+    
+    style_sheet(ws, styles, {'A': 25, 'B': 18, 'C': 15, 'D': 15, 'E': 15, 'F': 50})
+
 
 # --- Main execution ---
 
@@ -1271,6 +1422,11 @@ def main():
 
     populate_infra_estimates(wb['Infra_Estimates'], styles)
 
+    populate_financial_summary(wb['Financial_Summary'], styles)
+
+    populate_kpi_summary(wb['KPI_Summary'], styles)
+
+    populate_funding_overview(wb['Funding_Overview'], styles)
 
 
     # Set 'Assumptions' as the active sheet
