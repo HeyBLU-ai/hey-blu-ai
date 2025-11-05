@@ -926,9 +926,7 @@ def populate_milestones(ws, styles):
 
         ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(AND(F5=\"Met\",F6=\"Met\"),1,0)", "=IF(E7>=D7,\"Met\",\"Pending\")"),
 
-        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=County_League_Model!D22", "=IF(E5>=D5,\"Met\",\"Pending\")"),
-
-        ("B", "Achieve $35k MRR", "MRR", 35000, f"=County_League_Model!D22", "=IF(E7>=D7,\"Met\",\"Pending\")"),
+        ("B", "Achieve $35k MRR", "MRR", 35000, f"=County_League_Model!D22", "=IF(E8>=D8,\"Met\",\"Pending\")"),
 
         ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E9>=D9,\"Met\",\"Pending\")"),
 
