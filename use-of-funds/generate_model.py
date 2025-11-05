@@ -511,21 +511,22 @@ def populate_tranche_detail(ws, styles):
         # Founder Stage 2 = index 20 → row 23 → Column C = C23
         # Founder Stage 3 = index 21 → row 24 → Column C = C24
         # Summary sheet: Row 3=Tranche A (9 months), Row 4=Tranche B (12 months), Row 5=Tranche C (12 months)
-        # Tranche C should use Founder Stage 3 ($250k annual) for the full 12 months
+        # Tranche C: Phase in Stage 3 pay - first 6 months at Stage 2, last 6 months at Stage 3
+        # This aligns Stage 3 pay with revenue milestones and preserves capital
 
-        ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C23*2*(3/12))+(Assumptions!C24*2*(9/12))", f"=Assumptions!C24*2*(Summary!C5/12)", "=SUM(C3:E3)"),
+        ("Payroll", "Founders (2)", f"=Assumptions!C22*2*(Summary!C3/12)", f"=(Assumptions!C23*2*(3/12))+(Assumptions!C24*2*(9/12))", f"=(Assumptions!C23*2*(6/12))+(Assumptions!C24*2*(6/12))", "=SUM(C3:E3)"),
 
-        ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C4:E4)"),
+        ("Payroll", "Engineers (2)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C3/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C20*2*(1+Assumptions!C19)*((Summary!C5-3)/12)", "=SUM(C4:E4)"),
 
-        ("Payroll", "Sales (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*2*(1+Assumptions!C19)*(Summary!C5/12)", "=SUM(C5:E5)"),
+        ("Payroll", "Sales (1 -> 2)", 0, f"=Assumptions!C21*1*(1+Assumptions!C19)*(Summary!C4/12)", f"=Assumptions!C21*1*(1+Assumptions!C19)*((Summary!C5-3)/12)+Assumptions!C21*2*(1+Assumptions!C19)*(3/12)", "=SUM(C5:E5)"),
 
         ("Payroll", "Total Payroll", "=SUM(C3:C5)", "=SUM(D3:D5)", "=SUM(E3:E5)", "=SUM(F3:F5)"),
 
         # S&M
 
-        ("Sales & Marketing", "CAC - Ambassador", 10000, 50000, 100000, "=SUM(C7:E7)"),
+        ("Sales & Marketing", "CAC - Ambassador", 10000, 50000, 50000, "=SUM(C7:E7)"),
 
-        ("Sales & Marketing", "CAC - Social/Digital", 20000, 75000, 150000, "=SUM(C8:E8)"),
+        ("Sales & Marketing", "CAC - Social/Digital", 20000, 75000, 100000, "=SUM(C8:E8)"),
 
         ("Sales & Marketing", "CAC - Organization", 5000, 30000, 60000, "=SUM(C9:E9)"),
 
@@ -533,7 +534,7 @@ def populate_tranche_detail(ws, styles):
 
         # R&D
 
-        ("R&D", "Software & Services", 15000, 30000, 50000, "=SUM(C11:E11)"),
+        ("R&D", "Software & Services", 15000, 30000, 40000, "=SUM(C11:E11)"),
 
         ("R&D", "Total R&D", "=C11", "=D11", "=E11", "=F11"),
 
@@ -547,7 +548,7 @@ def populate_tranche_detail(ws, styles):
 
         ("G&A", "Legal & Admin", 20000, 30000, 40000, "=SUM(C15:E15)"),
 
-        ("G&A", "Office & Misc", 10000, 20000, 30000, "=SUM(C16:E16)"),
+        ("G&A", "Office & Misc", 10000, 20000, 20000, "=SUM(C16:E16)"),
 
         ("G&A", "Total G&A", "=SUM(C15:C16)", "=SUM(D15:D16)", "=SUM(E15:E16)", "=SUM(F15:F16)"),
 
