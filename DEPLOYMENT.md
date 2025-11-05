@@ -219,6 +219,14 @@ jobs:
 
 1. **Pre-deployment Checklist**
    - [ ] All tests passing
+   - [ ] **All new files committed to git** (Critical: Vercel only deploys committed files)
+     ```bash
+     # Verify files are tracked
+     git ls-files your-new-directory/
+     # If empty, add and commit:
+     git add your-new-directory/ vercel.json
+     git commit -m "Add new feature"
+     ```
    - [ ] Environment variables updated
    - [ ] Database migrations applied (if any)
    - [ ] Documentation updated
@@ -232,10 +240,15 @@ jobs:
    # 2. Test locally
    npm run dev
    
-   # 3. Deploy to Vercel
+   # 3. Commit and push to git (if not already done)
+   git add .
+   git commit -m "Deploy changes"
+   git push
+   
+   # 4. Deploy to Vercel (or wait for auto-deploy)
    vercel --prod
    
-   # 4. Verify deployment
+   # 5. Verify deployment
    curl https://heyblu.ai/api/ask
    ```
 
@@ -453,6 +466,35 @@ Ensure `vercel.json` includes static asset routing:
 
 ## 🚨 Error Handling & Monitoring
 
+### Troubleshooting 404 Errors for New Pages
+
+**Common Cause:** Files exist locally but are not committed to git.
+
+Vercel builds from your git repository, not your local filesystem. If you add a new directory or page:
+
+1. **Verify files are tracked in git:**
+   ```bash
+   git ls-files your-directory/
+   ```
+   If this returns nothing, your files are not tracked.
+
+2. **Add and commit files:**
+   ```bash
+   git add your-directory/
+   git add vercel.json  # If you updated routes
+   git commit -m "Add new page"
+   git push
+   ```
+
+3. **Wait for Vercel deployment** (usually 1-2 minutes after push)
+
+4. **Verify in deployment:**
+   - Check Vercel dashboard for successful deployment
+   - Verify files appear in the deployment logs
+   - Test the URL after deployment completes
+
+**Key Lesson:** Always commit new files to git before expecting them on the deployed site. Local-only files will never appear in production.
+
 ### Vercel Function Logs
 
 ```bash
@@ -644,6 +686,13 @@ psql $DATABASE_URL < backup_20240101.sql
 
 ### Pre-Deployment
 - [ ] Code reviewed and tested
+- [ ] **All new files committed to git** (Vercel only deploys committed files)
+  ```bash
+  git ls-files your-new-directory/  # Verify files are tracked
+  git add your-new-directory/ vercel.json
+  git commit -m "Add new feature"
+  git push
+  ```
 - [ ] Environment variables updated
 - [ ] Database migrations applied
 - [ ] Documentation updated

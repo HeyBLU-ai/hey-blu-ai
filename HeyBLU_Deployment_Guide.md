@@ -138,6 +138,27 @@ hey-blu-ai/
 **Cause:** Browser caching  
 **Solution:** Hard refresh (Ctrl+F5) or incognito mode
 
+### Issue 6: New Pages/Directories Return 404 After Adding to vercel.json
+**Cause:** Files exist locally but are not committed to git  
+**Solution:** 
+1. **Check if files are tracked in git:**
+   ```bash
+   git ls-files your-directory/
+   ```
+   If empty, files are not tracked.
+
+2. **Add and commit files:**
+   ```bash
+   git add your-directory/
+   git add vercel.json
+   git commit -m "Add new page/directory"
+   git push
+   ```
+
+3. **Verify deployment:** Vercel only deploys files that are in your git repository. Local-only files will never be deployed.
+
+**Key Lesson:** Always commit new files to git before expecting them to appear on the deployed site. Vercel builds from your git repository, not your local filesystem.
+
 ---
 
 ## ✅ Testing Checklist
