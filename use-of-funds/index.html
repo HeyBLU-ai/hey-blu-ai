@@ -16,7 +16,7 @@
         
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            background: #f8fafc;
             min-height: 100vh;
             padding: 40px 20px;
             line-height: 1.6;
@@ -32,16 +32,13 @@
         }
         
         .brand-blu {
-            color: #ffffff;
+            color: #1e3a8a;
             font-weight: 800;
             letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 8px rgba(255, 255, 255, 0.3);
         }
         
-        /* Brand styling in white sections */
         .section-content .brand-blu {
             color: #1e3a8a;
-            text-shadow: none;
         }
         
         .section-content .brand-hey {
@@ -51,59 +48,48 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            padding: 30px 40px;
-            color: #ffffff;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+            padding: 50px 40px;
+            color: #1f2937;
         }
         
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 3px solid #3b82f6;
         }
         
         header h1 {
             font-size: 2.5rem;
             font-weight: 800;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-bottom: 15px;
+            color: #111827;
         }
         
         header p {
             font-size: 1.15rem;
-            opacity: 1;
-            color: #ffffff;
+            color: #4b5563;
             max-width: 700px;
             margin: 0 auto;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
         
-        .section-content {
-            background: #ffffff;
-            color: #1e3a8a;
-            border-radius: 8px;
-            padding: 30px;
-            margin-top: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
         
         h2 {
             font-size: 1.75rem;
             font-weight: 700;
-            border-bottom: 3px solid #60a5fa;
+            border-bottom: 3px solid #3b82f6;
             padding-bottom: 8px;
             margin-bottom: 20px;
-            color: #1e3a8a;
+            color: #111827;
         }
         
         h3 {
             font-size: 1.25rem;
             font-weight: 700;
-            color: #1d4ed8;
+            color: #1e40af;
             margin-top: 20px;
             margin-bottom: 10px;
         }
@@ -123,13 +109,22 @@
         }
         
         strong {
-            color: #1e3a8a;
+            color: #1e40af;
             font-weight: 600;
         }
 
         em {
             font-style: italic;
-            color: #4b5563;
+            color: #6b7280;
+        }
+        
+        .section-content {
+            background: #ffffff;
+            color: #1f2937;
+            border-radius: 8px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
         }
 
         .download-section {
@@ -138,7 +133,7 @@
         
         .download-button {
             display: inline-block;
-            background-color: #2563eb;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
             color: #ffffff;
             font-size: 1.1rem;
             font-weight: 600;
@@ -150,9 +145,23 @@
         }
         
         .download-button:hover {
-            background-color: #1d4ed8;
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+        
+        header .download-button {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        }
+        
+        header .download-button:hover {
+            background: linear-gradient(135deg, #1d4ed8 0%, #1e3a8a 100%);
+        }
+        
+        header p.download-note {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-top: 10px;
         }
 
         /* Responsive Design */
@@ -192,7 +201,7 @@
                 <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download="BLU Use-of-Funds Model (B2C-Only).xlsx" style="font-size: 1rem; padding: 12px 24px;">
                     📊 Download Financial Model
                 </a>
-                <p style="margin-top: 10px; font-size: 0.9rem; opacity: 0.95; color: #ffffff;">Interactive Excel workbook</p>
+                <p class="download-note" style="margin-top: 10px;">Interactive Excel workbook</p>
             </div>
         </header>
         
@@ -328,13 +337,13 @@
                     <p><strong>Why These Documents Work Together:</strong> This page outlines what we're building and why; the Excel model provides financial precision showing exactly how we acquire users and allocate capital. Together, they tell a complete story of capital efficiency and disciplined B2C growth.</p>
                 </div>
                 
-                <p style="text-align: center; color: white; opacity: 1; margin-top: 20px; font-weight: 500; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);"><em>Note: The model is interactive—adjust inputs in the "Assumptions" tab to see how changes impact the B2C-only model.</em></p>
+                <p style="text-align: center; color: #6b7280; margin-top: 30px; font-weight: 400; font-size: 0.95rem; padding: 20px; background: #f9fafb; border-radius: 6px; border-left: 4px solid #3b82f6;"><em><strong>Note:</strong> The model is interactive—adjust inputs in the "Assumptions" tab to see how changes impact the B2C-only model.</em></p>
             </section>
             
-            <section style="margin-top: 50px; padding-top: 30px; border-top: 2px solid rgba(255, 255, 255, 0.2);">
+            <section style="margin-top: 50px; padding-top: 30px; border-top: 2px solid #e5e7eb;">
                 <div class="download-section">
-                    <h2 style="color: white; border: none; padding: 0; margin-bottom: 15px;">📊 Download Financial Model</h2>
-                    <p style="margin-bottom: 20px; color: white; opacity: 0.95;">Interactive Excel workbook with B2C projections, funnel model, and detailed use of funds.</p>
+                    <h2 style="color: #111827; border: none; padding: 0; margin-bottom: 15px;">📊 Download Financial Model</h2>
+                    <p style="margin-bottom: 20px; color: #4b5563;">Interactive Excel workbook with B2C projections, funnel model, and detailed use of funds.</p>
                     <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download="BLU Use-of-Funds Model (B2C-Only).xlsx">
                         Download Excel Model
                     </a>
