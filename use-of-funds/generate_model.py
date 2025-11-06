@@ -409,8 +409,8 @@ def populate_funnel_model(ws, styles):
     
     # INPUTS Section
     ws.append(["", "", "", "", ""])  # Spacer
-    ws.append(["INPUTS", "Year 1", "Year 2", "Year 3", "Notes"])
-    ws['A7'].font = styles['subheader']
+    ws.append(["INPUTS", "", "", "", ""])  # Header row - only label in column A
+    ws['A4'].font = styles['subheader']
     
     ws.append(["New Umpires Acquired", 1000, 5000, 15000, "Target from Umpire_Funnel tab"])
     ws.append(["Umpire Churn Rate", 0.20, 0.20, 0.20, "Annual churn rate"])
@@ -420,24 +420,24 @@ def populate_funnel_model(ws, styles):
     
     # CALCULATIONS - Bottom-up funnel
     ws.append(["", "", "", "", ""])  # Spacer
-    ws.append(["CALCULATIONS", "Year 1", "Year 2", "Year 3", "Total"])
+    ws.append(["CALCULATIONS", "", "", "", ""])  # Header row - only label in column A
     ws['A13'].font = styles['subheader']
     
     # Active Umpires calculation (with churn)
-    # Row mapping: 6=New Umpires, 7=Churn, 8=Games, 9=Players, 10=Parents/Coaches
+    # Row mapping: 8=New Umpires (input), 9=Churn, 10=Games, 11=Players, 12=Parents/Coaches
     # Row mapping: 14=New Umpires (calc), 15=Retained, 16=Total Active, 17=Games, 18=Players, 19=Freemium
-    ws.append(["New Umpires Acquired", "=B6", "=C6", "=D6", "=D14"])  # Total = Year 3 value (for display)
-    ws.append(["Umpires Retained from Prior Year", 0, "=B14*(1-B7)", "=C16*(1-C7)", "=D15"])  # Fixed: use Year 2 total active, not sum of new
+    ws.append(["New Umpires Acquired", "=B8", "=C8", "=D8", "=D14"])  # Total = Year 3 value (for display)
+    ws.append(["Umpires Retained from Prior Year", 0, "=B14*(1-B9)", "=C16*(1-C9)", "=D15"])  # Fixed: use Year 2 total active, not sum of new
     ws.append(["Total Active Umpires", "=B14+B15", "=C14+C15", "=D14+D15", "=D16"])  # Total = Year 3 value (cumulative)
     
     # Games and Reach Calculations
-    ws.append(["Total Games Scored", "=B16*B8", "=C16*C8", "=D16*D8", "=D17"])  # Total = Year 3 value
-    ws.append(["Total Players Reached", "=B17*B9", "=C17*C9", "=D17*D9", "=D18"])  # Total = Year 3 value
-    ws.append(["Total Freemium Users Reached (Parents/Coaches)", "=B18*B10", "=C18*C10", "=D18*D10", "=D19"])  # Total = Year 3 value
+    ws.append(["Total Games Scored", "=B16*B10", "=C16*C10", "=D16*D10", "=D17"])  # Total = Year 3 value
+    ws.append(["Total Players Reached", "=B17*B11", "=C17*C11", "=D17*D11", "=D18"])  # Total = Year 3 value
+    ws.append(["Total Freemium Users Reached (Parents/Coaches)", "=B18*B12", "=C18*C12", "=D18*D12", "=D19"])  # Total = Year 3 value
     
     # REVENUE CALCULATIONS - Fixed to track cumulative active paid users
     ws.append(["", "", "", "", ""])  # Spacer
-    ws.append(["Revenue", "Year 1", "Year 2", "Year 3", "Total"])
+    ws.append(["Revenue", "", "", "", ""])  # Header row - only label in column A
     ws['A21'].font = styles['subheader']
     
     # New Conversions (from freemium users reached)
