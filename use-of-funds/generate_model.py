@@ -535,9 +535,10 @@ def populate_tranche_detail(ws, styles):
         # S&M - Dynamic CAC based on Funnel_Model new paid users
         # Formula: (New Paid Parents + New Paid Coaches) × CAC per user from Assumptions
         # Tranche A uses Year 1, Tranche B uses Year 2, Tranche C uses Year 3
-        ("Sales & Marketing", "CAC - Ambassador", f"=(Funnel_Model!B22+Funnel_Model!B23)*Assumptions!C17", f"=(Funnel_Model!C22+Funnel_Model!C23)*Assumptions!C17", f"=(Funnel_Model!D22+Funnel_Model!D23)*Assumptions!C17", "=SUM(C7:E7)"),
+        # Row mapping: Funnel_Model row 23 = New Paid Parents, row 24 = New Paid Coaches
+        ("Sales & Marketing", "CAC - Ambassador", f"=(Funnel_Model!B23+Funnel_Model!B24)*Assumptions!C17", f"=(Funnel_Model!C23+Funnel_Model!C24)*Assumptions!C17", f"=(Funnel_Model!D23+Funnel_Model!D24)*Assumptions!C17", "=SUM(C7:E7)"),
 
-        ("Sales & Marketing", "CAC - Social/Digital", f"=(Funnel_Model!B22+Funnel_Model!B23)*Assumptions!C18", f"=(Funnel_Model!C22+Funnel_Model!C23)*Assumptions!C18", f"=(Funnel_Model!D22+Funnel_Model!D23)*Assumptions!C18", "=SUM(C8:E8)"),
+        ("Sales & Marketing", "CAC - Social/Digital", f"=(Funnel_Model!B23+Funnel_Model!B24)*Assumptions!C18", f"=(Funnel_Model!C23+Funnel_Model!C24)*Assumptions!C18", f"=(Funnel_Model!D23+Funnel_Model!D24)*Assumptions!C18", "=SUM(C8:E8)"),
 
         ("Sales & Marketing", "CAC - Organization", 0, 0, 0, "=SUM(C9:E9)"),
 
