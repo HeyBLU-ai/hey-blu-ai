@@ -424,17 +424,16 @@ def populate_funnel_model(ws, styles):
     ws['A13'].font = styles['subheader']
     
     # Active Umpires calculation (with churn)
-    # Year 1: New - (New * Churn)
-    # Year 2: Previous year retained + New - (Total * Churn)
-    # Year 3: Previous year retained + New - (Total * Churn)
-    ws.append(["New Umpires Acquired", "=B8", "=C8", "=D8", "=D14"])  # Total = Year 3 value (for display)
-    ws.append(["Umpires Retained from Prior Year", 0, "=B14*(1-B9)", "=C16*(1-C9)", "=D15"])  # Fixed: use Year 2 total active, not sum of new
+    # Row mapping: 6=New Umpires, 7=Churn, 8=Games, 9=Players, 10=Parents/Coaches
+    # Row mapping: 14=New Umpires (calc), 15=Retained, 16=Total Active, 17=Games, 18=Players, 19=Freemium
+    ws.append(["New Umpires Acquired", "=B6", "=C6", "=D6", "=D14"])  # Total = Year 3 value (for display)
+    ws.append(["Umpires Retained from Prior Year", 0, "=B14*(1-B7)", "=C16*(1-C7)", "=D15"])  # Fixed: use Year 2 total active, not sum of new
     ws.append(["Total Active Umpires", "=B14+B15", "=C14+C15", "=D14+D15", "=D16"])  # Total = Year 3 value (cumulative)
     
     # Games and Reach Calculations
-    ws.append(["Total Games Scored", "=B16*B10", "=C16*C10", "=D16*D10", "=D17"])  # Total = Year 3 value
-    ws.append(["Total Players Reached", "=B17*B11", "=C17*C11", "=D17*D11", "=D18"])  # Total = Year 3 value
-    ws.append(["Total Freemium Users Reached (Parents/Coaches)", "=B18*B12", "=C18*C12", "=D18*D12", "=D19"])  # Total = Year 3 value
+    ws.append(["Total Games Scored", "=B16*B8", "=C16*C8", "=D16*D8", "=D17"])  # Total = Year 3 value
+    ws.append(["Total Players Reached", "=B17*B9", "=C17*C9", "=D17*D9", "=D18"])  # Total = Year 3 value
+    ws.append(["Total Freemium Users Reached (Parents/Coaches)", "=B18*B10", "=C18*C10", "=D18*D10", "=D19"])  # Total = Year 3 value
     
     # REVENUE CALCULATIONS - Fixed to track cumulative active paid users
     ws.append(["", "", "", "", ""])  # Spacer
@@ -446,6 +445,7 @@ def populate_funnel_model(ws, styles):
     ws.append(["New Paid Coaches", "=B19*Assumptions!C9", "=C19*Assumptions!C9", "=D19*Assumptions!C9", "=D23"])  # Total = Year 3 value
     
     # Paid User Retention (accounting for churn)
+    # Row mapping: 22=New Paid Parents, 23=New Paid Coaches, 24=Retained Parents, 25=Retained Coaches, 26=Total Parents, 27=Total Coaches
     # Year 2: Retain from Year 1 new paid users
     # Year 3: Retain from Year 2 cumulative active paid users (not just new)
     ws.append(["Paid Parents Retained from Prior Year", 0, "=B22*(1-Assumptions!C10)", "=C26*(1-Assumptions!C10)", "=D24"])  # C10 = Paid User Churn Rate
@@ -458,8 +458,8 @@ def populate_funnel_model(ws, styles):
     # Revenue (from cumulative active paid users, not just new)
     ws.append(["Parent App Revenue", "=B26*Assumptions!C11", "=C26*Assumptions!C11", "=D26*Assumptions!C11", "=D28"])  # Total = Year 3 value
     ws.append(["Coach App Revenue", "=B27*Assumptions!C11", "=C27*Assumptions!C11", "=D27*Assumptions!C11", "=D29"])  # Total = Year 3 value
-    ws.append(["Total ARR", "=B28+B29", "=C28+C29", "=D28+D29", "=D30"])  # Total = Year 3 value
-    ws.append(["Total MRR (Avg Year 3)", "", "", "=D30/12", ""])
+    ws.append(["Total ARR", "=B29+B30", "=C29+C30", "=D29+D30", "=D31"])  # Total = Year 3 value
+    ws.append(["Total MRR (Avg Year 3)", "", "", "=D31/12", ""])
     
     style_sheet(ws, styles, {'A': 35, 'B': 18, 'C': 18, 'D': 18, 'E': 25})
     
@@ -619,7 +619,7 @@ def populate_unit_economics(ws, styles):
 
     data = [
 
-        ("ARPU (Annual)", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C12", f"=Funnel_Model!D30 / (Funnel_Model!D26 + Funnel_Model!D27)"),
+        ("ARPU (Annual)", f"=Assumptions!C11", f"=Assumptions!C11", f"=Assumptions!C12", f"=Funnel_Model!D31 / (Funnel_Model!D27 + Funnel_Model!D28)"),
 
         ("Gross Margin", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15", f"=Assumptions!C15"),
 
@@ -787,7 +787,7 @@ def populate_cash_runway(ws, styles):
 
         # Revenue (simple linear ramp to Year 1 ARR)
 
-        ws[f'D{row}'] = f"=IF(A{row}<=12, (Funnel_Model!B30/12)*(A{row}/12), IF(A{row}<=24, (Funnel_Model!C30/12), (Funnel_Model!D30/12)))"
+        ws[f'D{row}'] = f"=IF(A{row}<=12, (Funnel_Model!B31/12)*(A{row}/12), IF(A{row}<=24, (Funnel_Model!C31/12), (Funnel_Model!D31/12)))"
 
         
 
@@ -939,13 +939,13 @@ def populate_milestones(ws, styles):
 
         ("A", "Pilot Leagues Secured", "Leagues", 5, 0, "=IF(E5>=D5,\"Met\",\"Pending\")", "Jul 2025"),  # Note: League tracking may need separate model
 
-        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=Funnel_Model!D31", "=IF(E6>=D6,\"Met\",\"Pending\")", "Jan 2026"),
+        ("A", "Generate $3-5k MRR", "MRR", 4000, f"=Funnel_Model!D32", "=IF(E6>=D6,\"Met\",\"Pending\")", "Jan 2026"),
 
         
 
         ("B", "Tranche A Milestones Met", "Status", 1, f"=IF(AND(F5=\"Met\",F6=\"Met\"),1,0)", "=IF(E7>=D7,\"Met\",\"Pending\")", "Jan 2026"),
 
-        ("B", "Achieve $35k MRR", "MRR", 35000, f"=Funnel_Model!D31", "=IF(E8>=D8,\"Met\",\"Pending\")", "Dec 2026"),
+        ("B", "Achieve $35k MRR", "MRR", 35000, f"=Funnel_Model!D32", "=IF(E8>=D8,\"Met\",\"Pending\")", "Dec 2026"),
 
         ("B", "Parent Conversion", "%", f"=Assumptions!C8", f"=Assumptions!C8", "=IF(E9>=D9,\"Met\",\"Pending\")", "Dec 2026"),
 
@@ -955,7 +955,7 @@ def populate_milestones(ws, styles):
 
         ("C", "Tranche B Milestones Met", "Status", 1, f"=IF(AND(F8=\"Met\",F9=\"Met\",F10=\"Met\"),1,0)", "=IF(E11>=D11,\"Met\",\"Pending\")", "Dec 2026"),
 
-        ("C", "Achieve $100k MRR", "MRR", 100000, f"=Funnel_Model!D31", "=IF(E12>=D12,\"Met\",\"Pending\")", "Dec 2027"),
+        ("C", "Achieve $100k MRR", "MRR", 100000, f"=Funnel_Model!D32", "=IF(E12>=D12,\"Met\",\"Pending\")", "Dec 2027"),
 
         ("C", "Org Contracts", "Count", 10, 0, "=IF(E13>=D13,\"Met\",\"Pending\")", "Dec 2027"),  # Note: Organization revenue tracking may need separate model
 
@@ -1063,11 +1063,11 @@ def populate_scenarios_output(ws, styles):
 
     ws['A3'] = "Year 3 ARR"
 
-    ws['B3'] = f"=(Funnel_Model!D26*Scenarios!B3*Assumptions!D11) + (Funnel_Model!D27*Scenarios!B4*Assumptions!D11)"  # Year 3 active paid users with scenario multipliers
+    ws['B3'] = f"=(Funnel_Model!D27*Scenarios!B3*Assumptions!D11) + (Funnel_Model!D28*Scenarios!B4*Assumptions!D11)"  # Year 3 active paid users with scenario multipliers
 
-    ws['C3'] = f"=Funnel_Model!D30"  # Base Year 3 ARR
+    ws['C3'] = f"=Funnel_Model!D31"  # Base Year 3 ARR
 
-    ws['D3'] = f"=(Funnel_Model!D26*Scenarios!D3*Assumptions!E11) + (Funnel_Model!D27*Scenarios!D4*Assumptions!E11)"  # Year 3 active paid users with scenario multipliers
+    ws['D3'] = f"=(Funnel_Model!D27*Scenarios!D3*Assumptions!E11) + (Funnel_Model!D28*Scenarios!D4*Assumptions!E11)"  # Year 3 active paid users with scenario multipliers
 
     
 
@@ -1075,11 +1075,11 @@ def populate_scenarios_output(ws, styles):
 
     ws['A4'] = "Year 3 Total Paid Users"
 
-    ws['B4'] = f"=(Funnel_Model!D26*Scenarios!B3) + (Funnel_Model!D27*Scenarios!B4)"  # Year 3 active paid users with scenario multipliers
+    ws['B4'] = f"=(Funnel_Model!D27*Scenarios!B3) + (Funnel_Model!D28*Scenarios!B4)"  # Year 3 active paid users with scenario multipliers
 
-    ws['C4'] = f"=Funnel_Model!D26 + Funnel_Model!D27"  # Base: Year 3 total active paid users
+    ws['C4'] = f"=Funnel_Model!D27 + Funnel_Model!D28"  # Base: Year 3 total active paid users
 
-    ws['D4'] = f"=(Funnel_Model!D26*Scenarios!D3) + (Funnel_Model!D27*Scenarios!D4)"  # Year 3 active paid users with scenario multipliers
+    ws['D4'] = f"=(Funnel_Model!D27*Scenarios!D3) + (Funnel_Model!D28*Scenarios!D4)"  # Year 3 active paid users with scenario multipliers
 
     
 
@@ -1221,7 +1221,7 @@ def populate_infra_estimates(ws, styles):
 
     ws['A10'] = "Infra COGS as % of Revenue (Y2)"
 
-    ws['B10'] = f"=E6/Funnel_Model!C30"
+    ws['B10'] = f"=E6/Funnel_Model!C31"
 
     ws['A11'] = "Adjusted Gross Margin"
 
@@ -1260,13 +1260,13 @@ def populate_financial_summary(ws, styles):
         cell.alignment = Alignment(horizontal="center", vertical="center")
     
     # Tranche A: 9 months, Year 1 ARR
-    ws.append(["Tranche A", f"=Assumptions!C30", f"=Funnel_Model!B30", f"=Funnel_Model!B30/12", f"=B3/C3"])
+    ws.append(["Tranche A", f"=Assumptions!C30", f"=Funnel_Model!B31", f"=Funnel_Model!B31/12", f"=B3/C3"])
     
     # Tranche B: Cumulative (A+B), Year 2 ARR
-    ws.append(["Tranche B", f"=Assumptions!C30+Assumptions!C31", f"=Funnel_Model!C30", f"=Funnel_Model!C30/12", f"=B4/C4"])
+    ws.append(["Tranche B", f"=Assumptions!C30+Assumptions!C31", f"=Funnel_Model!C31", f"=Funnel_Model!C31/12", f"=B4/C4"])
     
     # Tranche C: Total ($2M), Year 3 ARR
-    ws.append(["Tranche C", f"=Assumptions!C30+Assumptions!C31+Assumptions!C32", f"=Funnel_Model!D30", f"=Funnel_Model!D30/12", f"=B5/C5"])
+    ws.append(["Tranche C", f"=Assumptions!C30+Assumptions!C31+Assumptions!C32", f"=Funnel_Model!D31", f"=Funnel_Model!D31/12", f"=B5/C5"])
     
     # Totals row
     ws.append(["", "", "", "", ""])
