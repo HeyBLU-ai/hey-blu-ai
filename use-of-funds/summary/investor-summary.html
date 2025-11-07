@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeyBLU Use-of-Funds & Growth Summary</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="investor-summary.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <span class="brand-text">
+                    <span class="brand-hey">HEY</span><span class="brand-blu">BLU</span>
+                </span>
+                USE-OF-FUNDS & GROWTH SUMMARY
+            </h1>
+        </header>
+        
+        <!-- Overview Section -->
+        <div class="overview">
+            <p>How we'll allocate $2M across three tranches to reach $2M ARR by Q2 2027</p>
+        </div>
+        
+        <!-- Tranche Summary Table -->
+        <section>
+            <h2>Tranche Summary</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tranche</th>
+                        <th>Amount</th>
+                        <th>Key Deliverables</th>
+                        <th>ARR Target</th>
+                        <th>Timeline</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by investor-summary.js -->
+                </tbody>
+            </table>
+            
+            <!-- Tranche Comparison Chart -->
+            <div class="chart-container">
+                <canvas id="trancheChart"></canvas>
+            </div>
+        </section>
+        
+        <!-- KPI Snapshot -->
+        <section>
+            <h2>KPI Snapshot</h2>
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">CAC</div>
+                    <div class="kpi-value">$45</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">LTV/CAC</div>
+                    <div class="kpi-value">3.2:1</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Payback Months</div>
+                    <div class="kpi-value">8</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Gross Margin</div>
+                    <div class="kpi-value">85%</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Milestone Timeline -->
+        <section>
+            <h2>Milestone Timeline</h2>
+            <div class="timeline-container">
+                <div class="timeline-line"></div>
+                <div class="timeline-items">
+                    <div class="milestone">
+                        <div class="milestone-icon">🚀</div>
+                        <div class="milestone-label">MVP Launch</div>
+                        <div class="milestone-date">Jan 2026</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-icon">📊</div>
+                        <div class="milestone-label">Pilot Phase</div>
+                        <div class="milestone-date">Q2-Q4 2026</div>
+                    </div>
+                    <div class="milestone">
+                        <div class="milestone-icon">📈</div>
+                        <div class="milestone-label">Scale Phase</div>
+                        <div class="milestone-date">Q2 2027</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Founders & Runway -->
+        <section>
+            <h2>Founders & Runway</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Compensation</th>
+                        <th>Trigger</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be populated by investor-summary.js -->
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Download Model Section -->
+        <div class="download-section">
+            <a href="/use-of-funds/BLU%20Use-of-Funds%20Model.xlsx" class="download-button" download="BLU Use-of-Funds Model.xlsx">
+                Download Model
+            </a>
+        </div>
+    </div>
+    
+    <!-- Load data and populate page -->
+    <script src="investor-summary.js"></script>
+</body>
+</html>
+
