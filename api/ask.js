@@ -53,6 +53,54 @@ function cosineSimilarity(a, b) {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
+// Security: Validate and sanitize file paths to prevent path traversal
+function validateFilePath(filename) {
+  if (!filename || typeof filename !== 'string') {
+    return null;
+  }
+  // Remove any path traversal attempts
+  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    return null;
+  }
+  // Only allow alphanumeric, hyphens, underscores, and dots
+  if (!/^[a-zA-Z0-9._-]+\.json$/.test(filename)) {
+    return null;
+  }
+  return filename;
+}
+
+// Security: Validate and sanitize user input
+function sanitizeInput(input, maxLength = 5000) {
+  if (!input || typeof input !== 'string') {
+    return '';
+  }
+  // Trim and limit length
+  let sanitized = input.trim().slice(0, maxLength);
+  // Remove null bytes and other control characters (except newlines and tabs)
+  sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
+  return sanitized;
+}
+
+// Security: Validate conversation array
+function validateConversation(conversation) {
+  if (!conversation || !Array.isArray(conversation)) {
+    return [];
+  }
+  // Limit conversation history length
+  const maxTurns = 10;
+  const limited = conversation.slice(0, maxTurns);
+  
+  return limited.map(turn => {
+    if (!turn || typeof turn !== 'object') {
+      return null;
+    }
+    return {
+      user: sanitizeInput(turn.user, 1000),
+      ai: sanitizeInput(turn.ai, 2000)
+    };
+  }).filter(turn => turn && turn.user && turn.ai);
+}
+
 const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: "Method not allowed" });
@@ -60,19 +108,27 @@ const handler = async (req, res) => {
 
   const { question, league, conversation } = req.body;
 
-  if (!question) {
-    return res.status(400).json({ error: "Question is required" });
+  // Security: Validate and sanitize inputs
+  if (!question || typeof question !== 'string') {
+    return res.status(400).json({ error: "Question is required and must be a string" });
   }
+  
+  const sanitizedQuestion = sanitizeInput(question, 1000);
+  if (!sanitizedQuestion || sanitizedQuestion.length < 3) {
+    return res.status(400).json({ error: "Question must be at least 3 characters long" });
+  }
+
   if (!process.env.OPENAI_API_KEY) {
     return res.status(500).json({ error: "Missing OpenAI API key" });
   }
 
-  // League selection logic
+  // Security: League selection logic with strict whitelist
   let rulesFileName = "rules-mlb.json";
   let embeddingsFileName = "rules-mlb-embeddings.json";
   let leagueName = "MLB";
+  
   if (league && typeof league === "string") {
-    const leagueNorm = league.trim().toLowerCase();
+    const leagueNorm = sanitizeInput(league, 50).toLowerCase();
     if (leagueNorm === "usssa" || leagueNorm === "usssa baseball") {
       rulesFileName = "usssa-rules.json";
       embeddingsFileName = "usssa-rules-embeddings.json";
@@ -96,6 +152,16 @@ const handler = async (req, res) => {
     }
   }
 
+  // Security: Validate file paths to prevent path traversal
+  rulesFileName = validateFilePath(rulesFileName);
+  if (embeddingsFileName) {
+    embeddingsFileName = validateFilePath(embeddingsFileName);
+  }
+  
+  if (!rulesFileName) {
+    return res.status(400).json({ error: "Invalid league selection" });
+  }
+
   try {
     // --- SEMANTIC SEARCH with FALLBACK LOGIC ---
     let selectedRules = [];
@@ -105,8 +171,23 @@ const handler = async (req, res) => {
     // First, search the primary league's rules
     if (embeddingsFileName) {
       const embeddingsPath = path.join(__dirname, "data", embeddingsFileName);
-      const embeddingsRaw = await fs.readFile(embeddingsPath, "utf-8");
-      const ruleEmbeddings = JSON.parse(embeddingsRaw);
+      
+      // Security: Additional path validation - ensure path stays within data directory
+      const resolvedPath = path.resolve(embeddingsPath);
+      const dataDir = path.resolve(path.join(__dirname, "data"));
+      if (!resolvedPath.startsWith(dataDir)) {
+        throw new Error("Invalid file path");
+      }
+      
+      let embeddingsRaw;
+      let ruleEmbeddings;
+      try {
+        embeddingsRaw = await fs.readFile(embeddingsPath, "utf-8");
+        ruleEmbeddings = JSON.parse(embeddingsRaw);
+      } catch (parseErr) {
+        console.error("Error reading or parsing embeddings file:", parseErr);
+        throw new Error("Failed to load rulebook data");
+      }
       const embedRes = await fetch("https://api.openai.com/v1/embeddings", {
         method: "POST",
         headers: {
@@ -128,8 +209,23 @@ const handler = async (req, res) => {
       selectedRules = scored.slice(0, 10).map(r => ({ id: r.id, text: r.text }));
     } else {
       const rulesPath = path.join(__dirname, "data", rulesFileName);
-      const rulesFile = await fs.readFile(rulesPath, "utf-8");
-      const rulesData = JSON.parse(rulesFile);
+      
+      // Security: Additional path validation
+      const resolvedPath = path.resolve(rulesPath);
+      const dataDir = path.resolve(path.join(__dirname, "data"));
+      if (!resolvedPath.startsWith(dataDir)) {
+        throw new Error("Invalid file path");
+      }
+      
+      let rulesFile;
+      let rulesData;
+      try {
+        rulesFile = await fs.readFile(rulesPath, "utf-8");
+        rulesData = JSON.parse(rulesFile);
+      } catch (parseErr) {
+        console.error("Error reading or parsing rules file:", parseErr);
+        throw new Error("Failed to load rulebook data");
+      }
       selectedRules = rulesData.map(r => ({ id: r.id, text: r.text })).slice(0, 40);
     }
     
@@ -164,9 +260,23 @@ const handler = async (req, res) => {
       }
       
       if (usedFallback && fallbackEmbeddingsPath) {
+        // Security: Validate fallback path
+        const resolvedFallbackPath = path.resolve(fallbackEmbeddingsPath);
+        const dataDir = path.resolve(path.join(__dirname, "data"));
+        if (!resolvedFallbackPath.startsWith(dataDir)) {
+          throw new Error("Invalid fallback file path");
+        }
+        
         // Load fallback rules
-        const fallbackRulesRaw = await fs.readFile(fallbackEmbeddingsPath, "utf-8");
-        const fallbackRulesData = JSON.parse(fallbackRulesRaw);
+        let fallbackRulesRaw;
+        let fallbackRulesData;
+        try {
+          fallbackRulesRaw = await fs.readFile(fallbackEmbeddingsPath, "utf-8");
+          fallbackRulesData = JSON.parse(fallbackRulesRaw);
+        } catch (parseErr) {
+          console.error("Error reading or parsing fallback rules file:", parseErr);
+          throw new Error("Failed to load fallback rulebook data");
+        }
         
         if (fallbackLeague === "Little League International") {
           // Little League International uses raw JSON, not embeddings
@@ -199,11 +309,12 @@ const handler = async (req, res) => {
     
     const context = selectedRules.map(r => `${r.id}: ${r.text}`).join("\n\n");
 
-    // Build the conversation history string
+    // Security: Validate and sanitize conversation history
+    const validatedConversation = validateConversation(conversation);
     let historyContext = "";
-    if (conversation && Array.isArray(conversation) && conversation.length > 0) {
+    if (validatedConversation.length > 0) {
       historyContext = "Here is the history of our current conversation:\n" +
-        conversation.map(turn => `User: ${turn.user}\nAssistant: ${turn.ai}`).join('\n\n') +
+        validatedConversation.map(turn => `User: ${turn.user}\nAssistant: ${turn.ai}`).join('\n\n') +
         "\n\nPlease use this history to inform your answer to the new question.";
     }
 
@@ -261,7 +372,7 @@ Little League Rule 2.00: "*An INFIELD FLY is a fair fly ball (not including a li
 
 ${historyContext ? `--- \n**Conversation History** \n${historyContext}\n---` : ''}
 
-**User's Latest Question:** "${question}"
+**User's Latest Question:** "${sanitizedQuestion}"
 
 **Relevant ${usedFallback ? fallbackLeague : leagueName} Rules:**
 ${context}
@@ -293,9 +404,10 @@ Answer:
       try {
         await client.connect();
         const ruleRef = extractRuleRef(reply);
+        // Security: Sanitize inputs before database insertion
         await client.query(
           'INSERT INTO question_logs (question, answer, rule_ref, rulebook, created_at) VALUES ($1, $2, $3, $4, NOW())',
-          [question, reply, ruleRef, usedFallback ? fallbackLeague : leagueName]
+          [sanitizedQuestion, sanitizeInput(reply, 5000), sanitizeInput(ruleRef, 50), sanitizeInput(usedFallback ? fallbackLeague : leagueName, 100)]
         );
         await client.end();
       } catch (err) {
@@ -312,10 +424,12 @@ Answer:
     });
 
   } catch (err) {
+    // Security: Log full error details server-side but don't expose to client
     console.error("ASK API ERROR:", err);
     console.error("Error details:", err.message);
     console.error("Stack trace:", err.stack);
-    res.status(500).json({ error: "Something went wrong processing the rules.", details: err.message });
+    // Security: Don't expose internal error details to client
+    res.status(500).json({ error: "Something went wrong processing the rules." });
   }
 };
 

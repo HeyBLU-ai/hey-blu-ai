@@ -28,6 +28,18 @@ const generateSlug = (): string => {
   return result;
 };
 
+// Security: Sanitize input strings
+const sanitizeInput = (input: any, maxLength: number = 5000): string => {
+  if (!input || typeof input !== 'string') {
+    return '';
+  }
+  // Trim and limit length
+  let sanitized = input.trim().slice(0, maxLength);
+  // Remove null bytes and other control characters (except newlines and tabs)
+  sanitized = sanitized.replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
+  return sanitized;
+};
+
 const extractRuleRef = (sourceText: string): string => {
   // Try to extract the rule citation from the new answer format (second line)
   // Looks for a rule number pattern like 5.02(a) on the second line
@@ -53,13 +65,21 @@ const handler = async (req: any, res: any) => {
 
   const { rule_id, rulebook, source_text, question } = req.body;
 
-  if (!rulebook || !source_text) {
-    return res.status(400).json({ error: "Missing required fields: rulebook, source_text" });
+  // Security: Validate and sanitize inputs
+  if (!rulebook || typeof rulebook !== 'string') {
+    return res.status(400).json({ error: "Missing or invalid rulebook field" });
+  }
+  if (!source_text || typeof source_text !== 'string') {
+    return res.status(400).json({ error: "Missing or invalid source_text field" });
   }
 
-  // Use rule_id if provided, otherwise generate a descriptive one
-  const finalRuleId = rule_id || `Shared Question - ${new Date().toISOString().split('T')[0]}`;
-  const ruleRef = extractRuleRef(source_text);
+  // Security: Sanitize all inputs
+  const sanitizedRulebook = sanitizeInput(rulebook, 100);
+  const sanitizedSourceText = sanitizeInput(source_text, 5000);
+  const sanitizedQuestion = question ? sanitizeInput(question, 1000) : '';
+  const sanitizedRuleId = rule_id ? sanitizeInput(rule_id, 200) : `Shared Question - ${new Date().toISOString().split('T')[0]}`;
+  
+  const ruleRef = sanitizeInput(extractRuleRef(sanitizedSourceText), 50);
 
   const DATABASE_URL = process.env.DATABASE_URL;
   if (!DATABASE_URL) {
@@ -90,10 +110,10 @@ const handler = async (req: any, res: any) => {
       throw new Error('Could not generate unique slug');
     }
 
-    // Insert the new link with rule_ref and question
+    // Security: Insert sanitized data
     await client.query(
       'INSERT INTO shared_links (slug, rule_id, rulebook, source_text, created_at, rule_ref, question) VALUES ($1, $2, $3, $4, NOW(), $5, $6)',
-      [slug, finalRuleId, rulebook, source_text, ruleRef, question || '']
+      [slug, sanitizedRuleId, sanitizedRulebook, sanitizedSourceText, ruleRef, sanitizedQuestion]
     );
 
     await client.end();
@@ -102,8 +122,12 @@ const handler = async (req: any, res: any) => {
     return res.status(200).json({ short_url });
 
   } catch (err: any) {
-    console.error('SHORTEN ERROR:', err.message);
+    // Security: Log full error details server-side but don't expose to client
+    console.error('SHORTEN ERROR:', err);
+    console.error('Error details:', err.message);
+    console.error('Stack trace:', err.stack);
     try { await client.end(); } catch {}
+    // Security: Don't expose internal error details to client
     return res.status(500).json({ error: "Failed to create short link" });
   }
 };

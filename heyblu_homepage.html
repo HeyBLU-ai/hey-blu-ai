@@ -14,21 +14,7 @@
             scroll-behavior: smooth;
         }
         .hero-gradient {
-            background-image: url('/images/baseball_field_night.JPG');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
-        }
-        .hero-gradient::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 64, 175, 0.65) 50%, rgba(59, 130, 246, 0.55) 100%);
-            z-index: 1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e40af 50%, #3b82f6 100%);
         }
         .glass-effect {
             background: rgba(255, 255, 255, 0.1);
@@ -55,7 +41,7 @@
                         <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
                         <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                     </svg>
-                    <span class="font-extrabold text-2xl text-gray-900">Hey<span class="text-blue-600">BLU</span></span>
+                    <span class="font-extrabold text-2xl text-gray-900">HeyBLU</span>
                 </a>
                 <nav class="hidden md:flex items-center space-x-8">
                     <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium transition">Features</a>
@@ -78,65 +64,30 @@
 
     <main class="pt-16">
         <!-- Hero Section -->
-        <section class="bg-white py-12 md:py-16 px-4">
-            <div class="max-w-7xl mx-auto">
-                <!-- Top Section: Logo and Taglines -->
-                <div class="text-center mb-12">
-                    <!-- Logo -->
-                    <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
-                        <span class="text-gray-900">Hey</span><span class="text-blue-600">BLU</span>
-                    </h1>
-                    <!-- Tagline 1 -->
-                    <p class="text-lg md:text-xl text-gray-500 mb-2">
-                        Pro-Level Strike Calls for Every Field
-                    </p>
-                    <!-- Tagline 2 -->
-                    <p class="text-2xl md:text-3xl font-bold text-blue-600">
-                        The Umpire's Co-Pilot. The Coaches Training Tool.
-                    </p>
-                </div>
-
-                <!-- Two Panel Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-                    <!-- Left Panel: Live Strike Zone Tracking -->
-                    <div class="relative">
-                        <div class="relative rounded-lg overflow-hidden shadow-2xl">
-                            <img src="/images/heyblu thumbnail youtube.jpg" alt="Live strike zone tracking" class="w-full h-auto">
-                            <!-- Overlay: A.I. Balls & Strikes -->
-                            <div class="absolute top-4 right-4 bg-blue-900/90 text-white px-4 py-2 rounded-lg backdrop-blur-sm">
-                                <p class="text-sm font-semibold">A.I. Balls & Strikes for Coaches & Umpires</p>
-                            </div>
-                            <!-- Overlay: Ball and Pitch Count -->
-                            <div class="absolute bottom-4 right-4 text-white space-y-2">
-                                <div class="bg-black/70 px-3 py-1 rounded backdrop-blur-sm">
-                                    <p class="text-sm font-bold">Ball</p>
-                                    <p class="text-xs">48 Mph</p>
-                                </div>
-                                <div class="bg-black/70 px-3 py-1 rounded backdrop-blur-sm">
-                                    <p class="text-sm font-bold">Pitch Count</p>
-                                    <p class="text-xs">92</p>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Caption -->
-                        <p class="text-gray-500 text-center mt-4 text-sm md:text-base">
-                            Live strike zone tracking with instant AI calls.
-                        </p>
+        <section class="hero-gradient text-white py-20 md:py-32 px-4 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute top-20 left-10 w-72 h-72 bg-blue-400 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-20 right-10 w-96 h-96 bg-purple-400 rounded-full blur-3xl"></div>
+            </div>
+            <div class="max-w-6xl mx-auto relative z-10">
+                <div class="text-center">
+                    <div class="inline-block mb-6 px-4 py-2 bg-blue-500/30 rounded-full border border-blue-400/50">
+                        <p class="text-sm font-semibold text-blue-200 tracking-wider uppercase">The Umpire's Co-Pilot</p>
                     </div>
-
-                    <!-- Right Panel: Pro-Level Analytics -->
-                    <div class="relative">
-                        <div class="relative rounded-lg overflow-hidden shadow-2xl">
-                            <img src="/images/2 devices.png" alt="Pro-level analytics" class="w-full h-auto">
-                            <!-- Overlay: One system Multiple views -->
-                            <div class="absolute top-4 left-4 text-white">
-                                <p class="text-2xl md:text-3xl font-bold drop-shadow-lg">One system Multiple views.</p>
-                            </div>
-                        </div>
-                        <!-- Caption -->
-                        <p class="text-gray-500 text-center mt-4 text-sm md:text-base">
-                            Pro-level analytics for coaches & players.
-                        </p>
+                    <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight leading-tight mb-6">
+                        Pro-Level Strike Calls<br/>
+                        <span class="text-blue-300">for Every Field</span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-10 leading-relaxed">
+                        Live strike zone tracking with instant AI calls. Real-time audio guidance via Bluetooth. Pro-level analytics for coaches and players.
+                    </p>
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a href="#beta" class="w-full sm:w-auto bg-white text-blue-700 font-bold py-4 px-8 rounded-lg text-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-xl">
+                            Join the Beta Waitlist
+                        </a>
+                        <a href="#how-it-works" class="w-full sm:w-auto glass-effect text-white font-bold py-4 px-8 rounded-lg text-lg hover:bg-white/20 transition">
+                            See How It Works
+                        </a>
                     </div>
                 </div>
             </div>
@@ -173,7 +124,7 @@
         <section class="py-20 px-4 bg-gradient-to-br from-blue-50 to-indigo-50">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Meet Hey<span class="text-blue-600">BLU</span></h2>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Meet HeyBLU</h2>
                     <p class="text-xl text-gray-600 max-w-3xl mx-auto">Your smartphone becomes a precision strike zone tracker with real-time AI assistance.</p>
                 </div>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -182,7 +133,7 @@
                             <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">1</div>
                             <div>
                                 <h3 class="text-xl font-bold text-gray-900 mb-2">Real-Time Audio Calls</h3>
-                                <p class="text-gray-600">Hey<span class="text-blue-600">BLU</span> delivers instant strike/ball calls via Bluetooth, boosting umpire confidence and precision.</p>
+                                <p class="text-gray-600">HeyBLU delivers instant strike/ball calls via Bluetooth, boosting umpire confidence and precision.</p>
                             </div>
                         </div>
                         <div class="flex items-start space-x-4">
@@ -296,7 +247,7 @@
                     <div class="text-center">
                         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
                         <h3 class="text-lg font-bold mb-2">Start Tracking</h3>
-                        <p class="text-gray-300 text-sm">Hey<span class="text-blue-300">BLU</span> calls every pitch in real-time</p>
+                        <p class="text-gray-300 text-sm">HeyBLU calls every pitch in real-time</p>
                     </div>
                     <div class="text-center">
                         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
@@ -312,7 +263,7 @@
             <div class="max-w-4xl mx-auto text-center">
                 <h2 class="text-4xl md:text-5xl font-extrabold mb-6">Preparing for the Future of Baseball</h2>
                 <p class="text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto">
-                    MLB is rolling out Automated Ball/Strike (ABS) technology in 2026, where players can challenge calls and technology makes the final decision. Hey<span class="text-blue-200">BLU</span> brings ABS-level strike zone precision to youth and amateur baseball today, helping umpires train, coaches develop players, and athletes prepare for the data-driven game they'll face at higher levels.
+                    MLB is rolling out Automated Ball/Strike (ABS) technology in 2026, where players can challenge calls and technology makes the final decision. HeyBLU brings ABS-level strike zone precision to youth and amateur baseball today, helping umpires train, coaches develop players, and athletes prepare for the data-driven game they'll face at higher levels.
                 </p>
             </div>
         </section>
@@ -322,7 +273,7 @@
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-10">
                     <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Join the Beta</h2>
-                    <p class="text-xl text-gray-600">Be among the first to experience Hey<span class="text-blue-600">BLU</span>. Beta launching January 2025.</p>
+                    <p class="text-xl text-gray-600">Be among the first to experience HeyBLU. Beta launching January 2025.</p>
                 </div>
                 <div class="bg-gray-50 rounded-2xl shadow-xl p-8 border-2 border-gray-200">
                     <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
@@ -374,7 +325,7 @@
         <!-- ABCA -->
         <section class="py-16 px-4 bg-gray-900 text-white">
             <div class="max-w-4xl mx-auto text-center">
-                <h2 class="text-3xl font-extrabold mb-4">See Hey<span class="text-blue-300">BLU</span> at ABCA 2025</h2>
+                <h2 class="text-3xl font-extrabold mb-4">See HeyBLU at ABCA 2025</h2>
                 <p class="text-xl text-gray-300 mb-6">Visit us at Booth 1912, January 8-11</p>
                 <p class="text-gray-400">Join thousands of coaches discovering the future of baseball</p>
             </div>
@@ -391,7 +342,7 @@
                             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
                             <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
                         </svg>
-                        <span class="font-bold text-xl">Hey<span class="text-blue-300">BLU</span></span>
+                        <span class="font-bold text-xl">HeyBLU</span>
                     </div>
                     <p class="text-gray-400">Pro-level strike calls for every field.</p>
                 </div>
@@ -411,7 +362,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-700 pt-8 text-center">
-                <p class="text-gray-400">&copy; 2025 Hey<span class="text-blue-300">BLU</span>.AI. All rights reserved.</p>
+                <p class="text-gray-400">&copy; 2025 HeyBLU.AI. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -439,4 +390,3 @@
 
 </body>
 </html>
-

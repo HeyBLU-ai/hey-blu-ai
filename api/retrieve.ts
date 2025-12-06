@@ -1,12 +1,26 @@
 import pg from 'pg';
 const { Client } = pg;
 
+// Security: Validate slug format
+const validateSlug = (slug: any): string | null => {
+  if (!slug || typeof slug !== 'string') {
+    return null;
+  }
+  // Only allow alphanumeric characters, 8 characters long
+  if (!/^[a-zA-Z0-9]{8}$/.test(slug)) {
+    return null;
+  }
+  return slug;
+};
+
 export default async function handler(req: any, res: any) {
   const { slug } = req.query;
   const DATABASE_URL = process.env.DATABASE_URL;
 
-  if (!slug || typeof slug !== 'string') {
-    return res.status(400).json({ error: 'Slug is required.' });
+  // Security: Validate slug format
+  const validatedSlug = validateSlug(slug);
+  if (!validatedSlug) {
+    return res.status(400).json({ error: 'Invalid slug format.' });
   }
 
   if (!DATABASE_URL) {
@@ -19,7 +33,7 @@ export default async function handler(req: any, res: any) {
     await client.connect();
     const result = await client.query(
       'SELECT rule_id, rulebook, source_text FROM shared_links WHERE slug = $1',
-      [slug]
+      [validatedSlug]
     );
     await client.end();
 
@@ -38,8 +52,12 @@ export default async function handler(req: any, res: any) {
     res.redirect(307, `/rulebook/share.html?q=${q}&a=${a}&l=${l}`);
 
   } catch (err: any) {
-    console.error('RETRIEVE ERROR:', err.message);
+    // Security: Log full error details server-side but don't expose to client
+    console.error('RETRIEVE ERROR:', err);
+    console.error('Error details:', err.message);
+    console.error('Stack trace:', err.stack);
     try { await client.end(); } catch {}
+    // Security: Don't expose internal error details to client
     return res.status(500).json({ error: 'Internal server error.' });
   }
 }
