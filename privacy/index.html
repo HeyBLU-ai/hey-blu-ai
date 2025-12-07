@@ -17,16 +17,32 @@
             @apply text-4xl md:text-5xl font-extrabold leading-tight;
         }
         .section-title {
-            @apply text-2xl font-bold text-gray-900 mb-4 mt-6;
+            @apply text-2xl font-bold text-gray-900 mb-6 mt-10;
+            @apply border-b-2 border-blue-100 pb-3;
         }
         .subsection-title {
-            @apply text-xl font-semibold text-gray-700 mb-2;
+            @apply text-xl font-semibold text-gray-800 mb-4 mt-6;
         }
         .paragraph {
-            @apply text-gray-700 leading-relaxed mb-4;
+            @apply text-gray-700 leading-relaxed mb-5;
+            @apply text-base;
+        }
+        .intro-text {
+            @apply text-lg text-gray-600 leading-relaxed mb-6;
+        }
+        .list-container {
+            @apply mb-6 space-y-3;
         }
         .list-item {
-            @apply text-gray-700 leading-relaxed ml-6 mb-1 list-disc;
+            @apply text-gray-700 leading-relaxed;
+            @apply pl-6 relative;
+        }
+        .list-item::before {
+            content: "•";
+            @apply absolute left-0 text-blue-600 font-bold;
+        }
+        .highlight-box {
+            @apply bg-blue-50 border-l-4 border-blue-500 p-4 my-6 rounded-r;
         }
         .link {
             @apply text-blue-600 hover:text-blue-800 underline;
@@ -36,6 +52,21 @@
         }
         .footer-link {
             @apply text-gray-400 hover:text-gray-300 transition duration-300 text-sm;
+        }
+        .toc {
+            @apply bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8;
+        }
+        .toc-title {
+            @apply font-bold text-lg mb-4 text-gray-900;
+        }
+        .toc-item {
+            @apply text-gray-700 mb-2;
+        }
+        .toc-item a {
+            @apply text-blue-600 hover:text-blue-800;
+        }
+        .section-divider {
+            @apply border-t border-gray-200 my-8;
         }
     </style>
 </head>
@@ -57,233 +88,391 @@
 
     <div class="container mx-auto max-w-4xl py-8 px-4 sm:px-6 lg:px-8">
         <main class="bg-white shadow-xl rounded-lg p-6 md:p-10">
-            <p class="paragraph text-gray-600">
-                Effective Date: <span id="effective-date" class="font-semibold">January 15, 2025</span>
-            </p>
-            <p class="paragraph">
-                Big League Ballpark Inc., doing business as HeyBLU ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy describes how we collect, use, and share your personal information when you use our website (heyblu.ai), our strike zone tracking application, rulebook assistant, and related services (collectively, the "Services").
-            </p>
+            <!-- Effective Date -->
+            <div class="mb-8 pb-6 border-b border-gray-200">
+                <p class="text-sm text-gray-500 mb-2">Effective Date</p>
+                <p class="text-lg font-semibold text-gray-900">January 15, 2025</p>
+            </div>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="info-collect">1. Information We Collect</h2>
+            <!-- Introduction -->
+            <div class="intro-text mb-8">
+                <p class="mb-4">
+                    Big League Ballpark Inc., doing business as <strong>HeyBLU</strong> ("we", "us", or "our") is committed to protecting your privacy.
+                </p>
+                <p>
+                    This Privacy Policy describes how we collect, use, and share your personal information when you use our website (heyblu.ai), our strike zone tracking application, rulebook assistant, and related services (collectively, the "Services").
+                </p>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2 class="toc-title">Table of Contents</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="toc-item"><a href="#info-collect">1. Information We Collect</a></div>
+                    <div class="toc-item"><a href="#how-collect">2. How We Collect Information</a></div>
+                    <div class="toc-item"><a href="#how-use">3. How We Use Your Information</a></div>
+                    <div class="toc-item"><a href="#sharing-info">4. Sharing of Information</a></div>
+                    <div class="toc-item"><a href="#data-security">5. Data Security</a></div>
+                    <div class="toc-item"><a href="#data-retention">6. Data Retention</a></div>
+                    <div class="toc-item"><a href="#your-rights">7. Your Rights</a></div>
+                    <div class="toc-item"><a href="#cookies">8. Cookies and Tracking</a></div>
+                    <div class="toc-item"><a href="#childrens-privacy">9. Children's Privacy</a></div>
+                    <div class="toc-item"><a href="#third-party-links">10. Third-Party Links</a></div>
+                    <div class="toc-item"><a href="#changes-policy">11. Changes to This Policy</a></div>
+                    <div class="toc-item"><a href="#contact-us">12. Contact Us</a></div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="info-collect">
+                <h2 class="section-title">1. Information We Collect</h2>
+                
                 <p class="paragraph">
                     We may collect the following types of personal information from you:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Name and contact information (email address, phone number)</li>
-                    <li class="list-item">Account information and preferences</li>
-                    <li class="list-item">Information you provide when using our rulebook assistant (questions asked, league preferences)</li>
-                    <li class="list-item">Usage data from our strike zone tracking application (pitch data, game analytics)</li>
-                    <li class="list-item">Device information and technical data (IP address, browser type, device identifiers, iOS version, device model)</li>
-                    <li class="list-item">Information about your use of our site (via cookies or analytics tools)</li>
-                    <li class="list-item">Payment information (if applicable, processed securely by third-party payment processors)</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Name and contact information (email address, phone number)</div>
+                    <div class="list-item">Account information and preferences</div>
+                    <div class="list-item">Information you provide when using our rulebook assistant (questions asked, league preferences)</div>
+                    <div class="list-item">Usage data from our strike zone tracking application (pitch data, game analytics)</div>
+                    <div class="list-item">Device information and technical data (IP address, browser type, device identifiers, iOS version, device model)</div>
+                    <div class="list-item">Information about your use of our site (via cookies or analytics tools)</div>
+                    <div class="list-item">Payment information (if applicable, processed securely by third-party payment processors)</div>
+                </div>
+
                 <h3 class="subsection-title">Video and Media Content</h3>
+                
                 <p class="paragraph">
                     When you use our strike zone tracking application, we collect and process video content that you record or upload:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item"><strong>Video Recordings:</strong> We collect video recordings of baseball games, practices, or training sessions that you capture using our mobile application. This includes live video streams and recorded video files.</li>
-                    <li class="list-item"><strong>Video Metadata:</strong> We collect metadata associated with videos, including timestamps, device orientation, camera settings, and location data (if you grant location permissions).</li>
-                    <li class="list-item"><strong>Processed Video Data:</strong> We process video content to analyze pitch trajectories, strike zone calls, and generate analytics. This may include frame-by-frame analysis, object detection, and motion tracking data.</li>
-                    <li class="list-item"><strong>User-Uploaded Videos:</strong> If you upload videos through our support form or feedback features, we collect those video files along with any associated descriptions or metadata you provide.</li>
-                </ul>
-                <p class="paragraph">
-                    Video content is processed both on your device and on our servers to provide strike zone tracking, pitch analysis, and related features. By using our Services, you consent to the collection, storage, and processing of video content as described in this policy.
-                </p>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>Video Recordings:</strong> We collect video recordings of baseball games, practices, or training sessions that you capture using our mobile application. This includes live video streams and recorded video files.
+                    </div>
+                    <div class="list-item">
+                        <strong>Video Metadata:</strong> We collect metadata associated with videos, including timestamps, device orientation, camera settings, and location data (if you grant location permissions).
+                    </div>
+                    <div class="list-item">
+                        <strong>Processed Video Data:</strong> We process video content to analyze pitch trajectories, strike zone calls, and generate analytics. This may include frame-by-frame analysis, object detection, and motion tracking data.
+                    </div>
+                    <div class="list-item">
+                        <strong>User-Uploaded Videos:</strong> If you upload videos through our support form or feedback features, we collect those video files along with any associated descriptions or metadata you provide.
+                    </div>
+                </div>
+
+                <div class="highlight-box">
+                    <p class="paragraph mb-0">
+                        <strong>Important:</strong> Video content is processed both on your device and on our servers to provide strike zone tracking, pitch analysis, and related features. By using our Services, you consent to the collection, storage, and processing of video content as described in this policy.
+                    </p>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="how-collect">2. How We Collect Information</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="how-collect">
+                <h2 class="section-title">2. How We Collect Information</h2>
+                
                 <p class="paragraph">
                     We collect information in the following ways:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">When you fill out forms (e.g., to join the beta waitlist, request league rulebook integration, or contact us)</li>
-                    <li class="list-item">When you use our Services (e.g., asking questions in the rulebook assistant, using strike zone tracking)</li>
-                    <li class="list-item">Through cookies and third-party analytics (e.g., Google Analytics)</li>
-                    <li class="list-item">When you voluntarily provide information through surveys, feedback forms, or customer support</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">When you fill out forms (e.g., to join the beta waitlist, request league rulebook integration, or contact us)</div>
+                    <div class="list-item">When you use our Services (e.g., asking questions in the rulebook assistant, using strike zone tracking)</div>
+                    <div class="list-item">Through cookies and third-party analytics (e.g., Google Analytics)</div>
+                    <div class="list-item">When you voluntarily provide information through surveys, feedback forms, or customer support</div>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="how-use">3. How We Use Your Information</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="how-use">
+                <h2 class="section-title">3. How We Use Your Information</h2>
+                
                 <p class="paragraph">
                     We use your information to:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Provide, maintain, and improve our Services</li>
-                    <li class="list-item">Process beta program applications and manage waitlists</li>
-                    <li class="list-item">Respond to your questions and provide customer support</li>
-                    <li class="list-item">Send you important updates about our Services, product launches, and beta program</li>
-                    <li class="list-item">Analyze usage patterns and improve user experience</li>
-                    <li class="list-item">Ensure security and prevent fraud</li>
-                    <li class="list-item">Comply with legal obligations</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Provide, maintain, and improve our Services</div>
+                    <div class="list-item">Process beta program applications and manage waitlists</div>
+                    <div class="list-item">Respond to your questions and provide customer support</div>
+                    <div class="list-item">Send you important updates about our Services, product launches, and beta program</div>
+                    <div class="list-item">Analyze usage patterns and improve user experience</div>
+                    <div class="list-item">Ensure security and prevent fraud</div>
+                    <div class="list-item">Comply with legal obligations</div>
+                </div>
+
                 <h3 class="subsection-title">Use of Video Content</h3>
+                
                 <p class="paragraph">
                     We use video content you provide for the following purposes:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item"><strong>Strike Zone Analysis:</strong> To analyze pitches, determine strike/ball calls, and provide real-time feedback during games or practices</li>
-                    <li class="list-item"><strong>Analytics and Reporting:</strong> To generate pitch history, statistics, and performance analytics for coaches, players, and umpires</li>
-                    <li class="list-item"><strong>Service Improvement:</strong> To improve our AI models, tracking algorithms, and overall service quality (video may be used for training and testing purposes, but only after anonymization or with explicit consent)</li>
-                    <li class="list-item"><strong>Customer Support:</strong> To diagnose technical issues, troubleshoot problems, and provide support when you report bugs or request assistance</li>
-                    <li class="list-item"><strong>Quality Assurance:</strong> To ensure accuracy of strike zone calls and validate system performance</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>Strike Zone Analysis:</strong> To analyze pitches, determine strike/ball calls, and provide real-time feedback during games or practices
+                    </div>
+                    <div class="list-item">
+                        <strong>Analytics and Reporting:</strong> To generate pitch history, statistics, and performance analytics for coaches, players, and umpires
+                    </div>
+                    <div class="list-item">
+                        <strong>Service Improvement:</strong> To improve our AI models, tracking algorithms, and overall service quality (video may be used for training and testing purposes, but only after anonymization or with explicit consent)
+                    </div>
+                    <div class="list-item">
+                        <strong>Customer Support:</strong> To diagnose technical issues, troubleshoot problems, and provide support when you report bugs or request assistance
+                    </div>
+                    <div class="list-item">
+                        <strong>Quality Assurance:</strong> To ensure accuracy of strike zone calls and validate system performance
+                    </div>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="sharing-info">4. Sharing of Information and Third-Party Processors</h2>
-                <p class="paragraph">
-                    We do not sell your personal data.
-                </p>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="sharing-info">
+                <h2 class="section-title">4. Sharing of Information and Third-Party Processors</h2>
+                
+                <div class="highlight-box mb-6">
+                    <p class="paragraph mb-0 font-semibold">
+                        We do not sell your personal data.
+                    </p>
+                </div>
+                
                 <p class="paragraph">
                     We may share your data, including video content, with trusted third-party service providers who help us operate our Services. These third parties are contractually obligated to protect your information and use it only for the purposes we specify.
                 </p>
+
                 <h3 class="subsection-title">Third-Party Processors</h3>
+                
                 <p class="paragraph">
                     The following third-party services process your data on our behalf:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item"><strong>OpenAI (OpenAI, L.L.C.):</strong> Processes text-based queries for our AI rulebook assistant and may process video metadata for strike zone analysis. Data is subject to OpenAI's privacy policy: <a href="https://openai.com/privacy" class="link" target="_blank" rel="noopener">https://openai.com/privacy</a></li>
-                    <li class="list-item"><strong>Vercel (Vercel Inc.):</strong> Hosts our web services and may temporarily process video uploads during transmission. Data is subject to Vercel's privacy policy: <a href="https://vercel.com/legal/privacy-policy" class="link" target="_blank" rel="noopener">https://vercel.com/legal/privacy-policy</a></li>
-                    <li class="list-item"><strong>Neon (Neon, Inc.) / PostgreSQL:</strong> Stores user account data, analytics, and metadata. Video content may be stored in associated cloud storage. Data is subject to Neon's privacy policy: <a href="https://neon.tech/legal/privacy-policy" class="link" target="_blank" rel="noopener">https://neon.tech/legal/privacy-policy</a></li>
-                    <li class="list-item"><strong>Apple (Apple Inc.):</strong> When you use our iOS application, Apple processes data through the App Store, TestFlight, and iOS services. Data is subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" class="link" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a></li>
-                    <li class="list-item"><strong>Cloud Storage Providers:</strong> We may use cloud storage services (such as AWS S3, Google Cloud Storage, or similar) to store video content and user data. These providers process data according to their respective privacy policies.</li>
-                    <li class="list-item"><strong>Payment Processors:</strong> If you make purchases, payment information is processed by third-party payment processors (e.g., Stripe, Apple In-App Purchase). We do not store full payment card information.</li>
-                    <li class="list-item"><strong>Analytics Providers:</strong> We use analytics services (e.g., Google Analytics) to track website usage. These services may collect anonymized usage data.</li>
-                    <li class="list-item"><strong>Email Service Providers:</strong> We use email services to send communications. These providers process email addresses and communication content.</li>
-                    <li class="list-item"><strong>Video Processing Services:</strong> We may use specialized video processing services for transcoding, compression, or analysis. These services process video content temporarily during processing.</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>OpenAI (OpenAI, L.L.C.):</strong> Processes text-based queries for our AI rulebook assistant and may process video metadata for strike zone analysis. Data is subject to OpenAI's privacy policy: <a href="https://openai.com/privacy" class="link" target="_blank" rel="noopener">https://openai.com/privacy</a>
+                    </div>
+                    <div class="list-item">
+                        <strong>Vercel (Vercel Inc.):</strong> Hosts our web services and may temporarily process video uploads during transmission. Data is subject to Vercel's privacy policy: <a href="https://vercel.com/legal/privacy-policy" class="link" target="_blank" rel="noopener">https://vercel.com/legal/privacy-policy</a>
+                    </div>
+                    <div class="list-item">
+                        <strong>Neon (Neon, Inc.) / PostgreSQL:</strong> Stores user account data, analytics, and metadata. Video content may be stored in associated cloud storage. Data is subject to Neon's privacy policy: <a href="https://neon.tech/legal/privacy-policy" class="link" target="_blank" rel="noopener">https://neon.tech/legal/privacy-policy</a>
+                    </div>
+                    <div class="list-item">
+                        <strong>Apple (Apple Inc.):</strong> When you use our iOS application, Apple processes data through the App Store, TestFlight, and iOS services. Data is subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" class="link" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a>
+                    </div>
+                    <div class="list-item">
+                        <strong>Cloud Storage Providers:</strong> We may use cloud storage services (such as AWS S3, Google Cloud Storage, or similar) to store video content and user data. These providers process data according to their respective privacy policies.
+                    </div>
+                    <div class="list-item">
+                        <strong>Payment Processors:</strong> If you make purchases, payment information is processed by third-party payment processors (e.g., Stripe, Apple In-App Purchase). We do not store full payment card information.
+                    </div>
+                    <div class="list-item">
+                        <strong>Analytics Providers:</strong> We use analytics services (e.g., Google Analytics) to track website usage. These services may collect anonymized usage data.
+                    </div>
+                    <div class="list-item">
+                        <strong>Email Service Providers:</strong> We use email services to send communications. These providers process email addresses and communication content.
+                    </div>
+                    <div class="list-item">
+                        <strong>Video Processing Services:</strong> We may use specialized video processing services for transcoding, compression, or analysis. These services process video content temporarily during processing.
+                    </div>
+                </div>
+
+                <h3 class="subsection-title">Data Processing by Third Parties</h3>
+                
                 <p class="paragraph">
-                    <strong>Data Processing by Third Parties:</strong> When we share data with third-party processors, they may process your data, including video content, in the following ways:
+                    When we share data with third-party processors, they may process your data, including video content, in the following ways:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Storage and hosting of video files and user data</li>
-                    <li class="list-item">Processing and analysis of video content for strike zone tracking</li>
-                    <li class="list-item">Transmission and delivery of video content to your devices</li>
-                    <li class="list-item">Backup and disaster recovery services</li>
-                    <li class="list-item">Analytics and performance monitoring</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Storage and hosting of video files and user data</div>
+                    <div class="list-item">Processing and analysis of video content for strike zone tracking</div>
+                    <div class="list-item">Transmission and delivery of video content to your devices</div>
+                    <div class="list-item">Backup and disaster recovery services</div>
+                    <div class="list-item">Analytics and performance monitoring</div>
+                </div>
+
+                <h3 class="subsection-title">Third-Party Processor Requirements</h3>
+                
                 <p class="paragraph">
                     All third-party processors are required to:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Use your data only for the purposes we specify</li>
-                    <li class="list-item">Implement appropriate security measures</li>
-                    <li class="list-item">Comply with applicable privacy laws and regulations</li>
-                    <li class="list-item">Delete or return your data when the processing relationship ends (subject to legal retention requirements)</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Use your data only for the purposes we specify</div>
+                    <div class="list-item">Implement appropriate security measures</div>
+                    <div class="list-item">Comply with applicable privacy laws and regulations</div>
+                    <div class="list-item">Delete or return your data when the processing relationship ends (subject to legal retention requirements)</div>
+                </div>
+
                 <p class="paragraph">
                     We may also disclose your information if required by law, to protect our rights, property, or safety, or that of our users, or in connection with a business transfer (e.g., merger, acquisition, or sale of assets).
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="data-security">5. Data Security</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="data-security">
+                <h2 class="section-title">5. Data Security</h2>
+                
                 <p class="paragraph">
                     We take reasonable administrative, technical, and physical measures to protect your information, including:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Encryption of data in transit (using TLS/SSL) and at rest</li>
-                    <li class="list-item">Secure servers and cloud infrastructure with access controls</li>
-                    <li class="list-item">Regular security assessments and updates</li>
-                    <li class="list-item">Limited access to personal data on a need-to-know basis</li>
-                    <li class="list-item">Secure video storage with access logging</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Encryption of data in transit (using TLS/SSL) and at rest</div>
+                    <div class="list-item">Secure servers and cloud infrastructure with access controls</div>
+                    <div class="list-item">Regular security assessments and updates</div>
+                    <div class="list-item">Limited access to personal data on a need-to-know basis</div>
+                    <div class="list-item">Secure video storage with access logging</div>
+                </div>
+                
                 <p class="paragraph">
                     However, no system can guarantee absolute security, and you use our Services at your own risk. We encourage you to use strong passwords and keep your account credentials secure.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="data-retention">6. Data Retention</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="data-retention">
+                <h2 class="section-title">6. Data Retention</h2>
+                
                 <p class="paragraph">
                     We retain your personal information and video content for as long as necessary to provide our Services and fulfill the purposes described in this Privacy Policy, unless a longer retention period is required or permitted by law.
                 </p>
+
                 <h3 class="subsection-title">Retention Periods</h3>
-                <ul class="list-outside">
-                    <li class="list-item"><strong>Account Information:</strong> We retain account information (name, email, preferences) for as long as your account is active. If you delete your account, we will delete or anonymize your account information within 30 days, except where we are required to retain it for legal or legitimate business purposes.</li>
-                    <li class="list-item"><strong>Video Content:</strong> Video recordings and processed video data are retained for as long as you maintain an active account and for up to 90 days after account deletion, unless you request earlier deletion. Video content may be retained longer if required for legal compliance, dispute resolution, or legitimate business purposes (e.g., improving our AI models with anonymized data).</li>
-                    <li class="list-item"><strong>Analytics and Usage Data:</strong> We retain analytics and usage data for up to 2 years to analyze trends and improve our Services.</li>
-                    <li class="list-item"><strong>Support Communications:</strong> We retain support tickets, bug reports, and related communications for up to 3 years to provide ongoing support and improve our Services.</li>
-                    <li class="list-item"><strong>Legal and Compliance:</strong> We may retain certain information for longer periods if required by law, regulation, or to resolve disputes, enforce agreements, or protect our legal rights.</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <strong>Account Information:</strong> We retain account information (name, email, preferences) for as long as your account is active. If you delete your account, we will delete or anonymize your account information within 30 days, except where we are required to retain it for legal or legitimate business purposes.
+                    </div>
+                    <div class="list-item">
+                        <strong>Video Content:</strong> Video recordings and processed video data are retained for as long as you maintain an active account and for up to 90 days after account deletion, unless you request earlier deletion. Video content may be retained longer if required for legal compliance, dispute resolution, or legitimate business purposes (e.g., improving our AI models with anonymized data).
+                    </div>
+                    <div class="list-item">
+                        <strong>Analytics and Usage Data:</strong> We retain analytics and usage data for up to 2 years to analyze trends and improve our Services.
+                    </div>
+                    <div class="list-item">
+                        <strong>Support Communications:</strong> We retain support tickets, bug reports, and related communications for up to 3 years to provide ongoing support and improve our Services.
+                    </div>
+                    <div class="list-item">
+                        <strong>Legal and Compliance:</strong> We may retain certain information for longer periods if required by law, regulation, or to resolve disputes, enforce agreements, or protect our legal rights.
+                    </div>
+                </div>
+
                 <h3 class="subsection-title">Deletion of Video Content</h3>
+                
                 <p class="paragraph">
                     You can request deletion of your video content at any time by:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Deleting videos directly through the application interface</li>
-                    <li class="list-item">Contacting us at <a href="mailto:support@heyblu.ai" class="link">support@heyblu.ai</a> to request deletion</li>
-                    <li class="list-item">Deleting your account, which will trigger deletion of associated video content (subject to the retention periods above)</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Deleting videos directly through the application interface</div>
+                    <div class="list-item">Contacting us at <a href="mailto:support@heyblu.ai" class="link">support@heyblu.ai</a> to request deletion</div>
+                    <div class="list-item">Deleting your account, which will trigger deletion of associated video content (subject to the retention periods above)</div>
+                </div>
+                
                 <p class="paragraph">
                     Please note that deletion may take up to 30 days to complete, and some data may remain in backup systems for an additional period before being permanently deleted. We will make reasonable efforts to honor deletion requests promptly.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="your-rights">7. Your Rights</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="your-rights">
+                <h2 class="section-title">7. Your Rights</h2>
+                
                 <p class="paragraph">
                     You may contact us at any time to:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Request access to your personal information</li>
-                    <li class="list-item">Correct or update your data</li>
-                    <li class="list-item">Request deletion of your personal information</li>
-                    <li class="list-item">Opt-out of marketing communications</li>
-                    <li class="list-item">Request a copy of your data in a portable format</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Request access to your personal information</div>
+                    <div class="list-item">Correct or update your data</div>
+                    <div class="list-item">Request deletion of your personal information</div>
+                    <div class="list-item">Opt-out of marketing communications</div>
+                    <div class="list-item">Request a copy of your data in a portable format</div>
+                </div>
+                
                 <p class="paragraph">
                     If you are located in the European Economic Area (EEA) or California, you may have additional rights under GDPR or CCPA. Please contact us to exercise these rights.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="cookies">8. Cookies and Tracking Technologies</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="cookies">
+                <h2 class="section-title">8. Cookies and Tracking Technologies</h2>
+                
                 <p class="paragraph">
                     We use cookies and similar tracking technologies to collect information about your use of our Services. You can control cookies through your browser settings, though this may affect functionality.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="childrens-privacy">9. Children's Privacy</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="childrens-privacy">
+                <h2 class="section-title">9. Children's Privacy</h2>
+                
                 <p class="paragraph">
-                    Our Services are designed for users of all ages, including children. We comply with applicable children's privacy laws, including the Children's Online Privacy Protection Act (COPPA). If you are a parent or guardian and believe your child under 13 has provided us with personal information, please contact us at <a href="mailto:support@heyblu.ai" class="link">support@heyblu.ai</a> to review, modify, or delete such information.
+                    Our Services are designed for users of all ages, including children. We comply with applicable children's privacy laws, including the Children's Online Privacy Protection Act (COPPA).
+                </p>
+                
+                <p class="paragraph">
+                    If you are a parent or guardian and believe your child under 13 has provided us with personal information, please contact us at <a href="mailto:support@heyblu.ai" class="link">support@heyblu.ai</a> to review, modify, or delete such information.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="third-party-links">10. Third-Party Links</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="third-party-links">
+                <h2 class="section-title">10. Third-Party Links</h2>
+                
                 <p class="paragraph">
                     Our Services may contain links to third-party websites or services. We are not responsible for the privacy practices of these third parties. We encourage you to review their privacy policies.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="changes-policy">11. Changes to This Policy</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="changes-policy">
+                <h2 class="section-title">11. Changes to This Policy</h2>
+                
                 <p class="paragraph">
-                    We may update this Privacy Policy periodically. When we do, we will revise the "Effective Date" above and update the link on our site. Your continued use of the Services after such changes constitutes acceptance of the updated Privacy Policy.
+                    We may update this Privacy Policy periodically. When we do, we will revise the "Effective Date" above and update the link on our site.
+                </p>
+                
+                <p class="paragraph">
+                    Your continued use of the Services after such changes constitutes acceptance of the updated Privacy Policy.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="contact-us">12. Contact Us</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="contact-us">
+                <h2 class="section-title">12. Contact Us</h2>
+                
                 <p class="paragraph">
                     If you have any questions about this Privacy Policy or wish to exercise your rights, please contact:
                 </p>
-                <p class="paragraph font-semibold">
-                    Big League Ballpark Inc. (DBA HeyBLU)
-                </p>
-                <p class="paragraph">
-                    1001 Bridgeway<br>
-                    Sausalito, CA 94965
-                </p>
-                <p class="paragraph">
-                    Email: <a href="mailto:info@heyblu.ai" class="link">info@heyblu.ai</a>
-                </p>
+                
+                <div class="bg-gray-50 rounded-lg p-6 mt-6">
+                    <p class="font-semibold text-lg text-gray-900 mb-2">
+                        Big League Ballpark Inc. (DBA HeyBLU)
+                    </p>
+                    <p class="text-gray-700 mb-2">
+                        1001 Bridgeway<br>
+                        Sausalito, CA 94965
+                    </p>
+                    <p class="text-gray-700">
+                        Email: <a href="mailto:info@heyblu.ai" class="link">info@heyblu.ai</a>
+                    </p>
+                </div>
             </section>
         </main>
     </div>

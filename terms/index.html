@@ -17,16 +17,35 @@
             @apply text-4xl md:text-5xl font-extrabold leading-tight;
         }
         .section-title {
-            @apply text-2xl font-bold text-gray-900 mb-4 mt-6;
+            @apply text-2xl font-bold text-gray-900 mb-6 mt-10;
+            @apply border-b-2 border-blue-100 pb-3;
         }
         .subsection-title {
-            @apply text-xl font-semibold text-gray-700 mb-2;
+            @apply text-xl font-semibold text-gray-800 mb-4 mt-6;
         }
         .paragraph {
-            @apply text-gray-700 leading-relaxed mb-4;
+            @apply text-gray-700 leading-relaxed mb-5;
+            @apply text-base;
+        }
+        .intro-text {
+            @apply text-lg text-gray-600 leading-relaxed mb-6;
+        }
+        .list-container {
+            @apply mb-6 space-y-3;
         }
         .list-item {
-            @apply text-gray-700 leading-relaxed ml-6 mb-1 list-disc;
+            @apply text-gray-700 leading-relaxed;
+            @apply pl-6 relative;
+        }
+        .list-item::before {
+            content: "•";
+            @apply absolute left-0 text-blue-600 font-bold;
+        }
+        .highlight-box {
+            @apply bg-blue-50 border-l-4 border-blue-500 p-4 my-6 rounded-r;
+        }
+        .warning-box {
+            @apply bg-yellow-50 border-l-4 border-yellow-500 p-4 my-6 rounded-r;
         }
         .link {
             @apply text-blue-600 hover:text-blue-800 underline;
@@ -36,6 +55,21 @@
         }
         .footer-link {
             @apply text-gray-400 hover:text-gray-300 transition duration-300 text-sm;
+        }
+        .toc {
+            @apply bg-gray-50 border border-gray-200 rounded-lg p-6 mb-8;
+        }
+        .toc-title {
+            @apply font-bold text-lg mb-4 text-gray-900;
+        }
+        .toc-item {
+            @apply text-gray-700 mb-2;
+        }
+        .toc-item a {
+            @apply text-blue-600 hover:text-blue-800;
+        }
+        .section-divider {
+            @apply border-t border-gray-200 my-8;
         }
     </style>
 </head>
@@ -57,152 +91,240 @@
 
     <div class="container mx-auto max-w-4xl py-8 px-4 sm:px-6 lg:px-8">
         <main class="bg-white shadow-xl rounded-lg p-6 md:p-10">
-            <p class="paragraph text-gray-600">
-                Effective Date: <span id="effective-date" class="font-semibold">January 15, 2025</span>
-            </p>
-            <p class="paragraph">
-                These Terms of Service ("Terms") govern your access to and use of the services provided by Big League Ballpark Inc., doing business as HeyBLU ("HeyBLU", "we", "us", or "our"), including our website located at heyblu.ai, our strike zone tracking application, rulebook assistant, and related services (collectively, the "Services").
-            </p>
-            <p class="paragraph">
-                By accessing or using our Services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Services.
-            </p>
+            <!-- Effective Date -->
+            <div class="mb-8 pb-6 border-b border-gray-200">
+                <p class="text-sm text-gray-500 mb-2">Effective Date</p>
+                <p class="text-lg font-semibold text-gray-900">January 15, 2025</p>
+            </div>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="acceptance">1. Acceptance of Terms</h2>
+            <!-- Introduction -->
+            <div class="intro-text mb-8">
+                <p class="mb-4">
+                    These Terms of Service ("Terms") govern your access to and use of the services provided by Big League Ballpark Inc., doing business as <strong>HeyBLU</strong> ("HeyBLU", "we", "us", or "our"), including our website located at heyblu.ai, our strike zone tracking application, rulebook assistant, and related services (collectively, the "Services").
+                </p>
+                <p>
+                    By accessing or using our Services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use our Services.
+                </p>
+            </div>
+
+            <!-- Table of Contents -->
+            <div class="toc">
+                <h2 class="toc-title">Table of Contents</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    <div class="toc-item"><a href="#acceptance">1. Acceptance of Terms</a></div>
+                    <div class="toc-item"><a href="#services">2. Description of Services</a></div>
+                    <div class="toc-item"><a href="#beta">3. Beta Services</a></div>
+                    <div class="toc-item"><a href="#user-accounts">4. User Accounts</a></div>
+                    <div class="toc-item"><a href="#acceptable-use">5. Acceptable Use</a></div>
+                    <div class="toc-item"><a href="#intellectual-property">6. Intellectual Property</a></div>
+                    <div class="toc-item"><a href="#user-content">7. User Content</a></div>
+                    <div class="toc-item"><a href="#disclaimers">8. Disclaimers</a></div>
+                    <div class="toc-item"><a href="#limitation-liability">9. Limitation of Liability</a></div>
+                    <div class="toc-item"><a href="#indemnification">10. Indemnification</a></div>
+                    <div class="toc-item"><a href="#termination">11. Termination</a></div>
+                    <div class="toc-item"><a href="#changes-terms">12. Changes to Terms</a></div>
+                    <div class="toc-item"><a href="#governing-law">13. Governing Law</a></div>
+                    <div class="toc-item"><a href="#contact-us">14. Contact Us</a></div>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="acceptance">
+                <h2 class="section-title">1. Acceptance of Terms</h2>
+                
                 <p class="paragraph">
                     By accessing or using HeyBLU's Services, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy, which is incorporated by reference.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="services">2. Description of Services</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="services">
+                <h2 class="section-title">2. Description of Services</h2>
+                
                 <p class="paragraph">
                     HeyBLU provides technology services including:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Strike zone tracking and AI-powered ball/strike call assistance</li>
-                    <li class="list-item">Real-time audio guidance via Bluetooth for umpires</li>
-                    <li class="list-item">Baseball and softball rulebook assistant with AI-powered answers</li>
-                    <li class="list-item">Analytics and performance tracking tools for coaches, players, and umpires</li>
-                    <li class="list-item">Beta program access and waitlist management</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Strike zone tracking and AI-powered ball/strike call assistance</div>
+                    <div class="list-item">Real-time audio guidance via Bluetooth for umpires</div>
+                    <div class="list-item">Baseball and softball rulebook assistant with AI-powered answers</div>
+                    <div class="list-item">Analytics and performance tracking tools for coaches, players, and umpires</div>
+                    <div class="list-item">Beta program access and waitlist management</div>
+                </div>
+                
                 <p class="paragraph">
                     We reserve the right to modify, suspend, or discontinue any aspect of our Services at any time, with or without notice.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="beta">3. Beta Services</h2>
-                <p class="paragraph">
-                    Certain Services may be provided as beta or pre-release versions. Beta services are provided "as is" and may contain errors, bugs, or other issues. We make no warranties regarding beta services and you use them at your own risk.
-                </p>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="beta">
+                <h2 class="section-title">3. Beta Services</h2>
+                
+                <div class="warning-box">
+                    <p class="paragraph mb-0">
+                        Certain Services may be provided as beta or pre-release versions. Beta services are provided "as is" and may contain errors, bugs, or other issues. We make no warranties regarding beta services and you use them at your own risk.
+                    </p>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="user-accounts">4. User Accounts and Responsibilities</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="user-accounts">
+                <h2 class="section-title">4. User Accounts and Responsibilities</h2>
+                
                 <p class="paragraph">
                     You are responsible for:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Maintaining the confidentiality of any account credentials</li>
-                    <li class="list-item">All activities that occur under your account</li>
-                    <li class="list-item">Providing accurate and current information</li>
-                    <li class="list-item">Using the Services in compliance with all applicable laws and regulations</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Maintaining the confidentiality of any account credentials</div>
+                    <div class="list-item">All activities that occur under your account</div>
+                    <div class="list-item">Providing accurate and current information</div>
+                    <div class="list-item">Using the Services in compliance with all applicable laws and regulations</div>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="acceptable-use">5. Acceptable Use</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="acceptable-use">
+                <h2 class="section-title">5. Acceptable Use</h2>
+                
                 <p class="paragraph">
                     You agree not to:
                 </p>
-                <ul class="list-outside">
-                    <li class="list-item">Use the Services for any illegal purpose or in violation of any laws</li>
-                    <li class="list-item">Attempt to gain unauthorized access to our systems or networks</li>
-                    <li class="list-item">Interfere with or disrupt the Services or servers</li>
-                    <li class="list-item">Use automated systems to access the Services without permission</li>
-                    <li class="list-item">Reproduce, duplicate, copy, or resell any part of our Services</li>
-                    <li class="list-item">Use the Services to transmit any harmful code, viruses, or malicious software</li>
-                </ul>
+                
+                <div class="list-container">
+                    <div class="list-item">Use the Services for any illegal purpose or in violation of any laws</div>
+                    <div class="list-item">Attempt to gain unauthorized access to our systems or networks</div>
+                    <div class="list-item">Interfere with or disrupt the Services or servers</div>
+                    <div class="list-item">Use automated systems to access the Services without permission</div>
+                    <div class="list-item">Reproduce, duplicate, copy, or resell any part of our Services</div>
+                    <div class="list-item">Use the Services to transmit any harmful code, viruses, or malicious software</div>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="intellectual-property">6. Intellectual Property</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="intellectual-property">
+                <h2 class="section-title">6. Intellectual Property</h2>
+                
                 <p class="paragraph">
                     All content, features, and functionality of the Services, including but not limited to text, graphics, logos, software, and algorithms, are owned by Big League Ballpark Inc. or its licensors and are protected by copyright, trademark, and other intellectual property laws.
                 </p>
+                
                 <p class="paragraph">
                     You may not use our trademarks, logos, or other proprietary information without our prior written consent.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="user-content">7. User Content</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="user-content">
+                <h2 class="section-title">7. User Content</h2>
+                
                 <p class="paragraph">
                     If you submit content to our Services (such as questions, feedback, or data), you grant us a non-exclusive, royalty-free, perpetual, and worldwide license to use, modify, and display such content in connection with providing and improving our Services.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="disclaimers">8. Disclaimers</h2>
-                <p class="paragraph">
-                    THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
-                </p>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="disclaimers">
+                <h2 class="section-title">8. Disclaimers</h2>
+                
+                <div class="warning-box">
+                    <p class="paragraph mb-3 font-semibold">
+                        THE SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+                    </p>
+                </div>
+                
                 <p class="paragraph">
                     We do not warrant that the Services will be uninterrupted, error-free, or completely secure. HeyBLU's strike zone tracking and rulebook assistant are tools to aid decision-making but should not be the sole basis for official game decisions.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="limitation-liability">9. Limitation of Liability</h2>
-                <p class="paragraph">
-                    TO THE MAXIMUM EXTENT PERMITTED BY LAW, BIG LEAGUE BALLPARK INC. SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE SERVICES.
-                </p>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="limitation-liability">
+                <h2 class="section-title">9. Limitation of Liability</h2>
+                
+                <div class="warning-box">
+                    <p class="paragraph mb-0">
+                        TO THE MAXIMUM EXTENT PERMITTED BY LAW, BIG LEAGUE BALLPARK INC. SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES RESULTING FROM YOUR USE OF THE SERVICES.
+                    </p>
+                </div>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="indemnification">10. Indemnification</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="indemnification">
+                <h2 class="section-title">10. Indemnification</h2>
+                
                 <p class="paragraph">
                     You agree to indemnify and hold harmless Big League Ballpark Inc., its officers, directors, employees, and agents from any claims, damages, losses, liabilities, and expenses (including legal fees) arising from your use of the Services or violation of these Terms.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="termination">11. Termination</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="termination">
+                <h2 class="section-title">11. Termination</h2>
+                
                 <p class="paragraph">
                     We may terminate or suspend your access to the Services at any time, with or without cause or notice, for any reason, including if you breach these Terms.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="changes-terms">12. Changes to Terms</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="changes-terms">
+                <h2 class="section-title">12. Changes to Terms</h2>
+                
                 <p class="paragraph">
-                    We reserve the right to modify these Terms at any time. We will notify users of material changes by updating the "Effective Date" above. Your continued use of the Services after such changes constitutes acceptance of the updated Terms.
+                    We reserve the right to modify these Terms at any time. We will notify users of material changes by updating the "Effective Date" above.
+                </p>
+                
+                <p class="paragraph">
+                    Your continued use of the Services after such changes constitutes acceptance of the updated Terms.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="governing-law">13. Governing Law</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="governing-law">
+                <h2 class="section-title">13. Governing Law</h2>
+                
                 <p class="paragraph">
                     These Terms shall be governed by and construed in accordance with the laws of the State of California, without regard to its conflict of law provisions.
                 </p>
             </section>
 
-            <section class="mb-8">
-                <h2 class="section-title" id="contact-us">14. Contact Us</h2>
+            <div class="section-divider"></div>
+
+            <section class="mb-12" id="contact-us">
+                <h2 class="section-title">14. Contact Us</h2>
+                
                 <p class="paragraph">
                     If you have any questions about these Terms of Service, please contact:
                 </p>
-                <p class="paragraph font-semibold">
-                    Big League Ballpark Inc. (DBA HeyBLU)
-                </p>
-                <p class="paragraph">
-                    1001 Bridgeway<br>
-                    Sausalito, CA 94965
-                </p>
-                <p class="paragraph">
-                    Email: <a href="mailto:info@heyblu.ai" class="link">info@heyblu.ai</a>
-                </p>
+                
+                <div class="bg-gray-50 rounded-lg p-6 mt-6">
+                    <p class="font-semibold text-lg text-gray-900 mb-2">
+                        Big League Ballpark Inc. (DBA HeyBLU)
+                    </p>
+                    <p class="text-gray-700 mb-2">
+                        1001 Bridgeway<br>
+                        Sausalito, CA 94965
+                    </p>
+                    <p class="text-gray-700">
+                        Email: <a href="mailto:info@heyblu.ai" class="link">info@heyblu.ai</a>
+                    </p>
+                </div>
             </section>
         </main>
     </div>
