@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Support — HeyBLU</title>
+  <meta name="description" content="HeyBLU Support — Quick Start, Troubleshooting, TestFlight, App Store & bug reporting." />
+  
+  <script>window.HEYBLU_CONFIG = {
+    TESTFLIGHT_URL: "https://testflight.apple.com/join/YOUR_INVITE_CODE",
+    SUPPORT_EMAIL: "robr@heyblu.ai",
+    PRIVACY_URL: "/privacy",
+    DOCS_URL: "/docs",
+    RELEASE_NOTES_API: "/api/release-notes"
+  };</script>
+
+  <style>
+    :root{
+      --accent:#2563eb;
+      --bg:#f7fbff;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --maxw:1100px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    body{margin:0;background:var(--bg);color:#0f1724;line-height:1.5}
+    .wrap{max-width:var(--maxw);margin:36px auto;padding:24px}
+    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+    .logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem}
+    .logo .hey{color:#1f2937}
+    .logo .blu{color:#2563eb}
+    .hero{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#e9f2ff,white);padding:22px;border-radius:12px}
+    .hero h1{margin:0;font-size:1.4rem}
+    .hero p{margin:6px 0;color:var(--muted)}
+    .quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;border:none;cursor:pointer;font-size:0.95rem}
+    .btn:hover{opacity:0.9}
+    .btn.ghost{background:transparent;color:var(--accent);border:1px solid #d9e8ff}
+    .btn.ghost:hover{background:#f0f7ff}
+    main{margin-top:22px;display:grid;grid-template-columns:1fr 320px;gap:20px}
+    article{background:var(--card);padding:20px;border-radius:10px;box-shadow:0 6px 20px rgba(11,140,255,0.06)}
+    aside{position:sticky;top:20px;height:max-content}
+    h2{font-size:1.05rem;margin:0 0 8px 0}
+    .muted{color:var(--muted);font-size:.95rem;margin-bottom:12px}
+    .section{margin-bottom:18px}
+    ul.checklist{padding-left:18px;margin:8px 0}
+    .code{background:#0b1220;color:#e6f0ff;padding:6px 8px;border-radius:6px;font-family:monospace;font-size:.95rem;display:inline-block}
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+    .card{padding:12px;border-radius:8px;background:#fbfdff;border:1px solid #eef6ff}
+    /* Accordion */
+    .accordion{border-top:1px solid #f1f5f9;border-radius:8px;overflow:hidden}
+    .acc-item{border-bottom:1px solid #f1f5f9}
+    .acc-button{width:100%;text-align:left;padding:12px;display:flex;justify-content:space-between;align-items:center;background:transparent;border:0;font-weight:600;cursor:pointer}
+    .acc-button:hover{background:#f8fafc}
+    .acc-panel{padding:12px 16px;background:white;color:var(--muted)}
+    footer{margin-top:30px;padding:18px 8px;text-align:center;color:var(--muted);font-size:.9rem}
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef8;font-size:0.95rem;box-sizing:border-box}
+    textarea{min-height:120px;resize:vertical}
+    .small{font-size:.85rem;color:var(--muted)}
+    .note{background:#fff8e8;padding:10px;border-radius:8px;border:1px solid #ffe7b8;color:#6b4b00}
+    @media (max-width:920px){main{grid-template-columns:1fr}aside{position:static}}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="#2563eb" stroke-width="2"/>
+          <path d="M8 12h8M12 8v8" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div><span class="hey">Hey</span><span class="blu">BLU</span> <span class="small" style="font-weight:500;color:var(--muted)">Support</span></div>
+      </div>
+      <div style="margin-left:auto" class="small">Need help? <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a></div>
+    </header>
+
+    <div class="hero" role="region" aria-label="HeyBLU Support quick actions">
+      <div style="flex:1;min-width:260px">
+        <h1>Quick help for scanning, strike zone and tracking</h1>
+        <p class="muted">Short guides, troubleshooting, TestFlight instructions, and the fastest way to share diagnostics with our team.</p>
+        <div class="quick-links">
+          <a class="btn" href="#quick-start">Quick Start</a>
+          <a class="btn ghost" href="#troubleshooting">Troubleshooting</a>
+          <a class="btn" href="#testflight">TestFlight</a>
+          <a class="btn" href="#report">Report a bug</a>
+        </div>
+      </div>
+
+      <div style="margin-left:18px;min-width:200px;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <a class="btn" href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL ,'_blank')" rel="noopener">Open TestFlight</a>
+        <a class="btn ghost" href="#release-notes">Release Notes</a>
+      </div>
+    </div>
+
+    <main>
+      <article>
+        <!-- Quick Start -->
+        <section id="quick-start" class="section">
+          <h2>Quick Start</h2>
+          <p class="muted">Get up and running in under 2 minutes.</p>
+
+          <div class="card-grid" style="margin-top:10px">
+            <div class="card">
+              <strong>1. Install</strong>
+              <p class="small">Install the beta via TestFlight: <br><a href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL,'_blank')">Join via TestFlight</a></p>
+            </div>
+            <div class="card">
+              <strong>2. Permissions</strong>
+              <p class="small">Allow <span class="code">Camera</span>, <span class="code">Microphone</span> & <span class="code">Motion</span> when prompted.</p>
+            </div>
+            <div class="card">
+              <strong>3. First Scan</strong>
+              <p class="small">Mount the device, center plate in view, tap <span class="code">Scan</span> → place strike zone → tap <span class="code">Start</span>.</p>
+            </div>
+            <div class="card">
+              <strong>Device requirements</strong>
+              <p class="small">iOS 15+, rear camera; recommended: iPhone 11 or newer for best tracking quality.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- How to scan -->
+        <section id="how-to-scan" class="section">
+          <h2>How to scan</h2>
+          <p class="muted">Tips to collect high-quality video for consistent tracking.</p>
+          <ol>
+            <li><strong>Lighting:</strong> Even front lighting, avoid bright backlight behind the plate.</li>
+            <li><strong>Mounting:</strong> Use a tripod or steady mount. Aim for a 10–20 foot distance (adjust by field layout).</li>
+            <li><strong>Orientation:</strong> Landscape recommended; keep the plate fully visible.</li>
+            <li><strong>Settings:</strong> Use 1080p @ 60fps if available. Avoid low-light & high ISO.</li>
+            <li><strong>Sample video:</strong> If tracking fails, record a short 10–20s clip showing the issue to attach to your report.</li>
+          </ol>
+        </section>
+
+        <!-- Strike zone placement -->
+        <section id="strike-zone" class="section">
+          <h2>Placing the strike zone</h2>
+          <p class="muted">Correct strike zone placement is essential for accurate calls.</p>
+          <ul class="checklist">
+            <li>Center the strike zone on the plate horizontally.</li>
+            <li>Resize to match batter height — top near chest, bottom near knees (or according to your league rules).</li>
+            <li>Rotate only if the camera is tilted — keep the zone axis aligned with the plate edges.</li>
+          </ul>
+
+          <div class="note" style="margin-top:10px">
+            <strong>Examples</strong><br>
+            <small>Too large: includes catcher & background. Too small: clips the plate. Off-center: misses high/low pitches.</small>
+          </div>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section id="troubleshooting" class="section">
+          <h2>Troubleshooting — When it isn't tracking</h2>
+          <p class="muted">Run this checklist in order — most issues are resolved in steps 1–4.</p>
+
+          <ol>
+            <li><strong>Permissions</strong> — Confirm Camera, Microphone, and Motion sensors are allowed (Settings → HeyBLU).</li>
+            <li><strong>Lighting & background</strong> — Move to even light and reduce background clutter behind the plate.</li>
+            <li><strong>Framing</strong> — Ensure the plate is fully visible and the strike zone is correctly placed.</li>
+            <li><strong>Device health</strong> — Close background apps, free space, reboot, reinstall if necessary.</li>
+            <li><strong>Update</strong> — Make sure you're on the latest TestFlight build.</li>
+            <li><strong>Sample test</strong> — Try a known-good sample video. If that works, contrast with your setup to find the difference.</li>
+            <li><strong>Network</strong> — If cloud processing is required, ensure stable internet.</li>
+            <li><strong>Capture diagnostics</strong> — Record a 10–30s clip showing the issue and describe steps to reproduce (see Report a bug).</li>
+          </ol>
+
+          <div style="margin-top:12px" class="accordion" id="errors">
+            <div class="acc-item">
+              <button class="acc-button" aria-expanded="false" aria-controls="err1" onclick="toggleAcc(this)">
+                Common error: "Tracking lost" <span class="small" aria-hidden>▾</span>
+              </button>
+              <div id="err1" class="acc-panel" hidden>
+                Try: center strike zone, move to brighter light, ensure plate not occluded. If persistent, send diagnostic video + device model.
+              </div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-button" aria-expanded="false" aria-controls="err2" onclick="toggleAcc(this)">
+                App freezes / crashes <span class="small" aria-hidden>▾</span>
+              </button>
+              <div id="err2" class="acc-panel" hidden>
+                Reboot device, reinstall via TestFlight, and send crash logs along with the TestFlight build number.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Report a bug -->
+        <section id="report" class="section">
+          <h2>Report a bug</h2>
+          <p class="muted">Fastest route: in-app "Send Feedback." Or use the form below to email us diagnostics.</p>
+
+          <form id="support-form" method="POST" action="https://formspree.io/f/mjkrezok" enctype="multipart/form-data" onsubmit="return submitSupportForm(event)">
+            <div class="row">
+              <input type="text" name="name" placeholder="Your name" required />
+              <input type="email" name="email" placeholder="Email" required />
+            </div>
+
+            <div class="row" style="margin-top:10px">
+              <input type="text" name="device" placeholder="Device model (e.g., iPhone 12)" required />
+              <input type="text" name="ios" placeholder="iOS version (e.g., 17.2)" required />
+            </div>
+
+            <div style="margin-top:10px">
+              <input type="text" name="build" placeholder="HeyBLU build number / TestFlight ID" />
+            </div>
+
+            <div style="margin-top:10px">
+              <label class="small">Short description</label>
+              <input type="text" name="summary" placeholder="One-line summary" required/>
+            </div>
+
+            <div style="margin-top:10px">
+              <label class="small">Steps to reproduce</label>
+              <textarea name="steps" placeholder="Exact steps to reproduce the issue" required></textarea>
+            </div>
+
+            <div style="margin-top:10px">
+              <label class="small">Attach video / logs (mp4, mov, .zip)</label>
+              <input id="file" type="file" name="attachment" accept="video/*,.zip" />
+              <div class="small" style="margin-top:6px">Max 200MB (or use a share link). If large, upload to Drive/Dropbox and paste link into the steps.</div>
+            </div>
+
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+              <button class="btn" type="submit">Send report</button>
+              <a class="btn ghost" href="mailto:robr@heyblu.ai">Email support</a>
+              <span class="small" id="form-status" role="status" aria-live="polite"></span>
+            </div>
+
+            <p class="small" style="margin-top:8px">Include timestamp in video and the approximate pitch time for easier debugging.</p>
+          </form>
+        </section>
+
+        <!-- TestFlight -->
+        <section id="testflight" class="section">
+          <h2>TestFlight & Beta testers</h2>
+          <p class="muted">How to join, update and report crashes via TestFlight.</p>
+          <ol>
+            <li>Open the TestFlight invite link and install the app.</li>
+            <li>To update: open TestFlight → tap Update.</li>
+            <li>To share a crash: open TestFlight → App → Share Beta Feedback or send diagnostics from within the app.</li>
+            <li>Include device model, iOS version, TestFlight build number and a short reproduction video.</li>
+          </ol>
+        </section>
+
+        <!-- App Store -->
+        <section id="appstore" class="section">
+          <h2>App Store & Apple Review</h2>
+          <p class="muted">Short explanation for users and what reviewers may ask for.</p>
+          <ul class="checklist">
+            <li>We're currently on TestFlight — the App Store will follow after review.</li>
+            <li>Apple requires clear permission strings and privacy policy links. We include demo credentials for reviewers when needed.</li>
+            <li>Common review delays: missing privacy string, misleading metadata, or functionality requiring special hardware/access.</li>
+          </ul>
+        </section>
+
+        <!-- Release notes -->
+        <section id="release-notes" class="section">
+          <h2>Release Notes & Known issues</h2>
+          <p class="muted">Latest builds and known issues — check before reporting.</p>
+
+          <div style="margin-top:8px">
+            <div style="padding:10px;border-radius:8px;background:#fcfeff;border:1px solid #e9f8ff">
+              <strong>Build 0.9.3 — 2025-01-28</strong>
+              <div class="small" style="margin-top:6px">Fix: strike-zone resize bug. Known: rare drift on iPhone SE models. Workaround: restart app and re-place zone.</div>
+            </div>
+
+            <div style="padding:10px;border-radius:8px;background:#fffaf8;border:1px solid #fff0e6;margin-top:10px">
+              <strong>Build 0.9.2 — 2025-01-15</strong>
+              <div class="small" style="margin-top:6px">Feature: improved tracking in low-light. Note: TestFlight expires 2026-01-10.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq" class="section">
+          <h2>FAQ</h2>
+          <div class="accordion">
+            <div class="acc-item">
+              <button class="acc-button" aria-expanded="false" aria-controls="faq1" onclick="toggleAcc(this)">Will HeyBLU work with my phone? <span class="small">▾</span></button>
+              <div id="faq1" class="acc-panel" hidden>Most modern iPhones (iPhone XR and newer) are supported. For best results use iPhone 11 or later.</div>
+            </div>
+            <div class="acc-item">
+              <button class="acc-button" aria-expanded="false" aria-controls="faq2" onclick="toggleAcc(this)">How accurate is strike tracking? <span class="small">▾</span></button>
+              <div id="faq2" class="acc-panel" hidden>Accuracy depends on placement, lighting and device. With correct setup our models typically match human calls within league tolerances.</div>
+            </div>
+          </div>
+        </section>
+      </article>
+
+      <aside>
+        <div class="card" style="margin-bottom:12px">
+          <strong>Quick diagnostics</strong>
+          <p class="small">If nothing works: capture a 10–30s clip, include device model + build number, and attach it to a report.</p>
+          <a class="btn" href="#report">Report now</a>
+        </div>
+
+        <div class="card">
+          <strong>Support</strong>
+          <p class="small">In-app feedback (preferred). Or email: <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a></p>
+          <p class="small">Privacy: <a href="/privacy">policy</a></p>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <div class="small">© 2025 HeyBLU — For App Store questions, contact <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a>. <a href="/terms">Terms</a> | <a href="/privacy">Privacy</a></div>
+    </footer>
+  </div>
+
+  <script>
+    /* accordion handling */
+    function toggleAcc(btn){
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      btn.setAttribute('aria-expanded', String(!expanded));
+      const id = btn.getAttribute('aria-controls');
+      const panel = document.getElementById(id);
+      if(!panel) return;
+      if(expanded){
+        panel.hidden = true;
+      }else{
+        panel.hidden = false;
+      }
+    }
+
+    /* support form (simple UX only) */
+    async function submitSupportForm(e){
+      e.preventDefault();
+      const form = e.target;
+      const status = document.getElementById('form-status');
+      status.textContent = 'Sending…';
+      const data = new FormData(form);
+
+      try{
+        const res = await fetch(form.action, {method:'POST', body: data});
+        if(res.ok){
+          status.textContent = 'Report sent — we will respond within 48 hours.';
+          form.reset();
+        } else {
+          const text = await res.text();
+          status.textContent = 'Error sending: ' + (text || res.status);
+        }
+      }catch(err){
+        console.error(err);
+        status.textContent = 'Network error. Email issues to ' + window.HEYBLU_CONFIG.SUPPORT_EMAIL;
+      }
+      setTimeout(()=> status.textContent = '', 6000);
+      return false;
+    }
+  </script>
+</body>
+</html>
+
