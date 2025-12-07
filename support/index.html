@@ -8,7 +8,7 @@
   
   <script>window.HEYBLU_CONFIG = {
     TESTFLIGHT_URL: "https://testflight.apple.com/join/YOUR_INVITE_CODE",
-    SUPPORT_EMAIL: "robr@heyblu.ai",
+    SUPPORT_EMAIL: "support@heyblu.ai",
     PRIVACY_URL: "/privacy",
     DOCS_URL: "/docs",
     RELEASE_NOTES_API: "/api/release-notes"
@@ -74,7 +74,7 @@
         </svg>
         <div><span class="hey">Hey</span><span class="blu">BLU</span> <span class="small" style="font-weight:500;color:var(--muted)">Support</span></div>
       </div>
-      <div style="margin-left:auto" class="small">Need help? <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a></div>
+      <div style="margin-left:auto" class="small">Need help? <a href="mailto:support@heyblu.ai">support@heyblu.ai</a></div>
     </header>
 
     <div class="hero" role="region" aria-label="HeyBLU Support quick actions">
@@ -101,11 +101,14 @@
         <section id="quick-start" class="section">
           <h2>Quick Start</h2>
           <p class="muted">Get up and running in under 2 minutes.</p>
+          <div class="note" style="margin-bottom:12px">
+            <strong>App Store Available:</strong> HeyBLU is now available on the App Store. Download it directly for the latest stable release. TestFlight is for beta testing and early access to new features.
+          </div>
 
           <div class="card-grid" style="margin-top:10px">
             <div class="card">
               <strong>1. Install</strong>
-              <p class="small">Install the beta via TestFlight: <br><a href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL,'_blank')">Join via TestFlight</a></p>
+              <p class="small">Download from the App Store, or install the beta via TestFlight: <br><a href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL,'_blank')">Join via TestFlight</a></p>
             </div>
             <div class="card">
               <strong>2. Permissions</strong>
@@ -225,7 +228,7 @@
 
             <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
               <button class="btn" type="submit">Send report</button>
-              <a class="btn ghost" href="mailto:robr@heyblu.ai">Email support</a>
+              <a class="btn ghost" href="mailto:support@heyblu.ai">Email support</a>
               <span class="small" id="form-status" role="status" aria-live="polite"></span>
             </div>
 
@@ -236,7 +239,11 @@
         <!-- TestFlight -->
         <section id="testflight" class="section">
           <h2>TestFlight & Beta testers</h2>
-          <p class="muted">How to join, update and report crashes via TestFlight.</p>
+          <p class="muted">HeyBLU is now available on the App Store! TestFlight is for beta testing and early access to new features.</p>
+          <div class="note" style="margin-bottom:12px">
+            <strong>App Store Available:</strong> HeyBLU is now available on the App Store. Download it directly from the App Store for the latest stable release.
+          </div>
+          <p class="muted" style="margin-top:12px">For beta testers using TestFlight:</p>
           <ol>
             <li>Open the TestFlight invite link and install the app.</li>
             <li>To update: open TestFlight → tap Update.</li>
@@ -248,11 +255,11 @@
         <!-- App Store -->
         <section id="appstore" class="section">
           <h2>App Store & Apple Review</h2>
-          <p class="muted">Short explanation for users and what reviewers may ask for.</p>
+          <p class="muted">HeyBLU is now available on the App Store!</p>
           <ul class="checklist">
-            <li>We're currently on TestFlight — the App Store will follow after review.</li>
-            <li>Apple requires clear permission strings and privacy policy links. We include demo credentials for reviewers when needed.</li>
-            <li>Common review delays: missing privacy string, misleading metadata, or functionality requiring special hardware/access.</li>
+            <li>HeyBLU is available for download on the App Store.</li>
+            <li>TestFlight remains available for beta testing and early access to new features.</li>
+            <li>For support or questions about the App Store version, contact us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>.</li>
           </ul>
         </section>
 
@@ -286,6 +293,14 @@
               <button class="acc-button" aria-expanded="false" aria-controls="faq2" onclick="toggleAcc(this)">How accurate is strike tracking? <span class="small">▾</span></button>
               <div id="faq2" class="acc-panel" hidden>Accuracy depends on placement, lighting and device. With correct setup our models typically match human calls within league tolerances.</div>
             </div>
+            <div class="acc-item">
+              <button class="acc-button" aria-expanded="false" aria-controls="faq3" onclick="toggleAcc(this)">
+                How do I delete my account and data? <span class="small">▾</span>
+              </button>
+              <div id="faq3" class="acc-panel" hidden>
+                You can request full account deletion directly within the app (Settings > Account > Delete Account) or by emailing us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>. We process all deletion requests within 48 hours and remove all associated personal data.
+              </div>
+            </div>
           </div>
         </section>
       </article>
@@ -299,14 +314,14 @@
 
         <div class="card">
           <strong>Support</strong>
-          <p class="small">In-app feedback (preferred). Or email: <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a></p>
+          <p class="small">In-app feedback (preferred). Or email: <a href="mailto:support@heyblu.ai">support@heyblu.ai</a></p>
           <p class="small">Privacy: <a href="/privacy">policy</a></p>
         </div>
       </aside>
     </main>
 
     <footer>
-      <div class="small">© 2025 HeyBLU — For App Store questions, contact <a href="mailto:robr@heyblu.ai">robr@heyblu.ai</a>. <a href="/terms">Terms</a> | <a href="/privacy">Privacy</a></div>
+      <div class="small">© 2025 HeyBLU — For App Store questions, contact <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>. <a href="/terms">Terms</a> | <a href="/privacy">Privacy</a></div>
     </footer>
   </div>
 
