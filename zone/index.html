@@ -5,6 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Join the HeyBLU Founders Program - Own The Zone with pro-level strike zone tracking for coaches and players.">
     <title>HeyBLU | Own The Zone</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heyblu.ai/zone">
+    <meta property="og:title" content="HeyBLU | Own The Zone - Founders Program">
+    <meta property="og:description" content="Join the Founders Program for exclusive access to pro-level strike zone tracking. Phone-based. No sensors. Built for player development.">
+    <meta property="og:image" content="https://heyblu.ai/images/heyblu-logo.svg">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://heyblu.ai/zone">
+    <meta name="twitter:title" content="HeyBLU | Own The Zone - Founders Program">
+    <meta name="twitter:description" content="Join the Founders Program for exclusive access to pro-level strike zone tracking.">
+    <meta name="twitter:image" content="https://heyblu.ai/images/heyblu-logo.svg">
+    
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "HeyBLU Founders Program - Own The Zone",
+      "description": "Join the Founders Program for exclusive access to pro-level strike zone tracking for coaches and players.",
+      "url": "https://heyblu.ai/zone",
+      "mainEntity": {
+        "@type": "Organization",
+        "name": "HeyBLU",
+        "url": "https://heyblu.ai"
+      }
+    }
+    </script>
     <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/heyblu-logo.svg">
     <link rel="preload" href="/images/heyblu-logo.svg" as="image" type="image/svg+xml" fetchpriority="high">
@@ -23,6 +53,37 @@
         .band-black { background: linear-gradient(135deg, #111827, #000000); border: 1px solid #374151; }
         
         .selected-ring { ring-4 ring-offset-4 ring-offset-gray-900 ring-blue-500; }
+        
+        /* FAQ Accordion Styles */
+        .faq-item {
+            transition: all 0.3s ease;
+        }
+        .faq-item:hover {
+            border-color: #4B5563;
+        }
+        .faq-button {
+            cursor: pointer;
+            outline: none;
+        }
+        .faq-button:hover {
+            background-color: rgba(55, 65, 81, 0.5);
+        }
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .faq-content.open {
+            max-height: 500px;
+            padding-top: 0;
+            padding-bottom: 1rem;
+        }
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        .faq-button[aria-expanded="true"] .faq-icon {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="bg-gray-900 text-white min-h-screen flex flex-col">
@@ -94,7 +155,13 @@
         <div id="dynamic-content" class="hidden w-full bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-2xl fade-in">
             
             <!-- Header for the Segment -->
-            <div class="p-8 text-center border-b border-gray-700 bg-gray-800/50">
+            <div class="p-8 text-center border-b border-gray-700 bg-gray-800/50 relative">
+                <button onclick="resetZoneSelection()" class="absolute top-4 left-4 text-gray-400 hover:text-white transition-colors text-sm flex items-center gap-2" aria-label="Change selection">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                    Change Selection
+                </button>
                 <div id="segment-badge" class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 bg-blue-900 text-blue-300">
                     See The Zone
                 </div>
@@ -113,16 +180,17 @@
                 </div>
             </div>
 
-            <!-- Demo Video Placeholder -->
-            <div class="relative bg-black w-full aspect-video flex items-center justify-center group cursor-pointer border-b border-gray-700">
-                <div class="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                <!-- Play Button Icon -->
-                <div class="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm border border-white/20 group-hover:scale-110 transition-transform">
-                    <svg class="w-8 h-8 text-white fill-current ml-1" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </div>
-                <p class="absolute bottom-4 text-xs font-mono text-gray-400">45s Demo Preview</p>
+            <!-- Demo Video -->
+            <div id="demo-video" class="relative bg-black w-full aspect-video border-b border-gray-700 overflow-hidden">
+                <iframe 
+                    src="https://www.youtube.com/embed/b8KMjhkqqYE?rel=0" 
+                    title="HeyBLU Demo Video"
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen
+                    loading="lazy"
+                    class="w-full h-full">
+                </iframe>
             </div>
 
             <!-- Call to Action / Form -->
@@ -142,6 +210,7 @@
                     <div>
                         <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Email</label>
                         <input type="email" name="email" id="founders-email" required class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-colors" placeholder="coach@team.com">
+                        <div id="email-validation" class="hidden mt-1 text-xs"></div>
                     </div>
                     
                     <!-- Hidden field for segment -->
@@ -168,16 +237,33 @@
         </div>
 
         <!-- Success Message (Hidden) -->
-        <div id="success-message" class="hidden w-full bg-green-900/20 border border-green-500/50 rounded-2xl p-8 text-center fade-in">
-            <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        <div id="success-message" class="hidden w-full bg-gray-800 rounded-2xl border border-gray-700 overflow-hidden shadow-2xl fade-in">
+            <!-- Success Header with Dynamic Color Accent -->
+            <div id="success-header" class="p-8 text-center border-b border-gray-700">
+                <div id="success-icon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                </div>
+                <h3 id="success-headline" class="text-3xl font-extrabold text-white mb-2">Welcome to the Founders Program.</h3>
+                <p id="success-subhead" class="text-lg text-gray-300 mb-4">Your "Confidence Guide" is on its way.</p>
             </div>
-            <h3 class="text-2xl font-bold text-white mb-2">Welcome to the Founders.</h3>
-            <p class="text-green-200 mb-6">Your spot is reserved. Check your email for your access code.</p>
-            <button onclick="resetForm()" class="text-gray-400 text-sm hover:text-white underline">Start over</button>
+            
+            <!-- Success Body -->
+            <div class="p-8 bg-gray-900">
+                <p id="success-body" class="text-gray-300 leading-relaxed mb-6 text-center">
+                    You've taken the first step to helping your players see the pitch without fear. Check your email for your access code and a guide on building pitch recognition.
+                </p>
+                
+                <!-- Primary Action Button -->
+                <div class="flex flex-col items-center space-y-4">
+                    <a id="success-primary-button" href="https://apps.apple.com/app/heyblu" target="_blank" rel="noopener noreferrer" class="w-full md:w-auto px-8 py-4 rounded-lg font-bold text-white transition-all transform hover:scale-105 shadow-lg text-center">
+                        Download for iOS
+                    </a>
+                    <button onclick="resetForm()" class="text-gray-400 text-sm hover:text-white underline">Start over</button>
+                </div>
+            </div>
         </div>
 
-        <!-- Social Proof / Footer -->
+        <!-- Social Proof -->
         <div class="mt-12 text-center border-t border-gray-800 pt-8 w-full">
             <p class="text-gray-500 text-sm font-semibold uppercase tracking-wider mb-4">Trusted By Early Adopters</p>
             <div class="flex flex-wrap justify-center gap-6 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
@@ -186,6 +272,106 @@
                 <span class="text-gray-400 font-bold text-lg">NSLL</span>
             </div>
         </div>
+
+        <!-- FAQ Section -->
+        <div class="mt-12 w-full border-t border-gray-800 pt-8">
+            <div class="max-w-2xl mx-auto px-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-8 text-center">Frequently Asked Questions</h2>
+                
+                <div class="space-y-4">
+                    <!-- FAQ Item 1 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Is this an automated ball/strike system (ABS) to replace umpires?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">No. HeyBLU is a development tool, not an officiating tool. We use game-time data to help players understand the zone and coaches teach it. We support umpire development; we don't replace them.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 2 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Do I need sensors, smart balls, or radars?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">No. HeyBLU works entirely from your smartphone camera. No hardware setup, no special balls, and no radar guns required.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Is the app free?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">The "Founders Program" (available during the ABCA launch) offers free access for early adopters who provide feedback. Secure your spot now to lock in this status.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 4 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Can I use this for live games?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">Yes. HeyBLU is designed to capture "game-time truth." It tracks pitch location and tendencies during live play so you can train based on reality, not just batting practice.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 5 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Who owns the data?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">You do. Whether you are a coach, parent, or player, your session data is private unless you choose to share it with a recruiter, trainer, or league administrator.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 w-full border-t border-gray-800 pt-8">
+            <div class="max-w-2xl mx-auto px-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h3 class="font-bold mb-4 text-gray-300">Contact</h3>
+                        <p class="text-gray-400 mb-2"><strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span></p>
+                        <p class="text-gray-400"><a href="mailto:info@heyblu.ai" class="hover:text-white transition">info@heyblu.ai</a></p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold mb-4 text-gray-300">Links</h3>
+                        <div class="space-y-2">
+                            <a href="/privacy" class="block text-gray-400 hover:text-white transition">Privacy Policy</a>
+                            <a href="/terms" class="block text-gray-400 hover:text-white transition">Terms of Service</a>
+                            <a href="/about" class="block text-gray-400 hover:text-white transition">About Us</a>
+                            <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
+                            <a href="/#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="border-t border-gray-800 pt-8 text-center">
+                    <p class="text-gray-400 text-sm">&copy; 2025 <strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span>.AI. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
 
     </main>
 
@@ -294,6 +480,14 @@
             setTimeout(() => {
                 contentArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
+            
+            // Analytics tracking (uncomment when GA4 is set up)
+            // if (typeof gtag !== 'undefined') {
+            //     gtag('event', 'zone_selected', {
+            //         'zone_segment': segmentName,
+            //         'zone_color': zone
+            //     });
+            // }
         }
 
         async function submitFoundersForm(e) {
@@ -339,6 +533,16 @@
                 if (res.ok) {
                     // Success - show success message
                     showSuccess();
+                    
+                    // Analytics tracking (uncomment when GA4 is set up)
+                    // if (typeof gtag !== 'undefined') {
+                    //     gtag('event', 'form_submission', {
+                    //         'form_name': 'founders_program',
+                    //         'zone_segment': segment,
+                    //         'event_category': 'engagement',
+                    //         'event_label': 'Founders Program Signup'
+                    //     });
+                    // }
                 } else {
                     const json = await res.json();
                     if (json.error) {
@@ -364,16 +568,238 @@
             return false;
         }
 
+        // Success state content based on segment
+        const successStates = {
+            Youth: {
+                headline: "Welcome to the Founders Program.",
+                subhead: "Your \"Confidence Guide\" is on its way.",
+                body: "You've taken the first step to helping your players see the pitch without fear. Check your email for your access code and a guide on building pitch recognition.",
+                buttonText: "Download for iOS",
+                buttonLink: "https://apps.apple.com/app/heyblu",
+                accentColor: "bg-blue-600",
+                accentBorder: "border-blue-500",
+                buttonColor: "bg-blue-600 hover:bg-blue-500"
+            },
+            Travel: {
+                headline: "Standard Set.",
+                subhead: "Your Program Access is being prepared.",
+                body: "We are verifying your spot in the Founders Program. Check your inbox for the \"Control The Zone\" playbook to start implementing data standards for your team.",
+                buttonText: "Download for iOS",
+                buttonLink: "https://apps.apple.com/app/heyblu",
+                accentColor: "bg-gray-100",
+                accentBorder: "border-gray-300",
+                buttonColor: "bg-gray-700 hover:bg-gray-600"
+            },
+            Varsity: {
+                headline: "Separation Starts Now.",
+                subhead: "Recruiting-level insights are unlocked.",
+                body: "College coaches don't recruit opinions. They recruit execution. Check your email to start tracking your players' \"Game-Time Truth.\"",
+                buttonText: "Download for iOS",
+                buttonLink: "https://apps.apple.com/app/heyblu",
+                accentColor: "bg-red-600",
+                accentBorder: "border-red-500",
+                buttonColor: "bg-red-600 hover:bg-red-500"
+            },
+            Elite: {
+                headline: "Precision Confirmed.",
+                subhead: "A HeyBLU Senior Operator will contact you shortly.",
+                body: "Due to the high volume of collegiate and elite inquiries, we are prioritizing your onboarding. Look for an email from our team to schedule your Program Walkthrough.",
+                buttonText: "View Demo Video",
+                buttonLink: "#demo-video",
+                accentColor: "bg-gray-800",
+                accentBorder: "border-gray-600",
+                buttonColor: "bg-gray-700 hover:bg-gray-600"
+            }
+        };
+
         function showSuccess() {
+            // Get the selected segment
+            const segment = document.getElementById('segment-input').value;
+            
+            // Hide form and other sections
             document.getElementById('dynamic-content').classList.add('hidden');
             document.getElementById('segment-selector').classList.add('hidden');
             document.getElementById('hero-section').classList.add('hidden');
-            document.getElementById('success-message').classList.remove('hidden');
+            
+            // Get success state data
+            const successData = successStates[segment] || successStates.Youth; // Default to Youth if segment not found
+            
+            // Update success message content
+            document.getElementById('success-headline').textContent = successData.headline;
+            document.getElementById('success-subhead').textContent = successData.subhead;
+            document.getElementById('success-body').textContent = successData.body;
+            
+            // Update button
+            const primaryButton = document.getElementById('success-primary-button');
+            primaryButton.textContent = successData.buttonText;
+            primaryButton.href = successData.buttonLink;
+            
+            // Handle button link behavior
+            if (successData.buttonLink.startsWith('#')) {
+                // Internal link (Elite - View Demo Video)
+                primaryButton.removeAttribute('target');
+                primaryButton.removeAttribute('rel');
+                primaryButton.onclick = function(e) {
+                    e.preventDefault();
+                    // Hide success message and show dynamic content again
+                    document.getElementById('success-message').classList.add('hidden');
+                    document.getElementById('dynamic-content').classList.remove('hidden');
+                    // Scroll to demo video
+                    setTimeout(() => {
+                        const demoVideo = document.getElementById('demo-video');
+                        if (demoVideo) {
+                            demoVideo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 100);
+                };
+            } else {
+                // External link (App Store) - restore target and rel
+                primaryButton.setAttribute('target', '_blank');
+                primaryButton.setAttribute('rel', 'noopener noreferrer');
+                primaryButton.onclick = null;
+            }
+            
+            // Update button color
+            primaryButton.classList.remove('bg-blue-600', 'hover:bg-blue-500', 'bg-gray-700', 'hover:bg-gray-600', 'bg-red-600', 'hover:bg-red-500');
+            primaryButton.classList.add(...successData.buttonColor.split(' '));
+            
+            // Update color accent
+            const successMessage = document.getElementById('success-message');
+            const successHeader = document.getElementById('success-header');
+            const successIcon = document.getElementById('success-icon');
+            
+            // Remove all color classes
+            successMessage.classList.remove('border-blue-500', 'border-gray-300', 'border-red-500', 'border-gray-600');
+            successHeader.classList.remove('border-blue-500', 'border-gray-300', 'border-red-500', 'border-gray-600');
+            successIcon.classList.remove('bg-blue-600', 'bg-gray-100', 'bg-red-600', 'bg-gray-800');
+            
+            // Add appropriate color classes
+            successMessage.classList.add(successData.accentBorder);
+            successHeader.classList.add(successData.accentBorder);
+            successIcon.classList.add(successData.accentColor);
+            
+            // Show success message
+            successMessage.classList.remove('hidden');
+            
+            // Scroll to success message
+            setTimeout(() => {
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         function resetForm() {
             location.reload();
         }
+
+        function resetZoneSelection() {
+            // Hide dynamic content
+            document.getElementById('dynamic-content').classList.add('hidden');
+            
+            // Reset zone buttons
+            document.querySelectorAll('.zone-btn').forEach(btn => {
+                btn.classList.remove('ring-4', 'ring-offset-4', 'ring-offset-gray-900', 'ring-blue-500', 'scale-105');
+                btn.classList.remove('opacity-50', 'scale-95');
+            });
+            
+            // Clear form segment input
+            document.getElementById('segment-input').value = '';
+            
+            // Scroll to zone selector
+            document.getElementById('segment-selector').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // FAQ Accordion Functionality
+        function toggleFaq(button) {
+            const faqItem = button.closest('.faq-item');
+            const content = faqItem.querySelector('.faq-content');
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            const questionText = button.querySelector('span').textContent;
+            
+            // Close all other FAQs (optional - remove if you want multiple open)
+            document.querySelectorAll('.faq-item').forEach(item => {
+                if (item !== faqItem) {
+                    const otherContent = item.querySelector('.faq-content');
+                    const otherButton = item.querySelector('.faq-button');
+                    otherContent.classList.remove('open');
+                    otherButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+            
+            // Toggle current FAQ
+            if (isExpanded) {
+                content.classList.remove('open');
+                button.setAttribute('aria-expanded', 'false');
+            } else {
+                content.classList.add('open');
+                button.setAttribute('aria-expanded', 'true');
+                
+                // Analytics tracking (uncomment when GA4 is set up)
+                // if (typeof gtag !== 'undefined') {
+                //     gtag('event', 'faq_expanded', {
+                //         'faq_question': questionText,
+                //         'event_category': 'engagement'
+                //     });
+                // }
+            }
+        }
+
+        // Initialize FAQ buttons with aria-expanded
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.faq-button').forEach(button => {
+                button.setAttribute('aria-expanded', 'false');
+            });
+            
+            // Real-time email validation
+            const emailInput = document.getElementById('founders-email');
+            const emailValidation = document.getElementById('email-validation');
+            
+            if (emailInput && emailValidation) {
+                emailInput.addEventListener('blur', function(e) {
+                    const email = e.target.value.trim();
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    
+                    if (email && emailRegex.test(email)) {
+                        emailValidation.textContent = '✓ Valid email';
+                        emailValidation.className = 'mt-1 text-xs text-green-400';
+                        emailValidation.classList.remove('hidden');
+                    } else if (email) {
+                        emailValidation.textContent = 'Please enter a valid email address';
+                        emailValidation.className = 'mt-1 text-xs text-red-400';
+                        emailValidation.classList.remove('hidden');
+                    } else {
+                        emailValidation.classList.add('hidden');
+                    }
+                });
+                
+                emailInput.addEventListener('input', function(e) {
+                    if (!e.target.value.trim()) {
+                        emailValidation.classList.add('hidden');
+                    }
+                });
+            }
+            
+            // Keyboard navigation for zone buttons
+            const zoneButtons = document.querySelectorAll('.zone-btn');
+            zoneButtons.forEach((btn, index) => {
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        const nextIndex = (index + 1) % zoneButtons.length;
+                        zoneButtons[nextIndex].focus();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        const prevIndex = (index - 1 + zoneButtons.length) % zoneButtons.length;
+                        zoneButtons[prevIndex].focus();
+                    } else if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        btn.click();
+                    }
+                });
+                
+                // Make buttons focusable
+                btn.setAttribute('tabindex', '0');
+            });
+        });
     </script>
 </body>
 </html>
