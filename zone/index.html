@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Join the HeyBLU Founders Program - Own The Zone with pro-level strike zone tracking for coaches and players.">
     <title>HeyBLU | Own The Zone</title>
+    <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/images/heyblu-logo.svg">
+    <link rel="preload" href="/images/heyblu-logo.svg" as="image" type="image/svg+xml" fetchpriority="high">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/lucide.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
@@ -25,7 +29,9 @@
 
     <!-- Navigation -->
     <nav class="w-full p-6 flex justify-between items-center z-10">
-        <div class="text-2xl font-extrabold tracking-tighter text-blue-500">HeyBLU</div>
+        <a href="/" class="flex items-center">
+            <img src="/images/heyblu-logo.svg" alt="HeyBLU" class="h-8 w-auto" width="200" height="63" loading="eager" fetchpriority="high">
+        </a>
         <div class="text-xs font-semibold uppercase tracking-widest text-gray-400 border border-gray-700 px-3 py-1 rounded-full">
             ABCA Launch Event
         </div>
@@ -95,9 +101,16 @@
                 <h3 id="segment-headline" class="text-3xl font-extrabold text-white mb-2">
                     Confidence Starts With Clarity
                 </h3>
-                <p id="segment-copy" class="text-gray-300 leading-relaxed">
+                <p id="segment-copy" class="text-gray-300 leading-relaxed mb-6">
                     Young players improve faster when they understand the strike zone—without fear. HeyBLU helps youth programs teach recognition and reduce anxiety.
                 </p>
+
+                <!-- REINFORCEMENT: Bullet Points Container -->
+                <div class="bg-gray-900/50 rounded-xl p-4 text-left inline-block max-w-md mx-auto">
+                    <ul id="segment-bullets" class="space-y-2 text-sm text-gray-300">
+                        <!-- Bullets injected via JS -->
+                    </ul>
+                </div>
             </div>
 
             <!-- Demo Video Placeholder -->
@@ -191,24 +204,44 @@
                 badge: "SEE THE ZONE",
                 headline: "Confidence Starts With Clarity",
                 copy: "Young players improve faster when they understand the strike zone—without fear. HeyBLU helps youth programs teach recognition, reduce anxiety, and build better habits early.",
+                bullets: [
+                    "Teach pitch recognition",
+                    "Reduce player anxiety",
+                    "Build better habits early"
+                ],
                 color: "text-blue-400"
             },
             white: {
                 badge: "CONTROL THE ZONE",
                 headline: "Standards Win Seasons",
-                copy: "Travel baseball is won in counts, decisions, and adjustments. The programs that separate don't argue about the zone—they train it. Align your coaches and parents around truth.",
+                copy: "Travel baseball is won in counts, decisions, and adjustments. The programs that separate don't argue about the zone—they train it.",
+                bullets: [
+                    "Teach zone discipline",
+                    "Win counts consistently",
+                    "Align coaches & parents on truth"
+                ],
                 color: "text-white"
             },
             red: {
                 badge: "ATTACK THE ZONE",
                 headline: "Separation Happens on the Edges",
-                copy: "Recruiting decisions are made on execution, not highlights. HeyBLU gives players objective strike-zone truth from real games—no lab required. Win the edges.",
+                copy: "Recruiting decisions are made on execution, not highlights. HeyBLU gives players objective strike-zone truth from real games—no lab required.",
+                bullets: [
+                    "Win the edges",
+                    "Make elite decisions",
+                    "Control the zone under pressure"
+                ],
                 color: "text-red-500"
             },
             black: {
                 badge: "OWN THE ZONE",
                 headline: "Precision Is The Standard",
-                copy: "At the highest levels, the strike zone is measured—not debated. HeyBLU prepares programs for ABS-era baseball with game-based truth and unemotional evaluation.",
+                copy: "At the highest levels, the strike zone is measured—not debated. HeyBLU prepares programs for ABS-era baseball with game-based truth.",
+                bullets: [
+                    "Game-based zone data",
+                    "ABS-era preparation",
+                    "Clear, unemotional evaluation"
+                ],
                 color: "text-gray-300"
             }
         };
@@ -241,6 +274,21 @@
             document.getElementById('segment-copy').textContent = data.copy;
             // Store the segment name instead of color code
             document.getElementById('segment-input').value = segmentName;
+
+            // 3. Update Bullets (Reinforcement)
+            const bulletList = document.getElementById('segment-bullets');
+            bulletList.innerHTML = ''; // Clear previous
+            data.bullets.forEach(bullet => {
+                const li = document.createElement('li');
+                li.className = 'flex items-start';
+                li.innerHTML = `
+                    <svg class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>${bullet}</span>
+                `;
+                bulletList.appendChild(li);
+            });
 
             // Scroll to content
             setTimeout(() => {
