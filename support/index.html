@@ -6,76 +6,19 @@
   <title>Support — HeyBLU</title>
   <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
   <link rel="icon" type="image/svg+xml" href="/images/heyblu-logo.svg">
-  <meta name="description" content="HeyBLU Support — Quick Start, Troubleshooting, TestFlight, App Store & bug reporting." />
+  <meta name="description" content="HeyBLU Support — Contact us for help with the HeyBLU app." />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   
-  <script>window.HEYBLU_CONFIG = {
-    TESTFLIGHT_URL: "https://testflight.apple.com/join/YOUR_INVITE_CODE",
-    SUPPORT_EMAIL: "support@heyblu.ai",
-    PRIVACY_URL: "/privacy",
-    DOCS_URL: "/docs",
-    RELEASE_NOTES_API: "/api/release-notes"
-  };</script>
-
-  <style>
-    :root{
-      --accent:#2563eb;
-      --bg:#f7fbff;
-      --card:#ffffff;
-      --muted:#6b7280;
-      --maxw:1100px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    body{margin:0;background:var(--bg);color:#0f1724;line-height:1.5}
-    .wrap{max-width:var(--maxw);margin:36px auto;padding:24px}
-    header{display:flex;align-items:center;gap:18px;margin-bottom:18px}
-    .logo{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.25rem}
-    .logo .hey{color:#1f2937}
-    .logo .blu{color:#2563eb}
-    .hero{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;background:linear-gradient(90deg,#e9f2ff,white);padding:22px;border-radius:12px}
-    .hero h1{margin:0;font-size:1.4rem}
-    .hero p{margin:6px 0;color:var(--muted)}
-    .quick-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    .btn{background:var(--accent);color:white;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;border:none;cursor:pointer;font-size:0.95rem}
-    .btn:hover{opacity:0.9}
-    .btn.ghost{background:transparent;color:var(--accent);border:1px solid #d9e8ff}
-    .btn.ghost:hover{background:#f0f7ff}
-    main{margin-top:22px;display:grid;grid-template-columns:1fr 320px;gap:20px}
-    article{background:var(--card);padding:20px;border-radius:10px;box-shadow:0 6px 20px rgba(11,140,255,0.06)}
-    aside{position:sticky;top:20px;height:max-content}
-    h2{font-size:1.05rem;margin:0 0 8px 0}
-    .muted{color:var(--muted);font-size:.95rem;margin-bottom:12px}
-    .section{margin-bottom:18px}
-    ul.checklist{padding-left:18px;margin:8px 0}
-    .code{background:#0b1220;color:#e6f0ff;padding:6px 8px;border-radius:6px;font-family:monospace;font-size:.95rem;display:inline-block}
-    .card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-    .card{padding:12px;border-radius:8px;background:#fbfdff;border:1px solid #eef6ff}
-    /* Accordion */
-    .accordion{border-top:1px solid #f1f5f9;border-radius:8px;overflow:hidden}
-    .acc-item{border-bottom:1px solid #f1f5f9}
-    .acc-button{width:100%;text-align:left;padding:12px;display:flex;justify-content:space-between;align-items:center;background:transparent;border:0;font-weight:600;cursor:pointer}
-    .acc-button:hover{background:#f8fafc}
-    .acc-panel{padding:12px 16px;background:white;color:var(--muted)}
-    footer{margin-top:30px;padding:18px 8px;text-align:center;color:var(--muted);font-size:.9rem}
-    form .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    input,textarea,select{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef8;font-size:0.95rem;box-sizing:border-box}
-    textarea{min-height:120px;resize:vertical}
-    .small{font-size:.85rem;color:var(--muted)}
-    .note{background:#fff8e8;padding:10px;border-radius:8px;border:1px solid #ffe7b8;color:#6b4b00}
-    @media (max-width:920px){main{grid-template-columns:1fr}aside{position:static}}
-    a{color:var(--accent);text-decoration:none}
-    a:hover{text-decoration:underline}
-  </style>
   <style>
     body {
       font-family: 'Inter', sans-serif;
     }
   </style>
 </head>
-<body>
+<body class="bg-gray-50">
   <!-- Standard Navigation Bar -->
   <header class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -88,7 +31,6 @@
           <a href="/#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
           <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
           <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">FAQ</a>
-          <a href="/support" class="text-gray-700 hover:text-blue-600 font-medium transition">Support</a>
           <a href="/#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Beta</a>
         </nav>
         <button id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600">
@@ -102,342 +44,150 @@
         <a href="/#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
         <a href="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">About</a>
         <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">FAQ</a>
-        <a href="/support" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Support</a>
         <a href="/#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Beta</a>
       </div>
     </div>
   </header>
 
-  <div class="wrap" style="margin-top: 80px;">
-    <header>
-      <a href="/" class="logo" style="text-decoration: none;">
-        <img src="/images/heyblu-logo.svg" alt="HeyBLU" style="height: 36px; width: auto; margin-right: 8px;" width="200" height="63" loading="eager" fetchpriority="high">
-        <span class="small" style="font-weight:500;color:var(--muted)">Support</span>
-      </a>
-      <div style="margin-left:auto" class="small">Need help? <a href="mailto:support@heyblu.ai">support@heyblu.ai</a></div>
-    </header>
+  <main class="pt-24 pb-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- App Identification (Apple App Store Requirement) -->
+      <div class="text-center mb-12">
+        <img src="/images/heyblu-logo.svg" alt="HeyBLU" class="h-16 w-auto mx-auto mb-6" width="200" height="63" loading="eager">
+        <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">HeyBLU Support</h1>
+        <p class="text-xl text-gray-600">Need help? We're here for you.</p>
+      </div>
 
-    <div class="hero" role="region" aria-label="HeyBLU Support quick actions">
-      <div style="flex:1;min-width:260px">
-        <h1>Quick help for scanning, strike zone and tracking</h1>
-        <p class="muted">Short guides, troubleshooting, TestFlight instructions, and the fastest way to share diagnostics with our team.</p>
-        <div class="quick-links">
-          <a class="btn" href="#quick-start">Quick Start</a>
-          <a class="btn ghost" href="#troubleshooting">Troubleshooting</a>
-          <a class="btn" href="#testflight">TestFlight</a>
-          <a class="btn" href="#report">Report a bug</a>
+      <!-- Primary CTA to FAQ -->
+      <div class="bg-blue-50 border-2 border-blue-200 rounded-2xl p-8 mb-12 text-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">📚 Find Answers Fast</h2>
+        <p class="text-gray-700 mb-6 text-lg">Most questions are answered in our comprehensive FAQ page, including pre-game checklists, setup guides, and troubleshooting tips.</p>
+        <a href="/faq" class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
+          Visit FAQ Page
+          <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+          </svg>
+        </a>
+      </div>
+
+      <!-- Contact Information (Apple App Store Requirement) -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Contact Support</h2>
+        <div class="space-y-4">
+          <div>
+            <h3 class="font-semibold text-gray-900 mb-2">Email Support</h3>
+            <p class="text-gray-600 mb-2">For technical issues, bug reports, or questions:</p>
+            <a href="mailto:support@heyblu.ai" class="text-blue-600 hover:text-blue-700 font-medium text-lg">support@heyblu.ai</a>
+          </div>
+          <div class="pt-4 border-t border-gray-200">
+            <h3 class="font-semibold text-gray-900 mb-2">General Inquiries</h3>
+            <p class="text-gray-600 mb-2">For business or partnership inquiries:</p>
+            <a href="mailto:info@heyblu.ai" class="text-blue-600 hover:text-blue-700 font-medium text-lg">info@heyblu.ai</a>
+          </div>
         </div>
       </div>
 
-      <div style="margin-left:18px;min-width:200px;display:flex;flex-direction:column;gap:8px;align-items:flex-end">
-        <a class="btn" href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL ,'_blank')" rel="noopener">Open TestFlight</a>
-        <a class="btn ghost" href="#release-notes">Release Notes</a>
+      <!-- Bug Reporting Form (Apple App Store Requirement) -->
+      <div class="bg-white rounded-2xl border border-gray-200 shadow-sm p-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">Report a Bug</h2>
+        <p class="text-gray-600 mb-6">Found an issue? Help us fix it by providing details below. You can also use the in-app "Send Feedback" feature.</p>
+
+        <form id="support-form" method="POST" action="https://formspree.io/f/mjkrezok" enctype="multipart/form-data" onsubmit="return submitSupportForm(event)" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
+              <input type="text" name="name" placeholder="Your name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <input type="email" name="email" placeholder="your@email.com" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Device model</label>
+              <input type="text" name="device" placeholder="e.g., iPhone 12" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">iOS version</label>
+              <input type="text" name="ios" placeholder="e.g., 17.2" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Build number / TestFlight ID (optional)</label>
+            <input type="text" name="build" placeholder="HeyBLU build number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Short description</label>
+            <input type="text" name="summary" placeholder="One-line summary of the issue" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Steps to reproduce</label>
+            <textarea name="steps" placeholder="Exact steps to reproduce the issue" required rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"></textarea>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Attach video / logs (optional)</label>
+            <input id="file" type="file" name="attachment" accept="video/*,.zip" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+            <p class="text-sm text-gray-500 mt-1">Max 200MB. For large files, upload to Drive/Dropbox and paste the link in the steps above.</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 items-center">
+            <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
+              Send Report
+            </button>
+            <a href="mailto:support@heyblu.ai" class="px-8 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition">
+              Email Instead
+            </a>
+            <span id="form-status" class="text-sm text-gray-600" role="status" aria-live="polite"></span>
+          </div>
+
+          <p class="text-sm text-gray-500">Include timestamp in video and approximate pitch time for easier debugging.</p>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white py-12 px-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+        <div>
+          <div class="flex items-center mb-4">
+            <img src="/images/heyblu-logo.svg" alt="HeyBLU" class="h-8 w-auto" width="160" height="50" loading="lazy">
+          </div>
+          <p class="text-gray-400">Pro-level strike calls for every field.</p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-4">Contact</h3>
+          <p class="text-gray-400 mb-2"><strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span></p>
+          <p class="text-gray-400"><a href="mailto:info@heyblu.ai" class="hover:text-white transition">info@heyblu.ai</a></p>
+        </div>
+        <div>
+          <h3 class="font-bold mb-4">Links</h3>
+          <div class="space-y-2">
+            <a href="/privacy" class="block text-gray-400 hover:text-white transition">Privacy Policy</a>
+            <a href="/terms" class="block text-gray-400 hover:text-white transition">Terms of Service</a>
+            <a href="/about" class="block text-gray-400 hover:text-white transition">About Us</a>
+            <a href="/faq" class="block text-gray-400 hover:text-white transition">FAQ</a>
+            <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
+            <a href="/#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 pt-8 text-center">
+        <p class="text-gray-400">&copy; 2025 <strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span>.AI. All rights reserved.</p>
       </div>
     </div>
-
-    <main>
-      <article>
-        <!-- Quick Start -->
-        <section id="quick-start" class="section">
-          <h2>Quick Start</h2>
-          <p class="muted">Get up and running in under 2 minutes.</p>
-          <div class="note" style="margin-bottom:12px">
-            <strong>App Store Available:</strong> HeyBLU is now available on the App Store. Download it directly for the latest stable release. TestFlight is for beta testing and early access to new features.
-          </div>
-
-          <div class="card-grid" style="margin-top:10px">
-            <div class="card">
-              <strong>1. Install</strong>
-              <p class="small">Download from the App Store, or install the beta via TestFlight: <br><a href="#" onclick="window.open(window.HEYBLU_CONFIG.TESTFLIGHT_URL,'_blank')">Join via TestFlight</a></p>
-            </div>
-            <div class="card">
-              <strong>2. Permissions</strong>
-              <p class="small">Allow <span class="code">Camera</span>, <span class="code">Microphone</span> & <span class="code">Motion</span> when prompted.</p>
-            </div>
-            <div class="card">
-              <strong>3. First Scan</strong>
-              <p class="small">Mount the device, center plate in view, tap <span class="code">Scan</span> → place strike zone → tap <span class="code">Start</span>.</p>
-            </div>
-            <div class="card">
-              <strong>Device requirements</strong>
-              <p class="small">iOS 15+, rear camera; recommended: iPhone 11 or newer for best tracking quality.</p>
-            </div>
-          </div>
-          <p class="small">For the most accurate, up-to-date guidance on setup and tracking, follow the step-by-step instructions shown inside the HeyBLU app.</p>
-        </section>
-
-        <!-- How to scan -->
-        <section id="how-to-scan" class="section">
-          <h2>How to scan</h2>
-          <p class="muted">Tips to collect high-quality video for consistent tracking.</p>
-          <ol>
-            <li><strong>Lighting:</strong> HeyBLU is currently built for outdoor, daytime use. Night games and indoor use may not work reliably yet and are still being improved.</li>
-            <li><strong>Mounting:</strong> Use a tripod or steady mount. Aim for roughly 10–20 feet away, as long as the plate and mound stay clearly visible.</li>
-            <li><strong>Orientation:</strong> For scanning and pitch tracking Landscape is required. Keep both home plate and the pitcher's mound fully visible in the frame.</li>
-            <li><strong>Settings:</strong> You don't need to change any camera settings on your iPhone. HeyBLU configures the camera automatically—just open the app and follow the prompts.</li>
-            <li><strong>Sample video:</strong> If tracking fails, record a short 10–20s clip showing the issue to attach to your report.</li>
-          </ol>
-          <p class="small">Always follow the in-app setup instructions. If anything here conflicts with the app, the in-app guidance is the source of truth.</p>
-        </section>
-
-        <!-- Strike zone placement -->
-        <section id="strike-zone" class="section">
-          <h2>Placing home plate (strike zone setup)</h2>
-          <p class="muted">HeyBLU builds the strike zone from the position of home plate. The app will walk you through plate placement; use these guidelines as a quick reference.</p>
-          <ul class="checklist">
-            <li>Make sure home plate is fully visible in the frame and not blocked. Best if the camera is within 2 feet of home plate facing it at a downward angle but not directly downward.</li>
-            <li>When the app prompts you, follow the on-screen instructions to tap on home plate. Tap the exact center of home plate. Be as precise as you can.</li>
-            <li>If the strike zone moves, the lighting changes a lot, or the pitches aren't being called accurately, re-run plate placement from inside the app.</li>
-            <li>Use the in-app preview pitches to confirm the zone and pitch location calls look accurate before you start a live inning.</li>
-          </ul>
-        </section>
-
-        <!-- Troubleshooting -->
-        <section id="troubleshooting" class="section">
-          <h2>Troubleshooting — When it isn't tracking</h2>
-          <p class="muted">Run this checklist in order — most issues are resolved in steps 1–4.</p>
-
-          <ol>
-            <li><strong>Permissions</strong> — Confirm Camera, Microphone, and Motion sensors are allowed (Settings → HeyBLU).</li>
-            <li><strong>Lighting & background</strong> — Move to even light and reduce background clutter behind the plate.</li>
-            <li><strong>Framing</strong> — Ensure the plate is fully visible and the strike zone is correctly placed.</li>
-            <li><strong>Device health</strong> — Close background apps, free space, reboot, reinstall if necessary.</li>
-            <li><strong>Update</strong> — Make sure you're on the latest TestFlight build.</li>
-            <li><strong>Sample test</strong> — Try a known-good sample video. If that works, contrast with your setup to find the difference.</li>
-            <li><strong>Network</strong> — If cloud processing is required, ensure stable internet.</li>
-            <li><strong>Capture diagnostics</strong> — Record a 10–30s clip showing the issue and describe steps to reproduce (see Report a bug).</li>
-          </ol>
-
-          <div style="margin-top:12px" class="accordion" id="errors">
-            <div class="acc-item">
-              <button class="acc-button" aria-expanded="false" aria-controls="err1" onclick="toggleAcc(this)">
-                Common error: "Tracking lost" <span class="small" aria-hidden>▾</span>
-              </button>
-              <div id="err1" class="acc-panel" hidden>
-                Try: center strike zone, move to brighter light, ensure plate not occluded. If persistent, send diagnostic video + device model.
-              </div>
-            </div>
-            <div class="acc-item">
-              <button class="acc-button" aria-expanded="false" aria-controls="err2" onclick="toggleAcc(this)">
-                App freezes / crashes <span class="small" aria-hidden>▾</span>
-              </button>
-              <div id="err2" class="acc-panel" hidden>
-                Reboot device, reinstall via TestFlight, and send crash logs along with the TestFlight build number.
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Report a bug -->
-        <section id="report" class="section">
-          <h2>Report a bug</h2>
-          <p class="muted">Fastest route: in-app "Send Feedback." Or use the form below to email us diagnostics.</p>
-
-          <form id="support-form" method="POST" action="https://formspree.io/f/mjkrezok" enctype="multipart/form-data" onsubmit="return submitSupportForm(event)">
-            <div class="row">
-              <input type="text" name="name" placeholder="Your name" required />
-              <input type="email" name="email" placeholder="Email" required />
-            </div>
-
-            <div class="row" style="margin-top:10px">
-              <input type="text" name="device" placeholder="Device model (e.g., iPhone 12)" required />
-              <input type="text" name="ios" placeholder="iOS version (e.g., 17.2)" required />
-            </div>
-
-            <div style="margin-top:10px">
-              <input type="text" name="build" placeholder="HeyBLU build number / TestFlight ID" />
-            </div>
-
-            <div style="margin-top:10px">
-              <label class="small">Short description</label>
-              <input type="text" name="summary" placeholder="One-line summary" required/>
-            </div>
-
-            <div style="margin-top:10px">
-              <label class="small">Steps to reproduce</label>
-              <textarea name="steps" placeholder="Exact steps to reproduce the issue" required></textarea>
-            </div>
-
-            <div style="margin-top:10px">
-              <label class="small">Attach video / logs (mp4, mov, .zip)</label>
-              <input id="file" type="file" name="attachment" accept="video/*,.zip" />
-              <div class="small" style="margin-top:6px">Max 200MB (or use a share link). If large, upload to Drive/Dropbox and paste link into the steps.</div>
-            </div>
-
-            <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
-              <button class="btn" type="submit">Send report</button>
-              <a class="btn ghost" href="mailto:support@heyblu.ai">Email support</a>
-              <span class="small" id="form-status" role="status" aria-live="polite"></span>
-            </div>
-
-            <p class="small" style="margin-top:8px">Include timestamp in video and the approximate pitch time for easier debugging.</p>
-          </form>
-        </section>
-
-        <!-- TestFlight -->
-        <section id="testflight" class="section">
-          <h2>TestFlight & Beta testers</h2>
-          <p class="muted">HeyBLU is now available on the App Store! TestFlight is for beta testing and early access to new features.</p>
-          <div class="note" style="margin-bottom:12px">
-            <strong>App Store Available:</strong> HeyBLU is now available on the App Store. Download it directly from the App Store for the latest stable release.
-          </div>
-          <p class="muted" style="margin-top:12px">For beta testers using TestFlight:</p>
-          <ol>
-            <li>Open the TestFlight invite link and install the app.</li>
-            <li>To update: open TestFlight → tap Update.</li>
-            <li>To share a crash: open TestFlight → App → Share Beta Feedback or send diagnostics from within the app.</li>
-            <li>Include device model, iOS version, TestFlight build number and a short reproduction video.</li>
-          </ol>
-        </section>
-
-        <!-- App Store -->
-        <section id="appstore" class="section">
-          <h2>App Store & Apple Review</h2>
-          <p class="muted">HeyBLU is now available on the App Store!</p>
-          <ul class="checklist">
-            <li>HeyBLU is available for download on the App Store.</li>
-            <li>TestFlight remains available for beta testing and early access to new features.</li>
-            <li>For support or questions about the App Store version, contact us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>.</li>
-          </ul>
-        </section>
-
-        <!-- Release notes -->
-        <section id="release-notes" class="section">
-          <h2>Release Notes & Known issues</h2>
-          <p class="muted">Latest versions and known issues — check before reporting.</p>
-
-          <div style="margin-top:8px">
-            <div style="padding:10px;border-radius:8px;background:#fcfeff;border:1px solid #e9f8ff">
-              <strong>Version 2.3.4 — December 6, 2025</strong>
-              <div class="small" style="margin-top:6px">
-                <div style="margin-top:4px"><strong>Fixes:</strong> NA</div>
-                <div style="margin-top:4px"><strong>Improvements:</strong> new All Fields Model</div>
-                <div style="margin-top:4px"><strong>Known Issues:</strong> untested All Fields Model</div>
-              </div>
-            </div>
-
-            <div style="padding:10px;border-radius:8px;background:#fffaf8;border:1px solid #fff0e6;margin-top:10px">
-              <strong>Version 2.3.3 — December 5, 2025</strong>
-              <div class="small" style="margin-top:6px">
-                <div style="margin-top:4px"><strong>Fixes:</strong> AR World Tracking drift</div>
-                <div style="margin-top:4px"><strong>Known Issues:</strong> unstable strike zone</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- FAQ -->
-        <section id="faq" class="section">
-          <h2>FAQ</h2>
-          <div class="accordion">
-            <div class="acc-item">
-              <button class="acc-button" aria-expanded="false" aria-controls="faq1" onclick="toggleAcc(this)">Will HeyBLU work with my phone? <span class="small">▾</span></button>
-              <div id="faq1" class="acc-panel" hidden>Most modern iPhones (iPhone XR and newer) are supported. For best results use iPhone 11 or later.</div>
-            </div>
-            <div class="acc-item">
-              <button class="acc-button" aria-expanded="false" aria-controls="faq2" onclick="toggleAcc(this)">How accurate is strike tracking? <span class="small">▾</span></button>
-              <div id="faq2" class="acc-panel" hidden>Accuracy depends on placement, lighting and device. With correct setup our models typically match human calls within league tolerances.</div>
-            </div>
-            <div class="acc-item">
-              <button class="acc-button" aria-expanded="false" aria-controls="faq3" onclick="toggleAcc(this)">
-                How do I delete my account and data? <span class="small">▾</span>
-              </button>
-              <div id="faq3" class="acc-panel" hidden>
-                You can request full account deletion directly within the app (Settings > Account > Delete Account) or by emailing us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>. We process all deletion requests within 48 hours and remove all associated personal data.
-              </div>
-            </div>
-          </div>
-        </section>
-      </article>
-
-      <aside>
-        <div class="card" style="margin-bottom:12px">
-          <strong>Quick diagnostics</strong>
-          <p class="small">If nothing works: capture a 10–30s clip, include device model + build number, and attach it to a report.</p>
-          <a class="btn" href="#report">Report now</a>
-        </div>
-
-        <div class="card">
-          <strong>Support</strong>
-          <p class="small">In-app feedback (preferred). Or email: <a href="mailto:support@heyblu.ai">support@heyblu.ai</a></p>
-          <p class="small">Privacy: <a href="/privacy">policy</a></p>
-        </div>
-      </aside>
-    </main>
-
-    <footer class="bg-gray-800 text-white py-12 px-4 mt-12">
-      <div class="max-w-6xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-          <div>
-            <div class="flex items-center mb-4">
-              <img src="/images/heyblu-logo.svg" alt="HeyBLU" class="h-8 w-auto" width="160" height="50" loading="lazy">
-            </div>
-            <p class="text-gray-400">Pro-level strike calls for every field.</p>
-          </div>
-          <div>
-            <h3 class="font-bold mb-4 text-white">Contact</h3>
-            <p class="text-gray-400 mb-2"><strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span></p>
-            <p class="text-gray-400"><a href="mailto:info@heyblu.ai" class="hover:text-white transition">info@heyblu.ai</a></p>
-          </div>
-          <div>
-            <h3 class="font-bold mb-4 text-white">Links</h3>
-            <div class="space-y-2">
-              <a href="/privacy" class="block text-gray-400 hover:text-white transition">Privacy Policy</a>
-              <a href="/terms" class="block text-gray-400 hover:text-white transition">Terms of Service</a>
-              <a href="/about" class="block text-gray-400 hover:text-white transition">About Us</a>
-              <a href="/faq" class="block text-gray-400 hover:text-white transition">FAQ</a>
-              <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
-              <a href="/#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
-            </div>
-          </div>
-        </div>
-        <div class="border-t border-gray-700 pt-8 text-center">
-          <p class="text-gray-400">&copy; 2025 <strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span>.AI. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  </div>
+  </footer>
 
   <script>
-    /* accordion handling */
-    function toggleAcc(btn){
-      const expanded = btn.getAttribute('aria-expanded') === 'true';
-      btn.setAttribute('aria-expanded', String(!expanded));
-      const id = btn.getAttribute('aria-controls');
-      const panel = document.getElementById(id);
-      if(!panel) return;
-      if(expanded){
-        panel.hidden = true;
-      }else{
-        panel.hidden = false;
-      }
-    }
-
-    /* support form (simple UX only) */
-    async function submitSupportForm(e){
-      e.preventDefault();
-      const form = e.target;
-      const status = document.getElementById('form-status');
-      status.textContent = 'Sending…';
-      const data = new FormData(form);
-
-      try{
-        const res = await fetch(form.action, {method:'POST', body: data});
-        if(res.ok){
-          status.textContent = 'Report sent — we will respond within 48 hours.';
-          form.reset();
-        } else {
-          const text = await res.text();
-          status.textContent = 'Error sending: ' + (text || res.status);
-        }
-      }catch(err){
-        console.error(err);
-        status.textContent = 'Network error. Email issues to ' + window.HEYBLU_CONFIG.SUPPORT_EMAIL;
-      }
-      setTimeout(()=> status.textContent = '', 6000);
-      return false;
-    }
-
     // Mobile menu toggle
     const menuBtn = document.getElementById('menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -446,7 +196,47 @@
         mobileMenu.classList.toggle('hidden');
       });
     }
+
+    // Support form submission
+    async function submitSupportForm(e) {
+      e.preventDefault();
+      const form = e.target;
+      const status = document.getElementById('form-status');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      
+      status.textContent = 'Sending…';
+      status.className = 'text-sm text-blue-600';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+      
+      const data = new FormData(form);
+
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: data });
+        if (res.ok) {
+          status.textContent = 'Report sent — we will respond within 48 hours.';
+          status.className = 'text-sm text-green-600';
+          form.reset();
+        } else {
+          const text = await res.text();
+          status.textContent = 'Error sending: ' + (text || res.status);
+          status.className = 'text-sm text-red-600';
+        }
+      } catch (err) {
+        console.error(err);
+        status.textContent = 'Network error. Please email support@heyblu.ai';
+        status.className = 'text-sm text-red-600';
+      }
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      setTimeout(() => {
+        status.textContent = '';
+        status.className = 'text-sm text-gray-600';
+      }, 6000);
+      return false;
+    }
   </script>
 </body>
 </html>
-
