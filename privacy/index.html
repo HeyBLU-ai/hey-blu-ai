@@ -212,11 +212,102 @@
             font-weight: 600;
             color: #1a1a1a;
         }
+        .nav-bar {
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .nav-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9375rem;
+            transition: color 0.2s;
+        }
+        .nav-links a:hover {
+            color: white;
+        }
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+        .mobile-menu {
+            display: none;
+            padding: 1rem 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .mobile-menu a {
+            display: block;
+            padding: 0.75rem 0;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .mobile-menu.active {
+                display: block;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <header class="header-section">
+    <!-- Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-content">
+            <a href="/" class="flex items-center">
+                <img src="/images/HeyBLU%20vector%20white%20with%20blue1.png" alt="HeyBLU" class="h-16 md:h-20 w-auto max-w-[300px]" loading="eager" fetchpriority="high">
+            </a>
+            <div class="nav-links">
+                <a href="/#features">Features</a>
+                <a href="/#how-it-works">How It Works</a>
+                <a href="/about">About</a>
+                <a href="/faq">FAQ</a>
+                <a href="/#beta" style="background: #2563eb; color: white; padding: 0.5rem 1.5rem; border-radius: 0.5rem; font-weight: 600;">Join Beta</a>
+            </div>
+            <button class="mobile-menu-btn" id="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                </svg>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="/#features">Features</a>
+            <a href="/#how-it-works">How It Works</a>
+            <a href="/about">About</a>
+            <a href="/faq">FAQ</a>
+            <a href="/#beta">Join Beta</a>
+        </div>
+    </nav>
+
+    <header class="header-section" style="margin-top: 80px;">
         <div class="container-main">
             <h1>Privacy Policy</h1>
             <p>Your privacy is important to us. This policy explains how we handle your personal information.</p>
@@ -523,6 +614,10 @@
             const today = new Date();
             document.getElementById('current-year').textContent = today.getFullYear();
         });
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
