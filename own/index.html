@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OWN THE ZONE - Objective Strike Feedback. Right on Your Phone. No Hardware. No Radar Gun. Just an iPhone.">
+    <title>OWN THE ZONE - HeyBLU</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heyblu.ai/own">
+    <meta property="og:title" content="OWN THE ZONE - HeyBLU">
+    <meta property="og:description" content="Objective Strike Feedback. Right on Your Phone. No Hardware. No Radar Gun. Just an iPhone.">
+    <meta property="og:image" content="https://heyblu.ai/images/HeyBLU vector logo.svg">
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://heyblu.ai/own">
+    <meta name="twitter:title" content="OWN THE ZONE - HeyBLU">
+    <meta name="twitter:description" content="Objective Strike Feedback. Right on Your Phone.">
+    <meta name="twitter:image" content="https://heyblu.ai/images/HeyBLU vector logo.svg">
+    
+    <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
+    <link rel="preload" href="/images/HeyBLU vector logo.svg" as="image" type="image/svg+xml" fetchpriority="high">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .flyer-container {
+            width: 100%;
+            max-width: 800px;
+            aspect-ratio: 1 / 1.414; /* A4 aspect ratio */
+            margin: 40px auto;
+            background: #FFFFFF;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Responsive adjustment for small screens */
+        @media (max-width: 840px) {
+            .flyer-container {
+                aspect-ratio: auto;
+                min-height: 100vh;
+                margin: 0;
+            }
+        }
+
+        .accent-blue {
+            color: #007AFF;
+        }
+        
+        .bg-accent-blue {
+            background-color: #007AFF;
+        }
+
+        /* 3D Ribbon Effect for SVG */
+        .ribbon-trail {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            animation: dash 3s ease-out forwards;
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Flyer Sheet -->
+    <div class="flyer-container">
+        
+        <!-- 1. HEADER SECTION (Top 15%) -->
+        <header class="pt-16 pb-8 text-center px-8">
+            <!-- Logo -->
+            <div class="mb-4 flex justify-center">
+                <img src="/images/New%20Font%20HeyBLU%20logo%20-%20blue%20blu1.svg" alt="HeyBLU" class="h-12 md:h-16 w-auto max-h-[4rem]" loading="eager" fetchpriority="high">
+            </div>
+            <h1 class="text-6xl font-black tracking-tighter text-black mb-2 leading-none">
+                Own the <span class="accent-blue">Zone</span>
+            </h1>
+            <p class="text-2xl font-medium text-gray-600 tracking-tight">
+                Objective Strike Feedback. Right on Your Phone.
+            </p>
+        </header>
+
+        <!-- 2. HERO IMAGE SECTION (Center) -->
+        <div class="flex-grow flex flex-col justify-center items-center relative py-4">
+            
+            <!-- CSS iPhone Mockup (Landscape) -->
+            <div class="relative w-[500px] h-[250px] bg-black rounded-[3rem] border-8 border-gray-900 shadow-2xl z-10 overflow-hidden ring-4 ring-gray-300/50">
+                <!-- Notch (Left Side for Landscape) -->
+                <div class="absolute left-0 top-1/2 transform -translate-y-1/2 w-6 h-32 bg-black rounded-r-2xl z-20"></div>
+                
+                <!-- Screen Content -->
+                <div class="w-full h-full bg-green-800 relative overflow-hidden">
+                    <!-- SVG Visual: 3D Pitch View (Landscape Perspective) -->
+                    <svg class="w-full h-full" viewBox="0 0 600 300" preserveAspectRatio="none">
+                        <!-- Field Grass Gradient -->
+                        <defs>
+                            <linearGradient id="grass" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a472a;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#2d6a4f;stop-opacity:1" />
+                            </linearGradient>
+                            <!-- Ball Glow -->
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grass)"/>
+
+                        <!-- Grid/Field Lines (Wide Perspective) -->
+                        <path d="M0 300 L200 150 M600 300 L400 150" stroke="rgba(255,255,255,0.2)" stroke-width="2"/>
+                        <line x1="0" y1="150" x2="600" y2="150" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        
+                        <!-- Home Plate (Centered Bottom) -->
+                        <path d="M270 240 L330 240 L330 255 L300 270 L270 255 Z" fill="white" stroke="rgba(0,0,0,0.2)" stroke-width="2"/>
+
+                        <!-- Strike Zone Box (Floating Center) -->
+                        <rect x="260" y="120" width="80" height="100" fill="none" stroke="white" stroke-width="3" stroke-dasharray="5,5" opacity="0.8"/>
+
+                        <!-- Pitch 1: Fastball (92) - High Heat -->
+                        <!-- Ribbon -->
+                        <path d="M300 -50 Q290 100 280 140" fill="none" stroke="#007AFF" stroke-width="5" stroke-opacity="0.6" class="ribbon-trail" style="animation-delay: 0.2s"/>
+                        <path d="M300 -50 Q290 100 280 140" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.9" class="ribbon-trail" style="animation-delay: 0.2s"/>
+                        <!-- Ball/Bubble -->
+                        <circle cx="280" cy="140" r="12" fill="white" filter="url(#glow)"/>
+                        <text x="280" y="144" font-family="sans-serif" font-size="9" font-weight="bold" fill="#007AFF" text-anchor="middle">92</text>
+
+                        <!-- Pitch 2: Curve (89) - Breaking Low -->
+                        <!-- Ribbon -->
+                        <path d="M320 -50 Q330 100 310 210" fill="none" stroke="#007AFF" stroke-width="5" stroke-opacity="0.6" class="ribbon-trail" style="animation-delay: 0.5s"/>
+                        <path d="M320 -50 Q330 100 310 210" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.9" class="ribbon-trail" style="animation-delay: 0.5s"/>
+                        <!-- Ball/Bubble -->
+                        <circle cx="310" cy="210" r="12" fill="white" filter="url(#glow)"/>
+                        <text x="310" y="214" font-family="sans-serif" font-size="9" font-weight="bold" fill="#007AFF" text-anchor="middle">89</text>
+
+                        <!-- Pitch 3: Slider (90) - Corner Paint -->
+                        <!-- Ribbon -->
+                        <path d="M280 -50 Q270 80 265 180" fill="none" stroke="#007AFF" stroke-width="5" stroke-opacity="0.6" class="ribbon-trail" style="animation-delay: 0.8s"/>
+                        <path d="M280 -50 Q270 80 265 180" fill="none" stroke="#60a5fa" stroke-width="2" stroke-opacity="0.9" class="ribbon-trail" style="animation-delay: 0.8s"/>
+                        <!-- Ball/Bubble -->
+                        <circle cx="265" cy="180" r="12" fill="white" filter="url(#glow)"/>
+                        <text x="265" y="184" font-family="sans-serif" font-size="9" font-weight="bold" fill="#007AFF" text-anchor="middle">90</text>
+
+                        <!-- UI Overlay -->
+                        <text x="300" y="285" text-anchor="middle" fill="white" font-size="10" opacity="0.8" font-family="sans-serif" letter-spacing="1">LIVE TRACKING // LANDSCAPE</text>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Soft Shadow under phone (Wider) -->
+            <div class="absolute bottom-4 w-96 h-4 bg-black/20 rounded-[100%] blur-xl transform translate-y-4"></div>
+        </div>
+
+        <!-- 3. MID-SECTION -->
+        <div class="text-center px-8 pb-12">
+            <h2 class="text-3xl font-bold text-gray-900 mb-2">Stop Guessing. Start Measuring.</h2>
+            <p class="text-xl text-gray-500 font-light">Any field or bullpen. No Cell, WiFi or extra cameras needed.</p>
+        </div>
+
+        <!-- 4. BENEFITS SECTION -->
+        <div class="px-12 pb-16">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Benefit 1 -->
+                <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4 text-blue-600">
+                        <!-- Chart Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">Smart Bullpens</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Turn "throwing" into "training" with automated charts.</p>
+                </div>
+
+                <!-- Benefit 2 -->
+                <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4 text-blue-600">
+                        <!-- Target Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">Visual Verification</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">See exactly where the pitch crossed the plate with 3D precision.</p>
+                </div>
+
+                <!-- Benefit 3 -->
+                <div class="flex flex-col items-center md:items-start text-center md:text-left">
+                    <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4 text-blue-600">
+                        <!-- Lightning Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-1">Velocity Tendencies</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed">Track speed trends instantly without an expensive radar gun.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. FOOTER -->
+        <div class="bg-black text-white py-6 px-8 mt-auto w-full">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                <div class="mb-4 md:mb-0">
+                    <h4 class="font-bold text-lg tracking-wider mb-1">ABCA Exclusive: Join the Founders Club</h4>
+                    <p class="text-gray-400 text-sm">(Limited to first 500 Programs. *<span class="italic">Ask how to qualify</span>)</p>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-white">$49<span class="text-lg font-normal text-gray-400">/Year</span></div>
+                    <div class="text-xs uppercase tracking-widest text-blue-400 font-semibold">Locked for Life</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
+

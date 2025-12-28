@@ -487,45 +487,46 @@
   </footer>
 
   <script>
-    // Mobile menu toggle
-    const menuBtn = document.getElementById('menu-btn');
-    const mobileMenu = document.getElementById('mobile-menu');
-    if (menuBtn && mobileMenu) {
-      menuBtn.addEventListener('click', () => {
-        mobileMenu.classList.toggle('hidden');
-      });
-    }
-
-    // FAQ Accordion Functionality
-    function toggleFaq(button) {
-      const contentId = button.getAttribute('aria-controls');
-      const content = document.getElementById(contentId);
-      const isExpanded = button.getAttribute('aria-expanded') === 'true';
-
-      // Close all other FAQs (single-open accordion)
-      document.querySelectorAll('[aria-expanded="true"]').forEach(b => {
-        if (b !== button) {
-          b.setAttribute('aria-expanded', 'false');
-          const otherContentId = b.getAttribute('aria-controls');
-          const otherContent = document.getElementById(otherContentId);
-          if (otherContent) {
-            otherContent.classList.remove('open');
-          }
-        }
-      });
-
-      // Toggle current FAQ
-      if (isExpanded) {
-        button.setAttribute('aria-expanded', 'false');
-        content.classList.remove('open');
-      } else {
-        button.setAttribute('aria-expanded', 'true');
-        content.classList.add('open');
-      }
-    }
-
-    // Initialize FAQ buttons with aria-expanded
+    // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', function() {
+      // Mobile menu toggle
+      const menuBtn = document.getElementById('menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      if (menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      // FAQ Accordion Functionality
+      function toggleFaq(button) {
+        const contentId = button.getAttribute('aria-controls');
+        const content = document.getElementById(contentId);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+        // Close all other FAQs (single-open accordion)
+        document.querySelectorAll('[aria-expanded="true"]').forEach(b => {
+          if (b !== button) {
+            b.setAttribute('aria-expanded', 'false');
+            const otherContentId = b.getAttribute('aria-controls');
+            const otherContent = document.getElementById(otherContentId);
+            if (otherContent) {
+              otherContent.classList.remove('open');
+            }
+          }
+        });
+
+        // Toggle current FAQ
+        if (isExpanded) {
+          button.setAttribute('aria-expanded', 'false');
+          content.classList.remove('open');
+        } else {
+          button.setAttribute('aria-expanded', 'true');
+          content.classList.add('open');
+        }
+      }
+
+      // Initialize FAQ buttons with aria-expanded
       document.querySelectorAll('[aria-controls^="faq-"]').forEach(button => {
         if (!button.hasAttribute('aria-expanded')) {
           button.setAttribute('aria-expanded', 'false');
@@ -541,7 +542,11 @@
             const target = document.querySelector(href);
             if (target) {
               target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-              mobileMenu.classList.add('hidden');
+              // Query mobileMenu again to ensure it exists
+              const mobileMenuRef = document.getElementById('mobile-menu');
+              if (mobileMenuRef) {
+                mobileMenuRef.classList.add('hidden');
+              }
             }
           }
         });
