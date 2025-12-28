@@ -226,167 +226,175 @@
 
     </div>
 
-    <!-- SEPARATOR: New Section -->
-    <div class="w-full h-1 bg-gradient-to-r from-transparent via-gray-400 to-transparent my-8"></div>
+    <!-- PAGE BREAK SEPARATOR -->
+    <div class="w-full py-8 flex items-center justify-center">
+        <div class="w-full max-w-[800px] h-px bg-gradient-to-r from-transparent via-gray-400 to-transparent"></div>
+    </div>
 
-    <!-- Zone Progression & Tech Section -->
-    <div class="w-full bg-gray-900 text-white py-16 px-4">
-        <div class="max-w-6xl mx-auto">
+    <!-- Second Flyer Sheet: Zone Progression & Tech -->
+    <div class="flyer-container">
+        
+        <!-- 1. HEADLINE SECTION -->
+        <header class="pt-16 pb-8 text-center px-8">
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-black">
+                Develop Zone Control
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto font-light">
+                From Player complaints, to ground truth training.
+            </p>
+        </header>
+
+        <!-- 2. ZONE PROGRESSION CHART -->
+        <div class="px-8 pb-8">
+            <h3 class="text-sm font-bold text-center mb-8 text-blue-600 tracking-[0.2em] uppercase">The Zone Progression Based on Level</h3>
             
-            <!-- 1. HEADLINE -->
-            <div class="text-center mb-12">
-                <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
-                    A DEVELOPMENT TOOL.<br />
-                    <span class="text-blue-400">NOT AN OFFICIATING TOOL.</span>
-                </h2>
-                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
-                    HeyBLU gives you the objective truth you need to train decision-making, not argue calls.
-                </p>
-            </div>
-
-            <!-- 2. ZONE PROGRESSION CHART -->
-            <div class="mb-16">
-                <h3 class="text-2xl font-bold text-center mb-8 text-gray-200">The Zone Progression</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Youth Level -->
-                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:border-blue-500 transition">
-                        <div class="text-center mb-4">
-                            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-blue-900 text-blue-300 mb-3">Youth</div>
-                            <h4 class="text-lg font-bold text-white mb-2">SEE THE ZONE</h4>
-                            <p class="text-sm text-gray-400 mb-3">12-14u</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Youth Level -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-blue-500 transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 border-b border-gray-300 pb-2">
+                            <span class="text-blue-600 font-bold text-xs uppercase tracking-wider">Youth</span>
+                            <span class="text-gray-500 text-xs font-mono">12-14u</span>
                         </div>
-                        <div class="border-t border-gray-700 pt-4">
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Goal:</p>
-                            <p class="text-sm text-gray-400 mb-3">SEE THE ZONE</p>
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Outcome:</p>
-                            <p class="text-sm text-gray-400">Build confidence. Eliminate fear of the box.</p>
-                        </div>
+                        <h4 class="text-xl font-black text-gray-900 mb-2">SEE<br><span class="text-gray-500">THE ZONE</span></h4>
                     </div>
+                    <p class="text-xs text-gray-600 font-medium leading-relaxed">Build confidence and eliminate fear of the box.</p>
+                </div>
 
-                    <!-- Travel Ball Level -->
-                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:border-blue-500 transition">
-                        <div class="text-center mb-4">
-                            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-gray-700 text-gray-300 mb-3">Travel Ball</div>
-                            <h4 class="text-lg font-bold text-white mb-2">CONTROL THE ZONE</h4>
-                            <p class="text-sm text-gray-400 mb-3">Club Programs</p>
+                <!-- Travel Ball Level -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-blue-500 transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 border-b border-gray-300 pb-2">
+                            <span class="text-gray-700 font-bold text-xs uppercase tracking-wider">Travel Ball</span>
+                            <span class="text-gray-500 text-xs font-mono">Club</span>
                         </div>
-                        <div class="border-t border-gray-700 pt-4">
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Goal:</p>
-                            <p class="text-sm text-gray-400 mb-3">CONTROL THE ZONE</p>
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Outcome:</p>
-                            <p class="text-sm text-gray-400">Win counts. Teach hitters to recognize their "damage zone."</p>
-                        </div>
+                        <h4 class="text-xl font-black text-gray-900 mb-2">CONTROL<br><span class="text-gray-500">THE ZONE</span></h4>
                     </div>
+                    <p class="text-xs text-gray-600 font-medium leading-relaxed">Win counts and recognize your "damage zone."</p>
+                </div>
 
-                    <!-- High School Level -->
-                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:border-blue-500 transition">
-                        <div class="text-center mb-4">
-                            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-red-900 text-red-300 mb-3">High School</div>
-                            <h4 class="text-lg font-bold text-white mb-2">ATTACK THE ZONE</h4>
-                            <p class="text-sm text-gray-400 mb-3">Varsity / Showcase</p>
+                <!-- High School Level -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-blue-500 transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 border-b border-gray-300 pb-2">
+                            <span class="text-red-600 font-bold text-xs uppercase tracking-wider">High School</span>
+                            <span class="text-gray-500 text-xs font-mono">Varsity</span>
                         </div>
-                        <div class="border-t border-gray-700 pt-4">
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Goal:</p>
-                            <p class="text-sm text-gray-400 mb-3">ATTACK THE ZONE</p>
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Outcome:</p>
-                            <p class="text-sm text-gray-400">Create separation. Verify command for recruiters.</p>
-                        </div>
+                        <h4 class="text-xl font-black text-gray-900 mb-2">ATTACK<br><span class="text-gray-500">THE ZONE</span></h4>
                     </div>
+                    <p class="text-xs text-gray-600 font-medium leading-relaxed">Create separation. Verify command for recruiters.</p>
+                </div>
 
-                    <!-- College Level -->
-                    <div class="bg-gray-800 rounded-xl border border-gray-700 p-6 hover:border-blue-500 transition">
-                        <div class="text-center mb-4">
-                            <div class="inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-gray-900 text-gray-300 border border-gray-700 mb-3">College</div>
-                            <h4 class="text-lg font-bold text-white mb-2">OWN THE ZONE</h4>
-                            <p class="text-sm text-gray-400 mb-3">College / Pro</p>
+                <!-- College Level -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200 hover:border-blue-500 transition duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="flex justify-between items-center mb-3 border-b border-gray-300 pb-2">
+                            <span class="text-gray-900 font-bold text-xs uppercase tracking-wider">College</span>
+                            <span class="text-gray-500 text-xs font-mono">Pro</span>
                         </div>
-                        <div class="border-t border-gray-700 pt-4">
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Goal:</p>
-                            <p class="text-sm text-gray-400 mb-3">OWN THE ZONE</p>
-                            <p class="text-sm text-gray-300 font-semibold mb-2">The Outcome:</p>
-                            <p class="text-sm text-gray-400">Precision feedback. Prep for the ABS Era.</p>
-                        </div>
+                        <h4 class="text-xl font-black text-gray-900 mb-2">OWN<br><span class="text-gray-500">THE ZONE</span></h4>
                     </div>
+                    <p class="text-xs text-gray-600 font-medium leading-relaxed">Precision feedback. Prep for the ABS Era.</p>
                 </div>
             </div>
+        </div>
 
-            <!-- 3. HOW IT WORKS -->
-            <div class="mb-16">
-                <h3 class="text-2xl font-bold text-center mb-8 text-gray-200">How It Works</h3>
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8 max-w-4xl mx-auto">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <!-- Step 1 -->
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
-                            <h4 class="text-lg font-bold text-white mb-2">Place iPhone</h4>
-                            <p class="text-gray-400 text-sm">On a tripod (10-30ft back)</p>
-                        </div>
-                        <!-- Step 2 -->
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
-                            <h4 class="text-lg font-bold text-white mb-2">Point Camera</h4>
-                            <p class="text-gray-400 text-sm">At home plate</p>
-                        </div>
-                        <!-- Step 3 -->
-                        <div class="text-center">
-                            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
-                            <h4 class="text-lg font-bold text-white mb-2">Record</h4>
-                            <p class="text-gray-400 text-sm">Session summaries generated automatically</p>
-                        </div>
+        <!-- 3. HOW IT WORKS -->
+        <div class="px-8 pb-8">
+            <h3 class="text-2xl font-bold text-center mb-6 text-gray-900">How It Works</h3>
+            <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 max-w-3xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <!-- Step 1 -->
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3 text-white">1</div>
+                        <h4 class="text-base font-bold text-gray-900 mb-1">Place iPhone</h4>
+                        <p class="text-gray-600 text-xs">On a tripod (10-30ft back)</p>
                     </div>
-                    <!-- Tripod Image -->
-                    <div class="mt-8 flex justify-center">
-                        <img src="/images/Tripod%20placement%20distance.png" alt="Tripod placement" class="max-w-full h-auto rounded-lg shadow-lg" loading="lazy">
+                    <!-- Step 2 -->
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3 text-white">2</div>
+                        <h4 class="text-base font-bold text-gray-900 mb-1">Point Camera</h4>
+                        <p class="text-gray-600 text-xs">At home plate</p>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-3 text-white">3</div>
+                        <h4 class="text-base font-bold text-gray-900 mb-1">Record</h4>
+                        <p class="text-gray-600 text-xs">Session summaries generated automatically</p>
                     </div>
                 </div>
+                <!-- Tripod Image -->
+                <div class="flex justify-center">
+                    <img src="/images/Tripod%20placement%20distance.png" alt="Tripod placement" class="max-w-full h-auto rounded-lg shadow-md" loading="lazy">
+                </div>
             </div>
+        </div>
 
-            <!-- 4. FOUNDERS QR CODE & CONTACT SECTION -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                <!-- QR Code Section (Right) -->
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8 text-center">
-                    <h4 class="text-xl font-bold text-white mb-2">SCAN TO CLAIM SPOT</h4>
-                    <p class="text-sm text-gray-400 mb-6">Skip the Waitlist. Get Immediate Beta Access.</p>
+        <!-- 4. BOTTOM SECTION: Heatmap & QR Code -->
+        <div class="px-8 pb-8 mt-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <!-- LEFT CARD: Heatmap Visual -->
+                <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 flex flex-col items-center justify-center">
+                    <h4 class="text-base font-bold text-gray-900 mb-4 text-center">SESSION HEATMAP</h4>
+                    
+                    <!-- Placeholder SVG for Heatmap -->
+                    <div class="w-40 h-48 bg-white rounded-lg border border-gray-300 relative overflow-hidden flex items-center justify-center shadow-sm">
+                         <svg width="100%" height="100%" viewBox="0 0 100 120" preserveAspectRatio="none">
+                            <!-- Background Grid -->
+                            <defs>
+                                <pattern id="smallGrid" width="10" height="10" patternUnits="userSpaceOnUse">
+                                    <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+                                </pattern>
+                                <!-- Heat Gradient -->
+                                <radialGradient id="heatRed" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                    <stop offset="0%" style="stop-color:rgba(255, 59, 48, 0.8); stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgba(255, 59, 48, 0); stop-opacity:0" />
+                                </radialGradient>
+                                <radialGradient id="heatBlue" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                                    <stop offset="0%" style="stop-color:rgba(0, 122, 255, 0.8); stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:rgba(0, 122, 255, 0); stop-opacity:0" />
+                                </radialGradient>
+                            </defs>
+                            
+                            <rect width="100%" height="100%" fill="url(#smallGrid)"/>
+                            
+                            <!-- Strike Zone Outline -->
+                            <rect x="25" y="30" width="50" height="60" fill="none" stroke="#333" stroke-width="1.5" stroke-dasharray="2,2" opacity="0.6"/>
+                            
+                            <!-- Heat Blobs (Simulated Data) -->
+                            <!-- Low Outside Corner -->
+                            <circle cx="75" cy="90" r="15" fill="url(#heatBlue)"/>
+                            <!-- High Inside Heat -->
+                            <circle cx="25" cy="30" r="12" fill="url(#heatRed)"/>
+                            <!-- Heart of Plate -->
+                            <circle cx="50" cy="60" r="20" fill="rgba(255, 200, 0, 0.3)"/>
+                            
+                            <!-- Pitches dots -->
+                            <circle cx="72" cy="88" r="1.5" fill="#333"/>
+                            <circle cx="76" cy="92" r="1.5" fill="#333"/>
+                            <circle cx="24" cy="32" r="1.5" fill="#333"/>
+                            <circle cx="50" cy="60" r="1.5" fill="#333"/>
+                        </svg>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-3 text-center">Analyze pitch distribution post-session.</p>
+                </div>
+
+                <!-- RIGHT CARD: Scan to Claim Spot -->
+                <div class="bg-gray-50 rounded-xl border border-gray-200 p-6 text-center flex flex-col justify-center">
+                    <h4 class="text-lg font-bold text-gray-900 mb-2">SCAN TO CLAIM SPOT</h4>
+                    <p class="text-sm text-gray-600 mb-4">Skip the Waitlist. Get Immediate Beta Access.</p>
                     <!-- QR Code Placeholder -->
-                    <div class="bg-white p-4 rounded-lg inline-block mb-4">
-                        <div class="w-48 h-48 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                    <div class="bg-white p-3 rounded-lg inline-block mb-2 mx-auto border border-gray-300 shadow-sm">
+                        <div class="w-40 h-40 bg-gray-100 flex items-center justify-center text-gray-500 text-xs">
                             [QR Code]
                         </div>
                     </div>
                 </div>
 
-                <!-- Contact / Credibility Section (Left) -->
-                <div class="bg-gray-800 rounded-2xl border border-gray-700 p-8">
-                    <div class="mb-6">
-                        <h4 class="text-xl font-bold text-white mb-4">Booth 1912</h4>
-                        <p class="text-gray-300 text-sm mb-4">
-                            <strong class="text-white">SF Giants Executives Backing</strong>
-                        </p>
-                        <p class="text-gray-300 text-sm">
-                            <strong class="text-white">Patent-Pending Technology.</strong>
-                        </p>
-                    </div>
-                    <div class="border-t border-gray-700 pt-6">
-                        <p class="text-xs text-gray-400 uppercase tracking-widest mb-2">Key Messaging</p>
-                        <ul class="space-y-2 text-sm text-gray-300">
-                            <li class="flex items-start">
-                                <span class="text-blue-400 mr-2">•</span>
-                                <span>"Smartphone Strike Zone" - Accessible, not intimidating</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-400 mr-2">•</span>
-                                <span>"Bullpen Truth" - Training focus, not officiating</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="text-blue-400 mr-2">•</span>
-                                <span>"Train Reality" - Development over debate</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
             </div>
-
         </div>
+
     </div>
 
 </body>
