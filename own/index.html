@@ -323,9 +323,23 @@
                         <p class="text-gray-600 text-xs">Session summaries generated automatically</p>
                     </div>
                 </div>
-                <!-- Tripod Image -->
-                <div class="flex justify-center">
-                    <img src="/images/Tripod%20placement%20distance.png" alt="Tripod placement" class="max-w-full h-auto rounded-lg shadow-md" loading="lazy">
+                <!-- Two Cards: Heatmaps and QR Code -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <!-- Left Card: Heatmaps -->
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 text-center">
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">Heatmaps</h4>
+                        <img src="/images/2%20devices.png" alt="2 devices" class="max-w-full h-auto rounded-lg shadow-sm mx-auto" loading="lazy">
+                    </div>
+                    <!-- Right Card: QR Code -->
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 text-center flex flex-col justify-center">
+                        <h4 class="text-lg font-bold text-gray-900 mb-4">SCAN TO CLAIM SPOT</h4>
+                        <!-- QR Code Placeholder -->
+                        <div class="bg-gray-100 p-4 rounded-lg inline-block mx-auto border border-gray-300 shadow-sm">
+                            <div class="w-40 h-40 bg-white flex items-center justify-center text-gray-500 text-xs">
+                                [QR Code]
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
