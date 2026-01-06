@@ -73,10 +73,14 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out, padding 0.3s ease-out;
         }
+        .faq-content.hidden {
+            display: none;
+        }
         .faq-content.open {
             max-height: 500px;
             padding-top: 0;
             padding-bottom: 1rem;
+            display: block;
         }
         .faq-icon {
             transition: transform 0.3s ease;
@@ -282,79 +286,92 @@
                 <div class="space-y-4">
                     <!-- FAQ Item 1 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">What does it mean to "Own The Zone"?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Can I download HeyBLU right now?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">"Owning the Zone" is a shift from coaching based on 'feel' to coaching based on game-time truth. Most training happens in a cage, but the reality of baseball happens across that 17-inch plate during a game. We provide the infrastructure to measure that reality so you can stop arguing about the zone and start training it. Whether you are teaching youth players confidence or helping college athletes win the edges, this is about making development objective.</p>
+                            <p class="text-gray-300 leading-relaxed">HeyBLU is currently in an invite-only "Founders Program." We are opening spots to 500 select programs to use the app before the public launch. By joining the waitlist today, you are applying to be one of the first to bring objective zone data to your dugout.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 2 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">Is this an automated umpire (ABS) to help me argue calls?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Does this require special cameras or sensors?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">No. HeyBLU is a development tool, not an officiating weapon. Our goal is to support the integrity of the game, not replace the umpire. We use objective data to help players understand the strike zone and to help coaches identify miss patterns and tendencies that the naked eye can't track. We build better reps, fewer arguments, and calmer games.</p>
+                            <p class="text-gray-300 leading-relaxed">No. HeyBLU runs entirely on your phone. You simply set it up on a tripod behind home plate (or the catcher in a bullpen), and the app uses computer vision to track the ball. You need an iPhone 11 or newer to run the system.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 3 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">Why is this "Invite Only" / Founders Program?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Is it 100% accurate?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">We are currently rolling this out to a capped group of 500 "Founders"—coaches, facility owners, and program directors who want to set the standard. By joining now, you get free access during the launch window in exchange for your feedback. You aren't just downloading an app; you are helping build the data infrastructure that will define the future of player development.</p>
+                            <p class="text-gray-300 leading-relaxed">We are in Beta, which means we are "training" the system. Think of it like a self-driving car: before it can drive fully autonomously, it needs a human in the driver's seat. We need expert coaches to be those drivers—validating the zone and helping the AI learn. It is highly accurate, but it gets smarter with every pitch you track.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 4 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">How is this different from a radar gun or video analysis?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Will this work on Android?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">Radar is expensive and static; video is helpful but requires work after the game. HeyBLU is mobile, real-time, and objective. It works off the phone you already have, sits behind the plate, and gives you instant feedback on location and velocity without requiring sensors or hardware setup. It's the "truth engine" for your bullpen sessions and live scrimmages.</p>
+                            <p class="text-gray-300 leading-relaxed">Not yet. To ensure the highest possible accuracy and performance during our pilot phase, we are building exclusively for iOS (iPhone 11 and up). We plan to expand to Android once the system is fully calibrated.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 5 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">I run a facility/travel program. Can I use this for my whole organization?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Can I use this in cages and bullpens?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">Yes. While the single-user version is live now, we are rolling out "institutional" features for facilities and leagues. This includes multi-player session management, branded reports with your facility's logo, and dashboards to track development across every team in your program. This allows you to monetize your training with proof, not just promises.</p>
+                            <p class="text-gray-300 leading-relaxed">Yes. While HeyBLU is powerful for live games, it is built to start in the bullpen. We recommend coaches start by tracking pitcher-only sessions to build a "zone profile" before taking it into live scrimmages or games.</p>
                         </div>
                     </div>
 
                     <!-- FAQ Item 6 -->
                     <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" onclick="toggleFaq(this)">
-                            <span class="font-semibold text-white pr-4">Is my data private?</span>
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">Is this designed to replace umpires?</span>
                             <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </button>
                         <div class="faq-content hidden px-6 pb-4">
-                            <p class="text-gray-300 leading-relaxed">Absolutely. We believe you own your development data. However, as part of the "Own The Zone" network, you can choose to share verified reports with recruiters, parents, or players to prove progress. For high school and elite players, this turns your zone discipline into a recruitable, verifiable metric rather than just a highlight reel.</p>
+                            <p class="text-gray-300 leading-relaxed">Absolutely not. HeyBLU is a development tool, not an officiating weapon. Our goal is to provide objective feedback to help players learn the zone and help umpires calibrate—not to override live calls or slow down the game.</p>
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 7 -->
+                    <div class="faq-item bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+                        <button class="faq-button w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-750 transition-colors" aria-expanded="false" onclick="toggleFaq(this)">
+                            <span class="font-semibold text-white pr-4">What is expected of me as a "Founder"?</span>
+                            <svg class="faq-icon w-5 h-5 text-gray-400 flex-shrink-0 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                        <div class="faq-content hidden px-6 pb-4">
+                            <p class="text-gray-300 leading-relaxed">We aren't looking for passive users; we are looking for partners. As a Founder, you get early access and locked-in pricing. In exchange, we ask that you use the app consistently in training and provide honest feedback to help us refine the strike zone engine.</p>
                         </div>
                     </div>
                 </div>
@@ -726,6 +743,7 @@
         function toggleFaq(button) {
             const faqItem = button.closest('.faq-item');
             const content = faqItem.querySelector('.faq-content');
+            const icon = button.querySelector('.faq-icon');
             const isExpanded = button.getAttribute('aria-expanded') === 'true';
             const questionText = button.querySelector('span').textContent;
             
@@ -734,18 +752,31 @@
                 if (item !== faqItem) {
                     const otherContent = item.querySelector('.faq-content');
                     const otherButton = item.querySelector('.faq-button');
+                    const otherIcon = otherButton.querySelector('.faq-icon');
                     otherContent.classList.remove('open');
+                    otherContent.classList.add('hidden');
                     otherButton.setAttribute('aria-expanded', 'false');
+                    if (otherIcon) {
+                        otherIcon.style.transform = 'rotate(0deg)';
+                    }
                 }
             });
             
             // Toggle current FAQ
             if (isExpanded) {
                 content.classList.remove('open');
+                content.classList.add('hidden');
                 button.setAttribute('aria-expanded', 'false');
+                if (icon) {
+                    icon.style.transform = 'rotate(0deg)';
+                }
             } else {
+                content.classList.remove('hidden');
                 content.classList.add('open');
                 button.setAttribute('aria-expanded', 'true');
+                if (icon) {
+                    icon.style.transform = 'rotate(180deg)';
+                }
                 
                 // Analytics tracking (uncomment when GA4 is set up)
                 // if (typeof gtag !== 'undefined') {
