@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HeyBLU Beta Tester FAQ - Setup, troubleshooting, and feedback guide for beta testers">
+    <title>HeyBLU Beta Tester FAQ</title>
+    <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .faq-section {
+            scroll-margin-top: 80px;
+        }
+        .faq-item {
+            transition: all 0.2s ease;
+        }
+        .faq-item:hover {
+            background-color: #f1f5f9;
+        }
+        .faq-button {
+            transition: all 0.2s ease;
+        }
+        .faq-button[aria-expanded="true"] {
+            color: #2563eb;
+        }
+        .faq-icon {
+            transition: transform 0.2s ease;
+        }
+        .faq-button[aria-expanded="true"] .faq-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <a href="/" class="flex items-center space-x-3">
+                    <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
+                    <span class="font-bold text-xl text-slate-800 hidden md:inline"><span class="text-blue-600">Beta</span> FAQ</span>
+                </a>
+                <!-- Quick Nav -->
+                <nav class="hidden md:flex space-x-4 text-sm">
+                    <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
+                    <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
+                    <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
+                    <a href="#troubleshooting" class="text-slate-600 hover:text-blue-600 transition">Troubleshooting</a>
+                    <a href="#feedback" class="text-slate-600 hover:text-blue-600 transition">Feedback</a>
+                </nav>
+                <button id="mobile-menu-btn" class="md:hidden text-slate-500 hover:text-slate-700">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200">
+            <div class="px-4 py-3 space-y-2">
+                <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
+                <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices & Environment</a>
+                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup & Installation</a>
+                <a href="#troubleshooting" class="block py-2 text-slate-700 hover:text-blue-600">Troubleshooting</a>
+                <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Beta Feedback</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- Welcome Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
+                <span class="text-blue-600">Hey</span>BLU Beta Tester FAQ
+            </h1>
+            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                Welcome to the HeyBLU beta! Thank you for helping us shape the future of calling pitches. Since this is an early version of the app, we've put together this guide to help you get the best results, understand the app's current limitations, and know exactly how to share your feedback with us.
+            </p>
+        </div>
+
+        <!-- The Basics -->
+        <section id="basics" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">⚾</span>
+                <h2 class="text-3xl font-bold text-slate-900">The Basics</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What is HeyBLU?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>HeyBLU is an iPhone app that uses your camera and Augmented Reality (AR) to track a pitch in 3D and call ball or strike. By measuring exactly where the ball crosses the front of the plate relative to the strike zone, it provides an audible and on-screen call for each pitch that isn't swung at. It relies on precise 3D location, not a human umpire's eye.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Does HeyBLU call swings?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>No. HeyBLU only evaluates pitches that are not swung at. If the batter swings, the human umpire (or coach) makes the call. The app does not attempt to decide whether a batter checked their swing or made contact.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What strike zone does HeyBLU use?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>When setting up the app, you will choose an age group (e.g., Pro, 14U, 12U, 10U) and a mound distance (e.g., 45 ft for youth leagues or 60.5 ft for regulation). These settings determine the specific width, height, and location of the strike zone. Make sure these settings match the game you are tracking!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Devices & Environment -->
+        <section id="devices" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">📱</span>
+                <h2 class="text-3xl font-bold text-slate-900">Devices & Environment</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What phones are supported?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">HeyBLU requires an iPhone capable of handling 60fps ARKit and advanced computer vision models. Because of this, the minimum requirement is an iPhone 11 or later. However, for the absolute best performance and processing speed, we highly recommend using an iPhone 12 or newer.</p>
+                        <p class="text-sm text-slate-500 italic">Note: Please tell us your exact iPhone model when you apply or provide feedback so we can track device-specific performance.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Where does HeyBLU work best?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">To get the most accurate calls, HeyBLU requires specific conditions. This is what the app is currently built and tested for:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2">
+                            <li><strong>Outdoor baseball fields in daylight:</strong> Good lighting is crucial for the camera to track the ball at high speeds.</li>
+                            <li><strong>A stable tripod setup:</strong> Mount the phone roughly 12–30 feet behind home plate, pointing toward the field.</li>
+                            <li><strong>Regulation baseballs:</strong> Scuffed or dirty baseballs are perfectly fine. We are currently trained specifically on regulation-sized baseballs (support for softballs is planned and coming soon!).</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Where does HeyBLU NOT work well (or at all)?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">As a beta tester, you are welcome to try HeyBLU in the following environments so we can gather data, but expect it to underperform or fail:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2">
+                            <li><strong>Indoor cages and bullpens:</strong> Artificial lighting, walls, netting, and lack of real field depth make tracking unreliable.</li>
+                            <li><strong>Night games or heavy shade:</strong> The cameras currently struggle with high-speed tracking in low light.</li>
+                            <li><strong>Hand-held use:</strong> If the phone moves during a pitch, the AR "world" drifts, resulting in highly inaccurate calls. A tripod or fixed fence mount is mandatory.</li>
+                            <li><strong>Non-regulation balls:</strong> Softballs, training softies, or wiffle balls may not track correctly just yet.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Setup & Installation -->
+        <section id="setup" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">⚙️</span>
+                <h2 class="text-3xl font-bold text-slate-900">Setup & Installation</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I install the beta?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <ol class="list-decimal list-inside space-y-2 ml-2">
+                            <li>We will send you a TestFlight link via email.</li>
+                            <li>Open the email on your iPhone.</li>
+                            <li>Download the TestFlight app from the App Store (if you don't already have it).</li>
+                            <li>Tap the link in our email to install "HeyBLU" (or "BLU").</li>
+                        </ol>
+                        <p class="mt-3 text-sm text-slate-500 italic">(Note: You will not find the beta by searching the public App Store. If the link doesn't work, reply to our email with your iPhone model and iOS version).</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What do I need to do before I can get a call?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3 font-semibold text-orange-600">Do not skip these steps! Proper setup is the most important factor in getting accurate calls:</p>
+                        <ol class="list-decimal list-inside space-y-3 ml-2">
+                            <li><strong>Scan the area (Most Important!):</strong> Your job here is to calibrate the field and essentially "train the umpire" to know the exact location of the zone via a scan. When the scan is done right, HeyBLU just works. Follow the on-screen instructions to scan the area around home plate with your iPhone. Take your time; this allows the app to build a precise 3D map of the environment.</li>
+                            <li><strong>Place the zone:</strong> Position the virtual strike zone on or just above home plate when prompted.</li>
+                            <li><strong>Mount the phone:</strong> Place the phone on a tripod or fixed mount so it does not move during the game.</li>
+                            <li><strong>Tap "Play Ball":</strong> HeyBLU will only start calling pitches once you tap this button.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Troubleshooting -->
+        <section id="troubleshooting" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">🛠️</span>
+                <h2 class="text-3xl font-bold text-slate-900">Troubleshooting</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">I didn't get a call on a pitch. Why?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>HeyBLU is designed to stay silent rather than guess. It only announces a call when it is highly confident in the ball's trajectory. If the ball is blocked from the camera's view (by the catcher, umpire, or a net) for too much of its flight, or if the tracking quality was poor, it may stay silent or show a warning.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Why does it say "Tracking unstable" or "Check camera"?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">The app constantly measures if the phone has moved since you locked in the strike zone. If the phone shifts, gets bumped, or vibrates in the wind, it experiences "drift." When this happens, calls become unreliable.</p>
+                        <p class="font-semibold text-green-600">Fix: Ensure your mount is completely tightened and stable. Avoid bumping the tripod. If it's a windy day, try to weigh down the tripod or find a more sheltered spot.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Why is every call "outside" (or "inside") when it looks like a strike?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">As baseball people, we often say about human umpires: "He might be bad, but at least he's consistent." If you notice HeyBLU is making consistent misses just outside or inside, it usually means your camera isn't perfectly centered behind the plate. The good news is, unlike a human umpire, HeyBLU is easy to fix!</p>
+                        <p>Just tap the Settings (gear icon) and use the "Adjust HeyBLU" (or Inside/Outside) toggle. This shifts the effective depth so the app's calls match your physical setup. Usually, bumping this adjustment a click or two in the opposite direction is all you need for the rest of the game.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Beta Feedback -->
+        <section id="feedback" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">🐛</span>
+                <h2 class="text-3xl font-bold text-slate-900">Beta Feedback</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Are there tools for developers?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>If you are a developer or highly technical user, we have a specialized debug view that shows raw detection dots, trajectory lines, and extra processing stats. Reach out to us directly if you'd like to learn how to access these technical tools for your testing.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I report a problem or give feedback?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-4">Your feedback is the reason we are doing this beta! To report an issue:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-4">
+                            <li>Reply directly to the email we sent you when you joined.</li>
+                            <li>Post in our Beta Slack Channel: <span class="text-blue-600">$$Insert Slack Link Here$$</span></li>
+                        </ul>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                            <p class="font-semibold text-blue-900 mb-2">When reporting an issue, please include:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-blue-800 ml-2">
+                                <li>Your exact iPhone model.</li>
+                                <li>The environment (Outdoor/Indoor, Sunny/Cloudy).</li>
+                                <li>The Age Group and Mound Distance settings you used.</li>
+                                <li>A brief description of what happened (e.g., "No call on a clear strike down the middle," "Called ball but it was a strike," or "Tracking was unstable the whole game.")</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-auto">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold mb-4 text-white">Beta FAQ</h3>
+                    <p class="text-sm">Comprehensive guide for HeyBLU beta testers. Help us build the future of pitch calling.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4 text-white">Main Site</h3>
+                    <div class="space-y-2">
+                        <a href="/" class="block text-slate-400 hover:text-white transition">Home</a>
+                        <a href="/about" class="block text-slate-400 hover:text-white transition">About Us</a>
+                        <a href="/faq" class="block text-slate-400 hover:text-white transition">FAQ</a>
+                        <a href="/support" class="block text-slate-400 hover:text-white transition">Support</a>
+                        <a href="/terms" class="block text-slate-400 hover:text-white transition">Terms of Service</a>
+                        <a href="/privacy" class="block text-slate-400 hover:text-white transition">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 pt-8 text-center">
+                <p>&copy; 2026 <strong>Hey</strong><span class="text-blue-400 font-bold">BLU</span>. Built for the field.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Toggle
+        function toggleFaq(button) {
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            const content = button.nextElementSibling;
+            
+            // Close all other FAQs in the same section
+            const section = button.closest('section');
+            section.querySelectorAll('.faq-button').forEach(btn => {
+                if (btn !== button) {
+                    btn.setAttribute('aria-expanded', 'false');
+                    btn.nextElementSibling.classList.add('hidden');
+                }
+            });
+            
+            // Toggle current FAQ
+            button.setAttribute('aria-expanded', !isExpanded);
+            content.classList.toggle('hidden');
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    // Close mobile menu if open
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
