@@ -18,6 +18,9 @@
         .faq-section {
             scroll-margin-top: 80px;
         }
+        #quick-start {
+            scroll-margin-top: 80px;
+        }
         .faq-item {
             transition: all 0.2s ease;
         }
@@ -50,6 +53,7 @@
                 </a>
                 <!-- Quick Nav -->
                 <nav class="hidden md:flex space-x-4 text-sm">
+                    <a href="#quick-start" class="text-slate-600 hover:text-blue-600 transition">Quick Start</a>
                     <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
                     <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
                     <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
@@ -64,6 +68,7 @@
         <!-- Mobile Nav -->
         <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200">
             <div class="px-4 py-3 space-y-2">
+                <a href="#quick-start" class="block py-2 text-slate-700 hover:text-blue-600 font-semibold">Quick Start</a>
                 <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
                 <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices & Environment</a>
                 <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup & Installation</a>
@@ -85,6 +90,96 @@
                 Welcome to the HeyBLU beta! Thank you for helping us shape the future of calling pitches. Since this is an early version of the app, we've put together this guide to help you get the best results, understand the app's current limitations, and know exactly how to share your feedback with us.
             </p>
         </div>
+
+        <!-- Quick Start Section -->
+        <section id="quick-start" class="mb-12">
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg border-2 border-blue-200 p-8">
+                <div class="flex items-center mb-6">
+                    <span class="text-3xl mr-3">🚀</span>
+                    <h2 class="text-3xl font-bold text-slate-900">Quick Start</h2>
+                </div>
+                
+                <div class="bg-white rounded-lg p-6 mb-6">
+                    <h3 class="font-semibold text-lg text-slate-900 mb-4">Before You Begin</h3>
+                    <div class="grid md:grid-cols-3 gap-4 mb-4">
+                        <div class="flex items-start">
+                            <span class="text-blue-600 mr-2 font-bold">✓</span>
+                            <div>
+                                <p class="font-semibold text-slate-900">iPhone 11+</p>
+                                <p class="text-sm text-slate-600">iPhone 12+ recommended</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-blue-600 mr-2 font-bold">✓</span>
+                            <div>
+                                <p class="font-semibold text-slate-900">Outdoor Field</p>
+                                <p class="text-sm text-slate-600">Daylight conditions</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="text-blue-600 mr-2 font-bold">✓</span>
+                            <div>
+                                <p class="font-semibold text-slate-900">Tripod/Mount</p>
+                                <p class="text-sm text-slate-600">Stable setup required</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-blue-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Install the Beta</h3>
+                                <p class="text-slate-600 mb-3">Open the TestFlight link we sent you on your iPhone. Download TestFlight from the App Store if needed, then install HeyBLU.</p>
+                                <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Need help? See Setup & Installation →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-green-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Scan the Area (Most Important!)</h3>
+                                <p class="text-slate-600 mb-2">When you first open the app, you'll be asked to scan around home plate. This is calibration—you're training the "umpire."</p>
+                                <p class="text-orange-600 font-semibold text-sm mb-3">⚠️ Take your time here! A detailed scan = accurate calls.</p>
+                                <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Full setup instructions →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-purple-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Place Zone & Mount Phone</h3>
+                                <p class="text-slate-600 mb-2">Position the virtual strike zone over home plate, then mount your phone on a tripod 12–30 feet behind the plate. Make sure it's stable!</p>
+                                <a href="#devices" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Device & environment requirements →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-orange-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-4">4</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Tap "Play Ball"</h3>
+                                <p class="text-slate-600 mb-2">Once setup is complete, tap "Play Ball" and HeyBLU will start watching. It stays silent until it detects a pitch.</p>
+                                <a href="#troubleshooting" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Having issues? Check Troubleshooting →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-blue-200">
+                    <p class="text-sm text-slate-600 text-center">
+                        <strong>Need more help?</strong> Scroll down for detailed FAQ sections, or <a href="#feedback" class="text-blue-600 hover:text-blue-800 font-medium">learn how to report issues</a>.
+                    </p>
+                </div>
+            </div>
+        </section>
 
         <!-- The Basics -->
         <section id="basics" class="faq-section mb-12">
