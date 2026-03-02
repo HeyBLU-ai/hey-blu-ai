@@ -47,9 +47,8 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
-                <a href="/" class="flex items-center space-x-3">
+                <a href="/" class="flex items-center" aria-label="HeyBLU Home">
                     <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
-                    <span class="font-bold text-xl text-slate-800 hidden md:inline"><span class="text-blue-600">Beta</span> FAQ</span>
                 </a>
                 <!-- Quick Nav -->
                 <nav class="hidden md:flex space-x-4 text-sm">
@@ -79,51 +78,29 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full">
         
         <!-- Welcome Section -->
-        <div class="text-center mb-12">
-            <h1 class="text-4xl md:text-5xl font-bold text-slate-900 mb-4">
-                <span class="text-blue-600">Hey</span>BLU Beta Tester FAQ
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-slate-900 mb-1">
+                <span class="text-blue-600">Hey</span>BLU Beta — Quick Start & FAQ
             </h1>
-            <p class="text-lg text-slate-600 max-w-2xl mx-auto">
-                Thank you for helping us shape the future of amateur baseball. For best results use the <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">Quick Start Guide</a> and the <a href="#basics" class="text-blue-600 hover:text-blue-800 font-medium">FAQ</a>. The more you use it and the more feedback, the better the umpire in your pocket becomes.
-            </p>
+            <p class="text-sm text-slate-600 mb-3">Thanks for testing. Early beta—your feedback helps us improve. Use <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">Quick Start</a> below and the FAQ when you need details.</p>
+            <div class="bg-slate-800 text-white rounded-lg px-4 py-3 max-w-2xl">
+                <p class="font-semibold text-2xl mb-2">Key to success</p>
+                <ul class="text-sm space-y-1 list-disc list-inside text-slate-200">
+                    <li><strong class="text-white">Outdoor field, daylight.</strong> Dusk and indoor cages don't work well yet.</li>
+                    <li><strong class="text-white">Take your time on the scan.</strong> A bad scan is the most common cause of a drifting zone or wrong calls when you're outdoors in good light.</li>
+                    <li><strong class="text-white">Stable mount.</strong> Tripod or fence mount—no hand-holding.</li>
+                </ul>
+            </div>
         </div>
 
-        <!-- Quick Start Section -->
+        <!-- Quick Start Section (id kept for nav) -->
         <section id="quick-start" class="mb-12">
             <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg border-2 border-blue-200 p-8">
-                <div class="flex items-center mb-6">
-                    <span class="text-3xl mr-3">🚀</span>
-                    <h2 class="text-3xl font-bold text-slate-900">Quick Start</h2>
-                </div>
-                
                 <div class="bg-white rounded-lg p-6 mb-6">
-                    <h3 class="font-semibold text-lg text-slate-900 mb-4">Before You Begin</h3>
-                    <div class="grid md:grid-cols-3 gap-4 mb-4">
-                        <div class="flex items-start">
-                            <span class="text-blue-600 mr-2 font-bold">✓</span>
-                            <div>
-                                <p class="font-semibold text-slate-900">iPhone 11+</p>
-                                <p class="text-sm text-slate-600">iPhone 12+ recommended</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="text-blue-600 mr-2 font-bold">✓</span>
-                            <div>
-                                <p class="font-semibold text-slate-900">Outdoor Field</p>
-                                <p class="text-sm text-slate-600">Daylight conditions</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <span class="text-blue-600 mr-2 font-bold">✓</span>
-                            <div>
-                                <p class="font-semibold text-slate-900">Tripod/Mount</p>
-                                <p class="text-sm text-slate-600">Stable setup required</p>
-                            </div>
-                        </div>
-                    </div>
+                    <p class="font-semibold text-slate-900">You need: an <strong class="text-blue-600">iPhone</strong> (11 or later), outdoor field, and a <a href="https://a.co/d/0bref5AO" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">tripod</a> or <a href="https://a.co/d/05xz1Vro" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">fence mount</a>.</p>
                 </div>
 
                 <div class="space-y-4">
@@ -132,42 +109,61 @@
                             <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Install the Beta</h3>
-                                <p class="text-slate-600 mb-3">Open the TestFlight link we sent you on your iPhone. Download TestFlight from the App Store if needed, then install HeyBLU.</p>
-                                <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Need help? See Setup & Installation →</a>
+                                <p class="text-slate-600 mb-0"><a href="https://apps.apple.com/us/app/testflight/id899247664" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Download TestFlight</a> from the App Store. Then open the HeyBLU invitation email.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-amber-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Set Up Tripod</h3>
+                                <p class="text-slate-600 mb-0">Position your tripod or fence mount 12–30 feet behind and to the right of home plate. Ideally in-line with the 3rd base foul line.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-green-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Scan the Area (Most Important!)</h3>
                                 <p class="text-slate-600 mb-2">When you first open the app, you'll be asked to scan around home plate. This is calibration—you're training the "umpire."</p>
-                                <p class="text-orange-600 font-semibold text-sm mb-3">⚠️ Take your time here! A detailed scan = accurate calls.</p>
-                                <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Full setup instructions →</a>
+                                <p class="text-orange-600 font-semibold text-sm mb-2">A poor or rushed scan is the most common reason for a moving zone or bad calls—even in daylight.</p>
+                                <p class="text-slate-600 text-sm mb-0">Take your time. Cover the area around home plate slowly and follow the on-screen instructions so the app can build a solid 3D map.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-purple-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4">4</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Place Zone & Mount Phone</h3>
-                                <p class="text-slate-600 mb-2">Position the virtual strike zone over home plate, then mount your phone on a tripod 12–30 feet behind the plate. Make sure it's stable!</p>
-                                <a href="#devices" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Device & environment requirements →</a>
+                                <p class="text-slate-600 mb-2">Position the virtual strike zone over home plate. Then mount your phone on the tripod you set up—without bumping or shifting it.</p>
+                                <p class="text-slate-600 text-sm mb-0">Note: The phone is often offset (not directly behind the plate). That's normal; "Adjust HeyBLU" corrects the resulting inside/outside bias.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-lg p-6 border-l-4 border-teal-500">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold mr-4">5</div>
+                            <div class="flex-grow">
+                                <h3 class="font-semibold text-lg text-slate-900 mb-2">What to View</h3>
+                                <p class="text-slate-600 mb-3">HeyBLU must see the entire pitch path, not just the plate. Keep the plate and mound equally centered in the scene.</p>
+                                <img src="/images/position-tripod.jpg" alt="Position tripod: plate and mound centered in view" class="rounded-lg border border-slate-200 w-full max-w-md">
                             </div>
                         </div>
                     </div>
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-orange-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-4">4</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-4">6</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Tap "Play Ball"</h3>
-                                <p class="text-slate-600 mb-2">Once setup is complete, tap "Play Ball" and HeyBLU will start watching. It stays silent until it detects a pitch.</p>
-                                <a href="#troubleshooting" class="text-blue-600 hover:text-blue-800 font-medium text-sm">Having issues? Check Troubleshooting →</a>
+                                <p class="text-slate-600 mb-0">Once setup is complete, tap "Play Ball" and HeyBLU will start watching. It stays silent until it detects a pitch.</p>
                             </div>
                         </div>
                     </div>
@@ -175,7 +171,7 @@
 
                 <div class="mt-6 pt-6 border-t border-blue-200">
                     <p class="text-sm text-slate-600 text-center">
-                        <strong>Need more help?</strong> Scroll down for detailed FAQ sections, or <a href="#feedback" class="text-blue-600 hover:text-blue-800 font-medium">learn how to report issues</a>.
+                        <strong>Need more help?</strong> Join our <a href="https://join.slack.com/t/heyblubetatesting/shared_invite/zt-3rf357c06-AbpNi3XGnco7TMQpJ_87nw" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Slack channel</a>, scroll down for the FAQ, or <a href="#feedback" class="text-blue-600 hover:text-blue-800 font-medium">learn how to report issues</a>.
                     </p>
                 </div>
             </div>
@@ -197,7 +193,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p>HeyBLU is an iPhone app that uses your camera and Augmented Reality (AR) to track a pitch in 3D and call ball or strike. By measuring exactly where the ball crosses the front of the plate relative to the strike zone, it provides an audible and on-screen call for each pitch that isn't swung at. It relies on precise 3D location, not a human umpire's eye.</p>
+                        <p>HeyBLU is an iPhone app that uses your camera and AR to track a pitch in 3D and call ball or strike. It measures where the ball crosses the front of the plate relative to the strike zone and gives an audible and on-screen call for each pitch that isn't swung at.</p>
                     </div>
                 </div>
 
@@ -221,7 +217,33 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p>When setting up the app, you will choose an age group (e.g., Pro, 14U, 12U, 10U) and a mound distance (e.g., 45 ft for youth leagues or 60.5 ft for regulation). These settings determine the specific width, height, and location of the strike zone. Make sure these settings match the game you are tracking!</p>
+                        <p class="mb-3">When setting up the app, you will choose an age group (e.g., Pro, 14U, 12U, 10U) and a mound distance (e.g., 45 ft for youth leagues or 60.5 ft for regulation). These settings determine the specific width, height, and location of the strike zone.</p>
+                        <p class="font-semibold text-orange-600">Important: Set these to match the game you're watching and include them in feedback so we can correlate with data.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How accurate is HeyBLU?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-2">You be the judge—and let us know what you see. We use your feedback to improve. Ball/strike calls are our focus and we're iterating on accuracy.</p>
+                        <p class="mb-0">MPH (pitch speed) is inconsistent right now; we're working on it. Don't rely on it for precise readings in this beta.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What data is recorded? Are kids filmed?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-0">We don't record or store video. Only data (calls, pitch info, session stats) is used to improve the app. Your kids are not being filmed.</p>
                     </div>
                 </div>
             </div>
@@ -256,30 +278,57 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">To get the most accurate calls, HeyBLU requires specific conditions. This is what the app is currently built and tested for:</p>
-                        <ul class="list-disc list-inside space-y-2 ml-2">
-                            <li><strong>Outdoor baseball fields in daylight:</strong> Good lighting is crucial for the camera to track the ball at high speeds.</li>
-                            <li><strong>A stable tripod setup:</strong> Mount the phone roughly 12–30 feet behind home plate, pointing toward the field.</li>
-                            <li><strong>Regulation baseballs:</strong> Scuffed or dirty baseballs are perfectly fine. We are currently trained specifically on regulation-sized baseballs (support for softballs is planned and coming soon!).</li>
-                        </ul>
+                        <p class="mb-2">Outdoor baseball field in daylight, stable tripod 12–30 feet behind the plate, and regulation baseballs. See <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">Quick Start</a> for the essentials.</p>
+                        <p class="text-sm text-slate-500">Regulation baseballs only for now (softballs planned). Scuffed or dirty balls are fine.</p>
                     </div>
                 </div>
 
                 <div class="border-t border-slate-200 faq-item">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">Where does HeyBLU NOT work well (or at all)?</span>
+                        <span class="font-semibold text-slate-900">Where does HeyBLU NOT work well?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">As a beta tester, you are welcome to try HeyBLU in the following environments so we can gather data, but expect it to underperform or fail:</p>
-                        <ul class="list-disc list-inside space-y-2 ml-2">
-                            <li><strong>Indoor cages and bullpens:</strong> Artificial lighting, walls, netting, and lack of real field depth make tracking unreliable.</li>
-                            <li><strong>Night games or heavy shade:</strong> The cameras currently struggle with high-speed tracking in low light.</li>
-                            <li><strong>Hand-held use:</strong> If the phone moves during a pitch, the AR "world" drifts, resulting in highly inaccurate calls. A tripod or fixed fence mount is mandatory.</li>
-                            <li><strong>Non-regulation balls:</strong> Softballs, training softies, or wiffle balls may not track correctly just yet.</li>
-                        </ul>
+                        <p class="mb-2">Indoor cages and bullpens (poor results), dusk or low light (doesn't work well yet), and hand-held use (tripod or fence mount required). Non-regulation balls (softballs, wiffles) may not track correctly.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Is HeyBLU available on Android or iPad?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-0">Android is not currently supported. iPad is used only for the "Follow Game" feature when paired with an iPhone that is doing the tracking. The main beta is iPhone-only for now.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How much battery do I need? What about long games?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-2">Start with a charged phone. For long games or back-to-back sessions, a battery pack can help—use one only if the phone still fits securely on your mount.</p>
+                        <p class="mb-0">For more on batteries, power, shade, and cooling in the dugout, see the <a href="https://www.facebook.com/groups/gamechangeradmins" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">GameChanger Admins Facebook group</a>; it has lots of practical tips from coaches and scorekeepers.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Should I use airplane mode or turn off notifications?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-0">Yes. Use airplane mode or turn off notifications (and avoid taking calls) while HeyBLU is tracking. Interruptions can pause the session or affect tracking; keeping the app in the foreground and undisturbed gives the best results.</p>
                     </div>
                 </div>
             </div>
@@ -304,7 +353,7 @@
                         <ol class="list-decimal list-inside space-y-2 ml-2">
                             <li>We will send you a TestFlight link via email.</li>
                             <li>Open the email on your iPhone.</li>
-                            <li>Download the TestFlight app from the App Store (if you don't already have it).</li>
+                            <li>Download the <a href="https://apps.apple.com/us/app/testflight/id899247664" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">TestFlight app from the App Store</a> (if you don't already have it).</li>
                             <li>Tap the link in our email to install "HeyBLU" (or "BLU").</li>
                         </ol>
                         <p class="mt-3 text-sm text-slate-500 italic">(Note: You will not find the beta by searching the public App Store. If the link doesn't work, reply to our email with your iPhone model and iOS version).</p>
@@ -319,13 +368,26 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3 font-semibold text-orange-600">Do not skip these steps! Proper setup is the most important factor in getting accurate calls:</p>
+                        <p class="mb-3 font-semibold text-orange-600">Do not skip these steps:</p>
                         <ol class="list-decimal list-inside space-y-3 ml-2">
-                            <li><strong>Scan the area (Most Important!):</strong> Your job here is to calibrate the field and essentially "train the umpire" to know the exact location of the zone via a scan. When the scan is done right, HeyBLU just works. Follow the on-screen instructions to scan the area around home plate with your iPhone. Take your time; this allows the app to build a precise 3D map of the environment.</li>
-                            <li><strong>Place the zone:</strong> Position the virtual strike zone on or just above home plate when prompted.</li>
-                            <li><strong>Mount the phone:</strong> Place the phone on a tripod or fixed mount so it does not move during the game.</li>
-                            <li><strong>Tap "Play Ball":</strong> HeyBLU will only start calling pitches once you tap this button.</li>
+                            <li><strong>Scan the area (Most Important!):</strong> A bad scan is the most common cause of problems outdoors. Follow the in-app instructions and move slowly so the app can build a solid 3D map. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 3 →</a></li>
+                            <li><strong>Place the zone:</strong> Position the virtual strike zone on or just above home plate. After placing, minimize movement.</li>
+                            <li><strong>Mount the phone:</strong> Use a tripod or fixed mount without bumping it. If you see a drift/tracking warning, check that the mount is tight and nothing moved.</li>
+                            <li><strong>Tap "Play Ball":</strong> HeyBLU only starts calling pitches after you tap this.</li>
                         </ol>
+                        <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I share or review my session after a game?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-0">After you tap "End Session," use the <strong>Summary</strong> button on screen. It includes share options: an image and a CSV file you can download and share.</p>
                     </div>
                 </div>
             </div>
@@ -359,8 +421,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">The app constantly measures if the phone has moved since you locked in the strike zone. If the phone shifts, gets bumped, or vibrates in the wind, it experiences "drift." When this happens, calls become unreliable.</p>
-                        <p class="font-semibold text-green-600">Fix: Ensure your mount is completely tightened and stable. Avoid bumping the tripod. If it's a windy day, try to weigh down the tripod or find a more sheltered spot.</p>
+                        <p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." Poor scan quality is the most common cause. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 3</a> for scan tips.</p>
+                        <p class="mb-3">Drift also happens after placement when you mount the phone. After placing the zone, minimize movement; mount without bumping the tripod.</p>
+                        <p class="font-semibold text-green-600">Fix: Check that the mount is tight and nothing moved. Tighten the mount, avoid bumping the tripod, and on windy days consider weighing it down or moving to a sheltered spot.</p>
                     </div>
                 </div>
 
@@ -372,8 +435,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">As baseball people, we often say about human umpires: "He might be bad, but at least he's consistent." If you notice HeyBLU is making consistent misses just outside or inside, it usually means your camera isn't perfectly centered behind the plate. The good news is, unlike a human umpire, HeyBLU is easy to fix!</p>
-                        <p>Just tap the Settings (gear icon) and use the "Adjust HeyBLU" (or Inside/Outside) toggle. This shifts the effective depth so the app's calls match your physical setup. Usually, bumping this adjustment a click or two in the opposite direction is all you need for the rest of the game.</p>
+                        <p class="mb-3">As baseball people, we often say about human umpires: "He might be bad, but at least he's consistent." If you notice HeyBLU is making consistent misses just outside or inside, it usually means your camera isn't perfectly centered behind the plate. The phone is often offset (e.g., not directly behind the plate). That's normal—"Adjust HeyBLU" is there to correct the resulting inside/outside bias.</p>
+                        <p class="mb-3">The good news is, unlike a human umpire, HeyBLU is easy to fix! Just tap the Settings (gear icon) and use the "Adjust HeyBLU" (or Inside/Outside) toggle. This corrects camera placement and inside–outside bias (not just "depth"). Usually, bumping this adjustment a click or two in the opposite direction is all you need for the rest of the game.</p>
                     </div>
                 </div>
             </div>
@@ -409,16 +472,19 @@
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-4">Your feedback is the reason we are doing this beta! To report an issue:</p>
                         <ul class="list-disc list-inside space-y-2 ml-2 mb-4">
+                            <li>Join our <a href="https://join.slack.com/t/heyblubetatesting/shared_invite/zt-3rf357c06-AbpNi3XGnco7TMQpJ_87nw" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Slack channel</a> for real-time discussion and support.</li>
                             <li>Reply directly to the email we sent you when you joined.</li>
-                            <li>Post in our Beta Slack Channel: <span class="text-blue-600">$$Insert Slack Link Here$$</span></li>
+                            <li>Want to refer a coach or league? Use the form on our <a href="/#beta" class="text-blue-600 hover:text-blue-800 font-medium">front page</a> (Join Beta section).</li>
                         </ul>
                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
                             <p class="font-semibold text-blue-900 mb-2">When reporting an issue, please include:</p>
                             <ul class="list-disc list-inside space-y-1 text-sm text-blue-800 ml-2">
                                 <li>Your exact iPhone model.</li>
                                 <li>The environment (Outdoor/Indoor, Sunny/Cloudy).</li>
-                                <li>The Age Group and Mound Distance settings you used.</li>
+                                <li>The Age Group and Mound Distance settings you used (set these to match the game you're watching).</li>
                                 <li>A brief description of what happened (e.g., "No call on a clear strike down the middle," "Called ball but it was a strike," or "Tracking was unstable the whole game.")</li>
+                                <li>Did you see "Tracking unstable," "Check camera," or "DRIFT CRITICAL" (or similar)? If yes, when (e.g., whole game, after a bump)?</li>
+                                <li>Did you use "Adjust HeyBLU" (Inside/Outside)? If yes, roughly how many steps (e.g., "2 clicks toward Outside")?</li>
                             </ul>
                         </div>
                     </div>
