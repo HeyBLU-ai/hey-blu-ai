@@ -141,6 +141,7 @@
     { "src": "/revenuesprint/(.*)", "dest": "/revenuesprint/$1" },
     { "src": "/vision", "dest": "/vision/index.html" },
     { "src": "/thank-you", "dest": "/thank-you.html" },
+    { "src": "/images/(.*)", "dest": "/images/$1" },
     { "src": "/", "dest": "/index.html" }
   ]
 }
