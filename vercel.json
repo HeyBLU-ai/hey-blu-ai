@@ -74,6 +74,7 @@
     { "src": "use-of-funds/**", "use": "@vercel/static" },
     { "src": "vision/index.html", "use": "@vercel/static" },
     { "src": "thank-you.html", "use": "@vercel/static" },
+    { "src": "docs/setup/**", "use": "@vercel/static" },
     { "src": "images/**", "use": "@vercel/static" }
   ],
   "routes": [
@@ -129,6 +130,7 @@
     { "src": "/betablu", "dest": "/betablu/index.html" },
     { "src": "/betablu/", "dest": "/betablu/index.html" },
     { "src": "/betablu/(.*)", "dest": "/betablu/$1" },
+    { "src": "/docs/setup/(.*)", "dest": "/docs/setup/$1" },
     { "src": "/pitchdeck/(.*)", "dest": "/pitchdeck/$1" },
     { "src": "/pitchdeck2/(.*)", "dest": "/pitchdeck2/$1" },
     { "src": "/pitchdeck3/(.*)", "dest": "/pitchdeck3/$1" },

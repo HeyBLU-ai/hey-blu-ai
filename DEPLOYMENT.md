@@ -83,6 +83,7 @@ heyblu.ai (Primary Domain)
 ├── heyblu.ai/rulebook (PWA Application)
 ├── heyblu.ai/pitchdeck (Investor Materials)
 ├── heyblu.ai/use-of-funds (Financial Model)
+├── heyblu.ai/docs/setup/HeyBLU_Field_Guide.html (iPhone app help / print guide)
 └── heyblu.ai/api/* (API Endpoints)
 ```
 
@@ -467,6 +468,20 @@ Ensure `vercel.json` includes static asset routing:
 - Use descriptive alt text for accessibility
 - Test image loading in production environment
 
+### Setup docs & app help (`docs/setup/`)
+
+**Public URL (iOS app Safari / SFSafariViewController / Chrome on iPhone):**
+- `https://heyblu.ai/docs/setup/HeyBLU_Field_Guide.html`
+
+**Vercel:** `vercel.json` includes `{ "src": "docs/setup/**", "use": "@vercel/static" }` and route `{ "src": "/docs/setup/(.*)", "dest": "/docs/setup/$1" }`.
+
+**Deploy checklist for updates:**
+1. Edit `docs/setup/HeyBLU_Field_Guide.html` in this repo (canonical hosted copy).
+2. **Commit and push** — Vercel only deploys tracked files (same rule as images and new pages).
+3. After deploy, verify the URL in **Safari** and **Chrome** on iPhone (layout scrolls; Print uses system sheet).
+
+**CDN note:** The field guide loads Tailwind, Phosphor icons, and Google Fonts from the network. The device needs connectivity for styling and icons; print/PDF still works once the page has loaded.
+
 ---
 
 ## 🗄️ Database Setup
@@ -689,6 +704,7 @@ After deployment, test these URLs:
 - [ ] `https://heyblu.ai/pitchdeck2` - Pitch deck 2
 - [ ] `https://heyblu.ai/pitchdeck3` - Pitch deck 3
 - [ ] `https://heyblu.ai/use-of-funds` - Financial model
+- [ ] `https://heyblu.ai/docs/setup/HeyBLU_Field_Guide.html` - Field guide (mobile Safari & Chrome; print/PDF)
 - [ ] Ask a question in rulebook - Should work without "something went wrong"
 
 ---
@@ -709,6 +725,7 @@ After deployment, test these URLs:
 - `vercel.json` - Vercel routing configuration
 - `rulebook/index.html` - Advanced rulebook frontend
 - `api/ask.js` - Main API endpoint
+- `docs/setup/HeyBLU_Field_Guide.html` - Hosted field guide for the iPhone app
 
 **Key URLs:**
 - Vercel Dashboard: `https://vercel.com/dashboard`
