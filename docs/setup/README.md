@@ -1,26 +1,23 @@
-# Setup docs (hosted on heyblu.ai)
+# Setup docs (heyblu.ai marketing repo)
 
-Static files in this folder are deployed with the HeyBLU marketing site (Vercel).
+## Field guide — canonical URL
 
-## Field guide (iOS app)
+**Use this everywhere (iOS app, links, docs):**
 
-| Resource | URL |
-|----------|-----|
-| **Field guide (HTML)** | `https://heyblu.ai/docs/setup/HeyBLU_Field_Guide.html` |
+`https://heyblu.ai/field-guide`
 
-Use this URL in the iPhone app for `UIApplication.shared.open(url)` or `SFSafariViewController`:
+The full HTML lives in this repo at **`field-guide/index.html`** (not under `docs/setup/`).  
+`docs/setup/HeyBLU_Field_Guide.html` is only a **redirect** to `/field-guide` for old links.
+
+Swift example:
 
 ```swift
-static let fieldGuideURL = URL(string: "https://heyblu.ai/docs/setup/HeyBLU_Field_Guide.html")!
+static let fieldGuideURL = URL(string: "https://heyblu.ai/field-guide")!
 ```
 
-The canonical styled HTML should live in this repo at `docs/setup/HeyBLU_Field_Guide.html` (copy from the app repo’s `docs/setup/` when updated). After changes, **commit and push** so Vercel deploys the new file.
-
-**Note:** The guide uses Tailwind CDN, Phosphor (`@phosphor-icons/web@2.1.1`), and Google Fonts — the device needs network for those assets unless you vendor or inline them.
-
-**Mobile:** The HTML uses a single-column layout on small screens (`md:` breakpoint) so Safari and Chrome on iPhone are readable; the troubleshooting table scrolls horizontally if needed. `viewport-fit=cover` and safe-area padding help on notched devices.
+After editing the guide, **commit and push** so Vercel deploys. See **DEPLOYMENT.md** → *Field guide (iPhone app help)*.
 
 ## Vercel
 
-- `vercel.json` includes `docs/setup/**` in builds and a route for `/docs/setup/(.*)`.
-- See **deployment.md** → *Setup docs & app help* for the full deploy and test checklist.
+- `field-guide/**` and routes `/field-guide` in `vercel.json`
+- `docs/setup/**` kept for redirect stub only
