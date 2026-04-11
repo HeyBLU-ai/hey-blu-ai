@@ -569,10 +569,20 @@ DATABASE_URL=postgresql://postgres:password@localhost:5432/heyblu_dev
 <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
 ```
 
+#### Homepage beta / TestFlight application (`index.html` `#beta`)
+
+The main site’s **Apply for Beta / Request TestFlight Access** form posts to the same Formspree endpoint as some other forms (`f/mjkrezok`). Submissions include a hidden field **`_subject`** set to `Beta / TestFlight application` so you can filter or route in the Formspree dashboard.
+
+**Fields submitted (names):** `first_name`, `last_name`, `email`, `city`, `state`, `league_or_team` (optional), multiple `role` (max 3 enforced in the browser), `age_group`, `field_description` (only when age group is HS+ / College / Pro / Adult Amateur), and required acknowledgements `ack_iphone_ios`, `ack_tripod`, `ack_outdoor` (value `yes`).
+
+**Deploy:** Changes live in `index.html` only—no `vercel.json` change needed. Commit and push; Vercel redeploys automatically.
+
+**Post-deploy:** Submit a test from `https://heyblu.ai/#beta` and confirm the entry appears in Formspree with the expected subject and fields.
+
 ### Beehiiv (Email Marketing)
 
 **Integration:**
-- Collect emails through waitlist form
+- Collect emails through the homepage beta signup and other forms (export or sync as needed)
 - Export to Beehiiv for newsletter campaigns
 - Track conversion rates
 
@@ -701,7 +711,7 @@ export default function handler(req, res) {
 ### Testing Checklist
 
 After deployment, test these URLs:
-- [ ] `https://heyblu.ai` - Main landing page
+- [ ] `https://heyblu.ai` - Main landing page; scroll to **Apply for Beta** (`#beta`) and submit a test Formspree entry
 - [ ] `https://heyblu.ai/rulebook` - Advanced rulebook with league selection
 - [ ] `https://heyblu.ai/pitchdeck` - Pitch deck 1
 - [ ] `https://heyblu.ai/pitchdeck2` - Pitch deck 2
@@ -726,6 +736,7 @@ After deployment, test these URLs:
 
 **Key Files:**
 - `vercel.json` - Vercel routing configuration
+- `index.html` - Marketing homepage; beta / TestFlight application form at `#beta` (Formspree)
 - `rulebook/index.html` - Advanced rulebook frontend
 - `api/ask.js` - Main API endpoint
 - `field-guide/index.html` - Hosted field guide for the iPhone app (`https://heyblu.ai/field-guide`)

@@ -322,51 +322,155 @@
         <section id="beta" class="py-20 px-4 bg-white">
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-10">
-                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Get HeyBLU</h2>
-                    <p class="text-xl text-gray-600 mb-4">HeyBLU is currently in beta testing. Join our waitlist for early access and help shape the future of pitch calling.</p>
-                    <p class="text-lg text-blue-600 font-semibold">Join the Beta Program Today!</p>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Apply for Beta / Request TestFlight Access</h2>
+                    <p class="text-xl text-gray-600 mb-4">HeyBLU is in active beta on <strong class="text-gray-800">iPhone (iOS)</strong>. Submit this form with a valid email—we’ll send your <strong class="text-gray-800">TestFlight invitation</strong> to that address when you’re approved.</p>
+                    <p class="text-lg text-blue-600 font-semibold">Apple TestFlight uses the same email you enter below.</p>
                 </div>
                 <div class="bg-gray-50 rounded-2xl shadow-xl p-8 border-2 border-gray-200">
-                    <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
-                        <div>
-                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-                            <input type="email" name="email" id="email" required class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                    <form id="beta-signup-form" action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
+                        <input type="hidden" name="_subject" value="Beta / TestFlight application">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                                <input type="text" name="first_name" id="first_name" required autocomplete="given-name" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label for="last_name" class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                                <input type="text" name="last_name" id="last_name" required autocomplete="family-name" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            </div>
                         </div>
                         <div>
-                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                            <input type="text" name="name" id="name" required class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                            <input type="email" name="email" id="email" required autocomplete="email" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
+                                <input type="text" name="city" id="city" required autocomplete="address-level2" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            </div>
+                            <div>
+                                <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
+                                <select name="state" id="state" required autocomplete="address-level1" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
+                                    <option value="" disabled selected>Select state</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AK">Alaska</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="DC">District of Columbia</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NY">New York</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WY">Wyoming</option>
+                                </select>
+                            </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-3">I'm a:</label>
+                            <label for="league_or_team" class="block text-sm font-medium text-gray-700 mb-2">League or Team Name <span class="text-gray-500 font-normal">(Optional)</span></label>
+                            <input type="text" name="league_or_team" id="league_or_team" placeholder="e.g., Mill Valley Little League 13U" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                        </div>
+                        <div>
+                            <span class="block text-sm font-medium text-gray-700 mb-2">Your roles <span class="text-gray-500 font-normal">(select up to 3)</span></span>
+                            <p id="beta-role-hint" class="text-sm text-gray-500 mb-3" aria-live="polite">Choose the roles that best describe you.</p>
                             <div class="grid grid-cols-2 gap-3">
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Umpire" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <input type="checkbox" name="role" value="Umpire" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                     <span class="ml-2 text-gray-800">Umpire</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Coach" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <input type="checkbox" name="role" value="Coach" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                     <span class="ml-2 text-gray-800">Coach</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Player" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <input type="checkbox" name="role" value="Player" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                     <span class="ml-2 text-gray-800">Player</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Parent" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <input type="checkbox" name="role" value="Parent" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                     <span class="ml-2 text-gray-800">Parent</span>
                                 </label>
                                 <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="League Admin" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                    <input type="checkbox" name="role" value="League Admin" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                                     <span class="ml-2 text-gray-800">League Admin</span>
                                 </label>
                             </div>
                         </div>
                         <div>
-                            <label for="organization" class="block text-sm font-medium text-gray-700 mb-2">League/Organization (Optional)</label>
-                            <input type="text" name="organization" id="organization" placeholder="e.g., Mill Valley Little League 13U" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
+                            <label for="age_group" class="block text-sm font-medium text-gray-700 mb-2">Age group you work in</label>
+                            <select name="age_group" id="age_group" required class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
+                                <option value="" disabled selected>Select one</option>
+                                <option value="8U to 13U">8U to 13U</option>
+                                <option value="High School">High School</option>
+                                <option value="College">College</option>
+                                <option value="Pro">Pro</option>
+                                <option value="Adult Amateur">Adult Amateur</option>
+                            </select>
+                        </div>
+                        <div id="beta-field-description-block" class="hidden">
+                            <label for="field_description" class="block text-sm font-medium text-gray-700 mb-2">Describe your field <span class="text-red-600">*</span></label>
+                            <p class="text-xs text-gray-500 mb-2">Backstop distance, typical pitch speed, and anything else that helps us understand your setup.</p>
+                            <textarea name="field_description" id="field_description" rows="4" disabled
+                                class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+                                placeholder="e.g., Backstop ~25 ft from plate; mid-80s velo from mound…"></textarea>
+                        </div>
+                        <div class="space-y-3 pt-2 border-t border-gray-200">
+                            <p class="text-sm font-medium text-gray-800">Please confirm:</p>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="ack_iphone_ios" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
+                                <span class="text-sm text-gray-700">I understand this is an iPhone app (iOS only).</span>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="ack_tripod" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
+                                <span class="text-sm text-gray-700">I understand this requires a tripod. <a href="https://www.amazon.com/s?k=phone+tripod+5+ft" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium underline">See a tripod recommendation</a>.</span>
+                            </label>
+                            <label class="flex items-start gap-3 cursor-pointer">
+                                <input type="checkbox" name="ack_outdoor" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
+                                <span class="text-sm text-gray-700">I understand HeyBLU is for OUTDOOR use only.</span>
+                            </label>
                         </div>
                         <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
-                            Join the Waitlist for Beta Access
+                            Apply for Beta Access
                         </button>
                     </form>
                 </div>
@@ -452,6 +556,89 @@
             // Video ID: b8KMjhkqqYE
             iframe.src = 'https://www.youtube.com/embed/b8KMjhkqqYE?autoplay=1&rel=0';
         }
+    </script>
+
+    <script>
+        (function () {
+            var form = document.getElementById('beta-signup-form');
+            if (!form) return;
+
+            var MAX_ROLES = 3;
+            var AGE_REQUIRES_FIELD = ['High School', 'College', 'Pro', 'Adult Amateur'];
+
+            var roleHint = document.getElementById('beta-role-hint');
+            var roleInputs = form.querySelectorAll('.beta-role-cb');
+            var ageSelect = document.getElementById('age_group');
+            var fieldBlock = document.getElementById('beta-field-description-block');
+            var fieldTextarea = document.getElementById('field_description');
+
+            function countCheckedRoles() {
+                var n = 0;
+                roleInputs.forEach(function (cb) { if (cb.checked) n++; });
+                return n;
+            }
+
+            function updateRoleHint() {
+                if (!roleHint) return;
+                var c = countCheckedRoles();
+                if (c >= MAX_ROLES) {
+                    roleHint.textContent = 'Maximum ' + MAX_ROLES + ' roles selected. Uncheck one to choose another.';
+                    roleHint.classList.add('text-amber-700');
+                } else {
+                    roleHint.textContent = 'Choose the roles that best describe you. (' + c + '/' + MAX_ROLES + ' selected)';
+                    roleHint.classList.remove('text-amber-700');
+                }
+            }
+
+            roleInputs.forEach(function (cb) {
+                cb.addEventListener('change', function () {
+                    if (countCheckedRoles() > MAX_ROLES) {
+                        cb.checked = false;
+                    }
+                    updateRoleHint();
+                });
+            });
+
+            function syncFieldDescriptionBlock() {
+                if (!ageSelect || !fieldBlock || !fieldTextarea) return;
+                var v = ageSelect.value;
+                var needs = AGE_REQUIRES_FIELD.indexOf(v) !== -1;
+                if (needs) {
+                    fieldBlock.classList.remove('hidden');
+                    fieldTextarea.disabled = false;
+                    fieldTextarea.setAttribute('required', 'required');
+                } else {
+                    fieldBlock.classList.add('hidden');
+                    fieldTextarea.disabled = true;
+                    fieldTextarea.removeAttribute('required');
+                    fieldTextarea.value = '';
+                }
+            }
+
+            if (ageSelect) {
+                ageSelect.addEventListener('change', syncFieldDescriptionBlock);
+                syncFieldDescriptionBlock();
+            }
+
+            form.addEventListener('submit', function (e) {
+                if (countCheckedRoles() > MAX_ROLES) {
+                    e.preventDefault();
+                    updateRoleHint();
+                    return;
+                }
+                syncFieldDescriptionBlock();
+                if (ageSelect && AGE_REQUIRES_FIELD.indexOf(ageSelect.value) !== -1) {
+                    if (!fieldTextarea.value || !fieldTextarea.value.trim()) {
+                        e.preventDefault();
+                        fieldTextarea.focus();
+                        fieldTextarea.classList.add('ring-2', 'ring-red-500');
+                        setTimeout(function () { fieldTextarea.classList.remove('ring-2', 'ring-red-500'); }, 2000);
+                    }
+                }
+            });
+
+            updateRoleHint();
+        })();
     </script>
 
 </body>
