@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HeyBLU - Pro-Level Strike Calls for Every Field. AI-powered umpire and pitch tracking system for youth and amateur baseball.">
-    <title>HeyBLU - Pro-Level Strike Calls for Every Field</title>
+    <meta name="description" content="The automated strike zone in your pocket. One iPhone and a tripod—pro-grade pitch tracking for bullpens, practice mounds, and local rec fields.">
+    <title>HeyBLU | The Automated Strike Zone in Your Pocket</title>
     <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
     <link rel="preload" href="/images/HeyBLU vector logo.svg" as="image" type="image/svg+xml" fetchpriority="high">
@@ -62,6 +62,7 @@
                     <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
                     <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
                     <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">FAQ</a>
+                    <a href="#field-notes" class="text-gray-700 hover:text-blue-600 font-medium transition">Field Notes</a>
                     <a href="#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Beta</a>
                 </nav>
                 <button id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600">
@@ -75,6 +76,7 @@
                 <a href="#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
                 <a href="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">About</a>
                 <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">FAQ</a>
+                <a href="#field-notes" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Field Notes</a>
                 <a href="#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Beta</a>
             </div>
         </div>
@@ -82,67 +84,64 @@
 
     <main class="pt-16">
         <!-- Hero Section -->
-        <section class="bg-white py-12 md:py-16 px-4">
+        <section class="bg-white py-12 md:py-20 px-4" aria-labelledby="hero-headline">
             <div class="max-w-7xl mx-auto">
-                <!-- Top Section: Logo and Taglines -->
-                <div class="text-center mb-12">
-                    <!-- Logo -->
-                    <h1 class="text-5xl md:text-6xl font-extrabold mb-4">
-                        <span class="text-gray-900">Hey</span><span class="text-blue-600">BLU</span>
-                    </h1>
-                    <!-- Tagline 1 -->
-                    <p class="text-lg md:text-xl text-gray-500 mb-2">
-                        Pro-Level Strike Calls for Every Field
-                    </p>
-                    <!-- Tagline 2 -->
-                    <p class="text-2xl md:text-3xl font-bold text-blue-600">
-                        The Umpire's Co-Pilot. The Coaches Training Tool.
-                    </p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+                    <div>
+                        <p class="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-3"><span class="text-gray-900">Hey</span><span class="text-blue-600">BLU</span></p>
+                        <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-5">
+                            The Automated Strike Zone in Your Pocket.
+                        </h1>
+                        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
+                            Turn a single iPhone and a tripod into a pro-grade pitch tracker. Built for the bullpens, practice mounds, and local rec fields that expensive multi-camera systems ignore.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                            <a href="#beta" class="inline-flex justify-center bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition text-center">Join Beta</a>
+                            <a href="#how-it-works" class="inline-flex justify-center border-2 border-gray-300 text-gray-800 font-bold py-3 px-8 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-center">How it works</a>
+                        </div>
+                    </div>
+                    <div class="order-first lg:order-none">
+                        <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200">
+                            <img src="/images/Mount_phone.jpg" alt="iPhone mounted on a tripod behind a chain-link backstop—the full HeyBLU hardware setup" class="w-full h-auto object-cover" width="1200" height="800" fetchpriority="high">
+                        </div>
+                        <p class="text-gray-500 text-center mt-3 text-sm">One phone, one tripod—that’s the setup.</p>
+                    </div>
                 </div>
 
-                <!-- Two Panel Layout -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-                    <!-- Left Panel: Live Strike Zone Tracking -->
-                    <div class="relative">
-                        <div class="relative rounded-lg overflow-hidden shadow-2xl video-container" id="video-container">
-                            <!-- Thumbnail with Play Button -->
-                            <div id="video-thumbnail" class="relative cursor-pointer group" onclick="loadVideo()">
-                                <img src="/images/heyblu thumbnail youtube.jpg" alt="Live strike zone tracking" class="w-full h-auto">
-                                <!-- Play Button Overlay -->
-                                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition">
-                                    <div class="w-20 h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition">
-                                        <svg class="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
+                <div class="mt-14 pt-12 border-t border-gray-200">
+                    <p class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">See it in action</p>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
+                        <div class="relative">
+                            <div class="relative rounded-lg overflow-hidden shadow-xl video-container" id="video-container">
+                                <div id="video-thumbnail" class="relative cursor-pointer group" onclick="loadVideo()">
+                                    <img src="/images/heyblu thumbnail youtube.jpg" alt="Live strike zone tracking demo video" class="w-full h-auto" loading="lazy">
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition">
+                                        <div class="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition">
+                                            <svg class="w-8 h-8 md:w-10 md:h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z"/>
+                                            </svg>
+                                        </div>
                                     </div>
                                 </div>
+                                <div id="video-embed" class="hidden" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+                                    <iframe id="youtube-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                                        src=""
+                                        title="HeyBLU demo video"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowfullscreen
+                                        loading="lazy">
+                                    </iframe>
+                                </div>
                             </div>
-                            <!-- YouTube iframe (hidden initially) -->
-                            <div id="video-embed" class="hidden" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-                                <iframe id="youtube-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
-                                    src="" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen
-                                    loading="lazy">
-                                </iframe>
+                            <p class="text-gray-500 text-center mt-3 text-sm">Live tracking and instant calls. <span class="text-blue-600 font-semibold">Click to play</span></p>
+                        </div>
+                        <div>
+                            <div class="relative rounded-lg overflow-hidden shadow-xl">
+                                <img src="/images/2 devices.png" alt="HeyBLU Command Center and analytics on two devices" class="w-full h-auto" loading="lazy">
                             </div>
+                            <p class="text-gray-500 text-center mt-3 text-sm">Command Center, heatmaps, and session data.</p>
                         </div>
-                        <!-- Caption -->
-                        <p class="text-gray-500 text-center mt-4 text-sm md:text-base">
-                            Live strike zone tracking with instant AI calls. <span class="text-blue-600 font-semibold">Click to watch video</span>
-                        </p>
-                    </div>
-
-                    <!-- Right Panel: Pro-Level Analytics -->
-                    <div class="relative">
-                        <div class="relative rounded-lg overflow-hidden shadow-2xl">
-                            <img src="/images/2 devices.png" alt="Pro-level analytics" class="w-full h-auto">
-                        </div>
-                        <!-- Caption -->
-                        <p class="text-gray-500 text-center mt-4 text-sm md:text-base">
-                            Pro-level analytics for coaches & players.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -188,64 +187,37 @@
             </div>
         </section>
 
-        <!-- Features -->
+        <!-- Who buys -->
         <section class="py-20 px-4 bg-white">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Built for Everyone in the Game</h2>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Built for the People Who Run the Baseball</h2>
+                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">We focus on the two buyers who actually deploy systems at scale—not every seat in the stands.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition">
-                        <div class="text-3xl mb-4">👨‍⚖️</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">For Umpires</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Real-time call assistance via Bluetooth</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Build confidence faster with instant feedback</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Objective performance data after each game</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Training tool for new umpires</li>
-                        </ul>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                    <div class="bg-gradient-to-br from-blue-50 to-indigo-50 p-10 rounded-2xl border-2 border-blue-100 shadow-sm">
+                        <p class="text-sm font-bold text-blue-600 uppercase tracking-wide mb-2">Buyer 1 · The wedge</p>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Pitching Coaches &amp; Facilities</h3>
+                        <p class="text-lg font-semibold text-gray-800 mb-4">Don’t waste your bullpen sessions.</p>
+                        <p class="text-gray-700 leading-relaxed">The vast majority of pitches are thrown outside of games. <strong>Hey</strong><span class="text-blue-600 font-bold">BLU</span> gives coaches Major League pitch-tracking data, intent-based target accuracy, and heatmaps during a Tuesday practice so pitchers can execute on Saturday.</p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition">
-                        <div class="text-3xl mb-4">👨‍🏫</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">For Coaches</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Premium pitch analytics and location data</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Hitter zone analysis and swing decisions</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Game-planning insights for opponents</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Bullpen tracking and pitcher development</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition">
-                        <div class="text-3xl mb-4">⚾</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">For Players</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Visual strike zone feedback and heatmaps</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Track your performance over time</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Data-driven reports for recruiting</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Prepare for ABS at higher levels</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition">
-                        <div class="text-3xl mb-4">👪</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">For Parents</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Understand the actual strike zone</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Objective data to review games</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Support your player's development</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>End the sideline arguments with facts</li>
-                        </ul>
-                    </div>
-                    <div class="bg-gray-50 p-8 rounded-2xl border-2 border-gray-200 hover:border-blue-500 transition">
-                        <div class="text-3xl mb-4">🏆</div>
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">For League Admins</h3>
-                        <ul class="space-y-2 text-gray-600">
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Train and retain umpires more effectively</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Reduce conflicts and improve game flow</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Provide value-added services to teams</li>
-                            <li class="flex items-start"><span class="text-blue-600 mr-2">✓</span>Recruit new umpires with better tools</li>
-                        </ul>
+                    <div class="bg-gradient-to-br from-slate-50 to-gray-100 p-10 rounded-2xl border-2 border-gray-200 shadow-sm">
+                        <p class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-2">Buyer 2 · The scale</p>
+                        <h3 class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">Tournament Directors &amp; Leagues</h3>
+                        <p class="text-lg font-semibold text-gray-800 mb-4">Deploy ABS to any field in 60 seconds.</p>
+                        <p class="text-gray-700 leading-relaxed">You don’t need a $50,000 infrastructure budget or a permanent camera installation. Hand an iPhone to an operator behind the backstop, and suddenly your tournament has an objective, resizable strike zone that cuts down parent–umpire blowups.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Moat / infrastructure -->
+        <section class="py-20 px-4 bg-slate-50 border-y border-slate-200">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6 text-center">No IT Department Required</h2>
+                <p class="text-lg md:text-xl text-gray-700 leading-relaxed text-center">
+                    MLB stadiums use 12 hardwired cameras and a dedicated tech crew to track a pitch. Even lower-tier collegiate systems require permanent, expensive 3-camera installations. <strong>Hey</strong><span class="text-blue-600 font-bold">BLU</span>’s computer vision engine brings that same math to a single smartphone. It’s built to survive the realities of local baseball—chainlink fences, bad camera angles, and sun glare—delivering pitch-tracking accuracy without the installation crew or the $50,000 price tag.
+                </p>
             </div>
         </section>
 
@@ -253,29 +225,29 @@
         <section id="how-it-works" class="py-20 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-extrabold mb-6">Simple Setup, Powerful Results</h2>
-                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Get started in minutes with just your smartphone.</p>
+                    <h2 class="text-4xl md:text-5xl font-extrabold mb-4">How It Works</h2>
+                    <p class="text-xl text-gray-300 max-w-3xl mx-auto">Straightforward steps—and the operating envelope we’ve proven on real fields. When you set it up like this, you get the best results.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">1</div>
-                        <h3 class="text-lg font-bold mb-2">Position Phone</h3>
-                        <p class="text-gray-300 text-sm">Place behind or beside home plate</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="text-center lg:text-left">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto lg:mx-0 mb-4">1</div>
+                        <h3 class="text-lg font-bold mb-2">Mount the iPhone</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">Place a tripod <strong class="text-white">12 to 20 feet</strong> behind or beside home plate, with a clear view of the plate and pitching lane.</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">2</div>
-                        <h3 class="text-lg font-bold mb-2">Connect Bluetooth</h3>
-                        <p class="text-gray-300 text-sm">Pair with your earpiece (umpires)</p>
+                    <div class="text-center lg:text-left">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto lg:mx-0 mb-4">2</div>
+                        <h3 class="text-lg font-bold mb-2">Lock the plate</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">Tap the screen to anchor the 3D strike zone to the physical plate.</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">3</div>
-                        <h3 class="text-lg font-bold mb-2">Start Tracking</h3>
-                        <p class="text-gray-300 text-sm"><strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span> calls every pitch in real-time</p>
+                    <div class="text-center lg:text-left">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto lg:mx-0 mb-4">3</div>
+                        <h3 class="text-lg font-bold mb-2">Throw</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">Get real-time audio calls and track hit/miss accuracy via the <strong class="text-white">Command Center</strong> remote.</p>
                     </div>
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">4</div>
-                        <h3 class="text-lg font-bold mb-2">Review Analytics</h3>
-                        <p class="text-gray-300 text-sm">Access game data and insights instantly</p>
+                    <div class="text-center lg:text-left">
+                        <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto lg:mx-0 mb-4">4</div>
+                        <h3 class="text-lg font-bold mb-2">Review</h3>
+                        <p class="text-gray-300 text-sm leading-relaxed">Open heatmaps and pitch data as soon as the session ends—no waiting on uploads or a control room.</p>
                     </div>
                 </div>
             </div>
@@ -315,6 +287,51 @@
                 <p class="text-xl text-blue-100 leading-relaxed max-w-3xl mx-auto">
                     MLB is rolling out Automated Ball/Strike (ABS) technology in 2026, where players can challenge calls and technology makes the final decision. <strong>Hey</strong><span class="text-blue-200 font-bold">BLU</span> brings ABS-level strike zone precision to youth and amateur baseball today, helping umpires train, coaches develop players, and athletes prepare for the data-driven game they'll face at higher levels.
                 </p>
+            </div>
+        </section>
+
+        <!-- Field Notes (Substack) -->
+        <section id="field-notes" class="py-20 px-4 bg-gray-100">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Field Notes</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Founder writing on the youth baseball economy, shipping computer vision in the wild, and why a resizable zone matters—on <a href="https://heyblu.substack.com" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:text-blue-800 underline">HeyBLU on Substack</a>.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <a href="https://heyblu.substack.com/p/the-biggest-opportunity-in-youth" target="_blank" rel="noopener noreferrer" class="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-lg transition flex flex-col">
+                        <div class="aspect-[16/10] overflow-hidden bg-gray-200">
+                            <img src="/images/kid-pitch-practice.jpg" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Strategy</p>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">The Biggest Opportunity in Youth Baseball Isn’t the Game</h3>
+                            <p class="text-gray-600 text-sm flex-grow">Why the real entry point is everything around the game—and what that means for operators and investors.</p>
+                            <span class="mt-4 text-blue-600 font-semibold text-sm">Read on Substack →</span>
+                        </div>
+                    </a>
+                    <a href="https://heyblu.substack.com/p/out-of-the-lab-into-the-dirt" target="_blank" rel="noopener noreferrer" class="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-lg transition flex flex-col">
+                        <div class="aspect-[16/10] overflow-hidden bg-gray-200">
+                            <img src="/images/Post_Scan.jpg" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Engineering</p>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Out of the Lab, Into the Messy Real World</h3>
+                            <p class="text-gray-600 text-sm flex-grow">Mapping dirt, chainlink, and bad angles—why shipping on local fields is the hard part of “accurate enough.”</p>
+                            <span class="mt-4 text-blue-600 font-semibold text-sm">Read on Substack →</span>
+                        </div>
+                    </a>
+                    <a href="https://heyblu.substack.com/p/heyblu-lets-coaches-break-the-rules" target="_blank" rel="noopener noreferrer" class="group bg-white rounded-2xl border-2 border-gray-200 overflow-hidden shadow-sm hover:border-blue-500 hover:shadow-lg transition flex flex-col">
+                        <div class="aspect-[16/10] overflow-hidden bg-gray-200">
+                            <img src="/images/adjusting-the-strikezone.jpg" alt="" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy">
+                        </div>
+                        <div class="p-6 flex flex-col flex-grow">
+                            <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Product</p>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition">Letting Coaches Cheat the Rulebook</h3>
+                            <p class="text-gray-600 text-sm flex-grow">A tunable strike zone for development: when the human zone doesn’t match what you’re training for.</p>
+                            <span class="mt-4 text-blue-600 font-semibold text-sm">Read on Substack →</span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -497,7 +514,7 @@
                     <div class="flex items-center mb-4">
                         <img src="/images/HeyBLU_transparent_logo_for_drak_background.svg" alt="HeyBLU" class="h-16 md:h-20 w-auto max-w-[300px]" loading="lazy">
                     </div>
-                    <p class="text-gray-400">Pro-level strike calls for every field.</p>
+                    <p class="text-gray-400">The automated strike zone in your pocket.</p>
                 </div>
                 <div>
                     <h3 class="font-bold mb-4">Contact</h3>
@@ -513,11 +530,13 @@
                         <a href="/faq" class="block text-gray-400 hover:text-white transition">FAQ</a>
                         <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
                         <a href="#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
+                        <a href="#field-notes" class="block text-gray-400 hover:text-white transition">Field Notes (Substack)</a>
+                        <a href="https://heyblu.substack.com" target="_blank" rel="noopener noreferrer" class="block text-gray-400 hover:text-white transition">Substack archive</a>
                     </div>
                 </div>
             </div>
             <div class="border-t border-gray-700 pt-8 text-center">
-                <p class="text-gray-400">&copy; 2025 <strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span>.AI. All rights reserved.</p>
+                <p class="text-gray-400">&copy; 2026 <strong>Hey</strong><span class="text-blue-300 font-bold">BLU</span>.AI. All rights reserved.</p>
             </div>
         </div>
     </footer>

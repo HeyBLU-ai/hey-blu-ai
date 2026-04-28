@@ -1,6 +1,6 @@
 # Deployment Guide - HeyBLU AI
 
-**Last Updated:** January 2025  
+**Last Updated:** April 2026  
 **Purpose:** Complete reference for deploying HeyBLU AI to Vercel with custom domain
 
 ---
@@ -577,7 +577,9 @@ The main site’s **Apply for Beta / Request TestFlight Access** form posts to t
 
 **Deploy:** Changes live in `index.html` only—no `vercel.json` change needed. Commit and push; Vercel redeploys automatically.
 
-**Post-deploy:** Submit a test from `https://heyblu.ai/#beta` and confirm the entry appears in Formspree with the expected subject and fields.
+**Homepage images (`/images/`):** The marketing homepage references assets under `images/` (for example hero photography and Field Notes thumbnails). `vercel.json` already includes `{ "src": "images/**", "use": "@vercel/static" }` and routes `/images/(.*)` — **add any new image files to git** or they will 404 in production (see [Image Serving](#️-image-serving)).
+
+**Post-deploy:** Submit a test from `https://heyblu.ai/#beta` and confirm the entry appears in Formspree with the expected subject and fields. Optionally spot-check `https://heyblu.ai/#field-notes` (Substack links) and hero imagery on `/`.
 
 ### Beehiiv (Email Marketing)
 
@@ -711,7 +713,8 @@ export default function handler(req, res) {
 ### Testing Checklist
 
 After deployment, test these URLs:
-- [ ] `https://heyblu.ai` - Main landing page; scroll to **Apply for Beta** (`#beta`) and submit a test Formspree entry
+- [ ] `https://heyblu.ai` - Main landing page; confirm hero and Field Notes images load; scroll to **Apply for Beta** (`#beta`) and submit a test Formspree entry
+- [ ] `https://heyblu.ai/#field-notes` - Field Notes section (Substack article cards)
 - [ ] `https://heyblu.ai/rulebook` - Advanced rulebook with league selection
 - [ ] `https://heyblu.ai/pitchdeck` - Pitch deck 1
 - [ ] `https://heyblu.ai/pitchdeck2` - Pitch deck 2
