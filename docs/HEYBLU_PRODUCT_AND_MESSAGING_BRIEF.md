@@ -62,7 +62,7 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 **Distance / angle (use consistent numbers in new copy)**
 
-- **FAQ Quick Start, “Where does HeyBLU work best?”, field guide, homepage “How it works”:** tripod **10–25 ft** behind and to the side of home plate, **1st or 3rd base foul line** / on-deck style alignment; if you are too far back, the **app may warn** you.
+- **FAQ, field guide, homepage “How it works”:** outdoor **bullpen/practice**, tripod **10–15 ft inside the fence**, thick **red ROI lines** (pitch path between them—zone on one line, mound on the other), post-mount **Calibrate**, Pro iPhone needs **distance + lens height**. Tested ≤**60 MPH**; do not market 65–70+ or indoor yet.
 
 **Glare / sun**
 
@@ -75,7 +75,7 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 **Ops hygiene (FAQ)**
 
-- **Airplane mode / no notifications** recommended during tracking; keep app **foreground**; calls/interrupts can disturb session.
+- **iPhone prep:** Auto-Lock **Never**, Low Power Mode off, Do Not Disturb, volume/Bluetooth audio, **Local Network** on for HeyBLU when using a second device; charge above ~30%. **Single phone:** tracking works offline—airplane mode optional. **Two devices:** Wi‑Fi on, same network (not tracking phone as sole hotspot). Notifications/calls in foreground can disrupt AR.
 
 ---
 
@@ -181,7 +181,7 @@ Do **not** invent feature parity. In general:
 ## 12. One-paragraph “paste into any LLM system prompt”
 
 ```
-You are helping with marketing for HeyBLU (heyblu.ai): an iPhone-only, outdoor-first baseball app in TestFlight beta. It uses the phone camera + ARKit to build a 3D map of the field, lock a virtual strike zone to home plate, and call balls/strikes on pitches that are NOT swung at, with audio and on-screen feedback. It does not call swings. Android is not supported. A tripod or fence mount is required; hand-held use is not. Best results: outdoor daylight, slow careful environment scan, 10–25 ft behind and to the side of plate (foul-line / on-deck alignment; app may warn if too far back), plate and mound in frame. Secondary iPhone/iPad runs “Command Center” for intent, per-batter zone resize, and pitch logging. MPH is unreliable in beta. No video of kids is stored per FAQ. Position against TrackMan/Rapsodo as pocket-sized, no-infrastructure zone tracking for local fields and bullpens—not as a radar replacement. heyblu.ai/faq is the canonical FAQ; heyblu.ai/field-guide is the printable setup guide.
+You are helping with marketing for HeyBLU (heyblu.ai): an iPhone-only, outdoor-first baseball app in TestFlight beta. It uses the phone camera + ARKit to build a 3D map of the field, lock a virtual strike zone to home plate, and call balls/strikes on pitches that are NOT swung at, with audio and on-screen feedback. It does not call swings. Android is not supported. A tripod or fence mount is required; hand-held use is not. Best results: outdoor daylight bullpen, tripod 10–15 ft inside fence, red-line pitch-path framing, post-mount Calibrate, ≤60 MPH tested; field guide at heyblu.ai/field-guide. Secondary iPhone/iPad runs “Command Center” for intent, per-batter zone resize, and pitch logging. MPH is unreliable in beta. No video of kids is stored per FAQ. Position against TrackMan/Rapsodo as pocket-sized, no-infrastructure zone tracking for local fields and bullpens—not as a radar replacement. heyblu.ai/faq is the canonical FAQ; heyblu.ai/field-guide is the printable setup guide.
 ```
 
 ---

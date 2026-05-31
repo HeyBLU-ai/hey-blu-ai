@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#1d4ed8">
-    <meta name="description" content="HeyBLU first-time field guide: tripod, scan, strike zone, and troubleshooting for ABS setup.">
+    <meta name="description" content="HeyBLU bullpen field guide: outdoor practice setup for Diamond Dads—tripod inside the fence, red ROI lines, Pro phone distance, and when to restart.">
     <title>HeyBLU Field Guide</title>
     <link rel="canonical" href="https://heyblu.ai/field-guide">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Web (pinned) — loads icon font CSS; use explicit /src/index.js for reliable unpkg resolution -->
     <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
     <style>
         body {
@@ -57,7 +56,6 @@
 </head>
 <body class="py-6 sm:py-8">
 
-    <!-- Print Button (Hidden on Print) — min 44px tap target for iOS -->
     <div class="max-w-[8.5in] mx-auto flex justify-end mb-4 no-print px-2 sm:px-4">
         <button type="button" onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-4 min-h-[44px] rounded-lg shadow flex items-center justify-center gap-2 transition touch-manipulation">
             <i class="ph ph-printer text-xl" aria-hidden="true"></i>
@@ -65,35 +63,43 @@
         </button>
     </div>
 
-    <!-- Main Page Container -->
     <div class="page-container max-w-[8.5in] mx-auto bg-white shadow-xl rounded-xl overflow-hidden print:rounded-none text-gray-800">
 
-        <!-- Header -->
         <header class="bg-blue-700 text-white p-4 sm:p-6 pb-4 sm:pb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b-[6px] border-orange-400">
             <div class="bg-white p-3 rounded-full text-blue-700 shrink-0">
                 <i class="ph-fill ph-baseball text-3xl sm:text-4xl" aria-hidden="true"></i>
             </div>
             <div class="min-w-0">
                 <h1 class="text-2xl sm:text-3xl font-black tracking-tight uppercase">HeyBLU</h1>
-                <h2 class="text-lg sm:text-xl font-medium text-blue-100">First-Time Field Guide</h2>
+                <h2 class="text-lg sm:text-xl font-medium text-blue-100">Bullpen &amp; Practice Field Guide</h2>
             </div>
         </header>
 
-        <!-- Intro Callout -->
         <div class="bg-blue-50 border-b border-blue-100 p-4 px-4 sm:px-6 flex items-start gap-3">
             <i class="ph-fill ph-warning-circle text-2xl text-blue-600 mt-0.5 shrink-0" aria-hidden="true"></i>
             <p class="text-sm font-medium leading-relaxed text-blue-900">
-                <strong>"ABS" (Automated Balls &amp; Strikes)</strong> requires user calibration. The iPhone needs to study the area around home plate. It only works if you set it up right. <span class="bg-red-100 text-red-800 px-1 rounded font-bold">Bad setup = bad calls.</span>
+                Built for <strong>outdoor bullpen and practice</strong>—coach, pitcher, catcher, tripod <strong>inside the fence</strong>, ~12U speeds (≤60&nbsp;MPH tested). Not for live games, indoor cages, or untested high velo (65–70+&nbsp;MPH). <span class="bg-red-100 text-red-800 px-1 rounded font-bold">Bad setup = bad calls.</span> More detail: <a href="/faq" class="text-blue-700 underline font-semibold">heyblu.ai/faq</a>
             </p>
         </div>
 
-        <!-- Responsive grid: 1 col on phone (Safari/Chrome iOS), 2 cols from md up -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 sm:p-5">
 
-            <!-- Left Column -->
+            <div class="col-span-1 md:col-span-2 card bg-slate-800 text-white rounded-lg overflow-hidden">
+                <div class="p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider border-b border-slate-600">
+                    <i class="ph ph-gear text-lg text-orange-400" aria-hidden="true"></i> iPhone settings (check before you leave)
+                </div>
+                <ul class="p-3 sm:p-4 text-sm grid sm:grid-cols-2 gap-x-6 gap-y-2 list-disc list-inside text-slate-200">
+                    <li><strong class="text-white">Auto-Lock → Never</strong> (Settings → Display &amp; Brightness → Auto-Lock). If the screen locks on the tripod, tracking stops.</li>
+                    <li><strong class="text-white">Low Power Mode off</strong>; charge fully and stay above ~30% battery.</li>
+                    <li><strong class="text-white">Do Not Disturb</strong> (or a Focus) so calls and alerts stay quiet during the session.</li>
+                    <li><strong class="text-white">Volume up</strong>, or connect a <strong>Bluetooth speaker / earbuds</strong> so the pitcher hears calls.</li>
+                    <li><strong class="text-white">HeyBLU → Local Network On</strong> if you use Command Training, Follow Game, or a second device.</li>
+                    <li><strong class="text-white">Clean the camera lens</strong> before you mount.</li>
+                </ul>
+            </div>
+
             <div class="flex flex-col gap-4">
 
-                <!-- Section 1 -->
                 <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden">
                     <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
                         <i class="ph ph-backpack text-lg text-orange-400" aria-hidden="true"></i> 1. What to Bring
@@ -103,109 +109,122 @@
                             <li class="flex gap-3">
                                 <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-camera text-blue-600 text-lg" aria-hidden="true"></i></div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Tripod or Fence Mount</strong>
-                                    <span class="text-gray-600 leading-tight block">Hand-holding shakes the view and ruins calls. The phone must stay still.</span>
+                                    <strong class="text-gray-900 block">Tripod (inside the fence)</strong>
+                                    <span class="text-gray-600 leading-tight block">Hand-holding ruins calls. A refurbished <strong>iPhone&nbsp;13 (non-Pro)</strong> without cell service is an ideal dedicated device.</span>
                                 </div>
                             </li>
                             <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-speaker-hifi text-blue-600 text-lg" aria-hidden="true"></i></div>
+                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-ruler text-blue-600 text-lg" aria-hidden="true"></i></div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Bluetooth Speaker</strong>
-                                    <span class="text-gray-600 leading-tight block">The phone's speaker is too quiet. Pitchers need to hear calls from the mound.</span>
+                                    <strong class="text-gray-900 block">Measuring tape (Pro iPhones)</strong>
+                                    <span class="text-gray-600 leading-tight block">Enter <strong>camera-to-plate distance</strong> and <strong>lens height from the ground</strong> after you mount.</span>
                                 </div>
                             </li>
                             <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-brain text-blue-600 text-lg" aria-hidden="true"></i></div>
+                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-baseball text-blue-600 text-lg" aria-hidden="true"></i></div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Patience for Setup</strong>
-                                    <span class="text-gray-600 leading-tight block">Rushing the field scan is the #1 reason sessions break.</span>
+                                    <strong class="text-gray-900 block">Slightly used white baseballs</strong>
+                                    <span class="text-gray-600 leading-tight block">Slightly scuffed white baseballs—not brand-new pearl-white if you can avoid them.</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-battery-charging text-blue-600 text-lg" aria-hidden="true"></i></div>
+                                <div class="min-w-0">
+                                    <strong class="text-gray-900 block">Fully charged phone</strong>
+                                    <span class="text-gray-600 leading-tight block">See <strong>iPhone settings</strong> above—Auto-Lock, Low Power Mode, Do Not Disturb.</span>
+                                </div>
+                            </li>
+                            <li class="flex gap-3">
+                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-wifi-high text-blue-600 text-lg" aria-hidden="true"></i></div>
+                                <div class="min-w-0">
+                                    <strong class="text-gray-900 block">Wi-Fi for a second device (optional)</strong>
+                                    <span class="text-gray-600 leading-tight block">Put every device on the <strong>same Wi‑Fi</strong> (travel router, Android hotspot, or facility Wi‑Fi). Do not use the tracking iPhone as the only hotspot host.</span>
                                 </div>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Section 2 -->
                 <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden">
                     <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-scan text-lg text-orange-400" aria-hidden="true"></i> 2. The "Scan" (Mapping)
+                        <i class="ph ph-scan text-lg text-orange-400" aria-hidden="true"></i> 2. Scan (at the Plate)
                     </div>
                     <div class="p-4 text-sm">
-                        <p class="mb-3 text-gray-600 italic border-l-2 border-orange-400 pl-2">Your phone is building a 3D mental map. You are not recording yet—you are showing the app around.</p>
                         <ul class="space-y-2">
                             <li class="flex items-start gap-2">
                                 <i class="ph-fill ph-check-circle text-green-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Move slowly:</strong> Smooth, short arcs. No fast spinning.</span>
+                                <span><strong>Move slowly:</strong> ~20–30 seconds—closer, farther, a bit left and right.</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="ph-fill ph-check-circle text-green-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Keep plate in view:</strong> Ensure the real plate is visible. Don't scan empty dirt or sky.</span>
+                                <span><strong>Keep plate in view</strong> in a 5–10&nbsp;ft half circle around home plate.</span>
                             </li>
                             <li class="flex items-start gap-2">
                                 <i class="ph-fill ph-warning-circle text-orange-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Clear the area:</strong> Ask players to step away. Walking bodies confuse the 3D map.</span>
+                                <span><strong>Clear the area:</strong> Walking bodies during the scan confuse the map.</span>
                             </li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Section 3 -->
                 <div class="card bg-white border border-blue-200 rounded-lg overflow-hidden bg-blue-50/50">
                     <div class="bg-blue-600 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-crosshair text-lg text-white" aria-hidden="true"></i> 3. Place Strikezone
+                        <i class="ph ph-crosshair text-lg text-white" aria-hidden="true"></i> 3. Place Strike Zone
                     </div>
-                    <div class="p-3 text-sm flex items-start sm:items-center gap-3">
+                    <div class="p-3 text-sm flex items-start gap-3">
                         <i class="ph-fill ph-info text-blue-500 text-3xl shrink-0" aria-hidden="true"></i>
-                        <p class="text-gray-700 leading-tight min-w-0">Follow on-screen instructions. Once the <strong>blue plate entirely covers the real home plate</strong>, hit "Lock" and get ready to mount your iPhone.</p>
+                        <p class="text-gray-700 leading-snug min-w-0">Match the virtual zone to the <strong>real home plate</strong> using on-screen controls, then walk to the tripod. If you use a <strong>temporary plate</strong>, point it straight at the mound.</p>
                     </div>
                 </div>
 
             </div>
 
-            <!-- Right Column -->
             <div class="flex flex-col gap-4">
 
-                <!-- Section 4 -->
                 <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden h-full flex flex-col">
                     <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-tripod text-lg text-orange-400" aria-hidden="true"></i> 4. Mount &amp; Frame Shot
+                        <i class="ph ph-tripod text-lg text-orange-400" aria-hidden="true"></i> 4. Mount &amp; Frame (Red Lines)
                     </div>
                     <div class="p-3 text-sm flex-grow min-h-0">
                         <div class="bg-red-50 text-red-800 text-center p-1.5 rounded font-bold mb-3 border border-red-200">
-                            If the app can't see the plate, it can't call the pitch.
+                            Expect the zone to shift when you mount. Fix it on screen before Play Ball.
                         </div>
 
-                        <div class="space-y-4 relative">
+                        <div class="space-y-4">
                             <div class="flex gap-3">
                                 <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900">Position the Mount</strong>
-                                    <p class="text-gray-600 mt-0.5">Place tripod <strong>10–25 ft behind and to the side</strong> of home plate (1st or 3rd base foul line, roughly on-deck circle area). If you set up farther back than recommended, the app may warn you.</p>
-                                    <p class="text-gray-600 mt-2">Set up on either the 1st Base or 3rd Base side to avoid looking directly into the sun, or to avoid white backgrounds like fence banners. The app will auto-detect which side you are on.</p>
+                                    <strong class="text-gray-900">Position &amp; height</strong>
+                                    <p class="text-gray-600 mt-0.5">Tripod <strong>10–15&nbsp;ft from the plate, inside the fence</strong>, offset to the side (from a few feet past the catcher toward either foul line). Set height to the <strong>center of the strike zone</strong>—lower than most people expect. Don't block the lens with fingers or gear.</p>
                                 </div>
                             </div>
 
                             <div class="flex gap-3">
-                                <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</div>
+                                <div class="bg-red-100 text-red-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900">Center Plate &amp; Mound</strong>
-                                    <p class="text-gray-600 mt-0.5">Home plate should be just inside the thin blue line. The mound's blue line just needs to be near it. Equal space behind mound &amp; plate is ideal.</p>
+                                    <strong class="text-gray-900">Center the <em>pitch path</em> (red ROI)</strong>
+                                    <p class="text-gray-600 mt-0.5">Two <strong>thick red vertical lines</strong> are the detection window. The <strong>full ball flight</strong> must stay between them—not the plate alone in the middle.</p>
+                                    <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
+                                        <li>Align the blue strike zone with the <strong>red line on one side</strong> (plate edge).</li>
+                                        <li>Keep the <strong>mound visible beside the red line on the other side</strong>.</li>
+                                        <li>Do <strong>not</strong> center the zone between the red lines.</li>
+                                    </ul>
                                 </div>
                             </div>
 
                             <div class="flex gap-3">
                                 <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900">Align Blue Plate</strong>
-                                    <p class="text-gray-600 mt-0.5">Before walking away, if you see white under the blue home plate, use <strong>"Adjust Plate"</strong> to re-align.</p>
+                                    <strong class="text-gray-900">Realign after mount</strong>
+                                    <p class="text-gray-600 mt-0.5">Slide zone onto the plate; use Distance/Height or Up/Down; use <strong>Adjust Plate</strong> for overhead fit. <strong>Pro phone:</strong> enter measured distance and lens height. Tap <strong>Calibrate</strong> on a test pitch if inside/outside is consistently wrong (9-zone grid, <strong>non-contact</strong> pitches only).</p>
                                 </div>
                             </div>
 
                             <div class="flex gap-3">
                                 <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">4</div>
                                 <div class="min-w-0">
-                                    <strong class="text-gray-900">Hit Play</strong>
-                                    <p class="text-gray-600 mt-0.5">Only tap "Play Ball" when the phone is mounted, completely still, and the plate is centered.</p>
+                                    <strong class="text-gray-900">Play Ball</strong>
+                                    <p class="text-gray-600 mt-0.5">Only when the phone is still, the path is inside both red lines, and the virtual plate matches reality.</p>
                                 </div>
                             </div>
                         </div>
@@ -214,13 +233,12 @@
 
             </div>
 
-            <!-- Full width bottom: spans 1 col on phone, 2 on md+ -->
-            <div class="col-span-1 md:col-span-2 card bg-white border border-gray-200 rounded-lg overflow-hidden mt-1">
+            <div class="col-span-1 md:col-span-2 card bg-white border border-gray-200 rounded-lg overflow-hidden">
                 <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
                     <i class="ph ph-wrench text-lg text-orange-400" aria-hidden="true"></i> Quick Troubleshooting
                 </div>
                 <div class="p-0">
-                    <p class="text-xs text-gray-500 p-2 px-4 bg-gray-50 border-b border-gray-200">Even with a perfect setup, things drift. Always trust your eyes.</p>
+                    <p class="text-xs text-gray-500 p-2 px-4 bg-gray-50 border-b border-gray-200">Trust your eyes. MPH is an estimate (±5&nbsp;MPH). Ball/strike is roughly within one ball width when setup is good.</p>
                     <div class="overflow-x-auto -webkit-overflow-scrolling-touch">
                         <table class="w-full min-w-[20rem] text-left border-collapse text-sm">
                             <thead>
@@ -231,24 +249,28 @@
                             </thead>
                             <tbody class="divide-y divide-gray-200 text-gray-700">
                                 <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top"><span class="inline-flex items-center gap-2"><i class="ph ph-arrows-out-cardinal shrink-0" aria-hidden="true"></i> Plate shifted off real plate</span></td>
-                                    <td class="p-2 px-4 align-top">Use the app's <strong>"plate adjust/nudge"</strong> tool to fix it.</td>
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Zone shifted after mount</td>
+                                    <td class="p-2 px-4 align-top">Slide zone, Distance/Height, <strong>Adjust Plate</strong>; on Pro phones enter <strong>distance + lens height</strong>. Then <strong>Calibrate</strong> with a test pitch.</td>
                                 </tr>
                                 <tr class="bg-gray-50">
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top"><span class="inline-flex items-center gap-2"><i class="ph ph-warning shrink-0" aria-hidden="true"></i> Calls are wildly inaccurate</span></td>
-                                    <td class="p-2 px-4 align-top">Reposition the tripod closer or rescan if you must.</td>
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Every call inside or outside</td>
+                                    <td class="p-2 px-4 align-top"><strong>Calibrate</strong> on screen (9-zone grid). Settings <strong>Adjust HeyBLU</strong> is backup only.</td>
                                 </tr>
                                 <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top"><span class="inline-flex items-center gap-2"><i class="ph ph-arrows-in-line-vertical shrink-0" aria-hidden="true"></i> Not enough strikes?</span></td>
-                                    <td class="p-2 px-4 align-top"><strong>Resize the zone</strong> to get the strikes you were expecting.</td>
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Missing calls / wrong path</td>
+                                    <td class="p-2 px-4 align-top">Check <strong>red-line framing</strong>—full pitch path between lines, not zone centered. <a href="/faq#red-lines-strike-zone" class="text-blue-600 font-medium">FAQ diagram →</a></td>
                                 </tr>
                                 <tr class="bg-gray-50">
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top"><span class="inline-flex items-center gap-2"><i class="ph ph-arrow-fat-line-right shrink-0" aria-hidden="true"></i> Missing consistently to one side</span></td>
-                                    <td class="p-2 px-4 align-top">Tap Gear icon &gt; <strong>"Adjust BLU"</strong>.<br><span class="text-xs text-gray-500">"Near" brings calls towards camera (outside to a Righty). "Far" pushes inside.</span></td>
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Tripod bumped or idle &gt;10&nbsp;min</td>
+                                    <td class="p-2 px-4 align-top"><strong>Restart the session</strong>—especially if people walked through the scene while idle.</td>
                                 </tr>
                                 <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top"><span class="inline-flex items-center gap-2"><i class="ph ph-skull shrink-0" aria-hidden="true"></i> Nothing is working right</span></td>
-                                    <td class="p-2 px-4 align-top font-bold text-blue-700">Redo the setup. <span class="font-normal text-gray-600">A fresh scan takes 30s and beats fighting a bad session.</span></td>
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Calls stopped; Calibrate didn't fix</td>
+                                    <td class="p-2 px-4 align-top">End session and <strong>redo setup</strong>. Phone hot from sun? Cool it—thermal throttle kills AR.</td>
+                                </tr>
+                                <tr class="bg-gray-50">
+                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Calibrated after contact</td>
+                                    <td class="p-2 px-4 align-top">Batted ball can poison the read. Calibrate on <strong>pitches not swung at</strong> (use Live Batter mode when applicable).</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -256,13 +278,26 @@
                 </div>
             </div>
 
+            <div class="col-span-1 md:col-span-2 card bg-red-50 border border-red-200 rounded-lg overflow-hidden">
+                <div class="bg-red-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
+                    <i class="ph ph-prohibit text-lg text-orange-300" aria-hidden="true"></i> Don't Bother If...
+                </div>
+                <ul class="p-3 sm:p-4 text-sm text-red-950 grid sm:grid-cols-2 gap-x-6 gap-y-2 list-disc list-inside">
+                    <li>Pitch speeds regularly <strong>above ~65–70&nbsp;MPH</strong> (untested)</li>
+                    <li>Tripod can't sit <strong>within ~15&nbsp;ft</strong> of the plate</li>
+                    <li><strong>Indoor</strong> or artificial lighting only</li>
+                    <li>Phone below <strong>~30%</strong> battery</li>
+                    <li>You need a <strong>live-game</strong> umpire replacement today</li>
+                    <li>Hard breaking balls at any speed (still testing)</li>
+                </ul>
+            </div>
+
         </div>
 
-        <!-- Footer Callout -->
         <div class="bg-gray-900 text-white p-4 px-4 sm:px-6 text-center text-sm">
             <span class="text-orange-400 font-black tracking-widest uppercase mr-2 text-base">Remember:</span>
-            Mount it steady. Center the plate and mound. Scan slowly.
-            <span class="block mt-1 font-bold text-blue-300">If it looks wrong on screen, it is wrong—don't blame the player, adjust the app!</span>
+            Bullpen setup: <strong>10–15&nbsp;ft inside the fence</strong>, path between the <strong>red lines</strong>, zone on one line / mound on the other.
+            <span class="block mt-1 font-bold text-blue-300">If it looks wrong on screen, it is wrong—fix setup before you blame the pitcher.</span>
         </div>
     </div>
 
