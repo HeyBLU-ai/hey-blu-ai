@@ -46,7 +46,7 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 | **Indoor / cage** | **Poor results** called out explicitly in FAQ. |
 | **Dusk / low light** | **Does not work well yet** (FAQ). |
 | **Hand-held phone** | **Not supported** for tracking—**tripod or fence mount** required. |
-| **Pitch speed (MPH)** | FAQ: **inconsistent in beta**; **do not** promise radar-gun accuracy. |
+| **Pitch speed (MPH)** | **Directional indicator, not a calibrated measurement.** The app outputs `release_speed_mph` (drag-corrected from RANSAC Z-velocity) when the trajectory fit is strong. Live field validation (Gate 2) was inconclusive at **±5 mph vs. physical radar** — this is a physics ceiling of monocular vision, not a software/beta issue. **Do not** use "within 1–2 mph of Stalker / Pocket Radar" in any channel — that claim is not field-validated. **App Store / press copy:** _"Estimated pitch speed is included in session reports when the trajectory fit is strong enough to trust it. Speed is a useful directional indicator, not a calibrated measurement."_ Drop speed as independent investor proof; the ball/strike accuracy table stands on its own. |
 | **Overall accuracy** | FAQ invites users to judge and report; product is **iterating**—avoid “MLB Hawk-Eye certified” style claims unless you have a dated, sourced stat sheet. |
 | **Guaranteed call every pitch** | App may **stay silent** if confidence/visibility is low (design choice vs. hallucinating a call). |
 
