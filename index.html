@@ -46,7 +46,69 @@
         .animate-float {
             animation: float 3s ease-in-out infinite;
         }
+        .use-case-marquee-outer {
+            overflow: hidden;
+            background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
+        }
+        .use-case-marquee-track {
+            display: flex;
+            width: max-content;
+            animation: use-case-marquee 55s linear infinite;
+        }
+        .use-case-marquee-track:hover {
+            animation-play-state: paused;
+        }
+        @keyframes use-case-marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .use-case-marquee-outer { overflow: visible; }
+            .use-case-marquee-track {
+                animation: none;
+                flex-wrap: wrap;
+                justify-content: center;
+                width: 100%;
+                max-width: 72rem;
+                margin: 0 auto;
+                gap: 0.5rem 1rem;
+                padding: 0.75rem 1rem;
+            }
+            .use-case-marquee-item::after { content: none !important; }
+        }
+        .use-case-marquee-item {
+            white-space: nowrap;
+            font-size: 0.875rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: #e2e8f0;
+            padding: 0 0.25rem;
+        }
+        .use-case-marquee-item::after {
+            content: ' \2022 ';
+            color: #f97316;
+            padding: 0 0.35rem;
+        }
+        .use-case-marquee-item:last-child::after {
+            content: ' \2022 ';
+        }
+        .playbook-button[aria-expanded="true"] {
+            color: #2563eb;
+        }
+        .playbook-button[aria-expanded="true"] .playbook-icon {
+            transform: rotate(180deg);
+        }
+        .playbook-icon {
+            transition: transform 0.2s ease;
+        }
+        #playbook {
+            scroll-margin-top: 5rem;
+        }
+        .playbook-entry {
+            scroll-margin-top: 5rem;
+        }
     </style>
+    <script src="/site-config.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
@@ -60,6 +122,7 @@
                 <nav class="hidden md:flex items-center space-x-6">
                     <a href="#features" class="text-gray-700 hover:text-blue-600 font-medium transition">Features</a>
                     <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
+                    <a href="#playbook" class="text-gray-700 hover:text-blue-600 font-medium transition">Playbook</a>
                     <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
                     <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">FAQ</a>
                     <a href="#field-notes" class="text-gray-700 hover:text-blue-600 font-medium transition">Field Notes</a>
@@ -74,6 +137,7 @@
             <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
                 <a href="#features" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Features</a>
                 <a href="#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
+                <a href="#playbook" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Playbook</a>
                 <a href="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">About</a>
                 <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">FAQ</a>
                 <a href="#field-notes" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Field Notes</a>
@@ -95,9 +159,18 @@
                         <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
                             Turn a single iPhone and a tripod into a pro-grade pitch tracker. Real-time ball/strike calls, Command Training, and session analytics for bullpens, practice mounds, and the local fields where coaches and families develop pitchers every week.
                         </p>
-                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                            <a href="#beta" class="inline-flex justify-center bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition text-center">Join Beta</a>
-                            <a href="#how-it-works" class="inline-flex justify-center border-2 border-gray-300 text-gray-800 font-bold py-3 px-8 rounded-lg hover:border-blue-600 hover:text-blue-600 transition text-center">How it works</a>
+                        <div class="flex flex-col items-start gap-3">
+                            <a id="app-store-download-link" href="#beta" class="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-lg" aria-label="Download HeyBLU on the App Store">
+                                <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1276560000" alt="Download on the App Store" width="250" height="83" class="h-[3.25rem] w-auto md:h-[3.75rem]" loading="eager">
+                            </a>
+                            <p id="app-download-beta-note" class="text-[10px] italic text-gray-500 max-w-xs leading-snug"></p>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                                <a href="#beta" class="text-blue-600 font-semibold hover:text-blue-800 underline">Request TestFlight access</a>
+                                <span class="text-gray-300 hidden sm:inline" aria-hidden="true">|</span>
+                                <a href="#how-it-works" class="text-gray-700 font-semibold hover:text-blue-600">How it works</a>
+                                <span class="text-gray-300 hidden sm:inline" aria-hidden="true">|</span>
+                                <a href="#playbook" class="text-gray-700 font-semibold hover:text-blue-600">Use cases</a>
+                            </div>
                         </div>
                     </div>
                     <div class="order-first lg:order-none">
@@ -106,6 +179,34 @@
                         </div>
                         <p class="text-gray-500 text-center mt-3 text-sm">One phone, one tripod—that’s the setup.</p>
                     </div>
+                </div>
+
+                <div class="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mt-10 mb-2">
+                    <p class="text-center text-sm font-medium text-gray-600 px-4 mb-3 max-w-3xl mx-auto">
+                        Ways coaches and families already use HeyBLU — same app, your setup.
+                    </p>
+                    <div class="use-case-marquee-outer py-3" aria-label="HeyBLU use cases">
+                        <div class="use-case-marquee-track" id="use-case-marquee-track">
+                            <span class="use-case-marquee-item">Track Bullpen Accuracy</span>
+                            <span class="use-case-marquee-item">Game Day Pitch Counting</span>
+                            <span class="use-case-marquee-item">Track Pitch Counts Across Sessions</span>
+                            <span class="use-case-marquee-item">Monitor Relief Warmups</span>
+                            <span class="use-case-marquee-item">Share Reps with Coaches</span>
+                            <span class="use-case-marquee-item">Knockout &amp; Bullpen Games</span>
+                            <span class="use-case-marquee-item">Practice Game Calls</span>
+                            <span class="use-case-marquee-item">Backyard Solo Bullpens</span>
+                            <span class="use-case-marquee-item">Unbiased Tryout Scoring</span>
+                            <span class="use-case-marquee-item">Review Catcher Framing</span>
+                            <span class="use-case-marquee-item">Intent vs. Actual Drills</span>
+                            <span class="use-case-marquee-item">Build Plate Discipline</span>
+                            <span class="use-case-marquee-item">Train Local Umpires</span>
+                            <span class="use-case-marquee-item">Review Session Heatmaps</span>
+                            <span class="use-case-marquee-item">Session Reports &amp; Exports</span>
+                        </div>
+                    </div>
+                    <p class="text-center text-sm text-gray-500 mt-3 px-4">
+                        <a href="#playbook" class="text-blue-600 font-semibold hover:text-blue-800 underline">Read the HeyBLU Playbook</a> — how coaches use the same setup in real workflows.
+                    </p>
                 </div>
 
                 <div class="mt-14 pt-12 border-t border-gray-200">
@@ -249,6 +350,123 @@
                         <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl font-bold mx-auto lg:mx-0 mb-4">4</div>
                         <h3 class="text-lg font-bold mb-2">Review</h3>
                         <p class="text-gray-300 text-sm leading-relaxed">Open heatmaps and pitch data as soon as the session ends—on your phone, ready to share.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HeyBLU Playbook (use cases — not a feature list) -->
+        <section id="playbook" class="py-20 px-4 bg-white border-t border-gray-200">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">The HeyBLU Playbook</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">Real workflows coaches and families already run—HeyBLU fits in with the same ball/strike calls and session tools. Setup details live in the <a href="/field-guide" class="text-blue-600 font-semibold hover:text-blue-800 underline">Field Guide</a> and <a href="/faq" class="text-blue-600 font-semibold hover:text-blue-800 underline">FAQ</a>.</p>
+                </div>
+                <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-200">
+                    <div id="playbook-track-bullpen-accuracy" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Track Bullpen Accuracy</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers throw bullpens to dial in their mechanics, but without a batter or umpire, it is hard to know if they are truly hitting the zone. HeyBLU provides instant, objective audio feedback on every pitch. This allows pitchers to build real command and trust their stuff before game day.</div>
+                    </div>
+                    <div id="playbook-game-day-pitch-counting" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Game Day Pitch Counting</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Coaches manually track pitches on clipboards to protect arms and strictly adhere to league pitch-limit rules. HeyBLU automatically logs every tracked pitch during a live session. This removes the administrative headache and ensures you have a perfectly accurate pitch count when the inning ends.</div>
+                    </div>
+                    <div id="playbook-track-pitch-counts-across-sessions" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Track Pitch Counts Across Sessions</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers often throw for multiple teams or do side work, making it difficult to track their total weekly volume. HeyBLU saves a pitcher's history directly to the device. Parents and coaches can monitor aggregate pitch counts to prevent overuse and safely manage a young player's workload.</div>
+                    </div>
+                    <div id="playbook-monitor-relief-warmups" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Monitor Relief Warmups</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Coaches in the dugout need to know if the relief pitcher warming up in the bullpen is actually finding the zone. By syncing an iPad or second iPhone at the bullpen, coaches can monitor pitch locations remotely in real-time. You will know exactly when your reliever is dialed in and ready for the mound.</div>
+                    </div>
+                    <div id="playbook-share-reps-with-coaches" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Share Reps with Coaches</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers take private lessons, but instructors rarely get to see how they perform during the week. HeyBLU's exportable Session Reports and Baseball Cards make it easy to text objective results. Instructors get real data between lessons to keep a player's development on track.</div>
+                    </div>
+                    <div id="playbook-knockout-bullpen-games" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Knockout &amp; Bullpen Games</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Coaches already run "Knockout" or simulated at-bats to keep practice competitive and fun. Instead of a coach standing dangerously behind the plate acting as both umpire and catcher, HeyBLU makes the objective call instantly. This frees the coach to step back, run the drill, and focus entirely on player mechanics while the app handles the strike zone.</div>
+                    </div>
+                    <div id="playbook-practice-game-calls" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Practice Game Calls</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Teams already run scrimmages with a coach calling balls and strikes from the field. Mount HeyBLU at the backstop for consistent zone feedback while you coach bases and defense. Leagues scaling automated balls and strikes for multiple fields can <a href="mailto:info@heyblu.ai?subject=League%20or%20tournament%20ABS" class="text-blue-600 font-semibold hover:text-blue-800 underline">talk to us about ABS for your organization</a>—the same app families use in the bullpen.</div>
+                    </div>
+                    <div id="playbook-backyard-solo-bullpens" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Backyard Solo Bullpens</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Kids want to practice at home, but throwing into a pop-up net does not tell them if they actually threw a strike. HeyBLU acts as a virtual umpire for solo net sessions. Pitchers get instant audio feedback to build muscle memory without needing a parent to catch.</div>
+                    </div>
+                    <div id="playbook-unbiased-tryout-scoring" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Unbiased Tryout Scoring</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">League drafts and all-star tryouts often suffer from subjective evaluations and "daddy ball" accusations. HeyBLU provides hard, objective data on a pitcher's true strike percentage and command. Evaluators can rank players based on actual performance metrics, ensuring a fair and transparent tryout.</div>
+                    </div>
+                    <div id="playbook-review-catcher-framing" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Review Catcher Framing</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">A great catcher steals strikes, but a coach needs to know if the pitch was actually in the zone. HeyBLU calls the true location of the ball as it crosses the plate, regardless of where the glove ends up. If the app calls a ball but the catcher makes it look like a strike, coaches can use that objective feedback to discuss, score, and refine framing techniques.</div>
+                    </div>
+                    <div id="playbook-intent-vs-actual-drills" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Intent vs. Actual Drills</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Advanced pitchers need to do more than just throw strikes; they need to hit their spots. Using a second device, a coach can select the intended target zone before the pitch is thrown. The app matches the actual pitch location against the intent, turning basic bullpens into elite command execution drills.</div>
+                    </div>
+                    <div id="playbook-build-plate-discipline" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Build Plate Discipline</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Hitters struggle to learn the strike zone, often swinging at bad pitches or taking good ones. Coaches can set up HeyBLU during batting practice to call the pitches hitters decide to take. Hitters get instant, objective validation to train their eye and lay off borderline pitches.</div>
+                    </div>
+                    <div id="playbook-train-local-umpires" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Train Local Umpires</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Volunteer umpires face immense pressure from the sidelines and have few tools to improve their zone consistency. Umpire associations can use HeyBLU as a training aid during scrimmages or cage work. Umpires can mentally call the pitch and instantly hear the app's objective ruling to calibrate their eye.</div>
+                    </div>
+                    <div id="playbook-review-session-heatmaps" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Review Session Heatmaps</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">It is impossible to remember where every pitch went after a 45-pitch bullpen. HeyBLU automatically generates a visual heatmap of the entire session. Coaches and players can instantly spot trends, mechanical flaws, or cold zones that need work.</div>
+                    </div>
+                    <div id="playbook-session-reports-exports" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                            <span class="font-semibold text-gray-900">Session Reports &amp; Exports</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Serious players and teams need actionable data to review over a season. HeyBLU allows users to export detailed pitch logs and performance cards. This data can be analyzed to track progress or sent to scouts to prove a pitcher's command development over time.</div>
                     </div>
                 </div>
             </div>
@@ -537,6 +755,7 @@
                         <a href="/terms" class="block text-gray-400 hover:text-white transition">Terms of Service</a>
                         <a href="/about" class="block text-gray-400 hover:text-white transition">About Us</a>
                         <a href="/faq" class="block text-gray-400 hover:text-white transition">FAQ</a>
+                        <a href="#playbook" class="block text-gray-400 hover:text-white transition">Playbook</a>
                         <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
                         <a href="#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
                         <a href="#field-notes" class="block text-gray-400 hover:text-white transition">Field Notes (Substack)</a>
@@ -550,6 +769,36 @@
         </div>
     </footer>
 
+    <script src="/site-download.js"></script>
+    <script>
+        function togglePlaybook(button) {
+            var panel = button.nextElementSibling;
+            var expanded = button.getAttribute('aria-expanded') === 'true';
+            button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+            panel.classList.toggle('hidden', expanded);
+        }
+
+        (function () {
+            var track = document.getElementById('use-case-marquee-track');
+            if (!track) return;
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                track.innerHTML = track.innerHTML + track.innerHTML;
+            }
+        })();
+
+        (function () {
+            var hash = window.location.hash;
+            if (!hash || hash.indexOf('playbook-') !== 1) return;
+            var entry = document.querySelector(hash);
+            if (!entry) return;
+            var btn = entry.querySelector('.playbook-button');
+            var panel = entry.querySelector('.playbook-button + div');
+            if (btn && panel && panel.classList.contains('hidden')) {
+                togglePlaybook(btn);
+            }
+            setTimeout(function () { entry.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100);
+        })();
+    </script>
     <script>
         // Mobile menu toggle
         const menuBtn = document.getElementById('menu-btn');

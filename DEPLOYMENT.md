@@ -577,6 +577,8 @@ The main site’s **Apply for Beta / Request TestFlight Access** form posts to t
 
 **Deploy:** Changes live in `index.html` only—no `vercel.json` change needed. Commit and push; Vercel redeploys automatically.
 
+**App Store launch day (`site-config.js`):** The homepage hero uses Apple’s App Store badge; `site-config.js` sets `APP_STORE_LIVE`, `DOWNLOAD_URL_BETA` (TestFlight or `#beta`), and `DOWNLOAD_URL_LIVE`. On approval: set `APP_STORE_LIVE: true`, confirm `DOWNLOAD_URL_LIVE`, commit, push—no hero layout changes. Also ship `site-download.js` at repo root.
+
 **Homepage images (`/images/`):** The marketing homepage references assets under `images/` (for example hero photography and Field Notes thumbnails). `vercel.json` already includes `{ "src": "images/**", "use": "@vercel/static" }` and routes `/images/(.*)` — **add any new image files to git** or they will 404 in production (see [Image Serving](#️-image-serving)).
 
 **Post-deploy:** Submit a test from `https://heyblu.ai/#beta` and confirm the entry appears in Formspree with the expected subject and fields. Optionally spot-check `https://heyblu.ai/#field-notes` (Substack links) and hero imagery on `/`.
