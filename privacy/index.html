@@ -212,6 +212,17 @@
             font-weight: 600;
             color: #1a1a1a;
         }
+        .policy-callout {
+            background: #f0f7ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 4px;
+            padding: 1.25rem 1.5rem;
+            margin: 1.5rem 0 2rem;
+        }
+        .policy-callout p {
+            margin-bottom: 0;
+            color: #1e3a5f;
+        }
         .nav-bar {
             background: rgba(15, 23, 42, 0.95);
             backdrop-filter: blur(10px);
@@ -320,13 +331,13 @@
             <!-- Effective Date -->
             <div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e5e5;">
                 <div class="effective-date">Effective Date</div>
-                <div class="date-value">January 15, 2025</div>
+                <div class="date-value">May 24, 2026</div>
             </div>
 
             <!-- Introduction -->
             <div class="intro">
                 <p>
-                    Big League Ballpark Inc., doing business as <strong>HeyBLU</strong> ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy describes how we collect, use, and share your personal information when you use our website (heyblu.ai), our strike zone tracking application, rulebook assistant, and related services (collectively, the "Services").
+                    Big League Ballpark Inc., doing business as <strong>HeyBLU</strong> ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy describes how we handle information when you use our website (heyblu.ai), our iOS strike zone tracking application, and related services (collectively, the "Services"). The HeyBLU app processes camera input on your device in real time; it does not upload or store game video on our servers.
                 </p>
             </div>
 
@@ -353,31 +364,46 @@
 
             <section id="info-collect">
                 <h2>1. Information We Collect</h2>
-                
-                <p>We may collect the following types of personal information from you:</p>
-                
+
+                <div class="policy-callout">
+                    <p><strong>Local processing guarantee.</strong> HeyBLU is built on a privacy-forward architecture. The app processes camera frames locally on your device in real-time to track pitches and generate strike zone data. We do not transmit, upload, store, or retain video recordings or images off-device.</p>
+                </div>
+
+                <h3>HeyBLU iOS App (Core Use)</h3>
+
+                <p>You can use the core strike zone tracking features <strong>without providing personally identifiable information (PII)</strong> such as your name or email address. The app does not require an account to run a session on your device.</p>
+
+                <p>During on-device operation, the app may generate and keep on your iPhone:</p>
+
                 <ul>
-                    <li>Name and contact information (email address, phone number)</li>
-                    <li>Account information and preferences</li>
-                    <li>Information you provide when using our rulebook assistant (questions asked, league preferences)</li>
-                    <li>Usage data from our strike zone tracking application (pitch data, game analytics)</li>
-                    <li>Device information and technical data (IP address, browser type, device identifiers, iOS version, device model)</li>
-                    <li>Information about your use of our site (via cookies or analytics tools)</li>
-                    <li>Payment information (if applicable, processed securely by third-party payment processors)</li>
+                    <li>Pitch and session data (e.g., ball/strike calls, pitch counts, speeds, locations, timestamps)</li>
+                    <li>Setup and calibration values you enter (e.g., strike zone size, distance, device role)</li>
+                    <li>Session summaries and exports you choose to save or share from your device</li>
                 </ul>
 
-                <h3>Video and Media Content</h3>
-                
-                <p>When you use our strike zone tracking application, we collect and process video content that you record or upload:</p>
-                
+                <p>Camera frames are processed in real time on-device for tracking. They are <strong>not</strong> saved as video files by HeyBLU and are <strong>not</strong> uploaded to our servers as part of normal app operation.</p>
+
+                <h3>Identity, Children, and Analytics</h3>
+
                 <ul>
-                    <li><strong>Video Recordings:</strong> We collect video recordings of baseball games, practices, or training sessions that you capture using our mobile application. This includes live video streams and recorded video files.</li>
-                    <li><strong>Video Metadata:</strong> We collect metadata associated with videos, including timestamps, device orientation, camera settings, and location data (if you grant location permissions).</li>
-                    <li><strong>Processed Video Data:</strong> We process video content to analyze pitch trajectories, strike zone calls, and generate analytics. This may include frame-by-frame analysis, object detection, and motion tracking data.</li>
-                    <li><strong>User-Uploaded Videos:</strong> If you upload videos through our support form or feedback features, we collect those video files along with any associated descriptions or metadata you provide.</li>
+                    <li><strong>No PII required for core app use:</strong> Name, email, and similar identifiers are not required to track pitches in the app.</li>
+                    <li><strong>Minors:</strong> HeyBLU may be used around youth baseball, but we do <strong>not</strong> link a child's on-field activity to a child's identity in our systems. We do not knowingly collect a minor's name or contact information through the core app.</li>
+                    <li><strong>Pseudonymous diagnostics:</strong> We may use pseudonymous device identifiers (not your name or email) for basic app performance measurement and crash diagnostics, such as through Apple's standard developer tools. These identifiers are used to keep the app stable, not to profile individual players on the field.</li>
                 </ul>
 
-                <p>Video content is processed both on your device and on our servers to provide strike zone tracking, pitch analysis, and related features. By using our Services, you consent to the collection, storage, and processing of video content as described in this policy.</p>
+                <h3>Website, Beta, and Support (When You Contact Us)</h3>
+
+                <p>If you use heyblu.ai or reach out to us, you may voluntarily provide:</p>
+
+                <ul>
+                    <li>Name and contact information (e.g., email) when you join the beta waitlist, submit a form, or email support</li>
+                    <li>Information you provide in support or feedback messages (device model, iOS version, steps to reproduce, optional logs)</li>
+                    <li>Questions and preferences if you use a text-based rulebook assistant on the website</li>
+                    <li>Website usage data via cookies or analytics on heyblu.ai (see Section 8)</li>
+                    <li>Payment information only if you make a purchase, handled by the app store or payment processor (we do not store full card numbers)</li>
+                </ul>
+
+                <p>If you <strong>optionally</strong> attach diagnostic files to a support request, we use them only to investigate that issue. We do not treat optional support attachments as part of the app's normal data collection.</p>
             </section>
 
             <hr class="section-divider">
@@ -404,24 +430,14 @@
                 
                 <ul>
                     <li>Provide, maintain, and improve our Services</li>
+                    <li>Run on-device strike zone tracking, pitch logging, and session summaries on your iPhone</li>
                     <li>Process beta program applications and manage waitlists</li>
                     <li>Respond to your questions and provide customer support</li>
-                    <li>Send you important updates about our Services, product launches, and beta program</li>
-                    <li>Analyze usage patterns and improve user experience</li>
+                    <li>Send important updates about our Services, product launches, and beta program (when you have provided contact information)</li>
+                    <li>Measure basic app performance and diagnose crashes using pseudonymous identifiers</li>
+                    <li>Analyze website usage patterns and improve user experience</li>
                     <li>Ensure security and prevent fraud</li>
                     <li>Comply with legal obligations</li>
-                </ul>
-
-                <h3>Use of Video Content</h3>
-                
-                <p>We use video content you provide for the following purposes:</p>
-                
-                <ul>
-                    <li><strong>Strike Zone Analysis:</strong> To analyze pitches, determine strike/ball calls, and provide real-time feedback during games or practices</li>
-                    <li><strong>Analytics and Reporting:</strong> To generate pitch history, statistics, and performance analytics for coaches, players, and umpires</li>
-                    <li><strong>Service Improvement:</strong> To improve our AI models, tracking algorithms, and overall service quality (video may be used for training and testing purposes, but only after anonymization or with explicit consent)</li>
-                    <li><strong>Customer Support:</strong> To diagnose technical issues, troubleshoot problems, and provide support when you report bugs or request assistance</li>
-                    <li><strong>Quality Assurance:</strong> To ensure accuracy of strike zone calls and validate system performance</li>
                 </ul>
             </section>
 
@@ -430,41 +446,34 @@
             <section id="sharing-info">
                 <h2>4. Sharing of Information and Third-Party Processors</h2>
                 
-                <p><strong>We do not sell your personal data.</strong></p>
+                <p><strong>We do not sell your personal data.</strong> We do not upload or store HeyBLU camera video or images on our servers as part of normal app operation.</p>
                 
-                <p>We may share your data, including video content, with trusted third-party service providers who help us operate our Services. These third parties are contractually obligated to protect your information and use it only for the purposes we specify.</p>
+                <p>We may share limited information with trusted service providers who help us operate the website, beta program, and app distribution. They are obligated to protect your information and use it only for the purposes we specify.</p>
 
                 <h3>Third-Party Processors</h3>
                 
-                <p>The following third-party services process your data on our behalf:</p>
+                <p>Depending on how you interact with us, the following services may process data:</p>
                 
                 <ul>
-                    <li><strong>OpenAI (OpenAI, L.L.C.):</strong> Processes text-based queries for our AI rulebook assistant and may process video metadata for strike zone analysis. Data is subject to OpenAI's privacy policy: <a href="https://openai.com/privacy" target="_blank" rel="noopener">https://openai.com/privacy</a></li>
-                    <li><strong>Vercel (Vercel Inc.):</strong> Hosts our web services and may temporarily process video uploads during transmission. Data is subject to Vercel's privacy policy: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">https://vercel.com/legal/privacy-policy</a></li>
-                    <li><strong>Neon (Neon, Inc.) / PostgreSQL:</strong> Stores user account data, analytics, and metadata. Video content may be stored in associated cloud storage. Data is subject to Neon's privacy policy: <a href="https://neon.tech/legal/privacy-policy" target="_blank" rel="noopener">https://neon.tech/legal/privacy-policy</a></li>
-                    <li><strong>Apple (Apple Inc.):</strong> When you use our iOS application, Apple processes data through the App Store, TestFlight, and iOS services. Data is subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a></li>
-                    <li><strong>Cloud Storage Providers:</strong> We may use cloud storage services (such as AWS S3, Google Cloud Storage, or similar) to store video content and user data. These providers process data according to their respective privacy policies.</li>
-                    <li><strong>Payment Processors:</strong> If you make purchases, payment information is processed by third-party payment processors (e.g., Stripe, Apple In-App Purchase). We do not store full payment card information.</li>
-                    <li><strong>Analytics Providers:</strong> We use analytics services (e.g., Google Analytics) to track website usage. These services may collect anonymized usage data.</li>
-                    <li><strong>Email Service Providers:</strong> We use email services to send communications. These providers process email addresses and communication content.</li>
-                    <li><strong>Video Processing Services:</strong> We may use specialized video processing services for transcoding, compression, or analysis. These services process video content temporarily during processing.</li>
+                    <li><strong>Apple (Apple Inc.):</strong> App Store, TestFlight, and iOS platform services (including crash and performance diagnostics you allow through iOS). Subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a></li>
+                    <li><strong>Vercel (Vercel Inc.):</strong> Hosts the heyblu.ai website. Subject to Vercel's privacy policy: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">https://vercel.com/legal/privacy-policy</a></li>
+                    <li><strong>Formspree (or similar form handlers):</strong> Processes information you submit through website forms (e.g., beta signup, support). Subject to the processor's privacy policy.</li>
+                    <li><strong>OpenAI (OpenAI, L.L.C.), if enabled:</strong> Processes <strong>text-only</strong> queries for an optional rulebook assistant on the website—not live camera video from the iOS app. Subject to OpenAI's privacy policy: <a href="https://openai.com/privacy" target="_blank" rel="noopener">https://openai.com/privacy</a></li>
+                    <li><strong>Payment processors:</strong> If you make purchases, Apple In-App Purchase or other payment processors handle payment data. We do not store full payment card numbers.</li>
+                    <li><strong>Website analytics:</strong> We may use analytics on heyblu.ai (e.g., Google Analytics) that collect pseudonymous or aggregated website usage data.</li>
                 </ul>
 
-                <h3>Data Processing by Third Parties</h3>
-                
-                <p>When we share data with third-party processors, they may process your data, including video content, in the following ways:</p>
-                
+                <h3>What We Do Not Share From Normal App Use</h3>
+
                 <ul>
-                    <li>Storage and hosting of video files and user data</li>
-                    <li>Processing and analysis of video content for strike zone tracking</li>
-                    <li>Transmission and delivery of video content to your devices</li>
-                    <li>Backup and disaster recovery services</li>
-                    <li>Analytics and performance monitoring</li>
+                    <li>Live camera video streams or recorded game video from HeyBLU sessions</li>
+                    <li>Biometric data derived from video</li>
+                    <li>Photos or image files captured by the app for cloud storage</li>
                 </ul>
 
                 <h3>Third-Party Processor Requirements</h3>
                 
-                <p>All third-party processors are required to:</p>
+                <p>Service providers we use are expected to:</p>
                 
                 <ul>
                     <li>Use your data only for the purposes we specify</li>
@@ -484,11 +493,11 @@
                 <p>We take reasonable administrative, technical, and physical measures to protect your information, including:</p>
                 
                 <ul>
-                    <li>Encryption of data in transit (using TLS/SSL) and at rest</li>
-                    <li>Secure servers and cloud infrastructure with access controls</li>
+                    <li>Encryption of data in transit (using TLS/SSL) for website and support communications</li>
+                    <li>Secure hosting and infrastructure with access controls for data you send us voluntarily</li>
+                    <li>On-device processing for core strike zone tracking so camera frames stay on your iPhone during normal use</li>
                     <li>Regular security assessments and updates</li>
-                    <li>Limited access to personal data on a need-to-know basis</li>
-                    <li>Secure video storage with access logging</li>
+                    <li>Limited access to personal data we hold on a need-to-know basis</li>
                 </ul>
                 
                 <p>However, no system can guarantee absolute security, and you use our Services at your own risk. We encourage you to use strong passwords and keep your account credentials secure.</p>
@@ -499,29 +508,27 @@
             <section id="data-retention">
                 <h2>6. Data Retention</h2>
                 
-                <p>We retain your personal information and video content for as long as necessary to provide our Services and fulfill the purposes described in this Privacy Policy, unless a longer retention period is required or permitted by law.</p>
+                <p>We retain information only as long as needed for the purposes in this policy, unless a longer period is required by law.</p>
 
-                <h3>Retention Periods</h3>
+                <h3>On Your Device (HeyBLU App)</h3>
+
+                <p>Session and pitch data from the app are stored <strong>on your iPhone</strong> unless you export or share them yourself. You can delete session data in the app. Uninstalling the app removes locally stored HeyBLU data from that device.</p>
+
+                <p>We do <strong>not</strong> retain copies of live camera video or images from normal app operation on our servers.</p>
+
+                <h3>Data You Send to Us</h3>
                 
                 <ul>
-                    <li><strong>Account Information:</strong> We retain account information (name, email, preferences) for as long as your account is active. If you delete your account, we will delete or anonymize your account information within 30 days, except where we are required to retain it for legal or legitimate business purposes.</li>
-                    <li><strong>Video Content:</strong> Video recordings and processed video data are retained for as long as you maintain an active account and for up to 90 days after account deletion, unless you request earlier deletion. Video content may be retained longer if required for legal compliance, dispute resolution, or legitimate business purposes (e.g., improving our AI models with anonymized data).</li>
-                    <li><strong>Analytics and Usage Data:</strong> We retain analytics and usage data for up to 2 years to analyze trends and improve our Services.</li>
-                    <li><strong>Support Communications:</strong> We retain support tickets, bug reports, and related communications for up to 3 years to provide ongoing support and improve our Services.</li>
-                    <li><strong>Legal and Compliance:</strong> We may retain certain information for longer periods if required by law, regulation, or to resolve disputes, enforce agreements, or protect our legal rights.</li>
+                    <li><strong>Beta and contact forms:</strong> Name, email, and form responses—typically up to 3 years after your last interaction, or sooner if you request deletion.</li>
+                    <li><strong>Support communications:</strong> Emails, bug reports, and optional attachments you send—typically up to 3 years to resolve issues and improve the product.</li>
+                    <li><strong>Website analytics:</strong> Pseudonymous or aggregated usage data—typically up to 2 years.</li>
+                    <li><strong>Crash and performance diagnostics:</strong> Pseudonymous technical logs via Apple's developer tools—retained according to Apple's and our vendor's standard periods.</li>
+                    <li><strong>Legal and compliance:</strong> We may retain certain records longer if required by law, regulation, dispute resolution, or to protect our legal rights.</li>
                 </ul>
 
-                <h3>Deletion of Video Content</h3>
+                <h3>Deletion Requests</h3>
                 
-                <p>You can request deletion of your video content at any time by:</p>
-                
-                <ul>
-                    <li>Deleting videos directly through the application interface</li>
-                    <li>Contacting us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a> to request deletion</li>
-                    <li>Deleting your account, which will trigger deletion of associated video content (subject to the retention periods above)</li>
-                </ul>
-                
-                <p>Please note that deletion may take up to 30 days to complete, and some data may remain in backup systems for an additional period before being permanently deleted. We will make reasonable efforts to honor deletion requests promptly.</p>
+                <p>To request deletion of information we hold about you (forms, support, or marketing contact), email <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>. We will respond within a reasonable time. Deletion of on-device session data is controlled by you in the app or by removing the app from your device.</p>
             </section>
 
             <hr class="section-divider">
@@ -555,9 +562,11 @@
             <section id="childrens-privacy">
                 <h2>9. Children's Privacy</h2>
                 
-                <p>Our Services are designed for users of all ages, including children. We comply with applicable children's privacy laws, including the Children's Online Privacy Protection Act (COPPA).</p>
+                <p>HeyBLU is often used around youth baseball, but the app is operated by coaches, parents, leagues, or other adults. We comply with applicable children's privacy laws, including the Children's Online Privacy Protection Act (COPPA) where it applies to information collected online.</p>
                 
-                <p>If you are a parent or guardian and believe your child under 13 has provided us with personal information, please contact us at <a href="mailto:support@heyblu.ai">support@heyblu.ai</a> to review, modify, or delete such information.</p>
+                <p><strong>We do not link a minor's on-field pitch data to that minor's identity</strong> in our systems. The core app does not require a child to register with name or email. Any PII we receive is typically from an adult (for example, a beta signup or support email).</p>
+                
+                <p>If you are a parent or guardian and believe your child under 13 has provided us with personal information through a website form or email, contact <a href="mailto:support@heyblu.ai">support@heyblu.ai</a> to review, modify, or delete it.</p>
             </section>
 
             <hr class="section-divider">
