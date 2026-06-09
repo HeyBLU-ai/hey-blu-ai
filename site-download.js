@@ -2,9 +2,17 @@
     var cfg = window.HEYBLU_SITE;
     if (!cfg) return;
 
+    function appendUtm(baseUrl) {
+        var utm = window.HEYBLU_DOWNLOAD_UTM;
+        if (!utm) return baseUrl;
+        var q = String(utm).replace(/^\?/, '');
+        if (!q) return baseUrl;
+        return baseUrl + (baseUrl.indexOf('?') >= 0 ? '&' : '?') + q;
+    }
+
     var link = document.getElementById('app-store-download-link');
     var note = document.getElementById('app-download-beta-note');
-    var url = cfg.APP_STORE_LIVE ? cfg.DOWNLOAD_URL_LIVE : cfg.DOWNLOAD_URL_BETA;
+    var url = appendUtm(cfg.APP_STORE_LIVE ? cfg.DOWNLOAD_URL_LIVE : cfg.DOWNLOAD_URL_BETA);
 
     if (link) {
         link.href = url;
