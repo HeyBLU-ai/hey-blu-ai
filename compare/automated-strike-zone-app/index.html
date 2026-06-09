@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Automated strike zone apps for baseball explained: live ball-strike callers vs pitch analytics that only show location. HeyBLU calls Strike/Ball out loud from an iPhone at the backstop.">
+    <meta name="description" content="Automated strike zone apps: HeyBLU delivers real-time 3D ball tracking and live Strike/Ball audio from one iPhone. Youth-optimized, outdoor daylight, plate-anchored geometry.">
     <title>Automated Strike Zone Apps for Baseball (2026) | HeyBLU</title>
     <link rel="canonical" href="https://heyblu.ai/compare/automated-strike-zone-app">
     <meta property="og:url" content="https://heyblu.ai/compare/automated-strike-zone-app">
     <meta property="og:title" content="Automated Strike Zone Apps for Baseball">
-    <meta property="og:description" content="Which apps actually call ball and strike vs show pitch charts and zone overlays.">
+    <meta property="og:description" content="Real-time 3D tracking and live ball-strike calls from a single iPhone.">
     <link rel="icon" href="/images/heyblu-favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>body { font-family: 'Inter', sans-serif; }</style>
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
-      {"@type":"Question","name":"Is there an app that automatically calls balls and strikes?","acceptedAnswer":{"@type":"Answer","text":"HeyBLU is an iOS app that mounts an iPhone at the backstop and announces Strike or Ball out loud on taken pitches at outdoor youth baseball practice. Many other pitch apps only display location or analytics and do not call balls and strikes."}},
-      {"@type":"Question","name":"What is the difference between zone overlay and ball-strike calls?","acceptedAnswer":{"@type":"Answer","text":"Zone overlay apps show where a pitch crossed the plate on screen after tracking. Ball-strike callers like HeyBLU provide live audio adjudication on pitches not swung at, similar to umpire feedback."}}
+      {"@type":"Question","name":"What is an automated strike zone app?","acceptedAnswer":{"@type":"Answer","text":"HeyBLU is an iOS app that mounts an iPhone at the backstop, fits a 3D ball trajectory in real time, anchors the strike zone to home plate with ARKit, and announces Strike or Ball when the batter takes the pitch. Pitch crossing location is still logged on swings."}},
+      {"@type":"Question","name":"How is HeyBLU different from pitch analytics apps?","acceptedAnswer":{"@type":"Answer","text":"Pitch analytics apps like PitchLab and Ember focus on velocity, movement, and zone overlays from a camera near the pitcher. HeyBLU is plate-anchored 3D geometry from foul territory with live ball-strike audio."}}
     ]}
     </script>
 </head>
@@ -28,36 +28,39 @@
 
     <main class="max-w-3xl mx-auto px-4 py-10 text-gray-800">
         <nav class="text-sm text-gray-500 mb-6"><a href="/compare" class="text-blue-600">Guides</a> → Automated strike zone apps</nav>
-        <h1 class="text-3xl md:text-4xl font-extrabold mb-6">Automated strike zone apps — what to expect</h1>
+        <h1 class="text-3xl md:text-4xl font-extrabold mb-6">Automated strike zone apps</h1>
 
-        <p class="text-lg text-gray-600 mb-8 leading-relaxed">Search “automated strike zone app” and you will find pitch trackers, umpire clickers, charting tools, and stadium tech. Most results <strong>do not</strong> give you a live <strong>Strike</strong> or <strong>Ball</strong> call. Here is a simple map.</p>
+        <p class="text-lg text-gray-600 mb-8 leading-relaxed">“Automated strike zone” pulls up clickers, charting apps, pitch analytics, and million-dollar camera rigs. Only a handful actually <strong>call the zone in real time from a phone</strong>. Here is the landscape.</p>
 
         <div class="overflow-x-auto mb-10">
             <table class="w-full text-left text-sm border border-gray-200 rounded-xl overflow-hidden bg-white">
                 <thead class="bg-gray-100"><tr>
-                    <th class="p-3 font-bold">Type</th><th class="p-3 font-bold">Examples</th><th class="p-3 font-bold">Live B/S audio?</th>
+                    <th class="p-3 font-bold">Category</th><th class="p-3 font-bold">Examples</th><th class="p-3 font-bold">Live B/S audio</th>
                 </tr></thead>
                 <tbody class="divide-y divide-gray-100">
-                    <tr><td class="p-3 font-medium">Assistive zone caller (phone)</td><td class="p-3"><strong>HeyBLU</strong></td><td class="p-3 text-green-700 font-semibold">Yes</td></tr>
-                    <tr><td class="p-3">Pitch analytics + zone display</td><td class="p-3">PitchLab, Ember Pitching Analyzer</td><td class="p-3 text-gray-500">No — metrics &amp; overlay</td></tr>
-                    <tr><td class="p-3">Manual charting</td><td class="p-3">Zone Traxx, Bullpen Pro</td><td class="p-3 text-gray-500">No — you tap the grid</td></tr>
-                    <tr><td class="p-3">Umpire clicker</td><td class="p-3">Ball Strike Clicker, etc.</td><td class="p-3 text-gray-500">No — you count</td></tr>
-                    <tr><td class="p-3">Stadium / portable hardware</td><td class="p-3">MLB ABS, Magnus RECON</td><td class="p-3">League / lab gear — not a phone app</td></tr>
+                    <tr class="bg-blue-50"><td class="p-3 font-medium">3D plate caller (phone)</td><td class="p-3"><strong>HeyBLU</strong></td><td class="p-3 text-green-800 font-semibold">Yes — real time</td></tr>
+                    <tr><td class="p-3">Pitch analytics + zone chart</td><td class="p-3">PitchLab, Ember</td><td class="p-3 text-gray-600">Location metrics &amp; overlay</td></tr>
+                    <tr><td class="p-3">Manual charting</td><td class="p-3">Zone Traxx, Bullpen Pro</td><td class="p-3 text-gray-600">Coach taps the grid</td></tr>
+                    <tr><td class="p-3">Umpire clicker</td><td class="p-3">Ball Strike Clicker, etc.</td><td class="p-3 text-gray-600">Human counts</td></tr>
+                    <tr><td class="p-3">Optical hardware</td><td class="p-3">MLB ABS, Magnus RECON</td><td class="p-3 text-gray-600">Stadium / portable rig</td></tr>
                 </tbody>
             </table>
         </div>
 
-        <h2 class="text-2xl font-bold mb-4">HeyBLU in one sentence</h2>
-        <p class="text-gray-700 mb-6 leading-relaxed">Mount an iPhone on a tripod in foul territory, lock the zone to home plate, and hear objective ball/strike calls on taken pitches — built for outdoor youth bullpens, not a $10k camera rig.</p>
+        <h2 class="text-2xl font-bold mb-4">HeyBLU: one sentence</h2>
+        <p class="text-gray-700 mb-6 leading-relaxed text-lg">A single iPhone on the backstop runs <strong>real-time 3D ball tracking</strong>, locks the strike zone to home plate, and speaks <strong>Strike</strong> or <strong>Ball</strong> when the batter takes the pitch — with pitch crossing data on swings when the trajectory is trusted.</p>
 
-        <ul class="list-disc list-inside text-gray-700 space-y-2 mb-8">
-            <li>iOS only · outdoor daylight primary</li>
-            <li>Regulation baseball · tripod required</li>
-            <li>Assistive training — not a replacement for a certified game umpire</li>
-            <li>Silent when the app is not confident in the trajectory (by design)</li>
+        <ul class="text-gray-700 space-y-2 mb-8">
+            <li class="flex gap-2"><span class="text-blue-600 font-bold">→</span> Optimized for <strong>outdoor daylight</strong>; indoor and night in development</li>
+            <li class="flex gap-2"><span class="text-blue-600 font-bold">→</span> Mount within <strong>20 ft</strong> of the plate — youth market, <strong>sub-70&nbsp;MPH</strong> validated</li>
+            <li class="flex gap-2"><span class="text-blue-600 font-bold">→</span> On-device processing — ARKit + vision, no cloud required for calls</li>
+            <li class="flex gap-2"><span class="text-blue-600 font-bold">→</span> Stays silent when confidence is low — honest geometry over guess calls</li>
         </ul>
 
+        <p class="text-gray-700 mb-8">Scrimmages, games, umpire training: <a href="/compare/games-and-umpires" class="text-blue-600 font-semibold underline">games &amp; umpires guide</a></p>
+
         <section class="bg-slate-900 text-white rounded-2xl p-8 text-center mb-8">
+            <p class="text-slate-300 mb-4">Real 3D. One iPhone. Download and mount.</p>
             <a id="app-store-download-link" href="#beta" class="inline-block" aria-label="Download on the App Store">
                 <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/white/en-us?size=250x83" alt="Download on the App Store" class="h-14 w-auto mx-auto">
             </a>
