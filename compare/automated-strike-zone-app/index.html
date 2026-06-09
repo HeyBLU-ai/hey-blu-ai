@@ -16,7 +16,8 @@
     <script type="application/ld+json">
     {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
       {"@type":"Question","name":"What is an automated strike zone app?","acceptedAnswer":{"@type":"Answer","text":"HeyBLU is an iOS app that mounts an iPhone at the backstop, fits a 3D ball trajectory in real time, anchors the strike zone to home plate, and announces Strike or Ball when the batter takes the pitch. Pitch crossing location is still logged on swings."}},
-      {"@type":"Question","name":"How is HeyBLU different from pitch analytics apps?","acceptedAnswer":{"@type":"Answer","text":"Pitch analytics apps like PitchLab and Ember focus on velocity, movement, and zone overlays from a camera near the pitcher. HeyBLU is plate-anchored 3D geometry from foul territory with live ball-strike audio."}}
+      {"@type":"Question","name":"How is HeyBLU different from pitch analytics apps?","acceptedAnswer":{"@type":"Answer","text":"Pitch analytics apps like PitchLab and Ember focus on velocity, movement, and zone overlays from a camera behind the pitcher — a tripod in the field of play during live at-bats. HeyBLU is plate-anchored 3D geometry from foul territory off to the side, with live ball-strike audio."}},
+      {"@type":"Question","name":"Where can an automated strike zone app go during a live game?","acceptedAnswer":{"@type":"Answer","text":"Among phone apps, only HeyBLU is designed for a game-safe mount in foul territory near the on-deck circle. PitchLab and Ember require a camera behind the pitcher. On close backstops HeyBLU can use a fence mount behind the backstop; for live at-bats or deeper backstops, a foul-line tripod with an L-screen or similar protector works with minimal impact on play."}}
     ]}
     </script>
 </head>
@@ -35,17 +36,33 @@
         <div class="overflow-x-auto mb-10">
             <table class="w-full text-left text-sm border border-gray-200 rounded-xl overflow-hidden bg-white">
                 <thead class="bg-gray-100"><tr>
-                    <th class="p-3 font-bold">Category</th><th class="p-3 font-bold">Examples</th><th class="p-3 font-bold">Live B/S audio</th>
+                    <th class="p-3 font-bold">Category</th><th class="p-3 font-bold">Examples</th><th class="p-3 font-bold">Live B/S audio</th><th class="p-3 font-bold">Live AB placement</th>
                 </tr></thead>
                 <tbody class="divide-y divide-gray-100">
-                    <tr class="bg-blue-50"><td class="p-3 font-medium">3D plate caller (phone)</td><td class="p-3"><strong>HeyBLU</strong></td><td class="p-3 text-green-800 font-semibold">Yes — real time</td></tr>
-                    <tr><td class="p-3">Pitch analytics + zone chart</td><td class="p-3">PitchLab, Ember</td><td class="p-3 text-gray-600">Location metrics &amp; overlay</td></tr>
-                    <tr><td class="p-3">Manual charting</td><td class="p-3">Zone Traxx, Bullpen Pro</td><td class="p-3 text-gray-600">Coach taps the grid</td></tr>
-                    <tr><td class="p-3">Umpire clicker</td><td class="p-3">Ball Strike Clicker, etc.</td><td class="p-3 text-gray-600">Human counts</td></tr>
-                    <tr><td class="p-3">Optical hardware</td><td class="p-3">MLB ABS, Magnus RECON</td><td class="p-3 text-gray-600">Stadium / portable rig</td></tr>
+                    <tr class="bg-blue-50"><td class="p-3 font-medium">3D plate caller (phone)</td><td class="p-3"><strong>HeyBLU</strong></td><td class="p-3 text-green-800 font-semibold">Yes — real time</td><td class="p-3 text-green-800 font-semibold">Foul territory off to the side</td></tr>
+                    <tr><td class="p-3">Pitch analytics + zone chart</td><td class="p-3">PitchLab, Ember</td><td class="p-3 text-gray-600">Location metrics &amp; overlay</td><td class="p-3 text-amber-800">Behind the pitcher — tripod in play</td></tr>
+                    <tr><td class="p-3">Manual charting</td><td class="p-3">Zone Traxx, Bullpen Pro</td><td class="p-3 text-gray-600">Coach taps the grid</td><td class="p-3 text-gray-600">Coach / dugout</td></tr>
+                    <tr><td class="p-3">Umpire clicker</td><td class="p-3">Ball Strike Clicker, etc.</td><td class="p-3 text-gray-600">Human counts</td><td class="p-3 text-gray-600">Umpire’s pocket</td></tr>
+                    <tr><td class="p-3">Optical hardware</td><td class="p-3">MLB ABS, Magnus RECON</td><td class="p-3 text-gray-600">Stadium / portable rig</td><td class="p-3 text-gray-600">Fixed stadium / facility rig</td></tr>
                 </tbody>
             </table>
         </div>
+
+        <h2 class="text-2xl font-bold mb-4">Safe placement for live at-bats</h2>
+        <p class="text-gray-700 mb-6 leading-relaxed">Among phone apps that track the zone, <strong>only HeyBLU</strong> is designed to sit in a <strong>safe area for game play</strong>. <strong>PitchLab</strong> and <strong>Ember</strong> need the camera <strong>behind the pitcher</strong> for release-side tracking — which puts a tripod (and often an operator) <strong>in the field of play</strong> during live at-bats.</p>
+
+        <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-white border rounded-xl p-5">
+                <h3 class="font-bold text-gray-900 mb-2">PitchLab &amp; Ember</h3>
+                <p class="text-sm text-gray-600">Camera behind the pitcher. Fine for bullpens and pitch design — but for scrimmages or games, that mount is <strong>in play</strong> and in the way of ground balls, base runners, and fielders.</p>
+            </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-5">
+                <h3 class="font-bold text-blue-900 mb-2">HeyBLU</h3>
+                <p class="text-sm text-gray-800">Mounts in <strong>foul territory off to the side</strong> — outside the action, with a clear view of the plate and pitch path. On fields with a <strong>close enough backstop</strong>, the phone can sit on a <strong>fence mount behind the backstop</strong>. For <strong>live at-bats</strong> or <strong>deeper backstops</strong>, a <strong>tripod in foul territory</strong> is the usual setup; an <strong>L-screen</strong> or similar protector can shield the phone with <strong>minimal impact on the game</strong>.</p>
+            </div>
+        </div>
+
+        <p class="text-gray-700 mb-8 text-sm"><a href="/field-guide" class="text-blue-600 font-semibold underline">Field guide</a> · <a href="/compare/games-and-umpires" class="text-blue-600 font-semibold underline">Games &amp; umpires</a></p>
 
         <h2 class="text-2xl font-bold mb-4">HeyBLU: one sentence</h2>
         <p class="text-gray-700 mb-6 leading-relaxed text-lg">A single iPhone on the backstop runs <strong>real-time 3D ball tracking</strong>, locks the strike zone to home plate, and speaks <strong>Strike</strong> or <strong>Ball</strong> when the batter takes the pitch — with pitch crossing data on swings when the trajectory is trusted.</p>
