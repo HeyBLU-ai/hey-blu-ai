@@ -191,15 +191,15 @@ const handler = async (req, res) => {
           markdown = normalizeMarkdown(raw, fileName);
 
         } else {
-          // ── Fallback: pdf-parse (no API key needed, works for text-based PDFs) ─
+          // ── Fallback: unpdf (serverless-safe, no API key needed) ─────────────
           emit('parse', 'running', 'Parsing PDF locally (no LlamaCloud key found)…');
-          const { default: pdfParse } = await import('pdf-parse');
-          const data = await pdfParse(buf);
-          const raw  = data.text ?? '';
-          if (!raw || raw.trim().length < 100)
-            throw new Error('pdf-parse returned empty text — PDF may be image/scanned. Try a DOCX or URL instead.');
-          emit('parse', 'running', `Extracted ${data.numpages} pages via pdf-parse`);
-          markdown = normalizeMarkdown(raw, fileName);
+          const { extractText, getDocumentProxy } = await import('unpdf');
+          const doc  = await getDocumentProxy(new Uint8Array(buf));
+          const { text, totalPages } = await extractText(doc, { mergePages: true });
+          if (!text || text.trim().length < 100)
+            throw new Error('PDF text extraction returned empty — file may be scanned/image-only. Try a DOCX or URL instead.');
+          emit('parse', 'running', `Extracted ${totalPages} pages`);
+          markdown = normalizeMarkdown(text, fileName);
         }
 
       } else if (ext === 'docx') {
