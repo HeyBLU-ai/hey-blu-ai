@@ -193,7 +193,7 @@ const handler = async (req, res) => {
         } else {
           // ── Fallback: pdf-parse (no API key needed, works for text-based PDFs) ─
           emit('parse', 'running', 'Parsing PDF locally (no LlamaCloud key found)…');
-          const { default: pdfParse } = await import('pdf-parse/lib/pdf-parse.js');
+          const { default: pdfParse } = await import('pdf-parse');
           const data = await pdfParse(buf);
           const raw  = data.text ?? '';
           if (!raw || raw.trim().length < 100)
