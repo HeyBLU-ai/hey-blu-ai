@@ -99,6 +99,37 @@ function normalizeMarkdown(raw, sourceName) {
   return (`<!-- ingested from: ${sourceName.replace(/-->/g, '->')} -->\n\n` + md).trim();
 }
 
+// ── Rule-boundary splitter for flat PDF text ──────────────────────────────────
+// When normalizeMarkdown finds no ## headers (common with text-extracted PDFs),
+// this function inserts them by detecting rule-number patterns inline in the text.
+// Handles formats like: "1.", "1.01", "RULE 1", "SECTION 2", "A.", "Rule 1 –"
+function injectHeadersIntoPdfText(text) {
+  // Pattern: at a word boundary, match rule-number tokens that appear to start
+  // a new rule section. We look for them either at the start of a line or
+  // after a period/newline that ends the previous rule.
+  const RULE_BOUNDARY = new RegExp(
+    // "Rule 1", "RULE 1", "Section 2", "SECTION 2"
+    '((?:^|\\n)(?:RULE|Rule|SECTION|Section|ARTICLE|Article)\\s+\\d+[.\\d]*[a-z]?' +
+    // "1.01", "1.01.1"
+    '|(?:^|\\n)\\d{1,2}\\.\\d{1,2}(?:\\.\\d+)?' +
+    // "1." at start of line (single top-level rule number like "1. Definitions")
+    '|(?:^|\\n)\\d{1,2}\\.' +
+    // ALL-CAPS HEADING of 4–60 chars on its own segment, preceded by newline
+    '|(?:^|\\n)[A-Z][A-Z ]{3,58}(?=\\s*\\n)' +
+    ')(?=\\s)',
+    'gm',
+  );
+
+  let injected = text.replace(RULE_BOUNDARY, (match) => {
+    const startsWithNewline = match.startsWith('\n');
+    const content = startsWithNewline ? match.slice(1) : match;
+    return (startsWithNewline ? '\n' : '') + '\n## ' + content;
+  });
+
+  // Collapse any accidental triple+ newlines
+  return injected.replace(/\n{3,}/g, '\n\n');
+}
+
 function htmlToMarkdown(html) {
   return html
     .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '\n# $1\n\n')
@@ -220,36 +251,37 @@ const handler = async (req, res) => {
 
     let sections = splitIntoSections(markdown);
 
-    // ── Fallback: paragraph-based chunking for flat PDF text ─────────────────
+    // ── Fallback: rule-boundary injection for flat PDF text ──────────────────
     // When a PDF has no markdown headers (common with text-extracted PDFs),
-    // split on double newlines and group into ~2000-char chunks instead.
+    // inject ## headers by detecting rule-number patterns in the raw text,
+    // then re-run splitIntoSections. This preserves rule boundaries that the
+    // original normalizeMarkdown regex missed because they weren't on their own line.
     if (sections.length < 2) {
+      const preview = markdown.replace(/\n/g, ' ').slice(0, 200);
       emit('parse', 'running',
-        `No headers detected — falling back to paragraph chunking. First 200 chars: "${markdown.replace(/\n/g,' ').slice(0,200)}…"`);
+        `No headers detected — injecting rule boundaries. First 200 chars: "${preview}…"`);
 
-      const paragraphs = markdown
-        .split(/\n{2,}/)
-        .map(p => p.trim())
-        .filter(p => p.length > 40);   // drop very short blurbs
+      const enhanced = injectHeadersIntoPdfText(markdown);
+      sections = splitIntoSections(enhanced);
 
-      if (paragraphs.length < 2)
-        throw new Error('PDF text extraction returned fewer than 2 readable paragraphs — file may be scanned/image-only. Convert to DOCX or use a URL instead.');
-
-      // Group consecutive paragraphs into ~2000-char sections so the AI
-      // chunker receives reasonably-sized batches.
-      const TARGET = 2000;
-      sections = [];
-      let current = '';
-      for (const p of paragraphs) {
-        if (current.length + p.length > TARGET && current.length > 0) {
-          sections.push(current.trim());
-          current = '';
+      if (sections.length >= 2) {
+        emit('parse', 'running', `Rule-boundary injection found ${sections.length} sections`);
+        // Replace markdown with the enhanced version for downstream processing
+        markdown = enhanced;
+      } else {
+        // Last resort: split into fixed-size chunks so at least something goes to AI
+        emit('parse', 'running', 'No rule boundaries detected — chunking by size (last resort)');
+        const words = markdown.split(/\s+/);
+        const CHUNK_WORDS = 400;
+        sections = [];
+        for (let i = 0; i < words.length; i += CHUNK_WORDS) {
+          sections.push(words.slice(i, i + CHUNK_WORDS).join(' '));
         }
-        current += (current ? '\n\n' : '') + p;
+        if (sections.length < 2)
+          throw new Error('PDF appears to contain no extractable text — file may be scanned/image-only. Try uploading as DOCX or use a URL instead.');
       }
-      if (current.trim()) sections.push(current.trim());
 
-      emit('parse', 'running', `Paragraph fallback: ${paragraphs.length} paragraphs → ${sections.length} sections`);
+      emit('parse', 'running', `Fallback complete: ${sections.length} sections ready`);
     }
 
     emit('parse', 'done', `${sections.length} sections ready for AI chunking`, { sections: sections.length });
