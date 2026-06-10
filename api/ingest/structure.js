@@ -45,7 +45,7 @@ const { Client } = pg;
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const MODEL                       = 'gpt-4o-mini';
+const MODEL                       = 'gpt-5.4-mini';
 const MAX_SECTIONS_PER_BATCH      = 25;      // keeps output under 4o-mini's 16k token limit
 const OVERRIDE_CONFIDENCE_THRESHOLD = 0.75;  // below this, override claim is downgraded to warning
 const MIN_RULE_COUNT              = 2;        // fewer rules than this = quality gate failure

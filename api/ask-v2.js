@@ -193,7 +193,7 @@ async function classifyQuestion(question) {
         'Content-Type':  'application/json',
       },
       body: JSON.stringify({
-        model:           'gpt-4o-mini',
+        model:           'gpt-5.4-mini',
         messages:        [
           { role: 'system', content: CLASSIFIER_SYSTEM_PROMPT },
           { role: 'user',   content: userContent },
@@ -374,7 +374,7 @@ Answer:`;
       'Content-Type':  'application/json',
     },
     body: JSON.stringify({
-      model:       'gpt-4o',
+      model:       'gpt-5.5',
       messages:    [{ role: 'user', content: prompt }],
       temperature: 0.4,
     }),

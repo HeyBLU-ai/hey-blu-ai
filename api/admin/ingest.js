@@ -194,7 +194,7 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
       method:  'POST',
       headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
       body:    JSON.stringify({
-        model: 'gpt-4o',
+        model: 'gpt-5.5',
         input: [
           {
             role:    'user',
