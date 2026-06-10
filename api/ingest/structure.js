@@ -584,4 +584,8 @@ function chunk(arr, size) {
 
 // ─── Export ───────────────────────────────────────────────────────────────────
 
+// Named exports allow the re-seed script (api/reseed-leagues.mjs) to reuse
+// the exact same prompts and DB transaction logic without duplication.
+export { callChunkingAgent, insertRulesTransaction, splitIntoSections, chunk };
+
 export default withIngestAuth(handler);
