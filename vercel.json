@@ -55,7 +55,7 @@
       "src": "api/admin/ingest.js",
       "use": "@vercel/node",
       "config": {
-        "maxDuration": 60
+        "maxDuration": 300
       }
     },
     { "src": "admin/index.html", "use": "@vercel/static" },
