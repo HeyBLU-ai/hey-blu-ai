@@ -43,6 +43,18 @@
         "maxDuration": 60
       }
     },
+    {
+      "src": "api/admin/leagues.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/admin/ingest.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60
+      }
+    },
+    { "src": "admin/index.html", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" },
     { "src": "manifest.json", "use": "@vercel/static" },
     { "src": "service-worker.js", "use": "@vercel/static" },
@@ -112,6 +124,8 @@
     { "src": "/api/shorten", "dest": "api/shorten.ts" },
     { "src": "/api/ingest/parse",     "dest": "api/ingest/parse.js"     },
     { "src": "/api/ingest/structure", "dest": "api/ingest/structure.js" },
+    { "src": "/api/admin/leagues",    "dest": "api/admin/leagues.js"    },
+    { "src": "/api/admin/ingest",     "dest": "api/admin/ingest.js"     },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
     { "src": "/manifest.json", "dest": "/manifest.json" },
     { "src": "/service-worker.js", "dest": "/service-worker.js" },
@@ -172,6 +186,8 @@
     { "src": "/pricing", "dest": "/pricing/index.html" },
     { "src": "/pricing/", "dest": "/pricing/index.html" },
     { "src": "/pricing/(.*)", "dest": "/pricing/$1" },
+    { "src": "/admin", "dest": "/admin/index.html" },
+    { "src": "/admin/", "dest": "/admin/index.html" },
     { "src": "/robots.txt", "dest": "/robots.txt" },
     { "src": "/sitemap.xml", "dest": "/sitemap.xml" },
     { "src": "/site-config.js", "dest": "/site-config.js" },

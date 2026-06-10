@@ -41,8 +41,10 @@ try {
 
 // ── Import API handlers (after env is loaded) ─────────────────────────────────
 
-const { default: askV2Handler }   = await import('./api/ask-v2.js');
-const { default: askHandler }     = await import('./api/ask.js').catch(() => ({ default: null }));
+const { default: askV2Handler }       = await import('./api/ask-v2.js');
+const { default: askHandler }         = await import('./api/ask.js').catch(() => ({ default: null }));
+const { default: adminLeaguesHandler } = await import('./api/admin/leagues.js');
+const { default: adminIngestHandler }  = await import('./api/admin/ingest.js');
 
 // ── MIME types ────────────────────────────────────────────────────────────────
 
@@ -73,7 +75,7 @@ function resolveStaticPath(pathname) {
   const dirRoutes = [
     '/rulebook', '/betablu', '/faq', '/compare', '/pricing', '/support',
     '/about', '/zone', '/own', '/survey', '/field-guide', '/privacy',
-    '/terms', '/market', '/revenuesprint', '/use-of-funds', '/vision',
+    '/terms', '/market', '/revenuesprint', '/use-of-funds', '/vision', '/admin',
   ];
 
   for (const route of dirRoutes) {
@@ -115,6 +117,12 @@ function makeRes(nodeRes) {
     setHeader(k, v)  { headers[k] = v; nodeRes.setHeader(k, v); },
     getHeader(k)     { return headers[k]; },
     status(code)     { nodeRes.statusCode = code; return this; },
+    // writeHead + write support SSE streaming handlers
+    writeHead(code, hdrs = {}) {
+      nodeRes.statusCode = code;
+      for (const [k, v] of Object.entries(hdrs)) nodeRes.setHeader(k, v);
+    },
+    write(chunk)     { nodeRes.write(chunk); },
     json(data)       {
       if (this._ended) return this;
       this._ended = true;
@@ -156,6 +164,16 @@ const server = http.createServer(async (req, res) => {
     return askHandler(req, makeRes(res));
   }
 
+  if (pathname === '/api/admin/leagues') {
+    req.body = {};
+    return adminLeaguesHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/ingest') {
+    req.body = await readBody(req);
+    return adminIngestHandler(req, makeRes(res));
+  }
+
   // ── Static files ───────────────────────────────────────────────────────────
 
   if (method !== 'GET' && method !== 'HEAD') {
@@ -192,6 +210,7 @@ server.listen(PORT, () => {
   │                                                     │
   │  Homepage:   http://localhost:${PORT}/               │
   │  Rulebook:   http://localhost:${PORT}/rulebook        │
+  │  Admin:      http://localhost:${PORT}/admin           │
   │  API (v2):   http://localhost:${PORT}/api/ask-v2      │
   │                                                     │
   │  Press Ctrl+C to stop                               │
