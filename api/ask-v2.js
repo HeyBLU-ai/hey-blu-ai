@@ -25,7 +25,6 @@
  *               matrix_id, answers_used }
  */
 
-import fs             from "fs/promises";
 import path           from "path";
 import { fileURLToPath } from 'url';
 import { dirname }    from 'path';
@@ -38,9 +37,14 @@ import {
   prescreenForMatrix,
 } from './judgment-matrices.js';
 
-const { Client } = pg;
+const { Client, Pool } = pg;
 const __filename  = fileURLToPath(import.meta.url);
 const __dirname   = dirname(__filename);
+
+// ── Shared DB pool (used by runRAG + logToDb) ────────────────────────────────
+const pool = process.env.DATABASE_URL
+  ? new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false }, max: 5 })
+  : null;
 
 // Minimum classifier confidence to trigger an interview (below → fall through to RAG)
 const CLASSIFIER_CONFIDENCE_THRESHOLD = 0.65;
@@ -74,22 +78,6 @@ function extractRuleRef(answer) {
   return m?.[1] ?? '';
 }
 
-function cosineSimilarity(a, b) {
-  let dot = 0, normA = 0, normB = 0;
-  for (let i = 0; i < a.length; i++) {
-    dot   += a[i] * b[i];
-    normA += a[i] * a[i];
-    normB += b[i] * b[i];
-  }
-  return dot / (Math.sqrt(normA) * Math.sqrt(normB));
-}
-
-function validateFilePath(filename) {
-  if (!filename || typeof filename !== 'string')         return null;
-  if (filename.includes('..') || filename.includes('/') || filename.includes('\\')) return null;
-  if (!/^[a-zA-Z0-9._-]+\.json$/.test(filename))        return null;
-  return filename;
-}
 
 function sanitizeInput(input, maxLength = 5000) {
   if (!input || typeof input !== 'string') return '';
@@ -149,6 +137,18 @@ function resolveLeague(league) {
   }
   // Default: MLB
   return { rulesFileName: 'rules-mlb.json', embeddingsFileName: 'rules-mlb-embeddings.json', leagueName: 'MLB' };
+}
+
+/**
+ * Maps the same league identifier strings to their Postgres slugs.
+ */
+function resolveLeagueSlug(league) {
+  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase();
+  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                    return 'usssa';
+  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return 'little-league';
+  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')             return 'mill-valley-aaa';
+  if (leagueNorm === 'bamsbl')                                                       return 'bamsbl';
+  return 'mlb';
 }
 
 // ── Play-Type Classifier ─────────────────────────────────────────────────────
@@ -235,116 +235,85 @@ async function classifyQuestion(question) {
  * @returns {{ reply, usedFallback, fallbackLeague, leagueName }}
  */
 async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
-  const { rulesFileName: rawRulesFile, embeddingsFileName: rawEmbFile, leagueName } =
-    resolveLeague(league);
+  const { leagueName } = resolveLeague(league);
+  const leagueSlug     = resolveLeagueSlug(league);
 
-  const rulesFileName      = validateFilePath(rawRulesFile);
-  const embeddingsFileName = rawEmbFile ? validateFilePath(rawEmbFile) : null;
+  if (!pool) throw new Error('DATABASE_URL not configured');
 
-  if (!rulesFileName) throw new Error('Invalid league selection');
+  // ── 1. Embed the question ────────────────────────────────────────────────
 
-  const dataDir = path.resolve(path.join(__dirname, 'data'));
+  const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
+    method:  'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+      'Content-Type':  'application/json',
+    },
+    body: JSON.stringify({ model: 'text-embedding-3-small', input: sanitizedQuestion }),
+  });
+  if (!embedRes.ok) throw new Error(`OpenAI embeddings error ${embedRes.status}`);
+  const embedData   = await embedRes.json();
+  const questionVec = embedData.data[0].embedding;
+  const vecStr      = `[${questionVec.join(',')}]`;
 
-  // ── Semantic search ──────────────────────────────────────────────────────
+  // ── 2. pgvector semantic search ──────────────────────────────────────────
 
-  let selectedRules = [];
-  let usedFallback  = false;
+  const SEARCH_SQL = `
+    SELECT
+      r.rule_number,
+      r.title,
+      r.body,
+      (re.embedding <=> $2::vector) AS distance
+    FROM  rule_embeddings re
+    JOIN  rules    r ON r.id  = re.rule_id
+    JOIN  leagues  l ON l.id  = r.league_id
+    WHERE l.slug      = $1
+      AND re.model    = 'text-embedding-3-small'
+    ORDER BY distance
+    LIMIT 10
+  `;
+
+  let selectedRules  = [];
+  let usedFallback   = false;
   let fallbackLeague = null;
 
-  if (embeddingsFileName) {
-    const embPath = path.resolve(path.join(__dirname, 'data', embeddingsFileName));
-    if (!embPath.startsWith(dataDir)) throw new Error('Invalid file path');
+  const dbClient = await pool.connect();
+  try {
+    const { rows } = await dbClient.query(SEARCH_SQL, [leagueSlug, vecStr]);
+    selectedRules = rows.map(r => ({
+      id:       `Rule ${r.rule_number}`,
+      text:     `${r.title}\n${r.body}`,
+      distance: parseFloat(r.distance),
+    }));
 
-    let ruleEmbeddings;
-    try {
-      ruleEmbeddings = JSON.parse(await fs.readFile(embPath, 'utf-8'));
-    } catch {
-      throw new Error('Failed to load rulebook embeddings');
-    }
+    // ── 3. Fallback to parent league when top match is poor ────────────────
+    //   Threshold 0.45 (cosine distance 0 = identical, 1 = orthogonal).
+    //   Also falls back when the league has fewer than 3 rules in the DB.
+    const bestDistance = selectedRules[0]?.distance ?? 1;
+    if (bestDistance > 0.45 || selectedRules.length < 3) {
+      const parentRes = await dbClient.query(`
+        SELECT l2.slug, l2.name
+        FROM   leagues l
+        JOIN   leagues l2 ON l2.id = l.parent_league_id
+        WHERE  l.slug = $1
+      `, [leagueSlug]);
 
-    const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
-      method:  'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type':  'application/json',
-      },
-      body: JSON.stringify({ model: 'text-embedding-3-small', input: sanitizedQuestion }),
-    });
-    const embedData       = await embedRes.json();
-    const questionVec     = embedData.data[0].embedding;
-    const scored          = ruleEmbeddings.map(r => ({ ...r, similarity: cosineSimilarity(questionVec, r.embedding) }));
-    scored.sort((a, b)   => b.similarity - a.similarity);
-    selectedRules         = scored.slice(0, 10).map(r => ({ id: r.id, text: r.text }));
-  } else {
-    // League without embeddings — use raw rules (slice for token budget)
-    const rulesPath = path.resolve(path.join(__dirname, 'data', rulesFileName));
-    if (!rulesPath.startsWith(dataDir)) throw new Error('Invalid file path');
-    let rulesData;
-    try {
-      rulesData = JSON.parse(await fs.readFile(rulesPath, 'utf-8'));
-    } catch {
-      throw new Error('Failed to load rulebook data');
-    }
-    selectedRules = rulesData.map(r => ({ id: r.id, text: r.text })).slice(0, 40);
-  }
+      if (parentRes.rows.length > 0) {
+        const { slug: parentSlug, name: parentName } = parentRes.rows[0];
+        const { rows: parentRows } = await dbClient.query(SEARCH_SQL, [parentSlug, vecStr]);
 
-  // ── Fallback to parent league ────────────────────────────────────────────
-
-  const needsFallback = selectedRules.length > 0 &&
-    selectedRules.every(r =>
-      r.text.toLowerCase().includes('not specifically covered') ||
-      r.text.toLowerCase().includes('not explicitly listed')   ||
-      r.text.toLowerCase().includes('not found')               ||
-      r.text.toLowerCase().includes('fallback'),
-    );
-
-  if (needsFallback) {
-    let fallbackPath = null;
-
-    if (leagueName === 'Mill Valley AAA') {
-      usedFallback = true;
-      fallbackLeague = 'Little League International';
-      fallbackPath = path.join(__dirname, 'data', 'little-league-international.json');
-    } else if (leagueName === 'Little League International') {
-      usedFallback = true;
-      fallbackLeague = 'MLB';
-      fallbackPath = path.join(__dirname, 'data', 'rules-mlb-embeddings.json');
-    } else if (leagueName === 'USSSA Baseball' || leagueName === 'BAMSBL') {
-      usedFallback = true;
-      fallbackLeague = 'MLB';
-      fallbackPath = path.join(__dirname, 'data', 'rules-mlb-embeddings.json');
-    }
-
-    if (usedFallback && fallbackPath) {
-      const resolvedFallback = path.resolve(fallbackPath);
-      if (!resolvedFallback.startsWith(dataDir)) throw new Error('Invalid fallback file path');
-
-      let fallbackData;
-      try {
-        fallbackData = JSON.parse(await fs.readFile(fallbackPath, 'utf-8'));
-      } catch {
-        throw new Error('Failed to load fallback rulebook data');
-      }
-
-      if (fallbackLeague === 'Little League International') {
-        selectedRules = fallbackData.map(r => ({ id: r.id, text: r.text })).slice(0, 40);
-      } else {
-        // MLB embeddings path
-        const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
-          method:  'POST',
-          headers: {
-            'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-            'Content-Type':  'application/json',
-          },
-          body: JSON.stringify({ model: 'text-embedding-3-small', input: sanitizedQuestion }),
-        });
-        const embedData   = await embedRes.json();
-        const questionVec = embedData.data[0].embedding;
-        const scored      = fallbackData.map(r => ({ ...r, similarity: cosineSimilarity(questionVec, r.embedding) }));
-        scored.sort((a, b) => b.similarity - a.similarity);
-        selectedRules = scored.slice(0, 10).map(r => ({ id: r.id, text: r.text }));
+        if (parentRows.length > 0) {
+          usedFallback   = true;
+          fallbackLeague = parentName;
+          selectedRules  = parentRows.map(r => ({
+            id:       `Rule ${r.rule_number}`,
+            text:     `${r.title}\n${r.body}`,
+            distance: parseFloat(r.distance),
+          }));
+        }
       }
     }
+  } finally {
+    dbClient.release();
   }
 
   // ── Prompt construction ──────────────────────────────────────────────────
@@ -420,14 +389,12 @@ Answer:`;
 // ── DB Logging ───────────────────────────────────────────────────────────────
 
 function logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague }) {
+  if (!pool) return;
   (async () => {
-    if (!process.env.DATABASE_URL) return;
-    const client = new Client({ connectionString: process.env.DATABASE_URL });
     try {
-      await client.connect();
-      const ruleRef   = extractRuleRef(reply);
-      const rulebook  = usedFallback ? fallbackLeague : leagueName;
-      await client.query(
+      const ruleRef  = extractRuleRef(reply);
+      const rulebook = usedFallback ? fallbackLeague : leagueName;
+      await pool.query(
         'INSERT INTO question_logs (question, answer, rule_ref, rulebook, created_at) VALUES ($1, $2, $3, $4, NOW())',
         [
           sanitizedQuestion,
@@ -436,10 +403,8 @@ function logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackL
           sanitizeInput(rulebook, 100),
         ],
       );
-      await client.end();
     } catch (err) {
-      console.error('[ask-v2] Failed to log question/answer:', err);
-      try { await client.end(); } catch {}
+      console.error('[ask-v2] Failed to log question/answer:', err.message);
     }
   })();
 }
