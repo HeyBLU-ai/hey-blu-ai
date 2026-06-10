@@ -8,10 +8,12 @@
     "build": "tsc",
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "vercel-build": "npm run build && npm run build:css",
-    "dev": "vercel dev"
+    "dev": "node -e \"console.log('vercel dev is running — open http://localhost:3000/rulebook'); process.stdin.resume()\""
   },
   "dependencies": {
+    "@llamaindex/llama-cloud": "^2.8.0",
     "dotenv": "^17.1.0",
+    "mammoth": "^1.12.0",
     "openai": "^4.104.0",
     "pg": "^8.16.3"
   },

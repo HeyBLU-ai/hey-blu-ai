@@ -20,3 +20,6 @@ dist/
 # Database
 *.db
 *.sqlite
+
+.vercel
+.env*.local

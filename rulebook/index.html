@@ -362,6 +362,104 @@
       cursor: pointer;
     }
 
+    /* ── Active Interviewer interview panel ───────────────────────────────── */
+    #interview-panel {
+      display: none;
+      background: #fff;
+      border: 2px solid #dbeafe;
+      border-radius: 16px;
+      padding: 1.5rem 1.25rem 1.25rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.07);
+    }
+    .interview-category {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+      color: #2563eb;
+      margin-bottom: 0.75rem;
+    }
+    .interview-league-tag {
+      font-size: 0.72rem;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+      color: #94a3b8;
+    }
+    .interview-question-text {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.5;
+      margin-bottom: 0.45rem;
+    }
+    .interview-progress {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      margin-bottom: 1.4rem;
+    }
+    .interview-option-btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 0.6rem;
+      border: 2px solid transparent;
+      transition: background 0.12s, border-color 0.12s, transform 0.08s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      box-sizing: border-box;
+    }
+    .interview-option-btn:active { transform: scale(0.97); }
+    .interview-option-btn.opt-primary {
+      background: #1e3a8a;
+      color: #fff;
+    }
+    .interview-option-btn.opt-primary:hover { background: #1e40af; }
+    .interview-option-btn.opt-alt {
+      background: #fff;
+      color: #1e293b;
+      border-color: #cbd5e1;
+    }
+    .interview-option-btn.opt-alt:hover {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1e3a8a;
+    }
+    .interview-loading {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      color: #64748b;
+      font-size: 0.95rem;
+      padding: 0.6rem 0;
+    }
+    .interview-cancel-btn {
+      background: none;
+      border: none;
+      font-size: 0.78rem;
+      color: #94a3b8;
+      text-decoration: underline;
+      cursor: pointer;
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 0;
+      line-height: 1;
+    }
+    .interview-cancel-btn:hover { color: #64748b; }
+
+    /* Hide standard input controls when interview is active */
+    .container.interview-active .form-group,
+    .container.interview-active .button-row { display: none !important; }
+
     /* Responsive adjustments */
     @media (max-width: 600px) {
       .container {
@@ -417,6 +515,18 @@
         <button type="button" class="btn btn-voice" id="mic-button">🎤 Ask by Voice</button>
         <button type="submit" class="btn btn-primary" id="submit-button">Submit</button>
         <button type="button" class="btn btn-secondary" id="clear-button">Clear Form</button>
+      </div>
+
+      <!-- ── Active Interviewer panel (shown instead of standard controls) ── -->
+      <div id="interview-panel">
+        <div class="interview-category">
+          <span id="interview-label"></span>
+          <span class="interview-league-tag" id="interview-league-tag"></span>
+        </div>
+        <div class="interview-question-text" id="interview-question"></div>
+        <div class="interview-progress" id="interview-progress"></div>
+        <div id="interview-options"></div>
+        <button class="interview-cancel-btn" id="interview-cancel">↩ Start over</button>
       </div>
 
       <div id="conversation-history">
@@ -563,16 +673,31 @@
 
     // --- STATE MANAGEMENT ---
     let conversation = []; // Holds the entire chat history: [{ user, ai, league, shortUrl, feedbackStatus }]
-    let lastUserQuestion = ''; // Store the last question asked by the user for refinement
-    const CONVERSATION_LIMIT = 4; // Limit history sent to backend to last 4 turns
+    let lastUserQuestion = '';
+    const CONVERSATION_LIMIT = 4;
+
+    // Interview state — stored in memory only so a page refresh always clears it.
+    let interviewState = {
+      active:           false,
+      matrix_id:        null,
+      matrix_label:     null,
+      originalQuestion: null,
+      originalLeague:   null,
+      answers:          {},
+      pendingTurnIndex: null,
+    };
 
     // --- DOM ELEMENT REFERENCES ---
-    const questionInput = document.getElementById("question-text");
-    const leagueSelect = document.getElementById("league-select"); // Renamed ID for clarity
-    const submitButton = document.getElementById("submit-button");
-    const clearButton = document.getElementById("clear-button");
-    const micButton = document.getElementById("mic-button");
+    const questionInput                = document.getElementById("question-text");
+    const leagueSelect                 = document.getElementById("league-select");
+    const submitButton                 = document.getElementById("submit-button");
+    const clearButton                  = document.getElementById("clear-button");
+    const micButton                    = document.getElementById("mic-button");
     const conversationHistoryContainer = document.getElementById("conversation-history");
+    const interviewPanel               = document.getElementById("interview-panel");
+    const interviewOptionsEl           = document.getElementById("interview-options");
+    const interviewCancelBtn           = document.getElementById("interview-cancel");
+    const mainContainer                = document.querySelector(".container");
     const refineSection = document.getElementById("refine-section");
     const refineInput = document.getElementById("refine-input");
     const refineBtn = document.getElementById("refine-btn");
@@ -676,8 +801,20 @@
     window.addEventListener('click', (event) => {
       if (event.target === feedbackModal) {
         feedbackModal.style.display = 'none';
-        feedbackTextarea.value = ''; // Clear textarea
+        feedbackTextarea.value = '';
       }
+    });
+
+    // Interview panel — option button clicks (event delegation)
+    interviewOptionsEl.addEventListener('click', (event) => {
+      const btn = event.target.closest('.interview-option-btn');
+      if (!btn || btn.disabled) return;
+      submitInterviewAnswer(btn.dataset.questionId, btn.dataset.answer);
+    });
+
+    // Interview cancel — full reset
+    interviewCancelBtn.addEventListener('click', () => {
+      resetConversation();
     });
 
     // --- CORE FUNCTIONS ---
@@ -781,12 +918,14 @@
     }
 
     function resetConversation() {
+      if (interviewState.active) exitInterviewMode();
+      interviewState = { active: false, matrix_id: null, matrix_label: null, originalQuestion: null, originalLeague: null, answers: {}, pendingTurnIndex: null };
       conversation = [];
       conversationHistoryContainer.innerHTML = '';
       questionInput.value = '';
       lastUserQuestion = '';
-      refineSection.style.display = 'none'; // Ensure refine section is hidden
-      feedbackSection.style.display = 'none'; // Ensure feedback section is hidden
+      refineSection.style.display = 'none';
+      feedbackSection.style.display = 'none';
       submitButton.disabled = false;
       micButton.disabled = false;
       questionInput.disabled = false;
@@ -810,64 +949,209 @@
     }
 
     async function askApi(question, league) {
-      // Get the last turn, which is the one we just added and needs an AI response
       const currentTurnIndex = conversation.length - 1;
-
-      // Prepare conversation context for the API call (last CONVERSATION_LIMIT turns)
       const conversationContext = conversation
-        .slice(0, currentTurnIndex) // Exclude the current question
-        .slice(-CONVERSATION_LIMIT) // Get the last N turns
-        .map(t => ({ user: t.user, ai: t.ai })); // Format for API
+        .slice(0, currentTurnIndex)
+        .slice(-CONVERSATION_LIMIT)
+        .map(t => ({ user: t.user, ai: t.ai }));
 
-      // Show loading indicator by re-rendering
-      renderConversation();
+      renderConversation(); // show spinner for this turn
       submitButton.disabled = true;
       micButton.disabled = true;
       questionInput.disabled = true;
 
+      let wentToInterview = false;
+
       try {
-        const response = await fetch("/api/ask", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            question,
-            league,
-            conversation: conversationContext
-          })
+        const body = { question, league, conversation: conversationContext };
+        if (interviewState.active) {
+          body.matrix_state = { matrix_id: interviewState.matrix_id, answers: { ...interviewState.answers } };
+        }
+
+        const response = await fetch('/api/ask-v2', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
         });
 
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        const reply = data?.reply || "No answer returned.";
 
-        // Update the turn in our state with the AI's reply
-        conversation[currentTurnIndex].ai = reply;
-        conversation[currentTurnIndex].league = league; // Ensure league is stored with the AI response
-        
-        // Handle fallback information
+        // ── State B: judgment call — start the interview ──────────────────
+        if (data.state === 'needs_clarification') {
+          wentToInterview = true;
+          enterInterviewMode(data, question, league, currentTurnIndex);
+          return;
+        }
+
+        // ── State A (answered) or State C (ruling) — standard flow ────────
+        const reply = data?.reply || 'No answer returned.';
+        conversation[currentTurnIndex].ai     = reply;
+        conversation[currentTurnIndex].league = league;
         if (data.usedFallback) {
-          conversation[currentTurnIndex].usedFallback = true;
+          conversation[currentTurnIndex].usedFallback   = true;
           conversation[currentTurnIndex].fallbackLeague = data.fallbackLeague;
           conversation[currentTurnIndex].originalLeague = data.originalLeague;
         }
 
-        // Generate short URL for sharing
-        const shortUrl = await getShortUrl(question, reply, league, ''); // ruleId can be empty for now
+        const shortUrl = await getShortUrl(question, reply, league, '');
         conversation[currentTurnIndex].shortUrl = shortUrl;
 
       } catch (err) {
-        console.error("API Error:", err);
+        console.error('API Error:', err);
         conversation[currentTurnIndex].ai = `<p style="color:red;">Something went wrong. Please try again.</p>`;
       } finally {
-        renderConversation(); // Re-render the entire conversation with the new AI response
-        submitButton.disabled = false;
-        micButton.disabled = false;
-        questionInput.disabled = false;
-        // Scroll to the bottom of the conversation
-        conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+        if (!wentToInterview) {
+          if (interviewState.active) exitInterviewMode();
+          renderConversation();
+          submitButton.disabled = false;
+          micButton.disabled = false;
+          questionInput.disabled = false;
+          conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+        }
       }
     }
+
+    // ── Active Interviewer functions ──────────────────────────────────────────
+
+    function enterInterviewMode(data, question, league, pendingTurnIndex) {
+      interviewState.active           = true;
+      interviewState.matrix_id        = data.matrix_id;
+      interviewState.matrix_label     = data.matrix_label;
+      interviewState.originalQuestion = question;
+      interviewState.originalLeague   = league;
+      interviewState.pendingTurnIndex = pendingTurnIndex;
+      // answers carries over if we were already mid-interview
+
+      mainContainer.classList.add('interview-active');
+      conversationHistoryContainer.style.display = 'none';
+      interviewPanel.style.display = 'block';
+
+      renderInterviewPanel(data);
+    }
+
+    function exitInterviewMode() {
+      interviewState.active = false;
+
+      mainContainer.classList.remove('interview-active');
+      interviewPanel.style.display = 'none';
+      conversationHistoryContainer.style.display = '';
+
+      submitButton.disabled = false;
+      micButton.disabled = false;
+      questionInput.disabled = false;
+    }
+
+    function renderInterviewPanel(data) {
+      const { matrix_label, matrix_id, current_question, progress } = data;
+
+      document.getElementById('interview-label').textContent     = matrix_label;
+      document.getElementById('interview-league-tag').textContent = interviewState.originalLeague || '';
+      document.getElementById('interview-question').textContent  = current_question.text;
+
+      const answeredCount = progress.answered ?? 0;
+      const totalEst      = (progress.remaining_estimated ?? 0) + answeredCount;
+      document.getElementById('interview-progress').textContent =
+        totalEst > 1
+          ? `Question ${answeredCount + 1} of ~${totalEst}`
+          : 'One quick question';
+
+      // Build option buttons
+      interviewOptionsEl.innerHTML = '';
+      current_question.options.forEach((option, idx) => {
+        const btn       = document.createElement('button');
+        btn.className   = `interview-option-btn ${idx === 0 ? 'opt-primary' : 'opt-alt'}`;
+        btn.textContent = option;
+        btn.dataset.questionId = current_question.id;
+        btn.dataset.answer     = option;
+        interviewOptionsEl.appendChild(btn);
+      });
+
+      interviewCancelBtn.style.display = 'inline-block';
+    }
+
+    async function submitInterviewAnswer(questionId, answer) {
+      // Store answer (normalise to lowercase to match context_template keys)
+      interviewState.answers[questionId] = answer.toLowerCase();
+
+      // Show inline loading state
+      interviewOptionsEl.innerHTML = `
+        <div class="interview-loading">
+          <div class="spinner"></div>
+          <span>${interviewState.pendingTurnIndex !== null ? 'Looking up the rule\u2026' : 'One moment\u2026'}</span>
+        </div>`;
+      interviewCancelBtn.style.display = 'none';
+
+      try {
+        const response = await fetch('/api/ask-v2', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({
+            question:     interviewState.originalQuestion,
+            league:       interviewState.originalLeague,
+            conversation: [],
+            matrix_state: {
+              matrix_id: interviewState.matrix_id,
+              answers:   { ...interviewState.answers },
+            },
+          }),
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+
+        if (data.state === 'needs_clarification') {
+          // More questions — stay in interview mode
+          renderInterviewPanel(data);
+
+        } else if (data.state === 'ruling' || data.state === 'answered') {
+          // Interview complete — populate the pending conversation turn
+          const idx = interviewState.pendingTurnIndex;
+          const reply = data.reply || 'No answer returned.';
+
+          conversation[idx].ai     = reply;
+          conversation[idx].league = interviewState.originalLeague;
+          if (data.usedFallback) {
+            conversation[idx].usedFallback   = data.usedFallback;
+            conversation[idx].fallbackLeague = data.fallbackLeague;
+            conversation[idx].originalLeague = data.originalLeague;
+          }
+
+          exitInterviewMode();
+          renderConversation();
+          conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+
+          // Short URL async — don't block the ruling display
+          getShortUrl(interviewState.originalQuestion || conversation[idx].user, reply, conversation[idx].league, '')
+            .then(url => {
+              if (url) {
+                conversation[idx].shortUrl = url;
+                renderConversation();
+              }
+            });
+
+          // Speak the first sentence of the ruling
+          speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+        }
+
+      } catch (err) {
+        console.error('Interview follow-up error:', err);
+
+        // Show error inline with a retry option
+        interviewOptionsEl.innerHTML = `
+          <p style="color:#dc2626;font-size:0.88rem;margin-bottom:0.75rem;">
+            Something went wrong. Please try again.
+          </p>`;
+        const retryBtn     = document.createElement('button');
+        retryBtn.className = 'interview-option-btn opt-primary';
+        retryBtn.textContent = 'Try again';
+        retryBtn.addEventListener('click', () => submitInterviewAnswer(questionId, answer));
+        interviewOptionsEl.appendChild(retryBtn);
+        interviewCancelBtn.style.display = 'inline-block';
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
 
     function renderConversation() {
       conversationHistoryContainer.innerHTML = ''; // Clear existing content

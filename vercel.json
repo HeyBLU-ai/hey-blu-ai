@@ -8,6 +8,13 @@
         "includeFiles": ["api/data/**"]
       }
     },
+    {
+      "src": "api/ask-v2.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["api/data/**", "api/judgment-matrices.js"]
+      }
+    },
     { 
       "src": "api/shorten.ts", 
       "use": "@vercel/node",
@@ -20,6 +27,20 @@
       "use": "@vercel/node",
       "config": {
         "includeFiles": ["api/data/**"]
+      }
+    },
+    {
+      "src": "api/ingest/parse.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60
+      }
+    },
+    {
+      "src": "api/ingest/structure.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 60
       }
     },
     { "src": "index.html", "use": "@vercel/static" },
@@ -86,8 +107,11 @@
     { "src": "images/**", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/api/ask", "dest": "api/ask.js" },
+    { "src": "/api/ask",    "dest": "api/ask.js"    },
+    { "src": "/api/ask-v2", "dest": "api/ask-v2.js" },
     { "src": "/api/shorten", "dest": "api/shorten.ts" },
+    { "src": "/api/ingest/parse",     "dest": "api/ingest/parse.js"     },
+    { "src": "/api/ingest/structure", "dest": "api/ingest/structure.js" },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
     { "src": "/manifest.json", "dest": "/manifest.json" },
     { "src": "/service-worker.js", "dest": "/service-worker.js" },
