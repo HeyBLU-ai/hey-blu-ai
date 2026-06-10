@@ -44,6 +44,7 @@ try {
 const { default: askV2Handler }       = await import('./api/ask-v2.js');
 const { default: askHandler }         = await import('./api/ask.js').catch(() => ({ default: null }));
 const { default: adminLeaguesHandler } = await import('./api/admin/leagues.js');
+const { default: adminRulesHandler }   = await import('./api/admin/rules.js');
 const { default: adminIngestHandler }  = await import('./api/admin/ingest.js');
 
 // ── MIME types ────────────────────────────────────────────────────────────────
@@ -167,6 +168,12 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/admin/leagues') {
     req.body = {};
     return adminLeaguesHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/rules') {
+    req.query = Object.fromEntries(url.searchParams);
+    req.body  = {};
+    return adminRulesHandler(req, makeRes(res));
   }
 
   if (pathname === '/api/admin/ingest') {

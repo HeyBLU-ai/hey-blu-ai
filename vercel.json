@@ -48,6 +48,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/admin/rules.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/admin/ingest.js",
       "use": "@vercel/node",
       "config": {
@@ -125,6 +129,7 @@
     { "src": "/api/ingest/parse",     "dest": "api/ingest/parse.js"     },
     { "src": "/api/ingest/structure", "dest": "api/ingest/structure.js" },
     { "src": "/api/admin/leagues",    "dest": "api/admin/leagues.js"    },
+    { "src": "/api/admin/rules",      "dest": "api/admin/rules.js"      },
     { "src": "/api/admin/ingest",     "dest": "api/admin/ingest.js"     },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
     { "src": "/manifest.json", "dest": "/manifest.json" },

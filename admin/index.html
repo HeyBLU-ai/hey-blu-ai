@@ -316,6 +316,107 @@
     }
     .empty .icon { font-size: 48px; margin-bottom: 12px; }
     .empty p { font-size: 14px; }
+
+    /* ── Rule Browser ── */
+    #browser-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto 32px;
+      padding: 0 20px;
+    }
+    #browser-panel.visible { display: block; }
+
+    .browser-toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e293b;
+      flex-wrap: wrap;
+    }
+    .browser-toolbar select,
+    .browser-toolbar input[type="text"] {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 7px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+    .browser-toolbar select { min-width: 220px; }
+    .browser-toolbar input[type="text"] { flex: 1; min-width: 180px; }
+    .browser-toolbar input:focus,
+    .browser-toolbar select:focus { border-color: #3b82f6; }
+    .rule-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: #64748b;
+      white-space: nowrap;
+    }
+    .rule-count strong { color: #f1f5f9; }
+
+    .browse-table-wrap {
+      overflow-x: auto;
+      max-height: 520px;
+      overflow-y: auto;
+    }
+    .browse-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .browse-table th {
+      text-align: left;
+      color: #64748b;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      white-space: nowrap;
+    }
+    .browse-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #0f172a;
+      vertical-align: top;
+      color: #94a3b8;
+    }
+    .browse-table tr:hover td { background: #1e293b22; cursor: pointer; }
+    .browse-table td.rn { color: #93c5fd; font-weight: 700; white-space: nowrap; width: 90px; }
+    .browse-table td.title { color: #e2e8f0; font-weight: 500; max-width: 240px; }
+    .browse-table td.body-preview { max-width: 380px; }
+    .browse-table td.body-preview .preview { 
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; line-height: 1.4;
+    }
+    .browse-table td.body-preview .full-body {
+      display: none; white-space: pre-wrap; color: #cbd5e1;
+      background: #020817; border-radius: 6px; padding: 10px;
+      margin-top: 8px; font-size: 12px; line-height: 1.6;
+    }
+    .browse-table tr.expanded td.body-preview .preview { display: none; }
+    .browse-table tr.expanded td.body-preview .full-body { display: block; }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .badge-override { background: #7c3aed22; color: #a78bfa; border: 1px solid #7c3aed44; }
+    .badge-high     { background: #16a34a22; color: #86efac; border: 1px solid #16a34a44; }
+    .badge-medium   { background: #d9770622; color: #fcd34d; border: 1px solid #d9770644; }
+    .badge-low      { background: #dc262622; color: #fca5a5; border: 1px solid #dc262644; }
+    .badge-embed-ok { background: #0e749022; color: #67e8f9; border: 1px solid #0e749044; }
+    .badge-no-embed { background: #33415522; color: #64748b;  border: 1px solid #33415544; }
   </style>
 </head>
 <body>
@@ -473,6 +574,29 @@
 
 </div>
 
+<!-- Rule Browser Panel (full-width, below ingest) -->
+<div id="browser-panel">
+  <div class="panel">
+    <div class="panel-header">🔍 Browse Rules</div>
+    <div class="browser-toolbar">
+      <select id="browser-league-select" onchange="loadRules()">
+        <option value="">— select a league —</option>
+      </select>
+      <input type="text" id="browser-search" placeholder="Search rules…"
+             oninput="filterRules()" style="flex:1;min-width:180px">
+      <span class="rule-count" id="rule-count"></span>
+    </div>
+    <div class="browse-table-wrap">
+      <div id="browser-body">
+        <div class="empty">
+          <div class="icon">📖</div>
+          <p>Select a league above to browse its rules.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── State ─────────────────────────────────────────────────────────────────────
 
@@ -537,8 +661,10 @@ document.getElementById('password-input').addEventListener('keydown', e => {
 function showApp() {
   document.getElementById('auth-gate').style.display = 'none';
   document.getElementById('app').classList.add('visible');
+  document.getElementById('browser-panel').classList.add('visible');
   document.getElementById('logout-btn').style.display = '';
   populateLeagueDropdown();
+  populateBrowserDropdown();
 }
 
 function populateLeagueDropdown() {
@@ -781,10 +907,119 @@ function showResults(ev) {
       </a>
     ` : ''}
   `;
+
+  // Auto-load rule browser for the ingested league
+  if (!dryRun && ev.leagueSlug) {
+    setTimeout(() => autoLoadBrowser(ev.leagueSlug), 500);
+  }
 }
 
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Rule Browser ──────────────────────────────────────────────────────────────
+
+let allRules    = [];   // full result from API
+let browseLeague = '';
+
+function populateBrowserDropdown() {
+  const sel = document.getElementById('browser-league-select');
+  sel.innerHTML =
+    `<option value="">— select a league —</option>` +
+    leagues.map(l =>
+      `<option value="${l.slug}">${l.name} (${l.rule_count} rules)</option>`
+    ).join('');
+}
+
+async function loadRules() {
+  const slug = document.getElementById('browser-league-select').value;
+  if (!slug) return;
+  browseLeague = slug;
+
+  document.getElementById('browser-body').innerHTML =
+    `<div class="empty"><div class="icon" style="font-size:32px">⏳</div><p>Loading rules…</p></div>`;
+  document.getElementById('rule-count').textContent = '';
+
+  const res = await fetch(`/api/admin/rules?league=${encodeURIComponent(slug)}`, {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+  if (!res.ok) {
+    document.getElementById('browser-body').innerHTML =
+      `<div class="empty"><p style="color:#fca5a5">Failed to load rules (${res.status})</p></div>`;
+    return;
+  }
+  const data = await res.json();
+  allRules = data.rules ?? [];
+  document.getElementById('rule-count').innerHTML =
+    `<strong>${allRules.length}</strong> rules in ${data.league}`;
+  renderTable(allRules);
+}
+
+function filterRules() {
+  const q = document.getElementById('browser-search').value.toLowerCase();
+  if (!q) { renderTable(allRules); return; }
+  const filtered = allRules.filter(r =>
+    r.rule_number.toLowerCase().includes(q) ||
+    r.title.toLowerCase().includes(q) ||
+    r.body.toLowerCase().includes(q)
+  );
+  document.getElementById('rule-count').innerHTML =
+    `<strong>${filtered.length}</strong> of ${allRules.length} rules`;
+  renderTable(filtered);
+}
+
+function renderTable(rules) {
+  if (!rules.length) {
+    document.getElementById('browser-body').innerHTML =
+      `<div class="empty"><div class="icon" style="font-size:32px">🔍</div><p>No rules match your search.</p></div>`;
+    return;
+  }
+
+  const rows = rules.map(r => `
+    <tr onclick="toggleRow(this)">
+      <td class="rn">${esc(r.rule_number)}</td>
+      <td class="title">${esc(r.title)}</td>
+      <td>
+        ${r.is_override ? `<span class="badge badge-override">Override</span> ` : ''}
+        ${r.confidence  ? `<span class="badge badge-${r.confidence}">${r.confidence}</span> ` : ''}
+        ${r.has_embedding
+          ? `<span class="badge badge-embed-ok">Embedded</span>`
+          : `<span class="badge badge-no-embed">No embedding</span>`}
+      </td>
+      <td class="body-preview">
+        <div class="preview">${esc(r.body.slice(0, 200))}…</div>
+        <div class="full-body">${esc(r.body)}</div>
+      </td>
+    </tr>
+  `).join('');
+
+  document.getElementById('browser-body').innerHTML = `
+    <table class="browse-table">
+      <thead>
+        <tr>
+          <th>Rule #</th>
+          <th>Title</th>
+          <th>Flags</th>
+          <th>Body (click to expand)</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  `;
+}
+
+function toggleRow(tr) {
+  tr.classList.toggle('expanded');
+}
+
+// Auto-load browser after a successful ingest
+function autoLoadBrowser(leagueSlug) {
+  if (!leagueSlug) return;
+  const sel = document.getElementById('browser-league-select');
+  if (sel.value !== leagueSlug) sel.value = leagueSlug;
+  loadRules();
+  document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 </script>
 </body>
