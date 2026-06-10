@@ -20,14 +20,12 @@
  *   dryRun?:         boolean  — parse + chunk but skip DB writes
  * }
  *
- * SSE event shape:
- *   data: { step, status, message, data? }
- *   step:   "parse" | "league" | "chunk" | "write" | "embed" | "complete" | "error"
- *   status: "running" | "done" | "error"
+ * PDF path:  Upload to OpenAI Files API → GPT-4o reads doc natively → rules JSON
+ * URL path:  Jina Reader → markdown → section split → callChunkingAgent
+ * DOCX path: mammoth → markdown → section split → callChunkingAgent
  */
 
-import pg     from 'pg';
-import OpenAI from 'openai';
+import pg from 'pg';
 import {
   callChunkingAgent,
   insertRulesTransaction,
@@ -37,11 +35,12 @@ import {
 
 const { Client } = pg;
 
-const EMBED_MODEL  = 'text-embedding-3-small';
-const JINA_BASE    = 'https://r.jina.ai/';
-const BATCH_SIZE   = 25;
-const EMBED_BATCH  = 50;
-const DELAY_MS     = 300;
+const EMBED_MODEL = 'text-embedding-3-small';
+const JINA_BASE   = 'https://r.jina.ai/';
+const BATCH_SIZE  = 25;
+const EMBED_BATCH = 50;
+const DELAY_MS    = 300;
+const OAI_BASE    = 'https://api.openai.com/v1';
 
 // ── Auth middleware ───────────────────────────────────────────────────────────
 
@@ -56,7 +55,6 @@ const withAdminAuth = (handler) => async (req, res) => {
   if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
-
   return handler(req, res);
 };
 
@@ -76,18 +74,14 @@ function setupSSE(res) {
     'Content-Type':      'text/event-stream',
     'Cache-Control':     'no-cache',
     'Connection':        'keep-alive',
-    'X-Accel-Buffering': 'no',   // prevent nginx from buffering
+    'X-Accel-Buffering': 'no',
   });
-
-  const emit = (step, status, message, data = {}) => {
+  const emit = (step, status, message, data = {}) =>
     res.write(`data: ${JSON.stringify({ step, status, message, ...data })}\n\n`);
-  };
-
-  const done  = () => res.end();
-  return { emit, done };
+  return { emit, done: () => res.end() };
 }
 
-// ── Markdown normalization (mirrors parse.js) ─────────────────────────────────
+// ── Markdown normalization (for URL / DOCX paths) ─────────────────────────────
 
 function normalizeMarkdown(raw, sourceName) {
   let md = raw.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
@@ -97,37 +91,6 @@ function normalizeMarkdown(raw, sourceName) {
   );
   md = md.replace(/\n{3,}/g, '\n\n');
   return (`<!-- ingested from: ${sourceName.replace(/-->/g, '->')} -->\n\n` + md).trim();
-}
-
-// ── Rule-boundary splitter for flat PDF text ──────────────────────────────────
-// When normalizeMarkdown finds no ## headers (common with text-extracted PDFs),
-// this function inserts them by detecting rule-number patterns inline in the text.
-// Handles formats like: "1.", "1.01", "RULE 1", "SECTION 2", "A.", "Rule 1 –"
-function injectHeadersIntoPdfText(text) {
-  // Pattern: at a word boundary, match rule-number tokens that appear to start
-  // a new rule section. We look for them either at the start of a line or
-  // after a period/newline that ends the previous rule.
-  const RULE_BOUNDARY = new RegExp(
-    // "Rule 1", "RULE 1", "Section 2", "SECTION 2"
-    '((?:^|\\n)(?:RULE|Rule|SECTION|Section|ARTICLE|Article)\\s+\\d+[.\\d]*[a-z]?' +
-    // "1.01", "1.01.1"
-    '|(?:^|\\n)\\d{1,2}\\.\\d{1,2}(?:\\.\\d+)?' +
-    // "1." at start of line (single top-level rule number like "1. Definitions")
-    '|(?:^|\\n)\\d{1,2}\\.' +
-    // ALL-CAPS HEADING of 4–60 chars on its own segment, preceded by newline
-    '|(?:^|\\n)[A-Z][A-Z ]{3,58}(?=\\s*\\n)' +
-    ')(?=\\s)',
-    'gm',
-  );
-
-  let injected = text.replace(RULE_BOUNDARY, (match) => {
-    const startsWithNewline = match.startsWith('\n');
-    const content = startsWithNewline ? match.slice(1) : match;
-    return (startsWithNewline ? '\n' : '') + '\n## ' + content;
-  });
-
-  // Collapse any accidental triple+ newlines
-  return injected.replace(/\n{3,}/g, '\n\n');
 }
 
 function htmlToMarkdown(html) {
@@ -149,144 +112,155 @@ function htmlToMarkdown(html) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
+// ── GPT-4o PDF extraction ─────────────────────────────────────────────────────
+// Uploads the PDF to OpenAI's Files API and asks GPT-4o to read and extract
+// rules directly, understanding the document structure visually.
+
+const RULES_SCHEMA = {
+  type: 'object',
+  properties: {
+    rules: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          rule_number:               { type: 'string' },
+          title:                     { type: 'string' },
+          body:                      { type: 'string' },
+          is_override:               { type: 'boolean' },
+          override_parent_rule_number: { anyOf: [{ type: 'string' }, { type: 'null' }] },
+          confidence:                { type: 'string', enum: ['high', 'medium', 'low'] },
+        },
+        required: ['rule_number', 'title', 'body', 'is_override', 'override_parent_rule_number', 'confidence'],
+        additionalProperties: false,
+      },
+    },
+    document_quality: { type: 'string', enum: ['good', 'partial', 'poor'] },
+    notes:            { type: 'string' },
+  },
+  required: ['rules', 'document_quality', 'notes'],
+  additionalProperties: false,
+};
+
+function buildExtractionPrompt(leagueName, parentName, sport) {
+  return `You are extracting the complete rulebook for "${leagueName}" (sport: ${sport}).
+${parentName ? `This league is based on "${parentName}" rules and may contain local overrides or additions.` : ''}
+
+Read this PDF carefully. For EVERY rule, regulation, and local modification in the document, extract:
+
+- rule_number: The official identifier (e.g. "1.01", "Rule 5", "Section 3", "A", "MUST SLIDE RULE"). Use the document's own numbering. If a rule has no number, create a short slug like "must-slide".
+- title: 3–10 word descriptive title capturing the rule's topic.
+- body: The COMPLETE rule text. Include all sub-clauses, exceptions, and penalties.
+- is_override: true ONLY if this rule explicitly modifies or replaces a rule from the parent/governing rulebook (${parentName ?? 'MLB OBR'}). Local additions are NOT overrides.
+- override_parent_rule_number: If is_override is true, the parent rule number being modified. Otherwise null.
+- confidence: "high" if rule boundary is unambiguous, "medium" if uncertain, "low" if guessing.
+
+IMPORTANT:
+- Extract EVERY rule. Do not skip rules because they seem minor.
+- When a rule has lettered sub-sections (a), (b), (c)... that cover DISTINCT topics an umpire might look up independently, split them into separate rule objects with rule_number like "5.10(a)", "5.10(b)".
+- Do NOT split numbered sub-clauses (1), (2), (3) within the same letter — keep those together.
+- Skip table of contents, page headers/footers, and administrative preamble that are not actual rules.
+
+document_quality: "good" if document is clean and complete, "partial" if some rules were unclear, "poor" if document was mostly unreadable.
+notes: Brief summary of any issues encountered.`;
+}
+
+async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sport, emit }) {
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) throw new Error('OPENAI_API_KEY not configured');
+
+  // 1. Upload PDF to OpenAI Files API
+  emit('parse', 'running', 'Uploading PDF to OpenAI…');
+  const form = new FormData();
+  form.append('file', new Blob([buf], { type: 'application/pdf' }), fileName);
+  form.append('purpose', 'user_data');
+
+  const uploadRes = await fetch(`${OAI_BASE}/files`, {
+    method:  'POST',
+    headers: { 'Authorization': `Bearer ${apiKey}` },
+    body:    form,
+  });
+  if (!uploadRes.ok) {
+    const err = await uploadRes.json().catch(() => ({}));
+    throw new Error(`OpenAI file upload failed: ${err.error?.message ?? uploadRes.status}`);
+  }
+  const { id: fileId } = await uploadRes.json();
+  emit('parse', 'running', 'PDF uploaded — GPT-4o reading document…');
+
+  // 2. Extract rules via Responses API (GPT-4o reads text + page images natively)
+  let extracted;
+  try {
+    const extractRes = await fetch(`${OAI_BASE}/responses`, {
+      method:  'POST',
+      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body:    JSON.stringify({
+        model: 'gpt-4o',
+        input: [
+          {
+            role:    'user',
+            content: [
+              { type: 'input_file', file_id: fileId },
+              { type: 'input_text', text: buildExtractionPrompt(leagueName, parentName, sport) },
+            ],
+          },
+        ],
+        text: {
+          format: {
+            type:   'json_schema',
+            name:   'rules_extraction',
+            strict: true,
+            schema: RULES_SCHEMA,
+          },
+        },
+      }),
+    });
+
+    if (!extractRes.ok) {
+      const err = await extractRes.json().catch(() => ({}));
+      throw new Error(`GPT-4o extraction failed: ${err.error?.message ?? extractRes.status}`);
+    }
+
+    const data    = await extractRes.json();
+    const text    = data.output?.[0]?.content?.[0]?.text ?? data.output_text;
+    if (!text) throw new Error('GPT-4o returned empty response — check OpenAI API status');
+    extracted = JSON.parse(text);
+
+  } finally {
+    // 3. Delete the uploaded file (best effort cleanup)
+    fetch(`${OAI_BASE}/files/${fileId}`, {
+      method:  'DELETE',
+      headers: { 'Authorization': `Bearer ${apiKey}` },
+    }).catch(() => {});
+  }
+
+  return extracted;
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 const handler = async (req, res) => {
   const {
     url, fileBase64, fileName,
     leagueSlug, newLeagueName, newLeagueSlug, parentSlug,
-    sport = 'baseball',
+    sport   = 'baseball',
     replace: doReplace = false,
     dryRun  = false,
   } = req.body ?? {};
 
-  // Basic validation before opening the SSE stream
-  if (!url && !fileBase64) {
-    return res.status(400).json({ error: 'Provide url or fileBase64 + fileName' });
-  }
-  if (!leagueSlug && !newLeagueName) {
-    return res.status(400).json({ error: 'Provide leagueSlug or newLeagueName + newLeagueSlug' });
-  }
-  if (newLeagueName && !newLeagueSlug) {
-    return res.status(400).json({ error: 'newLeagueName requires newLeagueSlug' });
-  }
-  if (!process.env.DATABASE_URL) {
-    return res.status(500).json({ error: 'DATABASE_URL not configured' });
-  }
+  if (!url && !fileBase64)             return res.status(400).json({ error: 'Provide url or fileBase64 + fileName' });
+  if (!leagueSlug && !newLeagueName)   return res.status(400).json({ error: 'Provide leagueSlug or newLeagueName + newLeagueSlug' });
+  if (newLeagueName && !newLeagueSlug) return res.status(400).json({ error: 'newLeagueName requires newLeagueSlug' });
+  if (!process.env.DATABASE_URL)       return res.status(500).json({ error: 'DATABASE_URL not configured' });
+
+  const ext   = fileBase64 ? (fileName ?? '').split('.').pop().toLowerCase() : null;
+  const isPDF = ext === 'pdf';
 
   const { emit, done } = setupSSE(res);
-  const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   try {
-    // ── STEP 1: Parse ──────────────────────────────────────────────────────
 
-    emit('parse', 'running', url ? `Fetching ${url}` : `Parsing ${fileName}`);
-
-    let markdown;
-
-    if (url) {
-      const jinaRes = await fetch(`${JINA_BASE}${url}`, { headers: { Accept: 'text/markdown' } });
-      if (!jinaRes.ok) throw new Error(`Jina Reader returned HTTP ${jinaRes.status} for that URL`);
-      const raw = await jinaRes.text();
-      if (!raw || raw.trim().length < 100)
-        throw new Error('Page returned empty content — it may require login or JavaScript');
-      markdown = normalizeMarkdown(raw, url);
-
-    } else {
-      const ext = (fileName ?? '').split('.').pop().toLowerCase();
-      const buf = Buffer.from(fileBase64, 'base64');
-
-      if (ext === 'pdf') {
-        if (process.env.LLAMA_CLOUD_API_KEY) {
-          // ── Preferred: LlamaCloud (layout-aware, handles multi-column) ──────
-          const { default: LlamaCloud } = await import('@llamaindex/llama-cloud');
-          const llamaClient = new LlamaCloud({ apiKey: process.env.LLAMA_CLOUD_API_KEY });
-
-          emit('parse', 'running', 'Uploading PDF to LlamaCloud…');
-          const uploaded = await llamaClient.files.create({
-            file:    new File([buf], fileName, { type: 'application/pdf' }),
-            purpose: 'parse',
-          });
-
-          emit('parse', 'running', 'Parsing PDF via LlamaCloud (30–90 s)…');
-          const result = await llamaClient.parsing.parse({
-            file_id: uploaded.id,
-            tier:    'agentic',
-            version: 'latest',
-            expand:  ['markdown_full'],
-          });
-
-          const raw = result?.markdown_full ?? '';
-          if (!raw || raw.trim().length < 100)
-            throw new Error('LlamaParse returned empty result — PDF may be image-only or password-protected');
-          markdown = normalizeMarkdown(raw, fileName);
-
-        } else {
-          // ── Fallback: unpdf (serverless-safe, no API key needed) ─────────────
-          emit('parse', 'running', 'Parsing PDF locally (no LlamaCloud key found)…');
-          const { extractText, getDocumentProxy } = await import('unpdf');
-          const doc  = await getDocumentProxy(new Uint8Array(buf));
-          const { text, totalPages } = await extractText(doc, { mergePages: true });
-          if (!text || text.trim().length < 100)
-            throw new Error('PDF text extraction returned empty — file may be scanned/image-only. Try a DOCX or URL instead.');
-          emit('parse', 'running', `Extracted ${totalPages} pages`);
-          markdown = normalizeMarkdown(text, fileName);
-        }
-
-      } else if (ext === 'docx') {
-        const { default: mammoth } = await import('mammoth');
-        const result = await mammoth.convertToHtml({ buffer: buf }, {
-          styleMap: [
-            "p[style-name='Heading 1'] => h1:fresh",
-            "p[style-name='Heading 2'] => h2:fresh",
-            "p[style-name='Heading 3'] => h3:fresh",
-          ],
-        });
-        markdown = normalizeMarkdown(htmlToMarkdown(result.value), fileName);
-
-      } else {
-        throw new Error(`Unsupported file type ".${ext}" — use .pdf or .docx`);
-      }
-    }
-
-    let sections = splitIntoSections(markdown);
-
-    // ── Fallback: rule-boundary injection for flat PDF text ──────────────────
-    // When a PDF has no markdown headers (common with text-extracted PDFs),
-    // inject ## headers by detecting rule-number patterns in the raw text,
-    // then re-run splitIntoSections. This preserves rule boundaries that the
-    // original normalizeMarkdown regex missed because they weren't on their own line.
-    if (sections.length < 2) {
-      const preview = markdown.replace(/\n/g, ' ').slice(0, 200);
-      emit('parse', 'running',
-        `No headers detected — injecting rule boundaries. First 200 chars: "${preview}…"`);
-
-      const enhanced = injectHeadersIntoPdfText(markdown);
-      sections = splitIntoSections(enhanced);
-
-      if (sections.length >= 2) {
-        emit('parse', 'running', `Rule-boundary injection found ${sections.length} sections`);
-        // Replace markdown with the enhanced version for downstream processing
-        markdown = enhanced;
-      } else {
-        // Last resort: split into fixed-size chunks so at least something goes to AI
-        emit('parse', 'running', 'No rule boundaries detected — chunking by size (last resort)');
-        const words = markdown.split(/\s+/);
-        const CHUNK_WORDS = 400;
-        sections = [];
-        for (let i = 0; i < words.length; i += CHUNK_WORDS) {
-          sections.push(words.slice(i, i + CHUNK_WORDS).join(' '));
-        }
-        if (sections.length < 2)
-          throw new Error('PDF appears to contain no extractable text — file may be scanned/image-only. Try uploading as DOCX or use a URL instead.');
-      }
-
-      emit('parse', 'running', `Fallback complete: ${sections.length} sections ready`);
-    }
-
-    emit('parse', 'done', `${sections.length} sections ready for AI chunking`, { sections: sections.length });
-
-    // ── STEP 2: Resolve / create league ───────────────────────────────────
+    // ── STEP 1: League lookup ────────────────────────────────────────────────
+    // Done first so GPT-4o gets league context when reading PDFs.
 
     emit('league', 'running', 'Looking up league in database…');
 
@@ -297,33 +271,25 @@ const handler = async (req, res) => {
         let pid = null, pname = null;
         if (parentSlug) {
           const { rows } = await c.query(`SELECT id, name FROM leagues WHERE slug=$1`, [parentSlug]);
-          if (rows.length === 0) throw new Error(`Parent league "${parentSlug}" not found`);
-          pid   = rows[0].id;
-          pname = rows[0].name;
+          if (!rows.length) throw new Error(`Parent league "${parentSlug}" not found`);
+          pid = rows[0].id; pname = rows[0].name;
         }
         const { rows } = await c.query(`
           INSERT INTO leagues (slug, name, parent_league_id, is_foundation, effective_date)
-          VALUES ($1, $2, $3, $4, CURRENT_DATE)
-          ON CONFLICT (slug) DO UPDATE
-            SET name = EXCLUDED.name, parent_league_id = EXCLUDED.parent_league_id
+          VALUES ($1,$2,$3,$4,CURRENT_DATE)
+          ON CONFLICT (slug) DO UPDATE SET name=EXCLUDED.name, parent_league_id=EXCLUDED.parent_league_id
           RETURNING id, name
         `, [newLeagueSlug, newLeagueName, pid, pid === null]);
-        leagueId   = rows[0].id;
-        leagueName = rows[0].name;
-        parentId   = pid;
-        parentName = pname;
+        leagueId = rows[0].id; leagueName = rows[0].name;
+        parentId = pid; parentName = pname;
       } else {
         const { rows } = await c.query(`
-          SELECT l.id, l.name, l.parent_league_id,
-                 p.id AS parent_id, p.name AS parent_name
-          FROM leagues l LEFT JOIN leagues p ON p.id = l.parent_league_id
-          WHERE l.slug = $1
+          SELECT l.id, l.name, l.parent_league_id, p.id AS parent_id, p.name AS parent_name
+          FROM leagues l LEFT JOIN leagues p ON p.id = l.parent_league_id WHERE l.slug=$1
         `, [leagueSlug]);
-        if (rows.length === 0) throw new Error(`League "${leagueSlug}" not found`);
-        leagueId   = rows[0].id;
-        leagueName = rows[0].name;
-        parentId   = rows[0].parent_id;
-        parentName = rows[0].parent_name;
+        if (!rows.length) throw new Error(`League "${leagueSlug}" not found`);
+        leagueId = rows[0].id; leagueName = rows[0].name;
+        parentId = rows[0].parent_id; parentName = rows[0].parent_name;
       }
 
       if (parentId) {
@@ -337,61 +303,117 @@ const handler = async (req, res) => {
 
     emit('league', 'done',
       parentId
-        ? `"${leagueName}" — parent: "${parentName}" (${parentIndex.length} rules for override detection)`
+        ? `"${leagueName}" — parent: "${parentName}" (${parentIndex.length} rules)`
         : `"${leagueName}" — standalone / foundation rulebook`,
     );
 
-    // ── STEP 3: AI chunk extraction ────────────────────────────────────────
+    // ── STEP 2: Parse + Extract ──────────────────────────────────────────────
 
-    const batches  = chunk(sections, BATCH_SIZE);
-    const allRules = [];
-    let worstQuality = 'good';
+    let validRules;
 
-    emit('chunk', 'running', `${sections.length} sections → ${batches.length} batch${batches.length > 1 ? 'es' : ''}`);
+    if (isPDF) {
+      // ── PDF: GPT-4o reads the document natively (text + page images) ────────
+      emit('parse', 'running', `PDF detected — sending to GPT-4o for direct extraction…`);
 
-    for (let bIdx = 0; bIdx < batches.length; bIdx++) {
-      emit('chunk', 'running', `Batch ${bIdx + 1}/${batches.length}…`);
-      try {
-        const result = await callChunkingAgent(openai, {
-          sections:    batches[bIdx],
-          leagueName,
-          parentName:  parentName ?? null,
-          parentIndex,
-          sport,
-          batchLabel:  `batch ${bIdx + 1}/${batches.length}`,
+      const buf = Buffer.from(fileBase64, 'base64');
+      const extracted = await extractRulesWithGPT4o({
+        buf, fileName, leagueName, parentName, sport, emit,
+      });
+
+      validRules = (extracted.rules ?? []).filter(r => r.rule_number && r.title && r.body);
+      emit('parse', 'done',
+        `GPT-4o extracted ${validRules.length} rules (doc quality: ${extracted.document_quality})`,
+        { sections: validRules.length },
+      );
+
+      // No separate AI chunking needed — skip that step
+      emit('chunk', 'done',
+        `Extraction complete — ${extracted.notes || 'no issues noted'}`,
+        { rules: validRules.length, quality: extracted.document_quality },
+      );
+
+    } else {
+      // ── URL / DOCX: text extraction → section split → AI chunker ────────────
+      emit('parse', 'running', url ? `Fetching ${url}` : `Parsing ${fileName}`);
+
+      let markdown;
+
+      if (url) {
+        const jinaRes = await fetch(`${JINA_BASE}${url}`, { headers: { Accept: 'text/markdown' } });
+        if (!jinaRes.ok) throw new Error(`Jina Reader returned HTTP ${jinaRes.status}`);
+        const raw = await jinaRes.text();
+        if (!raw || raw.trim().length < 100) throw new Error('URL returned empty content — it may require login');
+        markdown = normalizeMarkdown(raw, url);
+
+      } else if (ext === 'docx') {
+        const buf = Buffer.from(fileBase64, 'base64');
+        const { default: mammoth } = await import('mammoth');
+        const result = await mammoth.convertToHtml({ buffer: buf }, {
+          styleMap: [
+            "p[style-name='Heading 1'] => h1:fresh",
+            "p[style-name='Heading 2'] => h2:fresh",
+            "p[style-name='Heading 3'] => h3:fresh",
+          ],
         });
-        allRules.push(...(result.rules ?? []));
-        if (result.document_quality === 'poor') worstQuality = 'poor';
-        else if (result.document_quality === 'partial' && worstQuality === 'good') worstQuality = 'partial';
-      } catch (err) {
-        emit('chunk', 'running', `Batch ${bIdx + 1} failed: ${err.message} — continuing`);
+        markdown = normalizeMarkdown(htmlToMarkdown(result.value), fileName);
+      } else {
+        throw new Error(`Unsupported file type ".${ext}" — use .pdf or .docx`);
       }
-      if (bIdx < batches.length - 1) await sleep(DELAY_MS);
-    }
 
-    const validRules = allRules.filter(r => r.rule_number && r.title && r.body);
-    emit('chunk', 'done',
-      `${validRules.length} rules extracted (quality: ${worstQuality})`,
-      { rules: validRules.length, quality: worstQuality },
-    );
+      const sections = splitIntoSections(markdown);
+      if (sections.length < 2) throw new Error(`Only ${sections.length} section(s) found — document may lack rule structure`);
+      emit('parse', 'done', `${sections.length} sections detected`, { sections: sections.length });
+
+      // AI chunking in batches
+      const batches    = chunk(sections, BATCH_SIZE);
+      const allRules   = [];
+      let   worstQuality = 'good';
+      const { default: OpenAI } = await import('openai');
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      emit('chunk', 'running', `${sections.length} sections → ${batches.length} batch${batches.length > 1 ? 'es' : ''}`);
+
+      for (let bIdx = 0; bIdx < batches.length; bIdx++) {
+        emit('chunk', 'running', `Batch ${bIdx + 1}/${batches.length}…`);
+        try {
+          const result = await callChunkingAgent(openai, {
+            sections:   batches[bIdx],
+            leagueName, parentName: parentName ?? null, parentIndex, sport,
+            batchLabel: `batch ${bIdx + 1}/${batches.length}`,
+          });
+          allRules.push(...(result.rules ?? []));
+          if (result.document_quality === 'poor') worstQuality = 'poor';
+          else if (result.document_quality === 'partial' && worstQuality === 'good') worstQuality = 'partial';
+        } catch (err) {
+          emit('chunk', 'running', `Batch ${bIdx + 1} failed: ${err.message} — continuing`);
+        }
+        if (bIdx < batches.length - 1) await sleep(DELAY_MS);
+      }
+
+      validRules = allRules.filter(r => r.rule_number && r.title && r.body);
+      emit('chunk', 'done',
+        `${validRules.length} rules extracted (quality: ${worstQuality})`,
+        { rules: validRules.length, quality: worstQuality },
+      );
+    }
 
     if (validRules.length === 0)
       throw new Error('No valid rules extracted — document may lack recognizable rule structure');
 
     if (dryRun) {
       emit('complete', 'done',
-        `Dry run complete — ${validRules.length} rules would be inserted`,
-        { dryRun: true, rules: validRules.length, quality: worstQuality,
+        `Dry run — ${validRules.length} rules would be inserted`,
+        { dryRun: true, rules: validRules.length,
           preview: validRules.slice(0, 20).map(r => ({ rule_number: r.rule_number, title: r.title })) },
       );
       return done();
     }
 
-    // ── STEP 4: Write to DB ────────────────────────────────────────────────
+    // ── STEP 3: Write to DB ──────────────────────────────────────────────────
 
     emit('write', 'running', doReplace ? 'Clearing existing rules…' : 'Inserting rules…');
 
-    const parentMap   = Object.fromEntries(parentIndex.map(p => [p.rule_number, p.id]));
+    const parentMap      = Object.fromEntries(parentIndex.map(p => [p.rule_number, p.id]));
     const rulesForInsert = validRules.map(r => ({
       rule_number:       String(r.rule_number).trim().slice(0, 100),
       title:             String(r.title).trim().slice(0, 500),
@@ -413,32 +435,29 @@ const handler = async (req, res) => {
       skipped  = result.skipped.length;
     });
 
-    emit('write', 'done',
-      `${inserted} inserted, ${skipped} skipped (already exist)`,
-      { inserted, skipped },
-    );
+    emit('write', 'done', `${inserted} inserted, ${skipped} skipped`, { inserted, skipped });
 
-    // ── STEP 5: Embed ──────────────────────────────────────────────────────
+    // ── STEP 4: Embed ────────────────────────────────────────────────────────
 
     const { rows: unembedded } = await withDb(c => c.query(`
       SELECT r.id, r.rule_number, r.title, r.body
       FROM  rules r
-      LEFT  JOIN rule_embeddings re ON re.rule_id = r.id AND re.model = $1
-      WHERE r.league_id = $2 AND re.id IS NULL
+      LEFT  JOIN rule_embeddings re ON re.rule_id=r.id AND re.model=$1
+      WHERE r.league_id=$2 AND re.id IS NULL
     `, [EMBED_MODEL, leagueId]));
 
-    if (unembedded.length === 0) {
-      emit('embed', 'done', 'All rules already have embeddings', { embedded: 0 });
+    if (!unembedded.length) {
+      emit('embed', 'done', 'All rules already embedded', { embedded: 0 });
     } else {
       emit('embed', 'running', `Embedding ${unembedded.length} rules…`);
       const embedBatches = chunk(unembedded, EMBED_BATCH);
-      let totalEmbedded  = 0;
+      let   totalEmbedded = 0;
 
       for (let bIdx = 0; bIdx < embedBatches.length; bIdx++) {
         const batch = embedBatches[bIdx];
         emit('embed', 'running', `Embedding batch ${bIdx + 1}/${embedBatches.length}…`);
 
-        const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
+        const embedRes = await fetch(`${OAI_BASE}/embeddings`, {
           method:  'POST',
           headers: { 'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
           body:    JSON.stringify({
@@ -447,20 +466,15 @@ const handler = async (req, res) => {
           }),
         });
 
-        if (!embedRes.ok) {
-          emit('embed', 'running', `Embedding batch ${bIdx + 1} failed (${embedRes.status}) — continuing`);
-          continue;
-        }
+        if (!embedRes.ok) { emit('embed', 'running', `Batch ${bIdx + 1} failed — continuing`); continue; }
 
-        const embedData  = await embedRes.json();
-        const embeddings = embedData.data.map(d => d.embedding);
-
+        const { data: embedData } = await embedRes.json();
         await withDb(async c => {
           await c.query('BEGIN');
           for (let i = 0; i < batch.length; i++) {
             await c.query(
-              `INSERT INTO rule_embeddings (rule_id, model, embedding) VALUES ($1,$2,$3::vector) ON CONFLICT DO NOTHING`,
-              [batch[i].id, EMBED_MODEL, `[${embeddings[i].join(',')}]`],
+              `INSERT INTO rule_embeddings (rule_id,model,embedding) VALUES ($1,$2,$3::vector) ON CONFLICT DO NOTHING`,
+              [batch[i].id, EMBED_MODEL, `[${embedData[i].embedding.join(',')}]`],
             );
           }
           await c.query('COMMIT');
@@ -473,13 +487,13 @@ const handler = async (req, res) => {
       emit('embed', 'done', `${totalEmbedded} embeddings created`, { embedded: totalEmbedded });
     }
 
-    // ── DONE ───────────────────────────────────────────────────────────────
+    // ── Complete ─────────────────────────────────────────────────────────────
 
     emit('complete', 'done',
       `Done — ${inserted} rules live in "${leagueName}"`,
       {
         leagueName, leagueSlug: leagueSlug ?? newLeagueSlug,
-        inserted, skipped, quality: worstQuality,
+        inserted, skipped,
         preview: rulesForInsert.slice(0, 30).map(r => ({ rule_number: r.rule_number, title: r.title })),
       },
     );
