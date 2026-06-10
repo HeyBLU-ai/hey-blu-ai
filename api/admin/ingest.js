@@ -166,30 +166,41 @@ const handler = async (req, res) => {
       const buf = Buffer.from(fileBase64, 'base64');
 
       if (ext === 'pdf') {
-        if (!process.env.LLAMA_CLOUD_API_KEY)
-          throw new Error('LLAMA_CLOUD_API_KEY not set — required for PDF parsing');
+        if (process.env.LLAMA_CLOUD_API_KEY) {
+          // ── Preferred: LlamaCloud (layout-aware, handles multi-column) ──────
+          const { default: LlamaCloud } = await import('@llamaindex/llama-cloud');
+          const llamaClient = new LlamaCloud({ apiKey: process.env.LLAMA_CLOUD_API_KEY });
 
-        const { default: LlamaCloud } = await import('@llamaindex/llama-cloud');
-        const llamaClient = new LlamaCloud({ apiKey: process.env.LLAMA_CLOUD_API_KEY });
+          emit('parse', 'running', 'Uploading PDF to LlamaCloud…');
+          const uploaded = await llamaClient.files.create({
+            file:    new File([buf], fileName, { type: 'application/pdf' }),
+            purpose: 'parse',
+          });
 
-        emit('parse', 'running', 'Uploading PDF to LlamaCloud…');
-        const uploaded = await llamaClient.files.create({
-          file:    new File([buf], fileName, { type: 'application/pdf' }),
-          purpose: 'parse',
-        });
+          emit('parse', 'running', 'Parsing PDF via LlamaCloud (30–90 s)…');
+          const result = await llamaClient.parsing.parse({
+            file_id: uploaded.id,
+            tier:    'agentic',
+            version: 'latest',
+            expand:  ['markdown_full'],
+          });
 
-        emit('parse', 'running', 'Parsing PDF (30–90 s)…');
-        const result = await llamaClient.parsing.parse({
-          file_id: uploaded.id,
-          tier:    'agentic',
-          version: 'latest',
-          expand:  ['markdown_full'],
-        });
+          const raw = result?.markdown_full ?? '';
+          if (!raw || raw.trim().length < 100)
+            throw new Error('LlamaParse returned empty result — PDF may be image-only or password-protected');
+          markdown = normalizeMarkdown(raw, fileName);
 
-        const raw = result?.markdown_full ?? '';
-        if (!raw || raw.trim().length < 100)
-          throw new Error('LlamaParse returned empty result — PDF may be image-only or password-protected');
-        markdown = normalizeMarkdown(raw, fileName);
+        } else {
+          // ── Fallback: pdf-parse (no API key needed, works for text-based PDFs) ─
+          emit('parse', 'running', 'Parsing PDF locally (no LlamaCloud key found)…');
+          const { default: pdfParse } = await import('pdf-parse/lib/pdf-parse.js');
+          const data = await pdfParse(buf);
+          const raw  = data.text ?? '';
+          if (!raw || raw.trim().length < 100)
+            throw new Error('pdf-parse returned empty text — PDF may be image/scanned. Try a DOCX or URL instead.');
+          emit('parse', 'running', `Extracted ${data.numpages} pages via pdf-parse`);
+          markdown = normalizeMarkdown(raw, fileName);
+        }
 
       } else if (ext === 'docx') {
         const { default: mammoth } = await import('mammoth');
