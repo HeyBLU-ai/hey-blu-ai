@@ -218,11 +218,41 @@ const handler = async (req, res) => {
       }
     }
 
-    const sections = splitIntoSections(markdown);
-    emit('parse', 'done', `${sections.length} sections detected`, { sections: sections.length });
+    let sections = splitIntoSections(markdown);
 
-    if (sections.length < 2)
-      throw new Error('Fewer than 2 rule sections found — document may lack numbered rule structure');
+    // ── Fallback: paragraph-based chunking for flat PDF text ─────────────────
+    // When a PDF has no markdown headers (common with text-extracted PDFs),
+    // split on double newlines and group into ~2000-char chunks instead.
+    if (sections.length < 2) {
+      emit('parse', 'running',
+        `No headers detected — falling back to paragraph chunking. First 200 chars: "${markdown.replace(/\n/g,' ').slice(0,200)}…"`);
+
+      const paragraphs = markdown
+        .split(/\n{2,}/)
+        .map(p => p.trim())
+        .filter(p => p.length > 40);   // drop very short blurbs
+
+      if (paragraphs.length < 2)
+        throw new Error('PDF text extraction returned fewer than 2 readable paragraphs — file may be scanned/image-only. Convert to DOCX or use a URL instead.');
+
+      // Group consecutive paragraphs into ~2000-char sections so the AI
+      // chunker receives reasonably-sized batches.
+      const TARGET = 2000;
+      sections = [];
+      let current = '';
+      for (const p of paragraphs) {
+        if (current.length + p.length > TARGET && current.length > 0) {
+          sections.push(current.trim());
+          current = '';
+        }
+        current += (current ? '\n\n' : '') + p;
+      }
+      if (current.trim()) sections.push(current.trim());
+
+      emit('parse', 'running', `Paragraph fallback: ${paragraphs.length} paragraphs → ${sections.length} sections`);
+    }
+
+    emit('parse', 'done', `${sections.length} sections ready for AI chunking`, { sections: sections.length });
 
     // ── STEP 2: Resolve / create league ───────────────────────────────────
 
