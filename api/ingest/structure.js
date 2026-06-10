@@ -419,12 +419,28 @@ You will always return your response as a single JSON object with this exact sha
  *   no bodies) so the AI can match local override claims without the full text
  *   exploding the context window.
  * ─ Extraction rules are written as numbered imperatives to minimize ambiguity.
- * ─ The CRITICAL DO NOT block prevents the three most common extraction errors:
- *   (a) splitting sub-clauses into separate rules,
- *   (b) inventing rule numbers,
- *   (c) false-positive override claims.
+ * ─ Rule #8 (SUBSECTION SPLITTING) is the key retrieval-quality lever: lettered
+ *   subsections that cover distinct topics each get their own DB row and embedding,
+ *   so a question about "mound visits per inning" retrieves 5.10(l) rather than
+ *   a 13-subsection omnibus 5.10 blob that happens to contain the answer.
+ * ─ Numbered sub-clauses (1)(2)(3) within a letter stay together — they are
+ *   definitional sub-parts, not independent lookup targets.
  * ─ Confidence scoring is explained with concrete examples so the model
  *   calibrates rather than defaulting to 1.0.
+ */
+/**
+ * Prompt design rationale:
+ * ─ Rule #8 (SUBSECTION SPLITTING) is the key change from the original design.
+ *   The original prompt prohibited splitting sub-clauses, which caused large
+ *   compound rules (e.g., Rule 5.10 with 13 lettered subsections) to be stored
+ *   as one oversized chunk. This hurt retrieval: a question about mound visits
+ *   per inning would match the per-game subsection instead because both lived
+ *   in the same embedding. The new rule allows — and encourages — splitting at
+ *   the lettered-subsection level when each letter covers a distinct topic.
+ * ─ Numbered sub-clauses (1), (2), (3) within a letter are kept together
+ *   because they are definitional sub-parts, not independent lookup targets.
+ * ─ The override_parent_rule_number hint is updated to support sub-rule notation
+ *   so local leagues can override a specific subsection of a parent rule.
  */
 function buildUserPrompt({ sections, leagueName, parentName, parentIndex, sport }) {
   const parentBlock = parentIndex.length > 0
@@ -434,7 +450,7 @@ function buildUserPrompt({ sections, leagueName, parentName, parentIndex, sport 
 
   const overrideInstruction = parentIndex.length > 0
     ? `5. IS_OVERRIDE: Set true ONLY if this local rule explicitly modifies, limits, or replaces a rule from "${parentName}". Common signals: "In this league...", "does not apply", "instead of", or a topic that directly corresponds to a parent rule.
-6. OVERRIDE_PARENT_RULE_NUMBER: If is_override=true, identify the EXACT rule_number from the parent index that this rule overrides. Must be a value from the parent index or null. Never invent a parent rule number.`
+6. OVERRIDE_PARENT_RULE_NUMBER: If is_override=true, identify the EXACT rule_number from the parent index that this rule overrides (may use sub-rule notation if applicable, e.g. "5.10(m)"). Must match a value from the parent index or null. Never invent a parent rule number.`
     : `5. IS_OVERRIDE: Always false — no parent rulebook exists.
 6. OVERRIDE_PARENT_RULE_NUMBER: Always null.`;
 
@@ -445,9 +461,9 @@ League: ${leagueName} (sport: ${sport})
 ${parentBlock}
 
 EXTRACTION RULES — follow these precisely for every section:
-1. RULE_NUMBER: Extract the official identifier from the ## header line. Examples: "5.01", "Rule 7", "Regulation VI", "Fairness Doctrine", "15". If the header has both a number and a descriptive name, use the number. If only a name exists, use the name as the rule_number.
-2. TITLE: Human-readable topic. If the header line contains both, split appropriately.
-3. BODY: The complete rule text BELOW the ## header line. Include all sub-clauses (a), (b), (1), (2), penalties, approved rulings, and notes verbatim. Do NOT truncate. Do NOT include the ## header line itself in the body.
+1. RULE_NUMBER: Extract the official identifier from the ## header line. Examples: "5.01", "Rule 7", "Regulation VI", "15". If the header has both a number and a descriptive name, use the number only. If only a name exists, use the name as the rule_number. For sub-rules produced by subsection splitting (see rule 8), append the letter in parentheses: "5.10(l)", "5.10(m)", "6.01(a)".
+2. TITLE: Human-readable topic of this specific rule or sub-rule. For sub-rules, use the lettered subsection's own topic — not the parent rule's title.
+3. BODY: The rule text that applies to THIS rule object only. For sub-rules, include only the text of that lettered subsection plus any numbered sub-parts within it. Do NOT include the ## header line in the body. Do NOT truncate.
 ${overrideInstruction}
 7. CONFIDENCE: 0.0–1.0 reflecting your certainty in this extraction:
    • 1.0: Clear rule number, clean body, unambiguous classification
@@ -455,12 +471,17 @@ ${overrideInstruction}
    • 0.6–0.75: Rule number inferred, or override match is plausible but uncertain
    • < 0.6: Significant structural ambiguity — consider whether this section is actually a rule
 
+8. SUBSECTION SPLITTING: When a ## section contains multiple lettered subsections — (a), (b), (c)... — where each covers a TOPICALLY DISTINCT concept that an umpire might look up independently, produce a SEPARATE rule object per lettered subsection.
+   • DO split: e.g. (a) = player substitution timing, (b) = manager notification, (l) = inning mound visit limit, (m) = per-game mound visit limit — each answers a different question.
+   • DO NOT split: numbered sub-clauses (1), (2), (3) within the same letter — keep those inside their parent letter's body.
+   • DO NOT split: a lettered clause that is only a short exception, penalty, or qualifier with no standalone meaning without its parent.
+   • WHEN IN DOUBT: split. Focused single-topic chunks retrieve far better than large omnibus rules.
+
 CRITICAL — DO NOT:
-• Split a single rule into multiple objects. Sub-clauses (a)/(b)/(1)/(2) belong with their parent rule body.
-• Invent or modify rule numbers. Copy them exactly as they appear in the ## header.
+• Invent or modify rule numbers. Copy them exactly from the ## header (or use sub-rule notation when splitting).
 • Claim is_override=true unless you can match a specific parent rule number AND the local text clearly modifies it.
 • Include the ## header text in the body field.
-• Skip sections silently — if a section is not a rule (e.g., a table of contents or blank divider), set confidence < 0.5 and note it in quality_notes.
+• Skip sections silently — if a section is not a rule (e.g., table of contents, blank divider), set confidence < 0.5 and note it in quality_notes.
 
 DOCUMENT QUALITY ASSESSMENT (assess after extracting all rules):
 • "good" — clear rule numbers on all or nearly all sections, clean structure
