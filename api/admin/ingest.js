@@ -220,9 +220,18 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
       throw new Error(`GPT-4o extraction failed: ${err.error?.message ?? extractRes.status}`);
     }
 
-    const data    = await extractRes.json();
-    const text    = data.output?.[0]?.content?.[0]?.text ?? data.output_text;
-    if (!text) throw new Error('GPT-4o returned empty response — check OpenAI API status');
+    const data = await extractRes.json();
+
+    // Responses API: output is an array that may contain reasoning blocks
+    // before the actual message — find the first message item explicitly.
+    const messageItem = data.output?.find(o => o.type === 'message');
+    const textItem    = messageItem?.content?.find(c => c.type === 'output_text' || c.type === 'text');
+    const text        = textItem?.text ?? data.output_text ?? null;
+
+    if (!text) {
+      const preview = JSON.stringify(data).slice(0, 600);
+      throw new Error(`GPT-5.5 returned no usable text. Response preview: ${preview}`);
+    }
     extracted = JSON.parse(text);
 
   } finally {
