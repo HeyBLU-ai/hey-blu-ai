@@ -313,7 +313,7 @@ const handler = async (req, res) => {
 
     if (isPDF) {
       // ── PDF: GPT-4o reads the document natively (text + page images) ────────
-      emit('parse', 'running', `PDF detected — sending to GPT-4o for direct extraction…`);
+      emit('parse', 'running', `PDF detected — sending to GPT-5.5 for direct extraction…`);
 
       const buf = Buffer.from(fileBase64, 'base64');
       const extracted = await extractRulesWithGPT4o({
