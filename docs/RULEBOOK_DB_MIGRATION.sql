@@ -111,10 +111,10 @@ INSERT INTO leagues (slug, name, is_foundation, effective_date) VALUES
 -- Local leagues (depend on foundation rows above)
 INSERT INTO leagues (slug, name, is_foundation, parent_league_id, effective_date)
 SELECT 'mill-valley-aaa', 'Mill Valley Little League AAA', FALSE,
-       (SELECT id FROM leagues WHERE slug = 'little-league'), '2024-01-01'
+       (SELECT id FROM leagues WHERE slug = 'little-league'), '2024-01-01'::DATE
 UNION ALL
 SELECT 'bamsbl', 'Bay Area Men''s Senior Baseball League', FALSE,
-       (SELECT id FROM leagues WHERE slug = 'mlb'), '2024-01-01';
+       (SELECT id FROM leagues WHERE slug = 'mlb'), '2024-01-01'::DATE;
 
 
 -- ============================================================
