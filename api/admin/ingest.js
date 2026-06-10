@@ -185,7 +185,7 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
     throw new Error(`OpenAI file upload failed: ${err.error?.message ?? uploadRes.status}`);
   }
   const { id: fileId } = await uploadRes.json();
-  emit('parse', 'running', 'PDF uploaded — GPT-4o reading document…');
+  emit('parse', 'running', 'PDF uploaded — GPT-5.5 reading document…');
 
   // 2. Extract rules via Responses API (GPT-4o reads text + page images natively)
   let extracted;
