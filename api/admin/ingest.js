@@ -206,12 +206,7 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
           },
         ],
         text: {
-          format: {
-            type:   'json_schema',
-            name:   'rules_extraction',
-            strict: true,
-            schema: RULES_SCHEMA,
-          },
+          format: { type: 'json_object' },
         },
       }),
     });
@@ -234,6 +229,7 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
       throw new Error(`GPT-5.5 returned no usable text. Response preview: ${preview}`);
     }
     extracted = JSON.parse(text);
+    if (!Array.isArray(extracted.rules)) throw new Error('GPT-5.5 response missing "rules" array — prompt may need adjustment');
 
   } finally {
     // 3. Delete the uploaded file (best effort cleanup)

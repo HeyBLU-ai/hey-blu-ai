@@ -457,15 +457,15 @@
       <div class="field">
         <label>Rulebook Source</label>
         <div class="tabs">
-          <div class="tab active" onclick="setSource('url')">🔗 URL</div>
-          <div class="tab"       onclick="setSource('file')">📄 File (.pdf / .docx)</div>
+          <div class="tab active" onclick="setSource('file')">📄 File (.pdf / .docx)</div>
+          <div class="tab"       onclick="setSource('url')">🔗 URL</div>
         </div>
 
-        <div id="url-input">
+        <div id="url-input" style="display:none">
           <input type="url" id="url" placeholder="https://www.littleleague.org/playing-rules/">
         </div>
 
-        <div id="file-input" style="display:none">
+        <div id="file-input">
           <div id="file-zone" onclick="document.getElementById('file-picker').click()"
                ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
             <strong>Drop file here or click to browse</strong>
@@ -601,7 +601,7 @@
 // ── State ─────────────────────────────────────────────────────────────────────
 
 let password    = sessionStorage.getItem('admin_pw') ?? '';
-let sourceMode  = 'url';
+let sourceMode  = 'file';
 let fileData    = null;   // { base64, name }
 let leagues     = [];
 let running     = false;
