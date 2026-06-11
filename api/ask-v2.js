@@ -117,39 +117,22 @@ function validateMatrixState(raw) {
 // ── League Mapping ───────────────────────────────────────────────────────────
 
 /**
- * Maps a league string (from the client) to the JSON data files used by
- * the RAG pipeline. Returns { rulesFileName, embeddingsFileName, leagueName }.
+ * Maps a league string (from the client) to the DB slug and display name.
  */
 function resolveLeague(league) {
   const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase();
-
-  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball') {
-    return { rulesFileName: 'usssa-rules.json', embeddingsFileName: 'usssa-rules-embeddings.json', leagueName: 'USSSA Baseball' };
-  }
-  if (leagueNorm === 'little league' || leagueNorm === 'little league international') {
-    return { rulesFileName: 'little-league-international.json', embeddingsFileName: null, leagueName: 'Little League International' };
-  }
-  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley') {
-    return { rulesFileName: 'mill-valley-aaa-rules.json', embeddingsFileName: 'mill-valley-aaa-rules-embeddings.json', leagueName: 'Mill Valley AAA' };
-  }
-  if (leagueNorm === 'bamsbl') {
-    return { rulesFileName: 'bamsbl-rules.json', embeddingsFileName: 'bamsbl-rules-embeddings.json', leagueName: 'BAMSBL' };
-  }
-  // Default: MLB
-  return { rulesFileName: 'rules-mlb.json', embeddingsFileName: 'rules-mlb-embeddings.json', leagueName: 'MLB' };
+  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',           leagueName: 'USSSA Baseball' };
+  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',    leagueName: 'Little League International' };
+  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa',  leagueName: 'Mill Valley AAA' };
+  if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',           leagueName: 'Bay Area Men\'s Senior Baseball League' };
+  return { slug: 'mlb', leagueName: 'MLB Official Rules of Baseball' };
 }
 
-/**
- * Maps the same league identifier strings to their Postgres slugs.
- */
-function resolveLeagueSlug(league) {
-  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase();
-  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                    return 'usssa';
-  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return 'little-league';
-  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')             return 'mill-valley-aaa';
-  if (leagueNorm === 'bamsbl')                                                       return 'bamsbl';
-  return 'mlb';
-}
+// ── Anthropic client ─────────────────────────────────────────────────────────
+import Anthropic from '@anthropic-ai/sdk';
+const anthropic = process.env.ANTHROPIC_API_KEY
+  ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  : null;
 
 // ── Play-Type Classifier ─────────────────────────────────────────────────────
 
@@ -183,35 +166,22 @@ Respond with JSON only. Do not include any other text.`;
  * It confirms the match and identifies the precise matrix.
  */
 async function classifyQuestion(question) {
-  const userContent = `Question: "${question}"\n\nReturn JSON: { "classification": "judgment"|"factual", "matrix_id": string|null, "confidence": 0.0-1.0, "reasoning": "one sentence" }`;
-
+  if (!anthropic) return null;
   try {
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method:  'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type':  'application/json',
-      },
-      body: JSON.stringify({
-        model:           'gpt-5.4-mini',
-        messages:        [
-          { role: 'system', content: CLASSIFIER_SYSTEM_PROMPT },
-          { role: 'user',   content: userContent },
-        ],
-        response_format: { type: 'json_object' },
-        temperature:     0,
-        max_tokens:      150,
-      }),
+    const msg = await anthropic.messages.create({
+      model:      'claude-haiku-4-5',
+      max_tokens: 150,
+      system:     CLASSIFIER_SYSTEM_PROMPT,
+      messages:   [{
+        role:    'user',
+        content: `Question: "${question}"\n\nReturn JSON: { "classification": "judgment"|"factual", "matrix_id": string|null, "confidence": 0.0-1.0, "reasoning": "one sentence" }`,
+      }],
     });
-
-    if (!res.ok) {
-      console.warn('[ask-v2] Classifier HTTP error:', res.status);
-      return null;
-    }
-
-    const data   = await res.json();
-    const parsed = JSON.parse(data?.choices?.[0]?.message?.content ?? 'null');
-
+    const text   = msg.content[0]?.text ?? '';
+    const start  = text.indexOf('{');
+    const end    = text.lastIndexOf('}');
+    if (start === -1 || end === -1) return null;
+    const parsed = JSON.parse(text.slice(start, end + 1));
     if (!parsed || typeof parsed.classification !== 'string') return null;
     return parsed;
   } catch (err) {
@@ -220,169 +190,109 @@ async function classifyQuestion(question) {
   }
 }
 
-// ── RAG Pipeline ─────────────────────────────────────────────────────────────
+// ── Full-Context Answer Pipeline ─────────────────────────────────────────────
+//
+// Fetches ALL rules for the requested league from the DB and sends them to
+// Claude in a single prompt. No vector search, no thresholds, no fallbacks
+// based on embedding distance. Claude reads every rule and finds the answer
+// the same way a human would flip through a rulebook.
+//
+// If the league has a parent (e.g. BAMSBL → MLB), parent rules are appended
+// so Claude can reference them for topics the local league doesn't override.
 
-/**
- * Runs the full retrieval-augmented generation pipeline.
- *
- * @param {object} params
- * @param {string} params.sanitizedQuestion  — already-cleaned question string
- * @param {string} params.league             — raw league identifier from client
- * @param {Array}  params.conversation       — raw conversation array from client
- * @param {string} [params.extraContext='']  — play-context injected before the Q
- *                                             (populated when in State C ruling mode)
- *
- * @returns {{ reply, usedFallback, fallbackLeague, leagueName }}
- */
 async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
-  const { leagueName } = resolveLeague(league);
-  const leagueSlug     = resolveLeagueSlug(league);
+  const { slug: leagueSlug, leagueName } = resolveLeague(league);
 
   if (!pool) throw new Error('DATABASE_URL not configured');
-
-  // ── 1. Embed the question ────────────────────────────────────────────────
-
-  const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
-    method:  'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type':  'application/json',
-    },
-    body: JSON.stringify({ model: 'text-embedding-3-small', input: sanitizedQuestion }),
-  });
-  if (!embedRes.ok) throw new Error(`OpenAI embeddings error ${embedRes.status}`);
-  const embedData   = await embedRes.json();
-  const questionVec = embedData.data[0].embedding;
-  const vecStr      = `[${questionVec.join(',')}]`;
-
-  // ── 2. pgvector semantic search ──────────────────────────────────────────
-
-  const SEARCH_SQL = `
-    SELECT
-      r.rule_number,
-      r.title,
-      r.body,
-      (re.embedding <=> $2::vector) AS distance
-    FROM  rule_embeddings re
-    JOIN  rules    r ON r.id  = re.rule_id
-    JOIN  leagues  l ON l.id  = r.league_id
-    WHERE l.slug      = $1
-      AND re.model    = 'text-embedding-3-small'
-    ORDER BY distance
-    LIMIT 10
-  `;
-
-  let selectedRules  = [];
-  let usedFallback   = false;
-  let fallbackLeague = null;
+  if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
 
   const dbClient = await pool.connect();
+  let leagueRules = [], parentRules = [], parentName = null;
+
   try {
-    const { rows } = await dbClient.query(SEARCH_SQL, [leagueSlug, vecStr]);
-    selectedRules = rows.map(r => ({
-      id:       `Rule ${r.rule_number}`,
-      text:     `${r.title}\n${r.body}`,
-      distance: parseFloat(r.distance),
-    }));
+    // Fetch all rules for the requested league
+    const leagueRes = await dbClient.query(`
+      SELECT l.name AS league_name, l.parent_league_id,
+             r.rule_number, r.title, r.body
+      FROM   rules r
+      JOIN   leagues l ON l.id = r.league_id
+      WHERE  l.slug = $1
+      ORDER  BY r.rule_number
+    `, [leagueSlug]);
 
-    // ── 3. Fallback to parent league when top match is poor ────────────────
-    //   Threshold 0.75 (cosine distance 0 = identical, 1 = orthogonal).
-    //   Also falls back when the league has fewer than 3 rules in the DB.
-    const bestDistance = selectedRules[0]?.distance ?? 1;
-    if (bestDistance > 0.75 || selectedRules.length < 3) {
-      const parentRes = await dbClient.query(`
-        SELECT l2.slug, l2.name
-        FROM   leagues l
-        JOIN   leagues l2 ON l2.id = l.parent_league_id
-        WHERE  l.slug = $1
-      `, [leagueSlug]);
+    if (leagueRes.rows.length > 0) {
+      leagueRules = leagueRes.rows;
+      const parentId = leagueRes.rows[0].parent_league_id;
 
-      if (parentRes.rows.length > 0) {
-        const { slug: parentSlug, name: parentName } = parentRes.rows[0];
-        const { rows: parentRows } = await dbClient.query(SEARCH_SQL, [parentSlug, vecStr]);
-
-        if (parentRows.length > 0) {
-          usedFallback   = true;
-          fallbackLeague = parentName;
-          selectedRules  = parentRows.map(r => ({
-            id:       `Rule ${r.rule_number}`,
-            text:     `${r.title}\n${r.body}`,
-            distance: parseFloat(r.distance),
-          }));
-        }
+      // Fetch parent league rules if one exists
+      if (parentId) {
+        const parentRes = await dbClient.query(`
+          SELECT l.name AS league_name, r.rule_number, r.title, r.body
+          FROM   rules r
+          JOIN   leagues l ON l.id = r.league_id
+          WHERE  l.id = $1
+          ORDER  BY r.rule_number
+        `, [parentId]);
+        parentRules = parentRes.rows;
+        parentName  = parentRes.rows[0]?.league_name ?? null;
       }
+    } else {
+      // Fallback: league not in DB yet — fetch MLB
+      const mlbRes = await dbClient.query(`
+        SELECT l.name AS league_name, r.rule_number, r.title, r.body
+        FROM   rules r
+        JOIN   leagues l ON l.id = r.league_id
+        WHERE  l.slug = 'mlb'
+        ORDER  BY r.rule_number
+      `);
+      leagueRules = mlbRes.rows;
     }
   } finally {
     dbClient.release();
   }
 
-  // ── Prompt construction ──────────────────────────────────────────────────
+  // Format rules as a readable numbered list
+  const formatRules = (rows) =>
+    rows.map(r => `Rule ${r.rule_number}: ${r.title}\n${r.body}`).join('\n\n');
 
-  const context             = selectedRules.map(r => `${r.id}: ${r.text}`).join('\n\n');
+  const leagueRulesText  = formatRules(leagueRules);
+  const parentRulesText  = parentRules.length > 0 ? formatRules(parentRules) : null;
+
   const validatedConversation = validateConversation(conversation);
-  let historyContext        = '';
-  if (validatedConversation.length > 0) {
-    historyContext =
-      'Here is the history of our current conversation:\n' +
-      validatedConversation.map(t => `User: ${t.user}\nAssistant: ${t.ai}`).join('\n\n') +
-      '\n\nPlease use this history to inform your answer to the new question.';
-  }
+  const historyText = validatedConversation.length > 0
+    ? 'Conversation history:\n' +
+      validatedConversation.map(t => `User: ${t.user}\nAssistant: ${t.ai}`).join('\n\n') + '\n\n'
+    : '';
 
-  const activeLeague = usedFallback ? fallbackLeague : leagueName;
+  const prompt = `You are an expert baseball rules official for the ${leagueName}.
 
-  const prompt = `\
-You are an expert on the ${activeLeague} rulebook. Your task is to answer a user's question clearly and concisely, citing the most relevant rule(s).
-You will be given the conversation history, the user's latest question, and a set of relevant rules.
-${usedFallback ? `\n**IMPORTANT:** The user asked about ${leagueName} rules, but this specific question is not covered in the ${leagueName} rulebook. You are now using ${fallbackLeague} rules as the fallback source. Keep your response concise.\n` : ''}
-${extraContext ? `\n**PLAY CONTEXT (USE THIS TO INFORM YOUR RULING):**\n${extraContext}\n` : ''}
-Follow these steps precisely:
-1.  **Analyze the Conversation History (if provided):** Understand the context of what has already been discussed.
-2.  **Analyze the User's Latest Question:** Identify the core concept, mapping colloquial terms to official terminology.
-3.  **Find the Relevant Rule(s):** Search the provided rules to find the most relevant rule(s) for the LATEST question.
-4.  **Synthesize the Answer:**
-    * If play context is provided above, use it to make your ruling specific to the described situation.
-    * Provide a concise, plain-English summary.
-    * Then, cite the single most important rule number and the most relevant sentence from that rule.
-    ${usedFallback ? `* **CRITICAL:** For fallback responses, state "Referencing ${fallbackLeague} rulebook because the provided ${leagueName} rulebook does not have a rule citation for this question." then cite normally.` : ''}
-5.  **Construct the Final Response:** Format your response exactly as shown in the example below, with no extra labels or conversational text.
+Your job: answer the umpire's question accurately by reading the rulebook below. Always cite the specific rule number.
 
----
-**EXAMPLE**
+${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
+${historyText}\
+QUESTION: ${sanitizedQuestion}
 
-**User Question:** what happens if a batter is hit by a pitch?
+${leagueName.toUpperCase()} RULEBOOK (${leagueRules.length} rules):
+${leagueRulesText}
+${parentRulesText ? `\n\n${parentName?.toUpperCase() ?? 'PARENT LEAGUE'} RULEBOOK — applies where ${leagueName} has no specific rule (${parentRules.length} rules):\n${parentRulesText}` : ''}
 
-**Your Response:**
-A batter is awarded first base if they are hit by a pitch, provided they made an attempt to avoid it and the pitch was not a strike.
-
-Rule 5.05(b)(2): "*He is touched by a pitched ball which he is not attempting to hit unless (A) The ball is in the strike zone when it touches the batter, or (B) The batter makes no attempt to avoid being touched by the ball;*"
----
-
-**Your Task**
-${historyContext ? `---\n**Conversation History**\n${historyContext}\n---` : ''}
-
-**User's Latest Question:** "${sanitizedQuestion}"
-
-**Relevant ${activeLeague} Rules:**
-${context}
+Instructions:
+- Search the rulebook above for every rule relevant to this question.
+- Give a clear, plain-English answer an umpire can act on immediately.
+- Cite the rule number(s) you are drawing from.
+- If the ${leagueName} rulebook has a specific rule, use that. Only reference the parent rulebook if the local league has no applicable rule.
+- If no rule covers the question at all, say so plainly.
 
 Answer:`;
 
-  const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
-    method:  'POST',
-    headers: {
-      'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-      'Content-Type':  'application/json',
-    },
-    body: JSON.stringify({
-      model:    'gpt-5.5',
-      messages: [{ role: 'user', content: prompt }],
-    }),
+  const message = await anthropic.messages.create({
+    model:      'claude-sonnet-4-6',
+    max_tokens: 1024,
+    messages:   [{ role: 'user', content: prompt }],
   });
 
-  const data  = await openaiRes.json();
-  const reply = data?.choices?.[0]?.message?.content || 'No answer received.';
-
-  return { reply, usedFallback, fallbackLeague, leagueName };
+  const reply = message.content[0]?.text?.trim() || 'No answer received.';
+  return { reply, usedFallback: false, fallbackLeague: null, leagueName };
 }
 
 // ── DB Logging ───────────────────────────────────────────────────────────────
