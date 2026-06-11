@@ -25,6 +25,8 @@
  * DOCX path: mammoth → markdown → section split → callChunkingAgent
  */
 
+export const maxDuration = 300; // Vercel Pro: override 15s default to 5 minutes
+
 import pg from 'pg';
 import {
   callChunkingAgent,
