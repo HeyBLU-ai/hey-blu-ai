@@ -259,7 +259,7 @@ const handler = async (req, res) => {
 
     if (isPDF) {
       // ── PDF: GPT-4o reads the document natively (text + page images) ────────
-      emit('parse', 'running', `PDF detected — sending to GPT-5.5 for direct extraction…`);
+      emit('parse', 'running', `PDF detected — sending to Claude for extraction…`);
 
       const extracted = await extractRulesWithClaude({
         fileBase64, leagueName, parentName, sport, emit,
