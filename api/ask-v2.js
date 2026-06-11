@@ -374,9 +374,8 @@ Answer:`;
       'Content-Type':  'application/json',
     },
     body: JSON.stringify({
-      model:       'gpt-5.5',
-      messages:    [{ role: 'user', content: prompt }],
-      temperature: 0.4,
+      model:    'gpt-5.5',
+      messages: [{ role: 'user', content: prompt }],
     }),
   });
 

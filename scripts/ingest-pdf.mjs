@@ -243,10 +243,8 @@ const rulesForInsert = validRules.map(r => ({
   rule_number:       String(r.rule_number).trim().slice(0, 100),
   title:             String(r.title).trim().slice(0, 500),
   body:              String(r.body).trim(),
-  is_override:       !!r.is_override,
   overrides_rule_id: r.is_override && r.override_parent_rule_number
     ? (parentMap[r.override_parent_rule_number] ?? null) : null,
-  confidence:        r.confidence ?? null,
 }));
 
 // Insert in a single transaction
@@ -256,11 +254,11 @@ await db.query('BEGIN');
 try {
   for (const rule of rulesForInsert) {
     const res = await db.query(`
-      INSERT INTO rules (league_id, rule_number, title, body, sport, is_override, overrides_rule_id, confidence)
-      VALUES ($1,$2,$3,$4,$5,$6,$7,$8)
+      INSERT INTO rules (league_id, rule_number, title, body, sport, overrides_rule_id)
+      VALUES ($1,$2,$3,$4,$5,$6)
       ON CONFLICT (league_id, rule_number, sport) DO NOTHING
       RETURNING id
-    `, [leagueId, rule.rule_number, rule.title, rule.body, sport, rule.is_override, rule.overrides_rule_id, rule.confidence]);
+    `, [leagueId, rule.rule_number, rule.title, rule.body, sport, rule.overrides_rule_id]);
     if (res.rowCount > 0) inserted++; else skipped++;
   }
   await db.query('COMMIT');

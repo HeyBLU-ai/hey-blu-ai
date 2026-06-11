@@ -388,8 +388,7 @@ Answer:
       },
       body: JSON.stringify({
         model: "gpt-5.5",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.4
+        messages: [{ role: "user", content: prompt }]
       })
     });
 
