@@ -112,35 +112,10 @@ function htmlToMarkdown(html) {
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// ── GPT-4o PDF extraction ─────────────────────────────────────────────────────
-// Uploads the PDF to OpenAI's Files API and asks GPT-4o to read and extract
-// rules directly, understanding the document structure visually.
-
-const RULES_SCHEMA = {
-  type: 'object',
-  properties: {
-    rules: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          rule_number:               { type: 'string' },
-          title:                     { type: 'string' },
-          body:                      { type: 'string' },
-          is_override:               { type: 'boolean' },
-          override_parent_rule_number: { anyOf: [{ type: 'string' }, { type: 'null' }] },
-          confidence:                { type: 'string', enum: ['high', 'medium', 'low'] },
-        },
-        required: ['rule_number', 'title', 'body', 'is_override', 'override_parent_rule_number', 'confidence'],
-        additionalProperties: false,
-      },
-    },
-    document_quality: { type: 'string', enum: ['good', 'partial', 'poor'] },
-    notes:            { type: 'string' },
-  },
-  required: ['rules', 'document_quality', 'notes'],
-  additionalProperties: false,
-};
+// ── Claude PDF extraction ─────────────────────────────────────────────────────
+// Sends the base64 PDF directly to Claude via the Anthropic messages API.
+// No file upload step — Claude accepts PDFs inline as base64 document blocks.
+// Returns the same shape as callChunkingAgent for compatibility.
 
 function buildExtractionPrompt(leagueName, parentName, sport) {
   return `You are extracting the complete rulebook for "${leagueName}" (sport: ${sport}).
@@ -169,79 +144,40 @@ Return your entire response as a single JSON object matching this structure:
 
 }
 
-async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sport, emit }) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) throw new Error('OPENAI_API_KEY not configured');
+async function extractRulesWithClaude({ fileBase64, leagueName, parentName, sport, emit }) {
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not configured');
 
-  // 1. Upload PDF to OpenAI Files API
-  emit('parse', 'running', 'Uploading PDF to OpenAI…');
-  const form = new FormData();
-  form.append('file', new Blob([buf], { type: 'application/pdf' }), fileName);
-  form.append('purpose', 'user_data');
+  const { default: Anthropic } = await import('@anthropic-ai/sdk');
+  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-  const uploadRes = await fetch(`${OAI_BASE}/files`, {
-    method:  'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}` },
-    body:    form,
-  });
-  if (!uploadRes.ok) {
-    const err = await uploadRes.json().catch(() => ({}));
-    throw new Error(`OpenAI file upload failed: ${err.error?.message ?? uploadRes.status}`);
-  }
-  const { id: fileId } = await uploadRes.json();
-  emit('parse', 'running', 'PDF uploaded — GPT-5.5 reading document…');
+  emit('parse', 'running', 'Sending PDF to Claude for extraction…');
 
-  // 2. Extract rules via Responses API (GPT-4o reads text + page images natively)
-  let extracted;
-  try {
-    const extractRes = await fetch(`${OAI_BASE}/responses`, {
-      method:  'POST',
-      headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        model:              'gpt-5.4',
-        max_output_tokens:  32768,
-        input: [
-          {
-            role:    'user',
-            content: [
-              { type: 'input_file', file_id: fileId },
-              { type: 'input_text', text: buildExtractionPrompt(leagueName, parentName, sport) },
-            ],
-          },
-        ],
-        text: {
-          format: { type: 'json_object' },
+  const response = await client.messages.create({
+    model:      'claude-sonnet-4-5',
+    max_tokens: 16000,
+    messages: [{
+      role:    'user',
+      content: [
+        {
+          type:   'document',
+          source: { type: 'base64', media_type: 'application/pdf', data: fileBase64 },
         },
-      }),
-    });
+        {
+          type: 'text',
+          text: buildExtractionPrompt(leagueName, parentName, sport),
+        },
+      ],
+    }],
+  });
 
-    if (!extractRes.ok) {
-      const err = await extractRes.json().catch(() => ({}));
-      throw new Error(`GPT-5.5 extraction failed: ${err.error?.message ?? extractRes.status}`);
-    }
+  const raw = response.content[0]?.text ?? '';
+  if (!raw) throw new Error('Claude returned an empty response');
 
-    const data = await extractRes.json();
+  // Claude sometimes wraps JSON in a markdown code block — strip it if present
+  const jsonStr = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/)?.[1] ?? raw;
 
-    // Responses API: output is an array that may contain reasoning blocks
-    // before the actual message — find the first message item explicitly.
-    const messageItem = data.output?.find(o => o.type === 'message');
-    const textItem    = messageItem?.content?.find(c => c.type === 'output_text' || c.type === 'text');
-    const text        = textItem?.text ?? data.output_text ?? null;
-
-    if (!text) {
-      const preview = JSON.stringify(data).slice(0, 600);
-      throw new Error(`GPT-5.5 returned no usable text. Response preview: ${preview}`);
-    }
-    extracted = JSON.parse(text);
-    if (!Array.isArray(extracted.rules)) throw new Error('GPT-5.5 response missing "rules" array — prompt may need adjustment');
-
-  } finally {
-    // 3. Delete the uploaded file (best effort cleanup)
-    fetch(`${OAI_BASE}/files/${fileId}`, {
-      method:  'DELETE',
-      headers: { 'Authorization': `Bearer ${apiKey}` },
-    }).catch(() => {});
-  }
+  const extracted = JSON.parse(jsonStr.trim());
+  if (!Array.isArray(extracted.rules)) throw new Error('Claude response missing "rules" array');
 
   return extracted;
 }
@@ -325,9 +261,8 @@ const handler = async (req, res) => {
       // ── PDF: GPT-4o reads the document natively (text + page images) ────────
       emit('parse', 'running', `PDF detected — sending to GPT-5.5 for direct extraction…`);
 
-      const buf = Buffer.from(fileBase64, 'base64');
-      const extracted = await extractRulesWithGPT4o({
-        buf, fileName, leagueName, parentName, sport, emit,
+      const extracted = await extractRulesWithClaude({
+        fileBase64, leagueName, parentName, sport, emit,
       });
 
       validRules = (extracted.rules ?? []).filter(r => r.rule_number && r.title && r.body);

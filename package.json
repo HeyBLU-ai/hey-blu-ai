@@ -11,6 +11,7 @@
     "dev": "node -e \"console.log('vercel dev is running — open http://localhost:3000/rulebook'); process.stdin.resume()\""
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.104.1",
     "@llamaindex/llama-cloud": "^2.8.0",
     "dotenv": "^17.1.0",
     "mammoth": "^1.12.0",
