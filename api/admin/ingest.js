@@ -162,7 +162,11 @@ IMPORTANT:
 - Skip table of contents, page headers/footers, and administrative preamble that are not actual rules.
 
 document_quality: "good" if document is clean and complete, "partial" if some rules were unclear, "poor" if document was mostly unreadable.
-notes: Brief summary of any issues encountered.`;
+notes: Brief summary of any issues encountered.
+
+Return your entire response as a single JSON object matching this structure:
+{"rules": [...], "document_quality": "good|partial|poor", "notes": "..."}`;
+
 }
 
 async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sport, emit }) {
@@ -213,7 +217,7 @@ async function extractRulesWithGPT4o({ buf, fileName, leagueName, parentName, sp
 
     if (!extractRes.ok) {
       const err = await extractRes.json().catch(() => ({}));
-      throw new Error(`GPT-4o extraction failed: ${err.error?.message ?? extractRes.status}`);
+      throw new Error(`GPT-5.5 extraction failed: ${err.error?.message ?? extractRes.status}`);
     }
 
     const data = await extractRes.json();
