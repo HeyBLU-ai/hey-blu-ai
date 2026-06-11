@@ -135,6 +135,14 @@ function resolveLeague(league) {
   return { slug: leagueNorm, leagueName: league };
 }
 
+// ── Typed errors ─────────────────────────────────────────────────────────────
+class LeagueNotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.type = 'league_not_found';
+  }
+}
+
 // ── Anthropic client ─────────────────────────────────────────────────────────
 import Anthropic from '@anthropic-ai/sdk';
 const anthropic = process.env.ANTHROPIC_API_KEY
@@ -223,11 +231,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
         [leagueSlug]
       );
       if (leagueCheck.rows.length === 0) {
-        dbClient.release();
-        return res.status(404).json({
-          error:   'league_not_found',
-          message: 'No rulebook is loaded for this league. Select a different league or contact an admin.',
-        });
+        throw new LeagueNotFoundError('No rulebook is loaded for this league. Select a different league or contact an admin.');
       }
 
       // Fetch all rules for the requested league
@@ -241,11 +245,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       `, [leagueSlug]);
 
       if (leagueRes.rows.length === 0) {
-        dbClient.release();
-        return res.status(404).json({
-          error:   'league_not_found',
-          message: 'No rules are loaded for this league yet. Ingest a rulebook first.',
-        });
+        throw new LeagueNotFoundError('No rules are loaded for this league yet. Ingest a rulebook first.');
       }
 
       leagueRules = leagueRes.rows;
@@ -512,6 +512,9 @@ const handler = async (req, res) => {
     });
 
   } catch (err) {
+    if (err.type === 'league_not_found') {
+      return res.status(404).json({ error: 'league_not_found', message: err.message });
+    }
     console.error('[ask-v2] ERROR:', err.message);
     console.error('[ask-v2] Stack:', err.stack);
     return res.status(500).json({ error: 'Something went wrong processing the rules.' });
