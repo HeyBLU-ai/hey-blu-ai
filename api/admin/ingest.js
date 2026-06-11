@@ -125,18 +125,17 @@ ${parentName ? `This league is based on "${parentName}" rules and may contain lo
 
 Read this PDF carefully. For EVERY rule, regulation, and local modification in the document, extract:
 
-- rule_number: The official identifier (e.g. "1.01", "Rule 5", "Section 3", "A", "MUST SLIDE RULE"). Use the document's own numbering. If a rule has no number, create a short slug like "must-slide".
-- title: 3–10 word descriptive title capturing the rule's topic.
-- body: The COMPLETE rule text. Include all sub-clauses, exceptions, and penalties.
-- is_override: true ONLY if this rule explicitly modifies or replaces a rule from the parent/governing rulebook (${parentName ?? 'MLB OBR'}). Local additions are NOT overrides.
-- override_parent_rule_number: If is_override is true, the parent rule number being modified. Otherwise null.
-- confidence: "high" if rule boundary is unambiguous, "medium" if uncertain, "low" if guessing.
+- rule_number: The official identifier (e.g. "1.01", "Rule 5", "Section 3", "MUST-SLIDE"). Use the document's own numbering. If a rule has no number, create a short slug.
+- title: 3–8 word descriptive title capturing the rule's topic.
+- body: Concise 40–100 word summary. Capture every key fact, number, distance, count, and exception. Do NOT copy verbatim — write a clear, searchable summary an umpire could look up.
+- is_override: true ONLY if this rule explicitly modifies a rule from the parent rulebook (${parentName ?? 'MLB OBR'}). Local additions are NOT overrides.
+- override_parent_rule_number: Parent rule number being modified, or null.
+- confidence: "high" if rule boundary is clear, "medium" if uncertain, "low" if guessing.
 
 IMPORTANT:
-- Extract EVERY rule. Do not skip rules because they seem minor.
-- When a rule has lettered sub-sections (a), (b), (c)... that cover DISTINCT topics an umpire might look up independently, split them into separate rule objects with rule_number like "5.10(a)", "5.10(b)".
-- Do NOT split numbered sub-clauses (1), (2), (3) within the same letter — keep those together.
-- Skip table of contents, page headers/footers, and administrative preamble that are not actual rules.
+- Extract EVERY rule — do not skip minor ones.
+- Split lettered sub-sections (a), (b), (c) into separate objects when each covers a distinct independently-searchable topic.
+- Skip table of contents, page headers/footers, and administrative preamble.
 
 document_quality: "good" if document is clean and complete, "partial" if some rules were unclear, "poor" if document was mostly unreadable.
 notes: Brief summary of any issues encountered.
@@ -156,7 +155,7 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
 
   const stream = client.messages.stream({
     model:      'claude-sonnet-4-6',
-    max_tokens: 32000,
+    max_tokens: 8000,
     messages: [{
       role:    'user',
       content: [
