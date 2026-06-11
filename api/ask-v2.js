@@ -126,11 +126,12 @@ function validateMatrixState(raw) {
  */
 function resolveLeague(league) {
   const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase().trim();
+  if (!leagueNorm) throw new LeagueNotFoundError('A league must be specified. No rulebook is loaded for an empty or missing league value.');
   if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',          leagueName: 'USSSA Baseball' };
   if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',  leagueName: 'Little League International' };
   if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa', leagueName: 'Mill Valley AAA' };
   if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',         leagueName: 'Bay Area Men\'s Senior Baseball League' };
-  if (leagueNorm === 'mlb' || leagueNorm === 'mlb official rules of baseball' || leagueNorm === '') return { slug: 'mlb', leagueName: 'MLB Official Rules of Baseball' };
+  if (leagueNorm === 'mlb' || leagueNorm === 'mlb official rules of baseball')       return { slug: 'mlb',            leagueName: 'MLB Official Rules of Baseball' };
   // Unknown league — pass through as-is; DB check in runRAG will return 404.
   return { slug: leagueNorm, leagueName: league };
 }

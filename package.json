@@ -9,7 +9,8 @@
     "build:css": "tailwindcss -i ./src/input.css -o ./dist/output.css --minify",
     "vercel-build": "npm run build && npm run build:css",
     "dev": "node -e \"console.log('vercel dev is running — open http://localhost:3000/rulebook'); process.stdin.resume()\"",
-    "verify:models": "node scripts/verify-models.mjs"
+    "verify:models": "node scripts/verify-models.mjs",
+    "smoke:ask-v2": "node scripts/smoke-ask-v2.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
