@@ -10,7 +10,9 @@
     "vercel-build": "npm run build && npm run build:css",
     "dev": "node -e \"console.log('vercel dev is running — open http://localhost:3000/rulebook'); process.stdin.resume()\"",
     "verify:models": "node scripts/verify-models.mjs",
-    "smoke:ask-v2": "node scripts/smoke-ask-v2.mjs"
+    "smoke:ask-v2": "node scripts/smoke-ask-v2.mjs",
+    "test:ingest:skeleton": "node scripts/test-ingest-skeleton.mjs",
+    "test:ingest:pdf": "node scripts/test-parse-pdf.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
@@ -18,6 +20,7 @@
     "dotenv": "^17.1.0",
     "mammoth": "^1.12.0",
     "openai": "^4.104.0",
+    "pdf-parse": "^2.4.5",
     "pg": "^8.16.3"
   },
   "devDependencies": {
