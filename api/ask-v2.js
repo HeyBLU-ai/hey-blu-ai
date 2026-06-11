@@ -286,10 +286,10 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     }));
 
     // ── 3. Fallback to parent league when top match is poor ────────────────
-    //   Threshold 0.45 (cosine distance 0 = identical, 1 = orthogonal).
+    //   Threshold 0.75 (cosine distance 0 = identical, 1 = orthogonal).
     //   Also falls back when the league has fewer than 3 rules in the DB.
     const bestDistance = selectedRules[0]?.distance ?? 1;
-    if (bestDistance > 0.45 || selectedRules.length < 3) {
+    if (bestDistance > 0.75 || selectedRules.length < 3) {
       const parentRes = await dbClient.query(`
         SELECT l2.slug, l2.name
         FROM   leagues l
