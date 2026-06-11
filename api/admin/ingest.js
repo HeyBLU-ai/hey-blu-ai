@@ -152,7 +152,7 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
 
   emit('parse', 'running', 'Sending PDF to Claude for extraction…');
 
-  const response = await client.messages.create({
+  const stream = client.messages.stream({
     model:      'claude-sonnet-4-6',
     max_tokens: 32000,
     messages: [{
@@ -170,6 +170,7 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
     }],
   });
 
+  const response = await stream.finalMessage();
   const raw = response.content[0]?.text ?? '';
   if (!raw) throw new Error('Claude returned an empty response');
 
