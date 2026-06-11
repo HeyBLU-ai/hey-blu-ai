@@ -119,13 +119,20 @@ function validateMatrixState(raw) {
 /**
  * Maps a league string (from the client) to the DB slug and display name.
  */
+/**
+ * Maps common league name strings to their DB slug.
+ * The DB is the authority — unknown slugs produce a league_not_found error
+ * in runRAG rather than silently defaulting to MLB.
+ */
 function resolveLeague(league) {
-  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase();
-  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',           leagueName: 'USSSA Baseball' };
-  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',    leagueName: 'Little League International' };
-  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa',  leagueName: 'Mill Valley AAA' };
-  if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',           leagueName: 'Bay Area Men\'s Senior Baseball League' };
-  return { slug: 'mlb', leagueName: 'MLB Official Rules of Baseball' };
+  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase().trim();
+  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',          leagueName: 'USSSA Baseball' };
+  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',  leagueName: 'Little League International' };
+  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa', leagueName: 'Mill Valley AAA' };
+  if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',         leagueName: 'Bay Area Men\'s Senior Baseball League' };
+  if (leagueNorm === 'mlb' || leagueNorm === 'mlb official rules of baseball' || leagueNorm === '') return { slug: 'mlb', leagueName: 'MLB Official Rules of Baseball' };
+  // Unknown league — pass through as-is; DB check in runRAG will return 404.
+  return { slug: leagueNorm, leagueName: league };
 }
 
 // ── Anthropic client ─────────────────────────────────────────────────────────
@@ -207,20 +214,40 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
 
   const dbClient = await pool.connect();
-  let leagueRules = [], parentRules = [], parentName = null;
+    let leagueRules = [], parentRules = [], parentName = null;
 
-  try {
-    // Fetch all rules for the requested league
-    const leagueRes = await dbClient.query(`
-      SELECT l.name AS league_name, l.parent_league_id,
-             r.rule_number, r.title, r.body
-      FROM   rules r
-      JOIN   leagues l ON l.id = r.league_id
-      WHERE  l.slug = $1
-      ORDER  BY r.rule_number
-    `, [leagueSlug]);
+    try {
+      // Check league exists and has an active rulebook
+      const leagueCheck = await dbClient.query(
+        `SELECT id, name, parent_league_id FROM leagues WHERE slug = $1`,
+        [leagueSlug]
+      );
+      if (leagueCheck.rows.length === 0) {
+        dbClient.release();
+        return res.status(404).json({
+          error:   'league_not_found',
+          message: 'No rulebook is loaded for this league. Select a different league or contact an admin.',
+        });
+      }
 
-    if (leagueRes.rows.length > 0) {
+      // Fetch all rules for the requested league
+      const leagueRes = await dbClient.query(`
+        SELECT l.name AS league_name, l.parent_league_id,
+               r.rule_number, r.title, r.body
+        FROM   rules r
+        JOIN   leagues l ON l.id = r.league_id
+        WHERE  l.slug = $1
+        ORDER  BY r.rule_number
+      `, [leagueSlug]);
+
+      if (leagueRes.rows.length === 0) {
+        dbClient.release();
+        return res.status(404).json({
+          error:   'league_not_found',
+          message: 'No rules are loaded for this league yet. Ingest a rulebook first.',
+        });
+      }
+
       leagueRules = leagueRes.rows;
       const parentId = leagueRes.rows[0].parent_league_id;
 
@@ -236,20 +263,9 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
         parentRules = parentRes.rows;
         parentName  = parentRes.rows[0]?.league_name ?? null;
       }
-    } else {
-      // Fallback: league not in DB yet — fetch MLB
-      const mlbRes = await dbClient.query(`
-        SELECT l.name AS league_name, r.rule_number, r.title, r.body
-        FROM   rules r
-        JOIN   leagues l ON l.id = r.league_id
-        WHERE  l.slug = 'mlb'
-        ORDER  BY r.rule_number
-      `);
-      leagueRules = mlbRes.rows;
+    } finally {
+      try { dbClient.release(); } catch { /* already released on early return */ }
     }
-  } finally {
-    dbClient.release();
-  }
 
   // Format rules as a readable numbered list
   const formatRules = (rows) =>
@@ -338,8 +354,8 @@ const handler = async (req, res) => {
     return res.status(400).json({ error: 'question must be at least 3 characters' });
   }
 
-  if (!process.env.OPENAI_API_KEY) {
-    return res.status(500).json({ error: 'Missing OpenAI API key' });
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.status(500).json({ error: 'Missing Anthropic API key' });
   }
 
   // ── 2. Validate matrix_state (if provided) ───────────────────────────────
@@ -419,7 +435,7 @@ const handler = async (req, res) => {
     //           If no keyword match → question is almost certainly factual →
     //           skip classifier and go straight to RAG (State A).
     //
-    //   Step 2: If keyword match → call GPT-4o-mini to confirm and to identify
+    //   Step 2: If keyword match → call Claude Haiku to confirm and to identify
     //           the precise Judgment Matrix.
     //
     //   Step 3: If classifier confirms judgment AND confidence is high enough →
