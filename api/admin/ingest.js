@@ -175,10 +175,13 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
   const raw = response.content[0]?.text ?? '';
   if (!raw) throw new Error('Claude returned an empty response');
 
-  // Claude sometimes wraps JSON in a markdown code block — strip it if present
-  const jsonStr = raw.match(/```(?:json)?\s*([\s\S]*?)\s*```/)?.[1] ?? raw;
-
-  const extracted = JSON.parse(jsonStr.trim());
+  // Extract JSON by finding the outermost { ... } — works regardless of
+  // whether Claude wraps the response in a markdown code block or not.
+  const start = raw.indexOf('{');
+  const end   = raw.lastIndexOf('}');
+  if (start === -1 || end === -1 || end <= start)
+    throw new Error('Claude response contained no JSON object');
+  const extracted = JSON.parse(raw.slice(start, end + 1));
   if (!Array.isArray(extracted.rules)) throw new Error('Claude response missing "rules" array');
 
   return extracted;
