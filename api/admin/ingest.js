@@ -144,7 +144,7 @@ Return your entire response as a single JSON object matching this structure:
 
 }
 
-async function extractRulesWithClaude({ fileBase64, leagueName, parentName, sport, emit }) {
+async function extractRulesWithClaude({ fileBase64, leagueName, parentName, sport, emit, keepAlive }) {
   if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY not configured');
 
   const { default: Anthropic } = await import('@anthropic-ai/sdk');
@@ -153,8 +153,8 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
   emit('parse', 'running', 'Sending PDF to Claude for extraction…');
 
   const response = await client.messages.create({
-    model:      'claude-sonnet-4-5',
-    max_tokens: 16000,
+    model:      'claude-sonnet-4-6',
+    max_tokens: 32000,
     messages: [{
       role:    'user',
       content: [
@@ -202,6 +202,12 @@ const handler = async (req, res) => {
   const isPDF = ext === 'pdf';
 
   const { emit, done } = setupSSE(res);
+
+  // SSE keepalive — prevents Vercel's CDN from closing idle connections
+  // while Claude (or OpenAI) is processing a long request.
+  const keepAlive = setInterval(() => {
+    try { res.write(': keepalive\n\n'); } catch {}
+  }, 20000);
 
   try {
 
@@ -446,6 +452,8 @@ const handler = async (req, res) => {
   } catch (err) {
     console.error('[admin/ingest]', err);
     emit('error', 'error', err.message);
+  } finally {
+    clearInterval(keepAlive);
   }
 
   done();
