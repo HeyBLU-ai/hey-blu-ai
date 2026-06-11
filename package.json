@@ -14,7 +14,8 @@
     "test:ingest:skeleton": "node scripts/test-ingest-skeleton.mjs",
     "test:ingest:pdf": "node scripts/test-parse-pdf.mjs",
     "test:ingest:docx": "node scripts/test-parse-docx.mjs",
-    "test:ingest:url": "node scripts/test-parse-url.mjs"
+    "test:ingest:url": "node scripts/test-parse-url.mjs",
+    "test:ingest:warnings": "node scripts/test-parse-warnings.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
