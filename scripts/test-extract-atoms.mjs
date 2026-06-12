@@ -464,6 +464,182 @@ console.log('\nTest 21: atom body valid when found in second source_id');
   check('21c: source_ids has both',        atoms[0].source_ids.length === 2);
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// DB insertion tests (Tests 22–27)
+// Uses an injected mock dbClient — no real Postgres connection needed.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LEAGUE_ID = 'league00-0000-0000-0000-000000000001';
+
+/**
+ * Build a mock pg-compatible client that records all query calls and returns
+ * synthetic UUIDs for rules INSERTs.
+ */
+function makeMockDb() {
+  const calls = [];
+  let ruleCounter = 0;
+  return {
+    calls,
+    async query(text, values) {
+      const norm = text.replace(/\s+/g, ' ').trim();
+      calls.push({ text: norm, values });
+      // rules UPSERT → return a synthetic UUID
+      if (norm.includes('INSERT INTO rules')) {
+        ruleCounter++;
+        return { rows: [{ id: `rule-uuid-${ruleCounter}` }] };
+      }
+      // rule_source_links INSERT → ON CONFLICT DO NOTHING, no rows returned
+      return { rows: [] };
+    },
+  };
+}
+
+// Reusable AI payload for two atoms (SPAN_A and SPAN_B)
+const TWO_ATOM_AI_PAYLOAD = {
+  atoms: [
+    { rule_number: '505', title: 'Must Slide',  body: BODY_A_FULL, source_ids: [ID_A] },
+    { rule_number: '510', title: 'Obstruction', body: BODY_B_FULL, source_ids: [ID_B] },
+  ],
+};
+
+// ── Test 22: single atom — correct rules UPSERT SQL and parameters ────────────
+console.log('\nTest 22: DB path — rules UPSERT SQL and parameters');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    { rule_number: '505', title: 'Must Slide Rule', body: BODY_A_FULL, source_ids: [ID_A] },
+  ]});
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_A],
+    spanIds:         [ID_A],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+  });
+
+  const ruleCall = db.calls.find(c => c.text.includes('INSERT INTO rules'));
+  check('22a: rules UPSERT was called',               ruleCall != null);
+  check('22b: SQL contains ON CONFLICT … DO UPDATE',  ruleCall?.text.includes('ON CONFLICT'));
+  check('22c: SQL RETURNING id',                      ruleCall?.text.includes('RETURNING id'));
+  check('22d: $1 = leagueId',                         ruleCall?.values[0] === LEAGUE_ID);
+  check('22e: $2 = rule_number "505"',                ruleCall?.values[1] === '505');
+  check('22f: $3 = title',                            ruleCall?.values[2] === 'Must Slide Rule');
+  check('22g: $4 = body is verbatim BODY_A_FULL',     ruleCall?.values[3] === BODY_A_FULL);
+  check('22h: $5 = "baseball" (default sport)',       ruleCall?.values[4] === 'baseball');
+  check('22i: returned atom has ruleId',              atoms[0]?.ruleId === 'rule-uuid-1',
+        `got "${atoms[0]?.ruleId}"`);
+}
+
+// ── Test 23: single atom — rule_source_links INSERT SQL and parameters ────────
+console.log('\nTest 23: DB path — rule_source_links INSERT SQL and parameters');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    { rule_number: '505', title: 'Must Slide Rule', body: BODY_A_FULL, source_ids: [ID_A] },
+  ]});
+
+  await extractRuleAtoms({
+    spans:           [SPAN_A],
+    spanIds:         [ID_A],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+  });
+
+  const linkCall = db.calls.find(c => c.text.includes('INSERT INTO rule_source_links'));
+  check('23a: rule_source_links INSERT was called',        linkCall != null);
+  check('23b: SQL contains ON CONFLICT … DO NOTHING',      linkCall?.text.includes('DO NOTHING'));
+  check('23c: $1 = rule UUID from rules UPSERT',           linkCall?.values[0] === 'rule-uuid-1',
+        `got "${linkCall?.values[0]}"`);
+  check('23d: $2 = source span ID',                        linkCall?.values[1] === ID_A);
+  check('23e: $3 = "supports" (link_type)',                 linkCall?.values[2] === 'supports');
+}
+
+// ── Test 24: atom with two source_ids → two rule_source_links rows ────────────
+console.log('\nTest 24: atom with two source_ids → two rule_source_links INSERTs');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    { rule_number: '505', title: 'Must Slide', body: BODY_A_FULL, source_ids: [ID_A, ID_B] },
+  ]});
+
+  await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B],
+    spanIds:         [ID_A, ID_B],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+  });
+
+  const linkCalls = db.calls.filter(c => c.text.includes('INSERT INTO rule_source_links'));
+  check('24a: 2 rule_source_links INSERTs',         linkCalls.length === 2, `got ${linkCalls.length}`);
+  check('24b: first link → ID_A',                   linkCalls[0]?.values[1] === ID_A);
+  check('24c: second link → ID_B',                  linkCalls[1]?.values[1] === ID_B);
+  check('24d: both share same rule_id',             linkCalls[0]?.values[0] === linkCalls[1]?.values[0]);
+}
+
+// ── Test 25: two atoms → two rules UPSERTs + two link INSERTs ─────────────────
+console.log('\nTest 25: two atoms → 2 rules UPSERTs + 2 link INSERTs (4 total calls)');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient(TWO_ATOM_AI_PAYLOAD);
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B],
+    spanIds:         [ID_A, ID_B],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+  });
+
+  const ruleCalls = db.calls.filter(c => c.text.includes('INSERT INTO rules'));
+  const linkCalls = db.calls.filter(c => c.text.includes('INSERT INTO rule_source_links'));
+  check('25a: 2 rules UPSERTs',                      ruleCalls.length === 2, `got ${ruleCalls.length}`);
+  check('25b: 2 rule_source_links INSERTs',          linkCalls.length === 2, `got ${linkCalls.length}`);
+  check('25c: atoms[0].ruleId = "rule-uuid-1"',      atoms[0].ruleId === 'rule-uuid-1');
+  check('25d: atoms[1].ruleId = "rule-uuid-2"',      atoms[1].ruleId === 'rule-uuid-2');
+  check('25e: link[0].rule_id = atoms[0].ruleId',    linkCalls[0].values[0] === atoms[0].ruleId);
+  check('25f: link[1].rule_id = atoms[1].ruleId',    linkCalls[1].values[0] === atoms[1].ruleId);
+}
+
+// ── Test 26: no dbClient → DB calls skipped, atoms returned without ruleId ────
+console.log('\nTest 26: no dbClient → DB skipped, atoms returned without ruleId');
+{
+  const aiClient = makeMockClient(TWO_ATOM_AI_PAYLOAD);
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B],
+    spanIds:         [ID_A, ID_B],
+    anthropicClient: aiClient,
+    // dbClient intentionally omitted
+    leagueId:        LEAGUE_ID,
+  });
+
+  check('26a: returns 2 atoms',          atoms.length === 2);
+  check('26b: atoms[0] has no ruleId',   atoms[0].ruleId === undefined,
+        `got "${atoms[0].ruleId}"`);
+}
+
+// ── Test 27: dbClient present but no leagueId → DB skipped ───────────────────
+console.log('\nTest 27: dbClient present but no leagueId → DB skipped');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient(TWO_ATOM_AI_PAYLOAD);
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B],
+    spanIds:         [ID_A, ID_B],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    // leagueId intentionally omitted
+  });
+
+  check('27a: returns 2 atoms',         atoms.length === 2);
+  check('27b: no DB calls made',        db.calls.length === 0, `got ${db.calls.length}`);
+  check('27c: atoms[0] has no ruleId',  atoms[0].ruleId === undefined);
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────────
 console.log('\n' + '─'.repeat(50));
 console.log(`Results: ${passed} passed, ${failed} failed`);
