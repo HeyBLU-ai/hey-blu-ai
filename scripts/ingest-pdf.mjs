@@ -311,8 +311,9 @@ try {
     spanIds,
     anthropicClient: anthropic,
     // DB writes only when not dry-run
-    dbClient: isDryRun ? undefined : db,
-    leagueId: isDryRun ? undefined : leagueId,
+    dbClient:  isDryRun ? undefined : db,
+    leagueId:  isDryRun ? undefined : leagueId,
+    versionId: isDryRun ? undefined : versionId,
     sport,
   });
   console.log(`  ✓ ${atoms.length} rule atom(s) extracted and verified`);

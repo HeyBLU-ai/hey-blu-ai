@@ -190,6 +190,21 @@ async function extractRulesWithClaude({ fileBase64, leagueName, parentName, spor
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 const handler = async (req, res) => {
+  // ── Legacy ingest gate ──────────────────────────────────────────────────────
+  // This route uses the pre-V3 schema (no rulebook_version_id, no verbatim guard,
+  // no coverage verification).  It is disabled by default to prevent unversioned
+  // data from being written alongside V3 ingests.
+  //
+  // V3 replacement: node scripts/ingest-pdf.mjs <file> <league> --season <year>
+  // To re-enable temporarily: set ALLOW_LEGACY_INGEST=true in your environment.
+  if (process.env.ALLOW_LEGACY_INGEST !== 'true') {
+    return res.status(403).json({
+      error: 'Legacy ingest disabled.',
+      message: 'Use the V3 CLI pipeline: node scripts/ingest-pdf.mjs <file> <league> --season <year>',
+      hint: 'Set ALLOW_LEGACY_INGEST=true to temporarily re-enable (not recommended).',
+    });
+  }
+
   const {
     url, fileBase64, fileName,
     leagueSlug, newLeagueName, newLeagueSlug, parentSlug,
