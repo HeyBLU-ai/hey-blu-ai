@@ -63,6 +63,10 @@ console.log('\nAll exports are async (return Promise when called):');
 const dummySpan  = { seq: 0, text: 'test span text' };
 const dummyAtom  = { sourceSpanId: 'x', ruleId: '1', title: 't', quote: 'test span text', tags: [], judgment: false };
 const dummyPool  = {};  // not a real pool — validation throws before DB is touched
+// Minimal mock AI client — lets extractRuleAtoms run without a live API key.
+const dummyAI    = {
+  messages: { async create() { return { content: [{ text: '{"atoms":[]}' }] }; } },
+};
 
 check('parseSource() returns a Promise',
   parseSource({ text: 'hello' }) instanceof Promise);
@@ -71,7 +75,7 @@ check('createSourceSpans() returns a Promise',
   createSourceSpans({ db: dummyPool, versionId: 'v1', spans: [dummySpan] }) instanceof Promise);
 
 check('extractRuleAtoms() returns a Promise',
-  extractRuleAtoms({ spans: [dummySpan], spanIds: ['id1'] }) instanceof Promise);
+  extractRuleAtoms({ spans: [dummySpan], spanIds: ['id1'], anthropicClient: dummyAI }) instanceof Promise);
 
 check('verifyCoverage() returns a Promise',
   verifyCoverage({ spans: [dummySpan], atoms: [dummyAtom], spanIds: ['id1'] }) instanceof Promise);
@@ -129,8 +133,8 @@ check('parseSource stub span has seq + text',     typeof spanResult[0]?.seq === 
 const spanInsert = await createSourceSpans({ db: dummyPool, versionId: 'v1', spans: [dummySpan] });
 check('createSourceSpans stub returns { inserted }', typeof spanInsert?.inserted === 'number');
 
-const atoms = await extractRuleAtoms({ spans: [dummySpan], spanIds: ['id1'] });
-check('extractRuleAtoms stub returns array',       Array.isArray(atoms));
+const atoms = await extractRuleAtoms({ spans: [dummySpan], spanIds: ['id1'], anthropicClient: dummyAI });
+check('extractRuleAtoms returns array',            Array.isArray(atoms));
 
 const report = await verifyCoverage({ spans: [dummySpan], atoms: [], spanIds: ['id1'] });
 check('verifyCoverage stub .ok is boolean',        typeof report?.ok === 'boolean');
