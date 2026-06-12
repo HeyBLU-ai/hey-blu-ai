@@ -364,11 +364,19 @@ QUESTION: ${sanitizedQuestion}
 
 Instructions:
 - Answer ONLY from the source excerpts above. Do NOT cite, invent, or infer rules that do not appear in the excerpts.
-- CRITICAL — use the rulebook's exact language when stating factual claims. Quote or reproduce the relevant portion of the excerpt text as closely as possible. Do NOT restate rules in your own words, summarise them loosely, or add interpretations not found in the excerpts.
-- When a rule text is short enough, quote it directly. When it is long, select the precise sentences that answer the question and reproduce them verbatim.
-- Cite the rule number(s) exactly as labelled in the excerpts (e.g. "Rule 505").
-- Give a clear ruling an umpire can act on immediately, but anchor every factual claim to the quoted rulebook language.
-- If no excerpt covers the question, say exactly: "I could not find a specific rule about this in the loaded rulebook."
+- If no excerpt covers the question, respond with exactly: "I could not find a specific rule about this in the loaded rulebook."
+- Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
+
+**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the source excerpts.
+
+**The Book:** On a new line after The Ruling, provide the official citation using this exact format:
+**Official Rule [Number]:** "[Exact verbatim quote from the source excerpt]"
+
+CRITICAL rules for The Book citation:
+- The rule number must match the label in the excerpts exactly (e.g. "505", "4.01").
+- The quoted text MUST be copied character-for-character from the source excerpt — do not paraphrase, summarise, rearrange words, or change punctuation. The downstream verifier checks this quote byte-for-byte against the original source.
+- If the answer draws on multiple rules, provide one citation line per rule in the same format.
+- Never add words or ellipses inside the quote that are not in the original.
 
 Answer:`;
 }
