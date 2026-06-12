@@ -117,13 +117,15 @@ console.log('\nTest 4: perfect coverage — all pages 1-4 covered, no issues');
   check('4i: issues = []',           report.issues.length === 0, `got ${report.issues.length}`);
 }
 
-// ── Test 5: missing page in the middle (page 3 absent) ───────────────────────
-console.log('\nTest 5: gap in middle — span on p1, p2, p4 but not p3');
+// ── Test 5: span on p3 has no atom → p3 is a missing page ────────────────────
+// All four pages have spans, but the span on p3 has no atom claiming it.
+// missingPages = [3] because pagesWithSpans = {1,2,3,4} and pagesWithAtoms = {1,2,4}.
+console.log('\nTest 5: gap in coverage — span on p3 has no atom → p3 is missing page');
 {
   const report = await verifyCoverage({
-    spans:   [SPAN_P1, SPAN_P2, SPAN_P4],
-    spanIds: [SID_1,   SID_2,   SID_4],
-    atoms:   [ATOM_1,  ATOM_2,  ATOM_4],
+    spans:   [SPAN_P1, SPAN_P2, SPAN_P3, SPAN_P4],
+    spanIds: [SID_1,   SID_2,   SID_3,   SID_4],
+    atoms:   [ATOM_1,  ATOM_2,           ATOM_4],  // no atom for SID_3 (p3)
   });
 
   check('5a: ok = false',               report.ok === false,   `got ${report.ok}`);
@@ -131,44 +133,54 @@ console.log('\nTest 5: gap in middle — span on p1, p2, p4 but not p3');
   check('5c: missingPages = [3]',       JSON.stringify(report.missingPages) === '[3]',
         `got ${JSON.stringify(report.missingPages)}`);
   check('5d: totalPages = 4',           report.totalPages === 4, `got ${report.totalPages}`);
-  check('5e: coveredPages = 3',         report.coveredPages === 3);
+  check('5e: coveredPages = 4',         report.coveredPages === 4, `got ${report.coveredPages}`);
   check('5f: no QUOTE_MISMATCH issues', !report.issues.some(i => i.code === 'QUOTE_MISMATCH'));
 }
 
-// ── Test 6: missing pages at end (opts.totalPages > max span page) ────────────
-console.log('\nTest 6: missing pages at end — spans on p1-p2, totalPages=5');
+// ── Test 6: span on p3 has no atom; totalPages override still surfaces ────────
+// Spans exist on p1, p2, p3.  Atoms cover p1 and p2 only.
+// missingPages = [3] because p3 has a span but no atom.
+// The totalPages=5 override is surfaced in report.totalPages (for reporting)
+// but does NOT affect missingPages — blank pages 4 and 5 have no spans and
+// are therefore not expected to have atoms.
+console.log('\nTest 6: span on p3 uncovered — missingPages = [3]; totalPages override surfaced');
 {
   const report = await verifyCoverage({
-    spans:      [SPAN_P1, SPAN_P2],
-    spanIds:    [SID_1,   SID_2],
-    atoms:      [ATOM_1,  ATOM_2],
+    spans:      [SPAN_P1, SPAN_P2, SPAN_P3],
+    spanIds:    [SID_1,   SID_2,   SID_3],
+    atoms:      [ATOM_1,  ATOM_2],              // no atom for SID_3 (p3)
     totalPages: 5,
   });
 
-  check('6a: isComplete = false',         report.isComplete === false);
-  check('6b: missingPages = [3,4,5]',     JSON.stringify(report.missingPages) === '[3,4,5]',
+  check('6a: isComplete = false',        report.isComplete === false);
+  check('6b: missingPages = [3]',        JSON.stringify(report.missingPages) === '[3]',
         `got ${JSON.stringify(report.missingPages)}`);
-  check('6c: totalPages = 5 (override)',  report.totalPages === 5, `got ${report.totalPages}`);
-  check('6d: coveredPages = 2',           report.coveredPages === 2);
+  check('6c: totalPages = 5 (override)', report.totalPages === 5, `got ${report.totalPages}`);
+  check('6d: coveredPages = 3',          report.coveredPages === 3, `got ${report.coveredPages}`);
 }
 
-// ── Test 7: multiple gaps — pages 2, 4, and 6 missing ────────────────────────
-console.log('\nTest 7: multiple non-consecutive missing pages');
+// ── Test 7: multiple non-consecutive uncovered pages ─────────────────────────
+// Spans exist on p1–p5.  Atoms cover only p1, p3, p5.
+// p2 and p4 have spans but no atoms → missingPages = [2, 4].
+// (A hypothetical page 6 is irrelevant because it has no span.)
+console.log('\nTest 7: spans on p1-p5, atoms on p1/p3/p5 → missingPages = [2, 4]');
 {
-  const SPAN_P5 = { seq: 4, text: SHORT_TEXT_A, page: 5, charStart: 0, charEnd: SHORT_TEXT_A.length };
-  const ATOM_5  = { sourceSpanId: 'sid5', source_ids: ['sid5'], rule_number: '105', title: 'T', body: SHORT_TEXT_A };
+  const SPAN_P2b = { seq: 1, text: SHORT_TEXT_B, page: 2, charStart: 0, charEnd: SHORT_TEXT_B.length };
+  const SPAN_P4b = { seq: 3, text: SHORT_TEXT_B, page: 4, charStart: 0, charEnd: SHORT_TEXT_B.length };
+  const SPAN_P5  = { seq: 4, text: SHORT_TEXT_A, page: 5, charStart: 0, charEnd: SHORT_TEXT_A.length };
+  const ATOM_5   = { sourceSpanId: 'sid5', source_ids: ['sid5'], rule_number: '105', title: 'T', body: SHORT_TEXT_A };
 
   const report = await verifyCoverage({
-    spans:      [SPAN_P1, SPAN_P3, SPAN_P5],
-    spanIds:    [SID_1,   SID_3,   'sid5'],
-    atoms:      [ATOM_1,  ATOM_3,  ATOM_5],
-    totalPages: 6,
+    spans:   [SPAN_P1, SPAN_P2b, SPAN_P3, SPAN_P4b, SPAN_P5],
+    spanIds: [SID_1,   'sid2b',  SID_3,   'sid4b',  'sid5'],
+    atoms:   [ATOM_1,            ATOM_3,             ATOM_5],  // p2, p4 uncovered
   });
 
-  check('7a: missingPages = [2,4,6]',
-        JSON.stringify(report.missingPages) === '[2,4,6]',
+  check('7a: missingPages = [2,4]',
+        JSON.stringify(report.missingPages) === '[2,4]',
         `got ${JSON.stringify(report.missingPages)}`);
-  check('7b: isComplete = false',       report.isComplete === false);
+  check('7b: isComplete = false',   report.isComplete === false);
+  check('7c: coveredPages = 5',     report.coveredPages === 5, `got ${report.coveredPages}`);
 }
 
 // ── Test 8: UNCOVERED_SPAN — span has no atoms ────────────────────────────────
@@ -184,8 +196,10 @@ console.log('\nTest 8: UNCOVERED_SPAN — span with no associated atoms');
   check('8a: 1 UNCOVERED_SPAN issue',   uncov.length === 1, `got ${uncov.length}`);
   check('8b: flagged spanSeq = 1',      uncov[0]?.spanSeq === 1, `got ${uncov[0]?.spanSeq}`);
   check('8c: coveredSpans = 1',         report.coveredSpans === 1);
-  check('8d: ok unaffected by UNCOVERED_SPAN', report.ok === true,
-        'UNCOVERED_SPAN alone should not set ok=false');
+  // Under the new page-coverage logic, SPAN_P2 (page 2) has a span but no atom
+  // → page 2 is in missingPages → isComplete = false → ok = false.
+  check('8d: ok = false because p2 span has no atom (missing page)',
+        report.ok === false, `got ${report.ok}`);
 }
 
 // ── Test 9: QUOTE_MISMATCH — atom body not verbatim in span ──────────────────
@@ -270,8 +284,9 @@ console.log('\nTest 12: zero atoms → all spans flagged as UNCOVERED_SPAN');
   const uncov = report.issues.filter(i => i.code === 'UNCOVERED_SPAN');
   check('12a: 2 UNCOVERED_SPAN issues',  uncov.length === 2, `got ${uncov.length}`);
   check('12b: coveredSpans = 0',         report.coveredSpans === 0);
-  check('12c: ok unaffected by UNCOVERED_SPAN alone', report.ok === true,
-        'UNCOVERED_SPAN alone does not set ok=false — pages 1 and 2 are covered by spans');
+  // Zero atoms → pagesWithAtoms = {} → pages 1 & 2 in missingPages → ok = false.
+  check('12c: ok = false — zero atoms means all span pages are missing',
+        report.ok === false, `got ${report.ok}`);
 }
 
 // ── Test 13: empty spans + empty atoms → trivial success ─────────────────────
@@ -286,15 +301,19 @@ console.log('\nTest 13: empty spans + empty atoms → no issues, isComplete=true
   check('13f: atomCount = 0',        report.atomCount === 0);
 }
 
-// ── Test 14: atom citing two spans — both spans marked covered ─────────────────
-console.log('\nTest 14: one atom citing two spans → both spans marked covered');
+// ── Test 14: cross-span atom — body found in concatenation ────────────────────
+// The atom cites two spans; body equals SHORT_TEXT_A which is the text of
+// SPAN_P1 alone.  The new logic joins all cited spans' texts and searches the
+// concatenation.  SHORT_TEXT_A IS found in the join (it's the first part),
+// so no QUOTE_MISMATCH is expected.
+console.log('\nTest 14: cross-span atom — body in first span → no QUOTE_MISMATCH');
 {
   const crossAtom = {
     sourceSpanId: SID_1,
     source_ids:   [SID_1, SID_2],
     rule_number:  '100',
     title:        'Age Min',
-    body:         SHORT_TEXT_A,    // verbatim in SPAN_P1; not expected in SPAN_P2 (different text)
+    body:         SHORT_TEXT_A,    // found in the concatenation of SPAN_P1+SPAN_P2
   };
 
   const report = await verifyCoverage({
@@ -303,11 +322,12 @@ console.log('\nTest 14: one atom citing two spans → both spans marked covered'
     atoms:   [crossAtom],
   });
 
-  // SPAN_P1 is covered; SPAN_P2 is covered (atom claims it).
-  check('14a: coveredSpans = 2',      report.coveredSpans === 2, `got ${report.coveredSpans}`);
-  // body is not in SPAN_P2 → QUOTE_MISMATCH for that link
+  // Both spans are claimed by the atom.
+  check('14a: coveredSpans = 2',           report.coveredSpans === 2, `got ${report.coveredSpans}`);
+  // Body found in concatenation → no QUOTE_MISMATCH
   const mm = report.issues.filter(i => i.code === 'QUOTE_MISMATCH');
-  check('14b: QUOTE_MISMATCH for SID_2 link', mm.length === 1, `got ${mm.length}`);
+  check('14b: no QUOTE_MISMATCH for cross-span', mm.length === 0, `got ${mm.length}`);
+  check('14c: ok = true',                  report.ok === true, `got ${report.ok}`);
 }
 
 // ── Test 15: opts.totalPages = 0 → no page checks run ────────────────────────
@@ -325,8 +345,12 @@ console.log('\nTest 15: opts.totalPages = 0 → page check skipped, isComplete=t
   check('15c: missingPages = []',     report.missingPages.length === 0);
 }
 
-// ── Test 16: combined — QUOTE_MISMATCH + missing page → ok=false ──────────────
-console.log('\nTest 16: QUOTE_MISMATCH AND missing page both set ok=false');
+// ── Test 16: combined — QUOTE_MISMATCH + uncovered page → ok=false ────────────
+// Spans on p1, p2, p3.  p1 has a bad-body atom (QUOTE_MISMATCH).
+// p2 has a span but no atom (uncovered → missingPages = [2], isComplete = false).
+// p3 has a valid atom.
+// Both failures must be reflected in ok=false.
+console.log('\nTest 16: QUOTE_MISMATCH AND uncovered span page both set ok=false');
 {
   const badAtom = {
     sourceSpanId: SID_1,
@@ -337,15 +361,16 @@ console.log('\nTest 16: QUOTE_MISMATCH AND missing page both set ok=false');
   };
 
   const report = await verifyCoverage({
-    spans:   [SPAN_P1, SPAN_P3],   // pages 1 and 3 — page 2 missing
-    spanIds: [SID_1,   SID_3],
-    atoms:   [badAtom, ATOM_3],
+    spans:   [SPAN_P1, SPAN_P2, SPAN_P3],  // p1=bad atom, p2=no atom, p3=good atom
+    spanIds: [SID_1,   SID_2,   SID_3],
+    atoms:   [badAtom,           ATOM_3],   // no atom for SID_2 (p2)
   });
 
-  check('16a: ok = false',               report.ok === false);
-  check('16b: isComplete = false',       report.isComplete === false);
-  check('16c: QUOTE_MISMATCH present',   report.issues.some(i => i.code === 'QUOTE_MISMATCH'));
-  check('16d: missingPages includes 2',  report.missingPages.includes(2));
+  check('16a: ok = false',                report.ok === false);
+  check('16b: isComplete = false',        report.isComplete === false);
+  check('16c: QUOTE_MISMATCH present',    report.issues.some(i => i.code === 'QUOTE_MISMATCH'));
+  check('16d: missingPages includes 2',   report.missingPages.includes(2),
+        `got ${JSON.stringify(report.missingPages)}`);
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────

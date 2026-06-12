@@ -1,31 +1,59 @@
 #!/usr/bin/env node
 /**
- * ingest-pdf.mjs  —  Local rulebook ingestion. No Vercel. No timeouts.
+ * scripts/ingest-pdf.mjs — V3 Rulebook Ingestion Orchestrator
+ *
+ * Runs the full V3 pipeline against a local PDF or DOCX file:
+ *
+ *   1. parseSource          → deterministic text extraction → SourceSpan[]
+ *   2. createDraftVersion   → rulebook_versions + rule_documents rows
+ *   3. identifyBoundaries   → AI rule segmentation (verbatim guard)
+ *   4. createSourceSpans    → rule_sources rows (one per boundary)
+ *   5. extractRuleAtoms     → rules + rule_source_links rows (verbatim guard)
+ *   6. verifyCoverage       → deterministic page + quote audit
+ *
+ * Accuracy is the primary directive.  Steps 3 and 5 use AI, but both enforce
+ * a VERBATIM GUARD — no AI-authored text ever reaches the database.
+ *
+ * On failure, the draft version row is deleted (which CASCADE-deletes
+ * rule_documents and rule_sources) to prevent orphaned rows.
  *
  * Usage:
- *   node scripts/ingest-pdf.mjs <pdf-path> <league-slug> [--replace] [--sport baseball|softball]
+ *   node scripts/ingest-pdf.mjs <file-path> <league-slug> [options]
+ *
+ * Options:
+ *   --season <label>   Season label, e.g. "2026" (default: current year)
+ *   --sport  <sport>   baseball (default) | softball
+ *   --dry-run          Parse + AI boundary/atom pass, but do NOT write to DB
  *
  * Examples:
- *   node scripts/ingest-pdf.mjs 2026bamsblrules.pdf bamsbl --replace
- *   node scripts/ingest-pdf.mjs rulebook.pdf little-league --replace --sport baseball
+ *   node scripts/ingest-pdf.mjs 2026bamsblrules.pdf bamsbl --season 2026
+ *   node scripts/ingest-pdf.mjs "docs/rulebook.docx" little-league --dry-run
  *
- * Reads .env.local for DATABASE_URL, ANTHROPIC_API_KEY, OPENAI_API_KEY.
+ * Reads credentials from .env.local: DATABASE_URL, ANTHROPIC_API_KEY.
  */
 
-import fs   from 'fs/promises';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import pg         from 'pg';
-import Anthropic  from '@anthropic-ai/sdk';
+import fs        from 'node:fs/promises';
+import path      from 'node:path';
+import crypto    from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
-const { Client } = pg;
-const __dirname  = path.dirname(fileURLToPath(import.meta.url));
-const ROOT       = path.join(__dirname, '..');
+import pg        from 'pg';
+import Anthropic from '@anthropic-ai/sdk';
 
-// ── 1. Load .env.local ────────────────────────────────────────────────────────
+import { parseSource }       from '../lib/ingest/parse-source.mjs';
+import { createDraftVersion } from '../lib/ingest/write-rulebook-version.mjs';
+import { identifyBoundaries, createSourceSpans } from '../lib/ingest/create-source-spans.mjs';
+import { extractRuleAtoms }   from '../lib/ingest/extract-rule-atoms.mjs';
+import { verifyCoverage }     from '../lib/ingest/verify-coverage.mjs';
 
-console.log('\n━━━  HeyBLU PDF Ingest  ━━━\n');
-console.log('► Step 1: Loading environment variables from .env.local…');
+const { Pool }  = pg;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT      = path.join(__dirname, '..');
+const HR        = '─'.repeat(60);
+
+// ── 0. Load .env.local ────────────────────────────────────────────────────────
+
+console.log('\n━━━  HeyBLU V3 Ingest  ━━━\n');
 
 try {
   const raw = await fs.readFile(path.join(ROOT, '.env.local'), 'utf-8');
@@ -38,296 +66,341 @@ try {
     const val = t.slice(eq + 1).trim().replace(/^["']|["']$/g, '');
     if (!process.env[key]) process.env[key] = val;
   }
-  console.log('  ✓ .env.local loaded');
 } catch {
-  console.error('  ✗ .env.local not found. Run: vercel env pull .env.local');
+  console.error('  ✗ .env.local not found.  Run: vercel env pull .env.local');
   process.exit(1);
 }
 
-const { DATABASE_URL, ANTHROPIC_API_KEY, OPENAI_API_KEY } = process.env;
-
-if (!DATABASE_URL)    { console.error('  ✗ DATABASE_URL not set');    process.exit(1); }
+const { DATABASE_URL, ANTHROPIC_API_KEY } = process.env;
+if (!DATABASE_URL)      { console.error('  ✗ DATABASE_URL not set');      process.exit(1); }
 if (!ANTHROPIC_API_KEY) { console.error('  ✗ ANTHROPIC_API_KEY not set'); process.exit(1); }
-if (!OPENAI_API_KEY)  { console.error('  ✗ OPENAI_API_KEY not set');  process.exit(1); }
-console.log('  ✓ All required env vars present\n');
 
-// ── 2. Parse CLI args ─────────────────────────────────────────────────────────
+// ── 1. Parse CLI arguments ────────────────────────────────────────────────────
 
-const args       = process.argv.slice(2);
-const pdfArg     = args.find(a => !a.startsWith('--') && !['baseball','softball'].includes(a.toLowerCase()) && args.indexOf(a) < 2);
-const leagueSlug = args.find(a => !a.startsWith('--') && !['baseball','softball'].includes(a.toLowerCase()) && args.indexOf(a) >= 1 && a !== pdfArg);
-const doReplace  = args.includes('--replace');
-const sportIdx   = args.indexOf('--sport');
-const sport      = sportIdx >= 0 ? args[sportIdx + 1] : 'baseball';
+const argv = process.argv.slice(2);
 
-if (!pdfArg || !leagueSlug) {
-  console.error('Usage: node scripts/ingest-pdf.mjs <pdf-path> <league-slug> [--replace] [--sport baseball|softball]');
+function flag(name) {
+  const i = argv.indexOf(name);
+  return i >= 0 ? argv[i + 1] ?? true : undefined;
+}
+
+const [fileArg, leagueSlug] = argv.filter(a => !a.startsWith('--') && argv.indexOf(a) < 2);
+const season   = flag('--season') || String(new Date().getFullYear());
+const sport    = flag('--sport')  || 'baseball';
+const isDryRun = argv.includes('--dry-run');
+
+if (!fileArg || !leagueSlug) {
+  console.error(
+    'Usage: node scripts/ingest-pdf.mjs <file-path> <league-slug> [options]\n' +
+    '  --season <label>   e.g. "2026" (default: current year)\n' +
+    '  --sport  <sport>   baseball (default) | softball\n' +
+    '  --dry-run          Parse + AI pass, do NOT write to DB',
+  );
   process.exit(1);
 }
 
-const pdfPath = path.isAbsolute(pdfArg) ? pdfArg : path.join(process.cwd(), pdfArg);
+const filePath = path.isAbsolute(fileArg) ? fileArg : path.resolve(fileArg);
 
-console.log(`► PDF:    ${pdfPath}`);
-console.log(`► League: ${leagueSlug}`);
-console.log(`► Sport:  ${sport}`);
-console.log(`► Replace existing rules: ${doReplace}\n`);
+console.log(`  File   : ${filePath}`);
+console.log(`  League : ${leagueSlug}`);
+console.log(`  Season : ${season}`);
+console.log(`  Sport  : ${sport}`);
+console.log(`  Dry run: ${isDryRun}`);
+console.log();
 
-// ── 3. Read PDF ───────────────────────────────────────────────────────────────
+// ── 2. Read file + compute SHA-256 hash ───────────────────────────────────────
 
-console.log('► Step 2: Reading PDF file…');
-let pdfBuffer;
+console.log(`${HR}\nStep 1 — Read source file\n${HR}`);
+
+let fileBuffer;
 try {
-  pdfBuffer = await fs.readFile(pdfPath);
-  const sizeMB = (pdfBuffer.length / 1024 / 1024).toFixed(2);
-  console.log(`  ✓ Read ${sizeMB} MB (${pdfBuffer.length.toLocaleString()} bytes)`);
+  fileBuffer = await fs.readFile(filePath);
 } catch (err) {
   console.error(`  ✗ Cannot read file: ${err.message}`);
   process.exit(1);
 }
-const fileBase64 = pdfBuffer.toString('base64');
+
+const sourceSizeMB  = (fileBuffer.length / 1024 / 1024).toFixed(2);
+const sourceHash    = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+const ext           = path.extname(filePath).toLowerCase();
+const parseMethod   = ext === '.pdf' ? 'pdf-parse' : ext === '.docx' ? 'mammoth' : 'unknown';
+const mimeType      = ext === '.pdf'  ? 'application/pdf'
+                    : ext === '.docx' ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+                    : null;
+
+console.log(`  ✓ ${sourceSizeMB} MB  |  SHA-256: ${sourceHash.slice(0, 16)}…`);
+console.log(`  ✓ Parse method: ${parseMethod}`);
 console.log();
 
-// ── 4. DB: look up league + parent rules ─────────────────────────────────────
+// ── 3. DB: look up league, check for duplicate hash ───────────────────────────
 
-console.log('► Step 3: Looking up league in database…');
-const db = new Client({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
-await db.connect();
+let db;
+let leagueId;
+let leagueName;
 
-const leagueRes = await db.query(`
-  SELECT l.id, l.name, l.parent_league_id,
-         p.id AS parent_id, p.name AS parent_name
-  FROM leagues l LEFT JOIN leagues p ON p.id = l.parent_league_id
-  WHERE l.slug = $1
-`, [leagueSlug]);
+if (!isDryRun) {
+  console.log(`${HR}\nStep 2 — Verify league and source hash\n${HR}`);
 
-if (!leagueRes.rows.length) {
-  console.error(`  ✗ League slug "${leagueSlug}" not found in DB.`);
-  const all = await db.query('SELECT slug, name FROM leagues ORDER BY name');
-  console.log('  Available leagues:');
-  all.rows.forEach(r => console.log(`    • ${r.slug}  (${r.name})`));
-  await db.end();
-  process.exit(1);
-}
+  db = new Pool({ connectionString: DATABASE_URL, ssl: { rejectUnauthorized: false } });
 
-const { id: leagueId, name: leagueName, parent_id: parentId, parent_name: parentName } = leagueRes.rows[0];
-console.log(`  ✓ Found: "${leagueName}"`);
-if (parentName) console.log(`  ✓ Parent: "${parentName}"`);
-
-let parentIndex = [];
-if (parentId) {
-  const pr = await db.query(
-    `SELECT id, rule_number, title FROM rules WHERE league_id=$1 AND (sport=$2 OR sport='baseball') ORDER BY rule_number`,
-    [parentId, sport],
+  // League lookup
+  const leagueRes = await db.query(
+    `SELECT id, name FROM leagues WHERE slug = $1`, [leagueSlug],
   );
-  parentIndex = pr.rows;
-  console.log(`  ✓ ${parentIndex.length} parent rules loaded for override detection`);
-}
-console.log();
-
-// ── 5. Send PDF to Claude ─────────────────────────────────────────────────────
-
-const EXTRACTION_PROMPT = `You are extracting the complete rulebook for "${leagueName}" (sport: ${sport}).
-${parentName ? `This league is based on "${parentName}" rules and may contain local overrides or additions.` : ''}
-
-Read this PDF carefully. For EVERY rule, regulation, and local modification in the document, extract:
-
-- rule_number: The official identifier (e.g. "1.01", "Rule 5", "Section 3", "MUST-SLIDE"). Use the document's own numbering. If a rule has no number, create a short descriptive slug.
-- title: 3–8 word descriptive title capturing the rule's topic.
-- body: Concise 40–100 word summary. Capture every key fact, number, distance, count, and exception. Do NOT copy verbatim — write a clear, searchable summary an umpire could look up.
-- is_override: true ONLY if this rule explicitly modifies a rule from the parent rulebook (${parentName ?? 'MLB OBR'}). Local additions are NOT overrides.
-- override_parent_rule_number: Parent rule number being modified, or null.
-- confidence: "high" if rule boundary is clear, "medium" if uncertain, "low" if guessing.
-
-IMPORTANT:
-- Extract EVERY rule — do not skip minor ones.
-- Split lettered sub-sections (a), (b), (c) into separate objects when each covers a distinct independently-searchable topic.
-- Skip table of contents, page headers/footers, and administrative preamble.
-
-Return your entire response as a single JSON object:
-{"rules": [...], "document_quality": "good|partial|poor", "notes": "..."}`;
-
-console.log('► Step 4: Sending PDF to Claude Sonnet 4.6…');
-console.log('  (This takes 1–3 minutes. Progress will appear below.)\n');
-
-const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
-let dots = 0;
-const ticker = setInterval(() => {
-  process.stdout.write(dots % 30 === 0 ? '\n  ' : '.');
-  dots++;
-}, 2000);
-
-let rawResponse;
-try {
-  const stream = anthropic.messages.stream({
-    model:      'claude-sonnet-4-6',
-    max_tokens: 64000,
-    messages: [{
-      role:    'user',
-      content: [
-        { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: fileBase64 } },
-        { type: 'text',     text: EXTRACTION_PROMPT },
-      ],
-    }],
-  });
-
-  const response = await stream.finalMessage();
-  rawResponse    = response.content[0]?.text ?? '';
-} finally {
-  clearInterval(ticker);
-  process.stdout.write('\n');
-}
-
-if (!rawResponse) {
-  console.error('\n  ✗ Claude returned an empty response.');
-  await db.end();
-  process.exit(1);
-}
-
-console.log(`\n  ✓ Claude responded (${rawResponse.length.toLocaleString()} chars)`);
-
-// ── 6. Parse JSON ─────────────────────────────────────────────────────────────
-
-console.log('\n► Step 5: Parsing extracted rules…');
-
-const start    = rawResponse.indexOf('{');
-const end      = rawResponse.lastIndexOf('}');
-if (start === -1 || end === -1 || end <= start) {
-  console.error('  ✗ No JSON object found in Claude response.');
-  console.error('  Raw response preview:', rawResponse.slice(0, 500));
-  await db.end();
-  process.exit(1);
-}
-
-let extracted;
-try {
-  extracted = JSON.parse(rawResponse.slice(start, end + 1));
-} catch (err) {
-  console.error('  ✗ JSON parse error:', err.message);
-  console.error('  Raw preview:', rawResponse.slice(start, start + 500));
-  await db.end();
-  process.exit(1);
-}
-
-const rawRules  = extracted.rules ?? [];
-const validRules = rawRules.filter(r => r.rule_number && r.title && r.body);
-
-console.log(`  ✓ ${validRules.length} valid rules extracted (${rawRules.length - validRules.length} skipped as invalid)`);
-console.log(`  ✓ Document quality: ${extracted.document_quality ?? 'unknown'}`);
-if (extracted.notes) console.log(`  ✓ Notes: ${extracted.notes}`);
-
-if (validRules.length === 0) {
-  console.error('  ✗ No valid rules found. Aborting.');
-  await db.end();
-  process.exit(1);
-}
-
-// Preview first 5 rules
-console.log('\n  Preview (first 5 rules):');
-validRules.slice(0, 5).forEach(r =>
-  console.log(`    [${r.rule_number}] ${r.title}`)
-);
-console.log();
-
-// ── 7. Write to DB ────────────────────────────────────────────────────────────
-
-console.log('► Step 6: Writing rules to database…');
-
-const parentMap = Object.fromEntries(parentIndex.map(p => [p.rule_number, p.id]));
-
-if (doReplace) {
-  const del = await db.query(`DELETE FROM rules WHERE league_id=$1 RETURNING id`, [leagueId]);
-  console.log(`  ✓ Cleared ${del.rowCount} existing rules`);
-}
-
-const rulesForInsert = validRules.map(r => ({
-  rule_number:       String(r.rule_number).trim().slice(0, 100),
-  title:             String(r.title).trim().slice(0, 500),
-  body:              String(r.body).trim(),
-  overrides_rule_id: r.is_override && r.override_parent_rule_number
-    ? (parentMap[r.override_parent_rule_number] ?? null) : null,
-}));
-
-// Insert in a single transaction
-let inserted = 0;
-let skipped  = 0;
-await db.query('BEGIN');
-try {
-  for (const rule of rulesForInsert) {
-    const res = await db.query(`
-      INSERT INTO rules (league_id, rule_number, title, body, sport, overrides_rule_id)
-      VALUES ($1,$2,$3,$4,$5,$6)
-      ON CONFLICT (league_id, rule_number, sport) DO NOTHING
-      RETURNING id
-    `, [leagueId, rule.rule_number, rule.title, rule.body, sport, rule.overrides_rule_id]);
-    if (res.rowCount > 0) inserted++; else skipped++;
+  if (!leagueRes.rows.length) {
+    console.error(`  ✗ League slug "${leagueSlug}" not found.`);
+    const all = await db.query('SELECT slug, name FROM leagues ORDER BY name');
+    console.log('  Available leagues:');
+    all.rows.forEach(r => console.log(`    • ${r.slug}  (${r.name})`));
+    await db.end();
+    process.exit(1);
   }
-  await db.query('COMMIT');
-  console.log(`  ✓ Inserted: ${inserted}  Skipped (already exist): ${skipped}`);
+
+  ({ id: leagueId, name: leagueName } = leagueRes.rows[0]);
+  console.log(`  ✓ League: "${leagueName}" (${leagueId})`);
+
+  // Duplicate hash check
+  const dupRes = await db.query(
+    `SELECT d.id, v.status, v.created_at
+     FROM rule_documents d
+     JOIN rulebook_versions v ON v.id = d.version_id
+     WHERE d.league_id = $1 AND d.source_hash = $2`,
+    [leagueId, sourceHash],
+  );
+  if (dupRes.rows.length) {
+    const existing = dupRes.rows[0];
+    console.warn(
+      `  ⚠ WARNING: This file (SHA-256 ${sourceHash.slice(0, 16)}…) was already ingested\n` +
+      `    for this league (version status: ${existing.status}, created: ${existing.created_at?.toISOString().slice(0, 10)}).\n` +
+      `    Re-ingesting identical content is a no-op.  Aborting.\n` +
+      `    If you intended to re-run, use a modified file or contact an admin.`,
+    );
+    await db.end();
+    process.exit(1);
+  }
+  console.log('  ✓ No duplicate source hash found — safe to proceed');
+  console.log();
+}
+
+// ── 4. Parse source file ──────────────────────────────────────────────────────
+
+console.log(`${HR}\nStep 3 — Deterministic source parsing\n${HR}`);
+
+let rawSpans;
+const parseStart = Date.now();
+try {
+  rawSpans = await parseSource({ filePath, buffer: fileBuffer });
 } catch (err) {
-  await db.query('ROLLBACK');
-  console.error('  ✗ DB insert failed:', err.message);
-  await db.end();
+  console.error(`  ✗ parseSource failed: ${err.message}`);
+  if (db) await db.end();
   process.exit(1);
 }
 
-// ── 8. Embed rules ────────────────────────────────────────────────────────────
+const parseMs    = Date.now() - parseStart;
+const totalChars = rawSpans.reduce((n, s) => n + s.text.length, 0);
+const warnSpans  = rawSpans.filter(s => s.parse_warnings?.length > 0).length;
 
-console.log('\n► Step 7: Generating embeddings…');
+console.log(`  ✓ ${rawSpans.length} raw spans  |  ${totalChars.toLocaleString()} chars  |  ${parseMs}ms`);
+if (warnSpans > 0) console.warn(`  ⚠ ${warnSpans} span(s) have parse_warnings — review before activating`);
+console.log();
 
-const EMBED_MODEL  = 'text-embedding-3-small';
-const EMBED_BATCH  = 50;
+// ── 5. Create draft version row (skip in dry-run) ─────────────────────────────
 
-const unembedded = await db.query(`
-  SELECT r.id, r.rule_number, r.title, r.body
-  FROM  rules r
-  LEFT  JOIN rule_embeddings re ON re.rule_id=r.id AND re.model=$1
-  WHERE r.league_id=$2 AND re.id IS NULL
-`, [EMBED_MODEL, leagueId]);
+let versionId  = null;
+let documentId = null;
 
-const toEmbed = unembedded.rows;
-console.log(`  ✓ ${toEmbed.length} rules need embeddings`);
+if (!isDryRun) {
+  console.log(`${HR}\nStep 4 — Allocate draft version in DB\n${HR}`);
+  try {
+    ({ versionId, documentId } = await createDraftVersion({
+      dbClient:     db,
+      leagueId,
+      season,
+      sourceHash,
+      documentMeta: {
+        source_file:  path.basename(filePath),
+        mime_type:    mimeType,
+        parse_method: parseMethod,
+      },
+    }));
+    console.log(`  ✓ rulebook_versions.id = ${versionId}`);
+    console.log(`  ✓ rule_documents.id    = ${documentId}`);
+    console.log();
+  } catch (err) {
+    console.error(`  ✗ createDraftVersion failed: ${err.message}`);
+    await db.end();
+    process.exit(1);
+  }
+}
 
-if (toEmbed.length > 0) {
-  const batches = [];
-  for (let i = 0; i < toEmbed.length; i += EMBED_BATCH) batches.push(toEmbed.slice(i, i + EMBED_BATCH));
+// ── 6. AI boundary identification + source span DB inserts ────────────────────
 
-  for (let bIdx = 0; bIdx < batches.length; bIdx++) {
-    const batch = batches[bIdx];
-    process.stdout.write(`  Embedding batch ${bIdx + 1}/${batches.length}… `);
+console.log(`${HR}\nStep 5 — AI boundary identification (verbatim guard active)\n${HR}`);
+console.log(`  Processing ${rawSpans.length} raw span(s) through ${process.env.ANTHROPIC_FAST_MODEL ?? 'claude-haiku-4-5'}…`);
 
-    const embedRes = await fetch('https://api.openai.com/v1/embeddings', {
-      method:  'POST',
-      headers: { 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        model: EMBED_MODEL,
-        input: batch.map(r => `Rule ${r.rule_number}: ${r.title}\n\n${r.body}`.trim()),
-      }),
+const anthropic    = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+const subSpans     = [];
+let   boundaryFail = false;
+
+for (let i = 0; i < rawSpans.length; i++) {
+  const span = rawSpans[i];
+  process.stdout.write(`  Span ${String(i + 1).padStart(3)} / ${rawSpans.length}  (${span.text.length} chars)… `);
+
+  let boundaries;
+  try {
+    boundaries = await identifyBoundaries({ span, anthropicClient: anthropic });
+  } catch (err) {
+    process.stdout.write(`FAILED\n`);
+    console.error(`    ✗ identifyBoundaries error: ${err.message.slice(0, 200)}`);
+    boundaryFail = true;
+    // Treat the entire span as a single boundary so the pipeline can continue.
+    boundaries = [{ charStart: span.charStart ?? 0, charEnd: span.charEnd ?? span.text.length, text: span.text }];
+  }
+
+  for (const b of boundaries) {
+    subSpans.push({
+      seq:           subSpans.length,
+      text:          b.text,
+      charStart:     b.charStart,
+      charEnd:       b.charEnd,
+      page:          span.page ?? null,
+      heading:       span.heading ?? null,
+      parse_warnings: span.parse_warnings ?? [],
     });
+  }
+  process.stdout.write(`${boundaries.length} boundary(s)\n`);
+}
 
-    if (!embedRes.ok) {
-      console.error(`\n  ✗ Embedding API error: ${embedRes.status}`);
-      continue;
-    }
+console.log(`\n  ✓ ${subSpans.length} sub-spans from boundary identification`);
+if (boundaryFail) console.warn('  ⚠ Some boundary calls failed — whole-span fallbacks were used');
+console.log();
 
-    const { data: embedData } = await embedRes.json();
-    await db.query('BEGIN');
-    for (let i = 0; i < batch.length; i++) {
-      await db.query(
-        `INSERT INTO rule_embeddings (rule_id,model,embedding) VALUES ($1,$2,$3::vector) ON CONFLICT DO NOTHING`,
-        [batch[i].id, EMBED_MODEL, `[${embedData[i].embedding.join(',')}]`],
-      );
-    }
-    await db.query('COMMIT');
-    console.log(`done (${batch.length} rules)`);
+// Insert sub-spans into rule_sources (skip in dry-run)
+let spanIds = subSpans.map((_, i) => `dry-run-span-${i}`); // placeholder for dry-run
+
+if (!isDryRun) {
+  console.log(`${HR}\nStep 6 — Persist source spans to rule_sources\n${HR}`);
+
+  let spanResult;
+  try {
+    spanResult = await createSourceSpans({
+      dbClient:   db,
+      documentId,
+      versionId,  // also passed for potential legacy compat
+      spans:      subSpans,
+    });
+    spanIds = spanResult.ids;
+    console.log(`  ✓ ${spanResult.inserted} rule_sources rows inserted`);
+    console.log();
+  } catch (err) {
+    await cleanupDraftVersion(db, versionId);
+    console.error(`  ✗ createSourceSpans failed: ${err.message}`);
+    await db.end();
+    process.exit(1);
   }
 }
 
-// ── 9. Done ───────────────────────────────────────────────────────────────────
+// ── 7. AI rule atom extraction ────────────────────────────────────────────────
 
-await db.end();
+console.log(`${HR}\nStep 7 — AI rule atom extraction (verbatim guard active)\n${HR}`);
 
-console.log('\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-console.log(`✅  DONE — ${inserted} rules live in "${leagueName}"`);
-console.log(`   Sport: ${sport}  |  Embeddings: ${toEmbed.length}`);
-console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
-console.log(`Test it: https://heyblu.ai/rulebook\n`);
+let atoms;
+try {
+  atoms = await extractRuleAtoms({
+    spans:           subSpans,
+    spanIds,
+    anthropicClient: anthropic,
+    // DB writes only when not dry-run
+    dbClient: isDryRun ? undefined : db,
+    leagueId: isDryRun ? undefined : leagueId,
+    sport,
+  });
+  console.log(`  ✓ ${atoms.length} rule atom(s) extracted and verified`);
+  console.log();
+} catch (err) {
+  if (!isDryRun) await cleanupDraftVersion(db, versionId);
+  console.error(`  ✗ extractRuleAtoms failed: ${err.message.slice(0, 400)}`);
+  if (db) await db.end();
+  process.exit(1);
+}
+
+// ── 8. Coverage verification ──────────────────────────────────────────────────
+
+console.log(`${HR}\nStep 8 — Coverage verification\n${HR}`);
+
+const coverage = await verifyCoverage({
+  spans:   subSpans,
+  spanIds,
+  atoms,
+});
+
+const mismatchCount = coverage.issues.filter(i => i.code === 'QUOTE_MISMATCH').length;
+const uncovCount    = coverage.issues.filter(i => i.code === 'UNCOVERED_SPAN').length;
+const lowDensCount  = coverage.issues.filter(i => i.code === 'LOW_DENSITY').length;
+
+console.log(`  Coverage : ${coverage.isComplete ? '✓ complete' : `⚠ INCOMPLETE — missing pages: ${coverage.missingPages.join(', ')}`}`);
+console.log(`  Pages    : ${coverage.coveredPages} / ${coverage.totalPages} covered`);
+console.log(`  Spans    : ${coverage.coveredSpans} / ${coverage.spanCount} covered by atoms`);
+console.log(`  Issues   : QUOTE_MISMATCH=${mismatchCount}  UNCOVERED_SPAN=${uncovCount}  LOW_DENSITY=${lowDensCount}`);
+
+if (!coverage.ok && !isDryRun) {
+  console.warn('\n  ⚠ Coverage check failed — draft version created but NOT recommended for activation.');
+  console.warn('  Review the issues above, fix the source document, and re-ingest.');
+}
+console.log();
+
+// ── 9. Summary ────────────────────────────────────────────────────────────────
+
+console.log(HR);
+console.log(isDryRun ? '  DRY RUN COMPLETE — no DB writes performed' : '  INGEST COMPLETE');
+console.log(HR);
+console.log(`  File           : ${path.basename(filePath)}`);
+console.log(`  League         : ${leagueName ?? leagueSlug}`);
+console.log(`  Season         : ${season}  |  Sport: ${sport}`);
+console.log(`  Source hash    : ${sourceHash.slice(0, 16)}…`);
+console.log(`  Raw spans      : ${rawSpans.length}`);
+console.log(`  Sub-spans (DB) : ${subSpans.length}`);
+console.log(`  Rule atoms     : ${atoms.length}`);
+console.log(`  Coverage ok    : ${coverage.ok}`);
+
+if (!isDryRun) {
+  console.log(`\n  Version ID     : ${versionId}`);
+  console.log(`  Document ID    : ${documentId}`);
+  console.log(`\n  Status: DRAFT — run the activate script to make this version live.`);
+}
+
+if (atoms.length > 0) {
+  console.log('\n  Preview (first 5 atoms):');
+  atoms.slice(0, 5).forEach(a =>
+    console.log(`    [${a.rule_number || 'N/A'}] ${a.title}  (${a.body.length} chars)`),
+  );
+}
+
+console.log(`\n${HR}\n`);
+
+if (db) await db.end();
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+/**
+ * Delete a draft version row.  CASCADE removes rule_documents and rule_sources.
+ * Rules rows (from extractRuleAtoms) are NOT cascade-deleted — log a warning.
+ *
+ * @param {pg.Pool} dbClient
+ * @param {string}  vid
+ */
+async function cleanupDraftVersion(dbClient, vid) {
+  if (!vid) return;
+  try {
+    const res = await dbClient.query(
+      `DELETE FROM rulebook_versions WHERE id = $1 AND status = 'draft' RETURNING id`,
+      [vid],
+    );
+    if (res.rowCount > 0) {
+      console.log(`  ✓ Cleaned up draft version ${vid} (CASCADE removed rule_documents + rule_sources)`);
+      console.warn('  ⚠ Any rules rows created by extractRuleAtoms may remain — review rules table if needed');
+    }
+  } catch (cleanErr) {
+    console.error(`  ✗ Cleanup failed: ${cleanErr.message}`);
+  }
+}

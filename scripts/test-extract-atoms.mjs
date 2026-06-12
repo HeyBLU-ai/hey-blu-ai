@@ -241,22 +241,31 @@ console.log('\nTest 9: verbatim guard — extra word inserted throws');
   check('9: error mentions VERBATIM GUARD', err?.message?.includes('VERBATIM GUARD'));
 }
 
-// ── Test 10: verbatim guard — capitalisation change ───────────────────────────
-console.log('\nTest 10: verbatim guard — capitalisation change throws');
+// ── Test 10: normalization — capitalisation-only change → guard passes ────────
+// findNormalizedSubstring normalises both sides to lowercase, so a capitalisation-
+// only difference is excused.  The atom's stored body stays as-is (the AI's
+// version), because extractRuleAtoms stores atom.body directly rather than
+// slicing from the span.  This is intentional: the atom body is the AI's
+// structured extraction; the verbatim guard only checks containment.
+console.log('\nTest 10: normalization — capitalisation-only change passes verbatim guard');
 {
   const payload = {
     atoms: [{
       rule_number: '505',
       title:       'Must Slide Rule',
-      body:        BODY_A_CAPITALIZED,   // "Runner" vs "runner"
+      body:        BODY_A_CAPITALIZED,   // "Runner" vs "runner" — only casing differs
       source_ids:  [ID_A],
     }],
   };
   const client = makeMockClient(payload);
-  const err    = await expectThrows('10: capitalisation caught', () =>
-    extractRuleAtoms({ spans: [SPAN_A], spanIds: [ID_A], anthropicClient: client }),
-  );
-  check('10: error mentions VERBATIM GUARD', err?.message?.includes('VERBATIM GUARD'));
+  const atoms  = await extractRuleAtoms({
+    spans:           [SPAN_A],
+    spanIds:         [ID_A],
+    anthropicClient: client,
+  });
+  check('10a: capitalisation variant accepted — returns 1 atom', atoms.length === 1,
+        `got ${atoms.length}`);
+  check('10b: body is stored as returned by AI', atoms[0].body === BODY_A_CAPITALIZED);
 }
 
 // ── Test 11: verbatim guard — unknown source_id ───────────────────────────────
@@ -638,6 +647,166 @@ console.log('\nTest 27: dbClient present but no leagueId → DB skipped');
   check('27a: returns 2 atoms',         atoms.length === 2);
   check('27b: no DB calls made',        db.calls.length === 0, `got ${db.calls.length}`);
   check('27c: atoms[0] has no ruleId',  atoms[0].ruleId === undefined);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Normalisation tests (Tests 28–30)
+// Verify findNormalizedSubstring in verifyAtomVerbatim excuses formatting
+// artefacts while still catching semantic changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Test 28: Whitespace variant in atom body → guard passes ───────────────────
+// Source text has a double space after a period; AI normalises to single space.
+console.log('\nTest 28: normalization — whitespace variant in atom body → guard passes');
+{
+  const SRC_TEXT_WS  = 'Rule 505.  Must Slide Rule.  A runner who does not slide is out.';
+  const SPAN_WS      = { seq: 0, text: SRC_TEXT_WS, page: 1, charStart: 0, charEnd: SRC_TEXT_WS.length };
+  const ID_WS        = 'ws000000-0000-0000-0000-000000000001';
+  const AI_BODY_WS   = 'Rule 505. Must Slide Rule. A runner who does not slide is out.';  // single spaces
+
+  const payload = {
+    atoms: [{
+      rule_number: '505',
+      title:       'Must Slide Rule',
+      body:        AI_BODY_WS,
+      source_ids:  [ID_WS],
+    }],
+  };
+  const client = makeMockClient(payload);
+  const atoms  = await extractRuleAtoms({
+    spans:           [SPAN_WS],
+    spanIds:         [ID_WS],
+    anthropicClient: client,
+  });
+  check('28a: whitespace variant accepted', atoms.length === 1, `got ${atoms.length}`);
+  check('28b: body stored as AI returned', atoms[0].body === AI_BODY_WS);
+}
+
+// ── Test 29: Smart quotes in atom body → guard passes ─────────────────────────
+// Source text uses straight apostrophes; AI returns typographic RIGHT SINGLE
+// QUOTATION MARKs (\u2019).
+console.log('\nTest 29: normalization — smart quotes in atom body → guard passes');
+{
+  const SRC_TEXT_Q = "The catcher's interference rule applies when the batter's swing is impeded.";
+  const SPAN_Q     = { seq: 0, text: SRC_TEXT_Q, page: 1, charStart: 0, charEnd: SRC_TEXT_Q.length };
+  const ID_Q       = 'qq000000-0000-0000-0000-000000000002';
+  // AI returns typographic apostrophes (\u2019)
+  const AI_BODY_Q  = 'The catcher\u2019s interference rule applies when the batter\u2019s swing is impeded.';
+
+  const payload = {
+    atoms: [{
+      rule_number: '',
+      title:       "Catcher's Interference",
+      body:        AI_BODY_Q,
+      source_ids:  [ID_Q],
+    }],
+  };
+  const client = makeMockClient(payload);
+  const atoms  = await extractRuleAtoms({
+    spans:           [SPAN_Q],
+    spanIds:         [ID_Q],
+    anthropicClient: client,
+  });
+  check('29a: smart-quote variant accepted', atoms.length === 1, `got ${atoms.length}`);
+  check('29b: body stored with smart quotes as returned', atoms[0].body === AI_BODY_Q);
+}
+
+// ── Test 30: Hallucinated word still rejected after normalization ──────────────
+// Normalisation must not excuse words that were added or changed.
+console.log('\nTest 30: normalization — hallucinated word still rejected');
+{
+  const payload = {
+    atoms: [{
+      rule_number: '505',
+      title:       'Must Slide Rule',
+      body:        BODY_A_PARAPHRASE,   // AI rewrote the sentence with different words
+      source_ids:  [ID_A],
+    }],
+  };
+  const client = makeMockClient(payload);
+  const err    = await expectThrows('30: hallucination still caught after normalization', () =>
+    extractRuleAtoms({ spans: [SPAN_A], spanIds: [ID_A], anthropicClient: client }),
+  );
+  check('30: error mentions VERBATIM GUARD', err?.message?.includes('VERBATIM GUARD'));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Cross-span verbatim guard tests (Tests 31–32)
+// Verify that verifyAtomVerbatim handles atoms whose bodies straddle the
+// boundary between two consecutive source spans (e.g. a page break in a PDF).
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Test 31: Body spans two adjacent source spans → guard passes ───────────────
+// The atom body is the verbatim concatenation of the end of SPAN_A and the
+// start of SPAN_B, joined by a newline.  Neither span alone contains the full
+// body, so the guard must fall back to the cross-span concatenation check.
+console.log('\nTest 31: cross-span — body stitched across two spans → guard passes');
+{
+  // Build two spans that together form one complete rule sentence.
+  const PART_1 = 'Rule 505. Must Slide Rule. A runner approaching home plate';
+  const PART_2 = 'must slide or divert course when the catcher has the ball.';
+  const CROSS_SPAN_A = { seq: 0, text: PART_1, page: 14, charStart: 0, charEnd: PART_1.length };
+  const CROSS_SPAN_B = { seq: 1, text: PART_2, page: 15, charStart: PART_1.length + 1, charEnd: PART_1.length + 1 + PART_2.length };
+  const ID_CROSS_A   = 'cross-a00-0000-0000-0000-000000000001';
+  const ID_CROSS_B   = 'cross-b00-0000-0000-0000-000000000002';
+
+  // The atom body is the exact join across the page break.
+  const CROSS_BODY = `${PART_1}\n${PART_2}`;
+
+  const payload = {
+    atoms: [{
+      rule_number: '505',
+      title:       'Must Slide Rule',
+      body:        CROSS_BODY,
+      source_ids:  [ID_CROSS_A, ID_CROSS_B],
+    }],
+  };
+  const client = makeMockClient(payload);
+  const atoms  = await extractRuleAtoms({
+    spans:           [CROSS_SPAN_A, CROSS_SPAN_B],
+    spanIds:         [ID_CROSS_A, ID_CROSS_B],
+    anthropicClient: client,
+  });
+  check('31a: cross-span body accepted — returns 1 atom', atoms.length === 1,
+        `got ${atoms.length}`);
+  check('31b: body preserved as stitched text',           atoms[0].body === CROSS_BODY);
+  check('31c: both span ids in source_ids',               atoms[0].source_ids.length === 2);
+  check('31d: sourceSpanId is first span id',             atoms[0].sourceSpanId === ID_CROSS_A);
+}
+
+// ── Test 32: Hallucinated word in cross-span body → guard still rejects ────────
+// Even with two source spans, an atom whose body contains a word not present in
+// either span or their concatenation must be rejected.
+console.log('\nTest 32: cross-span — hallucinated word in stitched body → guard rejects');
+{
+  const PART_1 = 'Rule 506. Obstruction. A fielder without possession';
+  const PART_2 = 'who impedes a runner shall be called for obstruction.';
+  const CROSS_SPAN_A = { seq: 0, text: PART_1, page: 15, charStart: 0, charEnd: PART_1.length };
+  const CROSS_SPAN_B = { seq: 1, text: PART_2, page: 16, charStart: PART_1.length + 1, charEnd: PART_1.length + 1 + PART_2.length };
+  const ID_CROSS_A   = 'cross-c00-0000-0000-0000-000000000003';
+  const ID_CROSS_B   = 'cross-d00-0000-0000-0000-000000000004';
+
+  // AI stitches correctly but inserts "deliberately" — a hallucinated word.
+  const HALLUCINATED_BODY = `${PART_1}\nwho deliberately impedes a runner shall be called for obstruction.`;
+
+  const payload = {
+    atoms: [{
+      rule_number: '506',
+      title:       'Obstruction',
+      body:        HALLUCINATED_BODY,
+      source_ids:  [ID_CROSS_A, ID_CROSS_B],
+    }],
+  };
+  const client = makeMockClient(payload);
+  const err    = await expectThrows(
+    '32: hallucinated word in cross-span body still caught',
+    () => extractRuleAtoms({
+      spans:           [CROSS_SPAN_A, CROSS_SPAN_B],
+      spanIds:         [ID_CROSS_A, ID_CROSS_B],
+      anthropicClient: client,
+    }),
+  );
+  check('32: error mentions VERBATIM GUARD', err?.message?.includes('VERBATIM GUARD'));
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────

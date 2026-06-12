@@ -12,7 +12,7 @@
  *   Test 1  — Happy path: AI returns one verbatim rule → one boundary returned.
  *   Test 2  — Happy path: AI returns two verbatim rules → two boundaries returned.
  *   Test 3  — Verbatim guard: AI paraphrases a word → throws with "VERBATIM GUARD".
- *   Test 4  — Verbatim guard: AI changes capitalization → throws.
+ *   Test 4  — Normalisation: AI changes capitalization only → guard passes, output uses original case.
  *   Test 5  — Verbatim guard: AI adds an extra word → throws.
  *   Test 6  — AI returns empty rules array → falls back to whole-span boundary.
  *   Test 7  — AI returns invalid JSON → throws with parse error message.
@@ -119,12 +119,21 @@ console.log('\nTest 3: verbatim guard — AI paraphrases a word');
   await expectThrows('3: paraphrase caught', () => identifyBoundaries({ span: baseSpan(PARA1), anthropicClient: client }), 'verbatim guard');
 }
 
-// ── Test 4: Capitalization change → guard throws ─────────────────────────────
-console.log('\nTest 4: verbatim guard — AI changes capitalization');
+// ── Test 4: Capitalization-only change → guard passes ────────────────────────
+// findNormalizedSubstring normalises both sides to lowercase before comparing,
+// so a capitalisation-only difference is excused.  The output text must still
+// be sliced from the ORIGINAL source (preserving the source's own casing).
+console.log('\nTest 4: normalization — AI changes capitalization only → guard passes');
 {
-  const hallucination = PARA1.replace('must slide', 'Must Slide');
-  const client = mockClient(JSON.stringify({ rules: [{ verbatim: hallucination }] }));
-  await expectThrows('4: capitalization caught', () => identifyBoundaries({ span: baseSpan(PARA1), anthropicClient: client }), 'verbatim guard');
+  const aiVariant = PARA1.replace('must slide', 'Must Slide');  // only casing differs
+  const client    = mockClient(JSON.stringify({ rules: [{ verbatim: aiVariant }] }));
+  const result    = await identifyBoundaries({ span: baseSpan(PARA1), anthropicClient: client });
+  check('4a: capitalization variant accepted — returns 1 boundary', result.length === 1,
+        `got ${result.length}`);
+  check('4b: output text uses ORIGINAL source casing, not AI casing', result[0].text === PARA1,
+        `got "${result[0].text?.slice(0, 80)}"`);
+  check('4c: charEnd matches original source length', result[0].charEnd === PARA1.length,
+        `got ${result[0].charEnd}`);
 }
 
 // ── Test 5: Extra word added → guard throws ───────────────────────────────────
@@ -349,6 +358,63 @@ console.log('\nTest 22: legacy path — versionId only, no documentId → stub {
   check('22a: inserted = 0',             res.inserted === 0);
   check('22b: no DB queries made',       db.calls.length === 0, `got ${db.calls.length} calls`);
   check('22c: no ids field',             res.ids === undefined);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Normalisation tests (Tests 23–25)
+// Verify that findNormalizedSubstring in the verbatim guard correctly accepts
+// harmless formatting artefacts while still rejecting semantic changes.
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Test 23: Whitespace variant → guard passes ────────────────────────────────
+// AI collapses a double space in source text to a single space.  Both sides
+// normalise to the same single-space form, so the guard should pass.
+console.log('\nTest 23: normalization — extra whitespace in AI quote → guard passes');
+{
+  // Build a source that has a double space (e.g. sentence after period).
+  const sourceWithDoubleSpace = 'Rule 505.  The runner must slide.';
+  const aiWithSingleSpace     = 'Rule 505. The runner must slide.';  // one space
+  const client = mockClient(JSON.stringify({ rules: [{ verbatim: aiWithSingleSpace }] }));
+  const result = await identifyBoundaries({
+    span:            baseSpan(sourceWithDoubleSpace),
+    anthropicClient: client,
+  });
+  check('23a: whitespace variant accepted', result.length === 1, `got ${result.length}`);
+  // Output must come from original source (with the double space).
+  check('23b: output is original source text', result[0].text === sourceWithDoubleSpace,
+        `got "${result[0].text}"`);
+}
+
+// ── Test 24: Smart quotes in AI quote → guard passes ─────────────────────────
+// The source uses straight quotes/apostrophes; the AI returns typographic ones.
+console.log('\nTest 24: normalization — smart quotes in AI quote → guard passes');
+{
+  const sourceText = "A catcher's interference rule applies when the batter's swing is impeded.";
+  // AI returns with typographic RIGHT SINGLE QUOTATION MARKs (\u2019)
+  const aiSmartQuotes = 'A catcher\u2019s interference rule applies when the batter\u2019s swing is impeded.';
+  const client = mockClient(JSON.stringify({ rules: [{ verbatim: aiSmartQuotes }] }));
+  const result = await identifyBoundaries({
+    span:            baseSpan(sourceText),
+    anthropicClient: client,
+  });
+  check('24a: smart-quote variant accepted', result.length === 1, `got ${result.length}`);
+  // Output must be the original straight-quote version.
+  check('24b: output uses original straight quotes', result[0].text === sourceText,
+        `got "${result[0].text}"`);
+}
+
+// ── Test 25: Hallucinated word still rejected ─────────────────────────────────
+// Normalisation must NOT excuse semantically different text.  Adding a word
+// that does not exist anywhere in the source should still throw.
+console.log('\nTest 25: normalization — hallucinated word still rejected');
+{
+  const hallucination = PARA1.replace('must slide', 'must always slide');  // extra word
+  const client = mockClient(JSON.stringify({ rules: [{ verbatim: hallucination }] }));
+  await expectThrows(
+    '25: added word is still caught by guard',
+    () => identifyBoundaries({ span: baseSpan(PARA1), anthropicClient: client }),
+    'verbatim guard',
+  );
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────
