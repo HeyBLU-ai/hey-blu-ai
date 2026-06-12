@@ -32,6 +32,14 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Content Security Policy — restricts script/style/connect origins -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' cdn.jsdelivr.net fonts.googleapis.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.gstatic.com; font-src fonts.gstatic.com; connect-src 'self' http://localhost:* https://heyblu.ai https://www.heyblu.ai; img-src 'self' data:;">
+
+  <!-- DOMPurify — sanitizes AI-generated HTML before DOM insertion -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js"></script>
+  <!-- marked — renders Markdown in AI answers (after DOMPurify sanitization) -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
     /* Base styles from index.html (modern design) */
@@ -1188,7 +1196,9 @@
       
       const speechButton = turn.ai ? `<button class="icon-btn speech-btn" data-index="${conversation.length - 1}">🔈 Listen</button>` : '';
       if (turn.ai) {
-        aiContentHtml = marked.parse(formatAnswerText(turn.ai));
+        // DOMPurify.sanitize strips any injected scripts/event-handlers from
+        // AI-generated content before it is written to the DOM.
+        aiContentHtml = DOMPurify.sanitize(marked.parse(formatAnswerText(turn.ai)));
       } else {
         aiContentHtml = `<div class="spinner"></div> Checking the rulebook...`;
       }

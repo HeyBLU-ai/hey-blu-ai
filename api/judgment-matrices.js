@@ -475,8 +475,28 @@ export function buildRulingContext(matrix, answers = {}) {
  * This runs BEFORE the LLM classifier call, eliminating it for the majority
  * of questions that are clearly factual (distances, pitch counts, equipment specs).
  */
+/**
+ * Prefixes that indicate a definitional / explanatory question.
+ * These always ask "what is the rule" — not "how should I rule on this play".
+ * They must be answered factually from the rulebook (RAG), never routed to
+ * an interview matrix, even if the question contains a matrix trigger keyword
+ * (e.g. "what is the infield fly rule?" contains "infield fly rule" but is
+ * not a judgment-call play).
+ */
+const DEFINITIONAL_PREFIXES = [
+  'what is ', "what's ", 'what are ',
+  'define ', 'explain ', 'describe ',
+  'how does ', 'how do ', 'how is ',
+  'tell me about ',
+  'what does ', 'what do ',
+];
+
 export function prescreenForMatrix(question) {
-  const q = question.toLowerCase();
+  const q = question.toLowerCase().trim();
+
+  // Definitional questions are always factual — skip trigger matching entirely.
+  if (DEFINITIONAL_PREFIXES.some(p => q.startsWith(p))) return null;
+
   for (const matrix of JUDGMENT_MATRICES) {
     if (matrix.triggers.some(trigger => q.includes(trigger.toLowerCase()))) {
       return matrix;

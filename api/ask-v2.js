@@ -364,15 +364,128 @@ QUESTION: ${sanitizedQuestion}
 
 Instructions:
 - Answer ONLY from the source excerpts above. Do NOT cite, invent, or infer rules that do not appear in the excerpts.
+- CRITICAL — use the rulebook's exact language when stating factual claims. Quote or reproduce the relevant portion of the excerpt text as closely as possible. Do NOT restate rules in your own words, summarise them loosely, or add interpretations not found in the excerpts.
+- When a rule text is short enough, quote it directly. When it is long, select the precise sentences that answer the question and reproduce them verbatim.
 - Cite the rule number(s) exactly as labelled in the excerpts (e.g. "Rule 505").
-- Give a clear, plain-English ruling an umpire can act on immediately.
+- Give a clear ruling an umpire can act on immediately, but anchor every factual claim to the quoted rulebook language.
 - If no excerpt covers the question, say exactly: "I could not find a specific rule about this in the loaded rulebook."
 
 Answer:`;
 }
 
+// ── Verified Answer Cache ─────────────────────────────────────────────────────
+//
+// Cache layer for answers that have already been verified by the verifier LLM.
+// Only answers with verifier_status = 'approved' are ever written here.
+// The cache is scoped by (league_slug, rulebook_version_id, normalized_question),
+// so activating a new rulebook version automatically invalidates old entries.
+
+/**
+ * Normalize a question for use as a cache key.
+ * Lowercases, strips basic punctuation, collapses whitespace.
+ * "Must slide?" and "must slide" → "must slide"
+ * Exported for testing.
+ *
+ * @param {string} q
+ * @returns {string}
+ */
+export function normalizeQuestion(q) {
+  if (!q || typeof q !== 'string') return '';
+  return q
+    .trim()
+    .toLowerCase()
+    .replace(/[?!.,;:'"()\[\]{}/\\-]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/**
+ * Look up a verified answer in the cache.
+ * Returns the DB row on a hit, null on a miss or error.
+ *
+ * @param {pg.PoolClient} dbClient
+ * @param {string} leagueSlug
+ * @param {string} activeVersionId
+ * @param {string} normalizedQ
+ * @returns {Promise<Object|null>}
+ */
+async function readAnswerCache(dbClient, leagueSlug, activeVersionId, normalizedQ) {
+  try {
+    const res = await dbClient.query(`
+      SELECT id, answer, cited_source_ids, cited_rule_numbers, verifier_status
+      FROM   verified_answer_cache
+      WHERE  league_slug         = $1
+        AND  rulebook_version_id = $2
+        AND  normalized_question = $3
+      LIMIT  1
+    `, [leagueSlug, activeVersionId, normalizedQ]);
+    return res.rows[0] ?? null;
+  } catch (err) {
+    console.warn('[ask-v2] Cache read failed (skipping):', err.message);
+    return null;
+  }
+}
+
+/**
+ * Non-blocking background update: increment hit_count and set last_used_at.
+ * Errors are swallowed — cache stats are best-effort.
+ *
+ * @param {pg.Pool} dbPool
+ * @param {string}  cacheId  UUID of the verified_answer_cache row.
+ */
+function bumpCacheHit(dbPool, cacheId) {
+  dbPool.query(
+    `UPDATE verified_answer_cache
+     SET hit_count = hit_count + 1, last_used_at = now()
+     WHERE id = $1`,
+    [cacheId],
+  ).catch(err => console.warn('[ask-v2] Cache bump failed:', err.message));
+}
+
+/**
+ * Non-blocking background write: UPSERT a verified answer into the cache.
+ * Only called after verifier_status === 'approved'.
+ * Errors are swallowed — cache writes are best-effort.
+ *
+ * @param {pg.Pool} dbPool
+ * @param {Object}  entry
+ */
+function writeAnswerCache(dbPool, {
+  leagueSlug, activeVersionId, normalizedQ,
+  answer, citedSourceIds, citedRuleNumbers, verifierStatus,
+}) {
+  const draftModel  = process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6';
+  const verifyModel = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
+
+  dbPool.query(`
+    INSERT INTO verified_answer_cache
+      (league_slug, rulebook_version_id, normalized_question,
+       answer, cited_source_ids, cited_rule_numbers,
+       verifier_status, draft_model, verify_model)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    ON CONFLICT (league_slug, rulebook_version_id, normalized_question)
+    DO UPDATE SET
+      answer             = EXCLUDED.answer,
+      cited_source_ids   = EXCLUDED.cited_source_ids,
+      cited_rule_numbers = EXCLUDED.cited_rule_numbers,
+      verifier_status    = EXCLUDED.verifier_status,
+      draft_model        = EXCLUDED.draft_model,
+      verify_model       = EXCLUDED.verify_model,
+      last_used_at       = now()
+  `, [
+    leagueSlug, activeVersionId, normalizedQ,
+    answer,
+    citedSourceIds,
+    citedRuleNumbers ?? [],
+    verifierStatus,
+    draftModel,
+    verifyModel,
+  ]).catch(err => console.warn('[ask-v2] Cache write failed:', err.message));
+}
+
 async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
   const { slug: leagueSlug } = resolveLeague(league);
+  const normalizedQ = normalizeQuestion(sanitizedQuestion);
 
   if (!pool)      throw new Error('DATABASE_URL not configured');
   if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
@@ -383,6 +496,32 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   try {
     // ── Step 1: Resolve active version (throws on league-not-found / not-active) ──
     ({ leagueName, activeVersionId } = await resolveActiveVersion(dbClient, leagueSlug));
+
+    // ── Step 1b: Cache read ───────────────────────────────────────────────────
+    //   Only checked for non-contextual questions (no extraContext from an interview).
+    //   Interview rulings depend on specific play details and must not be cached.
+    if (!extraContext) {
+      const hit = await readAnswerCache(dbClient, leagueSlug, activeVersionId, normalizedQ);
+      if (hit) {
+        bumpCacheHit(pool, hit.id);
+        return {
+          reply:                hit.answer,
+          cached:               true,
+          blocked:              false,
+          verifierAudit:        { status: hit.verifier_status, claims: [], unsupported_claims: [], confidence: 'high' },
+          usedFallback:         false,
+          fallbackLeague:       null,
+          leagueName,
+          league_slug:          leagueSlug,
+          active_version_id:    activeVersionId,
+          retrieved_source_ids: hit.cited_source_ids ?? [],
+          cited_rule_numbers:   hit.cited_rule_numbers ?? [],
+          _debug: process.env.RULEBOOK_DEBUG === '1'
+            ? { retrieval_method: 'cache', cache_id: hit.id }
+            : undefined,
+        };
+      }
+    }
 
     // ── Step 2: FTS retrieval — strictly version-scoped ──────────────────────
     ({ spans, method } = await fetchSourceSpans(dbClient, activeVersionId, sanitizedQuestion));
@@ -415,6 +554,29 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   const verifierAudit = await runVerifier({ anthropicClient: anthropic, draftAnswer: reply, spans });
   const blocked       = isVerifierBlocked(verifierAudit);
 
+  // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
+  //   Only write if the verifier explicitly approved the answer AND this is not
+  //   an interview ruling (interview rulings are play-context-specific).
+  if (!blocked && verifierAudit.status === 'approved' && !extraContext) {
+    const retrievedSourceIdsForCache = spans.map(s => s.source_id);
+    const citedRuleNumbersForCache   = [
+      ...new Set(
+        spans.flatMap(s =>
+          (s.rule_numbers ?? '').split(',').map(n => n.trim()).filter(Boolean),
+        ),
+      ),
+    ];
+    writeAnswerCache(pool, {
+      leagueSlug:       leagueSlug,
+      activeVersionId,
+      normalizedQ,
+      answer:           reply,
+      citedSourceIds:   retrievedSourceIdsForCache,
+      citedRuleNumbers: citedRuleNumbersForCache,
+      verifierStatus:   verifierAudit.status,
+    });
+  }
+
   // ── Response metadata ────────────────────────────────────────────────────
   const retrievedSourceIds = spans.map(s => s.source_id);
   const citedRuleNumbers   = [
@@ -440,6 +602,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
 
   return {
     reply,
+    cached:                false,
     blocked,
     verifierAudit,
     usedFallback:          false,
@@ -557,7 +720,7 @@ const handler = async (req, res) => {
           conversation,
           extraContext,
         });
-        const { reply, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
+        const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
                 league_slug, active_version_id, retrieved_source_ids,
                 cited_rule_numbers, _debug } = ragResult;
 
@@ -580,6 +743,7 @@ const handler = async (req, res) => {
           matrix_id:            matrix.id,
           answers_used:         matrixState.answers,
           reply,
+          cached,
           usedFallback,
           fallbackLeague,
           originalLeague:       leagueName,
@@ -665,7 +829,7 @@ const handler = async (req, res) => {
       league,
       conversation,
     });
-    const { reply, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
+    const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
             league_slug, active_version_id, retrieved_source_ids,
             cited_rule_numbers, _debug } = ragResult;
 
@@ -686,6 +850,7 @@ const handler = async (req, res) => {
     return res.status(200).json({
       state:                'answered',
       reply,
+      cached,
       usedFallback,
       fallbackLeague,
       originalLeague:       leagueName,

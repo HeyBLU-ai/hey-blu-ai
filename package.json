@@ -22,7 +22,11 @@
     "test:ingest:version": "node scripts/test-write-version.mjs",
     "activate:rulebook": "node scripts/activate-version.mjs",
     "smoke:ask-v2-rag": "node scripts/smoke-ask-v2-rag.mjs",
-    "test:verifier": "node scripts/test-verifier-gate.mjs"
+    "test:verifier": "node scripts/test-verifier-gate.mjs",
+    "test:cache": "node scripts/test-answer-cache.mjs",
+    "migrate:evals": "node scripts/migrate-v3-evals.mjs",
+    "seed:evals": "node scripts/seed-evals.mjs",
+    "test:evals": "node scripts/run-evals.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
