@@ -298,7 +298,7 @@ async function fetchSourceSpans(dbClient, activeVersionId, question) {
         rs.exact_text,
         rs.page_start,
         rs.section_path,
-        string_agg(DISTINCT r.rule_number ORDER BY r.rule_number) AS rule_numbers,
+        string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers,
         ts_rank(
           to_tsvector('english', rs.exact_text),
           plainto_tsquery('english', $1)

@@ -108,12 +108,15 @@ console.log('Test 1: fake league slug → 404 league_not_found');
 // A failing test means a 200 without active_version_id (old code still running)
 // or any non-404 error response.
 
-console.log('\nTest 2: BAMSBL "must-slide" → active_version_id present (or correct not-active error)');
+// Note: keep query terms sparse — plainto_tsquery AND-chains every non-stop-word
+// so overly long questions fail when even one term is absent from every span.
+// "must slide runner" hits 5+ spans in the active BAMSBL version.
+console.log('\nTest 2: BAMSBL "must slide" → active_version_id present (or correct not-active error)');
 let bamsblSourceIds = [];
 let bamsblActiveVersionId = null;
 {
   const r = await post({
-    question: 'can a runner skip a base on a must-slide play?',
+    question: 'when must a runner slide',
     league:   'bamsbl',
   });
 
