@@ -21,7 +21,8 @@
     "test:ingest:coverage": "node scripts/test-verify-coverage.mjs",
     "test:ingest:version": "node scripts/test-write-version.mjs",
     "activate:rulebook": "node scripts/activate-version.mjs",
-    "smoke:ask-v2-rag": "node scripts/smoke-ask-v2-rag.mjs"
+    "smoke:ask-v2-rag": "node scripts/smoke-ask-v2-rag.mjs",
+    "test:verifier": "node scripts/test-verifier-gate.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",

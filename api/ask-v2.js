@@ -155,6 +155,8 @@ class RulebookNotActiveError extends Error {
 
 // ── Anthropic client ─────────────────────────────────────────────────────────
 import Anthropic from '@anthropic-ai/sdk';
+import { runVerifier, isVerifierBlocked } from './verifier.js';
+
 const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
@@ -405,6 +407,14 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
 
   const reply = message.content[0]?.text?.trim() || 'No answer received.';
 
+  // ── Step 4: Verifier (blocking gate) ─────────────────────────────────────
+  //
+  // Every factual claim in the draft is checked against the retrieved source
+  // spans.  The verifier is fail-closed — any error or ambiguity blocks the
+  // draft from reaching the user.
+  const verifierAudit = await runVerifier({ anthropicClient: anthropic, draftAnswer: reply, spans });
+  const blocked       = isVerifierBlocked(verifierAudit);
+
   // ── Response metadata ────────────────────────────────────────────────────
   const retrievedSourceIds = spans.map(s => s.source_id);
   const citedRuleNumbers   = [
@@ -425,10 +435,13 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       rank:         s.rank,
       text_preview: (s.exact_text ?? '').slice(0, 120),
     })),
+    verifier_audit: verifierAudit,
   } : undefined;
 
   return {
     reply,
+    blocked,
+    verifierAudit,
     usedFallback:          false,
     fallbackLeague:        null,
     leagueName,
@@ -544,9 +557,21 @@ const handler = async (req, res) => {
           conversation,
           extraContext,
         });
-        const { reply, usedFallback, fallbackLeague, leagueName,
+        const { reply, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
                 league_slug, active_version_id, retrieved_source_ids,
                 cited_rule_numbers, _debug } = ragResult;
+
+        // ── Verifier gate (fail-closed) ───────────────────────────────────
+        if (blocked) {
+          return res.status(200).json({
+            state:            'unverifiable',
+            error:            'unverifiable',
+            message:          'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.',
+            league_slug,
+            active_version_id,
+            ...(process.env.RULEBOOK_DEBUG === '1' ? { verifier_audit: verifierAudit } : {}),
+          });
+        }
 
         logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
 
@@ -563,6 +588,7 @@ const handler = async (req, res) => {
           active_version_id,
           retrieved_source_ids,
           cited_rule_numbers,
+          verifier_status:      verifierAudit.status,
           ...(_debug ? { _debug } : {}),
         });
       }
@@ -639,9 +665,21 @@ const handler = async (req, res) => {
       league,
       conversation,
     });
-    const { reply, usedFallback, fallbackLeague, leagueName,
+    const { reply, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
             league_slug, active_version_id, retrieved_source_ids,
             cited_rule_numbers, _debug } = ragResult;
+
+    // ── Verifier gate (fail-closed) ──────────────────────────────────────
+    if (blocked) {
+      return res.status(200).json({
+        state:            'unverifiable',
+        error:            'unverifiable',
+        message:          'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.',
+        league_slug,
+        active_version_id,
+        ...(process.env.RULEBOOK_DEBUG === '1' ? { verifier_audit: verifierAudit } : {}),
+      });
+    }
 
     logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
 
@@ -656,6 +694,7 @@ const handler = async (req, res) => {
       active_version_id,
       retrieved_source_ids,
       cited_rule_numbers,
+      verifier_status:      verifierAudit.status,
       ...(_debug ? { _debug } : {}),
     });
 
