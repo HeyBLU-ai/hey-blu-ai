@@ -479,3 +479,13 @@ function htmlToMarkdown(html) {
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ')
     .replace(/\n{3,}/g, '\n\n').trim();
 }
+
+// ── Vercel serverless export — this file is a CLI tool only ──────────────────
+// If somehow invoked as a Vercel route, return 410 Gone.
+export default function handler(_req, res) {
+  return res.status(410).json({
+    error:      'endpoint_deprecated',
+    message:    'api/admin-ingest is a CLI-only tool and is not accessible as an HTTP endpoint.',
+    migrate_to: 'Use the V3 CLI: node scripts/ingest-pdf.mjs',
+  });
+}

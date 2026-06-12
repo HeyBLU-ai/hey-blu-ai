@@ -19,7 +19,9 @@
     "test:ingest:spans": "node scripts/test-create-spans.mjs",
     "test:ingest:atoms": "node scripts/test-extract-atoms.mjs",
     "test:ingest:coverage": "node scripts/test-verify-coverage.mjs",
-    "test:ingest:version": "node scripts/test-write-version.mjs"
+    "test:ingest:version": "node scripts/test-write-version.mjs",
+    "activate:rulebook": "node scripts/activate-version.mjs",
+    "smoke:ask-v2-rag": "node scripts/smoke-ask-v2-rag.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",

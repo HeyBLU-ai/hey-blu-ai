@@ -373,6 +373,43 @@ console.log('\nTest 16: QUOTE_MISMATCH AND uncovered span page both set ok=false
         `got ${JSON.stringify(report.missingPages)}`);
 }
 
+// ── Test 17: UNCOVERED_SPAN message is clearly reportable ────────────────────
+// Verifies that the issue object contains enough information for an operator to
+// identify and act on every uncovered span without querying the database:
+//   - code = 'UNCOVERED_SPAN'
+//   - message mentions the span seq number
+//   - message mentions the span ID prefix
+//   - message warns that rule text may have been dropped
+console.log('\nTest 17: UNCOVERED_SPAN issue message clearly identifies the dropped span');
+{
+  const report = await verifyCoverage({
+    spans:   [SPAN_P1, SPAN_P2, SPAN_P3],
+    spanIds: [SID_1,   SID_2,   SID_3],
+    atoms:   [ATOM_1,           ATOM_3],   // SPAN_P2 / SID_2 has no atom
+  });
+
+  const uncov = report.issues.filter(i => i.code === 'UNCOVERED_SPAN');
+  check('17a: exactly 1 UNCOVERED_SPAN issue',       uncov.length === 1, `got ${uncov.length}`);
+  check('17b: issue.code = "UNCOVERED_SPAN"',        uncov[0]?.code === 'UNCOVERED_SPAN');
+  check('17c: issue.spanSeq = 1 (seq of SPAN_P2)',   uncov[0]?.spanSeq === 1,
+        `got ${uncov[0]?.spanSeq}`);
+
+  // Message must be self-contained enough to act on without a DB lookup
+  const msg = uncov[0]?.message ?? '';
+  check('17d: message includes the span seq number', msg.includes('1'),
+        `message: "${msg}"`);
+  check('17e: message includes span ID prefix',      msg.includes(SID_2.slice(0, 8)),
+        `message: "${msg}"`);
+  check('17f: message warns about dropped rule text', msg.includes('silently dropped') || msg.includes('no associated atoms'),
+        `message: "${msg}"`);
+
+  // Page-level consequence: SPAN_P2 is on page 2, no atom → page 2 is missing
+  check('17g: ok = false because uncovered span causes missing page',
+        report.ok === false, `got ${report.ok}`);
+  check('17h: missingPages includes 2',              report.missingPages.includes(2),
+        `got ${JSON.stringify(report.missingPages)}`);
+}
+
 // ── Summary ───────────────────────────────────────────────────────────────────
 console.log('\n' + '─'.repeat(50));
 console.log(`Results: ${passed} passed, ${failed} failed`);

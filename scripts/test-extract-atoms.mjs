@@ -7,7 +7,8 @@
  * Run with: node scripts/test-extract-atoms.mjs
  */
 
-import { extractRuleAtoms } from '../lib/ingest/extract-rule-atoms.mjs';
+import { extractRuleAtoms, deriveAtomKey } from '../lib/ingest/extract-rule-atoms.mjs';
+import { canonicalizeBody }                from '../lib/ingest/utils.mjs';
 
 // ── Scaffolding ───────────────────────────────────────────────────────────────
 
@@ -243,10 +244,8 @@ console.log('\nTest 9: verbatim guard — extra word inserted throws');
 
 // ── Test 10: normalization — capitalisation-only change → guard passes ────────
 // findNormalizedSubstring normalises both sides to lowercase, so a capitalisation-
-// only difference is excused.  The atom's stored body stays as-is (the AI's
-// version), because extractRuleAtoms stores atom.body directly rather than
-// slicing from the span.  This is intentional: the atom body is the AI's
-// structured extraction; the verbatim guard only checks containment.
+// only difference is excused.  The stored body is sliced from the ORIGINAL source
+// (lowercase "runner"), not from the AI's response ("Runner").
 console.log('\nTest 10: normalization — capitalisation-only change passes verbatim guard');
 {
   const payload = {
@@ -265,7 +264,10 @@ console.log('\nTest 10: normalization — capitalisation-only change passes verb
   });
   check('10a: capitalisation variant accepted — returns 1 atom', atoms.length === 1,
         `got ${atoms.length}`);
-  check('10b: body is stored as returned by AI', atoms[0].body === BODY_A_CAPITALIZED);
+  // Body must be sliced from ORIGINAL source (lowercase "runner"), not from AI
+  check('10b: body sliced from original source, not AI response',
+        atoms[0].body === SPAN_A_TEXT,
+        `got: "${atoms[0].body.slice(0, 60)}…"`);
 }
 
 // ── Test 11: verbatim guard — unknown source_id ───────────────────────────────
@@ -535,10 +537,14 @@ console.log('\nTest 22: DB path — rules UPSERT SQL and parameters');
   check('22c: SQL RETURNING id',                      ruleCall?.text.includes('RETURNING id'));
   check('22d: $1 = leagueId',                         ruleCall?.values[0] === LEAGUE_ID);
   check('22e: $2 = versionId',                        ruleCall?.values[1] === VERSION_ID);
-  check('22f: $3 = rule_number "505"',                ruleCall?.values[2] === '505');
-  check('22g: $4 = title',                            ruleCall?.values[3] === 'Must Slide Rule');
-  check('22h: $5 = body is verbatim BODY_A_FULL',     ruleCall?.values[4] === BODY_A_FULL);
-  check('22i: $6 = "baseball" (default sport)',       ruleCall?.values[5] === 'baseball');
+  check('22f: $3 = atom_key starts with "505#"',       ruleCall?.values[2]?.startsWith('505#'),
+        `got "${ruleCall?.values[2]}"`);
+  check('22f2: $3 = atom_key has 12-char hash suffix', ruleCall?.values[2]?.split('#')[1]?.length === 12,
+        `got "${ruleCall?.values[2]}"`);
+  check('22f3: $4 = rule_number display "505"',        ruleCall?.values[3] === '505');
+  check('22g: $5 = title "Must Slide Rule"',          ruleCall?.values[4] === 'Must Slide Rule');
+  check('22h: $6 = body is verbatim BODY_A_FULL',     ruleCall?.values[5] === BODY_A_FULL);
+  check('22i: $7 = "baseball" (default sport)',       ruleCall?.values[6] === 'baseball');
   check('22j: returned atom has ruleId',              atoms[0]?.ruleId === 'rule-uuid-1',
         `got "${atoms[0]?.ruleId}"`);
 }
@@ -697,8 +703,16 @@ console.log('\nTest 27c: unnumbered atoms — [Unnumbered-N] placeholder prevent
 
   const ruleCalls = db.calls.filter(c => c.text.includes('INSERT INTO rules'));
   check('27c-a: 2 separate rules UPSERTs (not 1)',   ruleCalls.length === 2, `got ${ruleCalls.length}`);
-  check('27c-b: first  rule_number = [Unnumbered-1]', ruleCalls[0]?.values[2] === '[Unnumbered-1]');
-  check('27c-c: second rule_number = [Unnumbered-2]', ruleCalls[1]?.values[2] === '[Unnumbered-2]');
+  // $3 = atom_key (content hash), $4 = rule_number display (empty for unnumbered)
+  check('27c-b: first  atom_key starts with "unnumbered#"',
+        ruleCalls[0]?.values[2]?.startsWith('unnumbered#'), `got "${ruleCalls[0]?.values[2]}"`);
+  check('27c-c: second atom_key starts with "unnumbered#"',
+        ruleCalls[1]?.values[2]?.startsWith('unnumbered#'), `got "${ruleCalls[1]?.values[2]}"`);
+  check('27c-d: two different unnumbered atoms have different atom_keys',
+        ruleCalls[0]?.values[2] !== ruleCalls[1]?.values[2],
+        `both: "${ruleCalls[0]?.values[2]}"`);
+  check('27c-e: first  rule_number display = "" (empty)',  ruleCalls[0]?.values[3] === '');
+  check('27c-f: second rule_number display = "" (empty)',  ruleCalls[1]?.values[3] === '');
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -707,9 +721,11 @@ console.log('\nTest 27c: unnumbered atoms — [Unnumbered-N] placeholder prevent
 // artefacts while still catching semantic changes.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Test 28: Whitespace variant in atom body → guard passes ───────────────────
-// Source text has a double space after a period; AI normalises to single space.
-console.log('\nTest 28: normalization — whitespace variant in atom body → guard passes');
+// ── Test 28: Whitespace variant in atom body → body sliced from original ──────
+// Source text has double spaces; AI normalises to single space.
+// Guard passes (normalisation excuses whitespace), but stored body is sliced
+// from the ORIGINAL source — preserving the original double-space formatting.
+console.log('\nTest 28: normalization — whitespace variant → body sliced from original source');
 {
   const SRC_TEXT_WS  = 'Rule 505.  Must Slide Rule.  A runner who does not slide is out.';
   const SPAN_WS      = { seq: 0, text: SRC_TEXT_WS, page: 1, charStart: 0, charEnd: SRC_TEXT_WS.length };
@@ -731,18 +747,23 @@ console.log('\nTest 28: normalization — whitespace variant in atom body → gu
     anthropicClient: client,
   });
   check('28a: whitespace variant accepted', atoms.length === 1, `got ${atoms.length}`);
-  check('28b: body stored as AI returned', atoms[0].body === AI_BODY_WS);
+  // Body must be sliced from ORIGINAL (double spaces), not from AI (single spaces)
+  check('28b: body sliced from original source (double-space preserved)',
+        atoms[0].body === SRC_TEXT_WS,
+        `got: "${atoms[0].body}"`);
+  check('28c: body does NOT match single-space AI version',
+        atoms[0].body !== AI_BODY_WS);
 }
 
-// ── Test 29: Smart quotes in atom body → guard passes ─────────────────────────
-// Source text uses straight apostrophes; AI returns typographic RIGHT SINGLE
-// QUOTATION MARKs (\u2019).
-console.log('\nTest 29: normalization — smart quotes in atom body → guard passes');
+// ── Test 29: Smart quotes in atom body → body sliced from original ────────────
+// Source uses straight apostrophes; AI returns typographic RIGHT SINGLE QUOTATION
+// MARKs (\u2019).  Guard passes, but stored body is from the ORIGINAL source
+// (straight apostrophes), not the AI's typographic version.
+console.log('\nTest 29: normalization — smart quotes → body sliced from original source');
 {
   const SRC_TEXT_Q = "The catcher's interference rule applies when the batter's swing is impeded.";
   const SPAN_Q     = { seq: 0, text: SRC_TEXT_Q, page: 1, charStart: 0, charEnd: SRC_TEXT_Q.length };
   const ID_Q       = 'qq000000-0000-0000-0000-000000000002';
-  // AI returns typographic apostrophes (\u2019)
   const AI_BODY_Q  = 'The catcher\u2019s interference rule applies when the batter\u2019s swing is impeded.';
 
   const payload = {
@@ -760,7 +781,12 @@ console.log('\nTest 29: normalization — smart quotes in atom body → guard pa
     anthropicClient: client,
   });
   check('29a: smart-quote variant accepted', atoms.length === 1, `got ${atoms.length}`);
-  check('29b: body stored with smart quotes as returned', atoms[0].body === AI_BODY_Q);
+  // Body must be sliced from ORIGINAL (straight apostrophes), not AI (smart quotes)
+  check('29b: body sliced from original source (straight apostrophes)',
+        atoms[0].body === SRC_TEXT_Q,
+        `got: "${atoms[0].body}"`);
+  check('29c: body does NOT contain smart quotes',
+        !atoms[0].body.includes('\u2019'));
 }
 
 // ── Test 30: Hallucinated word still rejected after normalization ──────────────
@@ -859,6 +885,287 @@ console.log('\nTest 32: cross-span — hallucinated word in stitched body → gu
     }),
   );
   check('32: error mentions VERBATIM GUARD', err?.message?.includes('VERBATIM GUARD'));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// New correctness tests (Tests 33–36) — added per advisor accuracy audit
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Test 33: duplicate rule_number → two atoms with distinct atom_keys ─────
+// Two atoms both have rule_number "505".  The DB UPSERT must produce two
+// separate rows: atom_key "505" for the first and "505-2" for the second.
+// Without atom_key support, the second UPSERT would overwrite the first.
+console.log('\nTest 33: duplicate rule_number → distinct atom_keys in DB ("505" and "505-2")');
+{
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    { rule_number: '505', title: 'Must Slide (Part 1)', body: BODY_A_FULL,    source_ids: [ID_A] },
+    { rule_number: '505', title: 'Must Slide (Part 2)', body: BODY_B_FULL,    source_ids: [ID_B] },
+  ]});
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B],
+    spanIds:         [ID_A, ID_B],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+    versionId:       VERSION_ID,
+  });
+
+  const ruleCalls = db.calls.filter(c => c.text.includes('INSERT INTO rules'));
+  check('33a: 2 rules UPSERTs (one per atom)',         ruleCalls.length === 2, `got ${ruleCalls.length}`);
+  // $3 = atom_key, $4 = rule_number display
+  check('33b: first  atom_key starts with "505#"',     ruleCalls[0]?.values[2]?.startsWith('505#'),
+        `got "${ruleCalls[0]?.values[2]}"`);
+  check('33c: second atom_key starts with "505#"',     ruleCalls[1]?.values[2]?.startsWith('505#'),
+        `got "${ruleCalls[1]?.values[2]}"`);
+  check('33d: two "505" atoms have DIFFERENT atom_keys (different bodies)',
+        ruleCalls[0]?.values[2] !== ruleCalls[1]?.values[2],
+        `both: "${ruleCalls[0]?.values[2]}"`);
+  check('33e: both rule_number display = "505"',       ruleCalls[0]?.values[3] === '505' &&
+                                                       ruleCalls[1]?.values[3] === '505');
+  check('33f: returned atoms carry distinct atomKey fields',
+        atoms[0]?.atomKey?.startsWith('505#') &&
+        atoms[1]?.atomKey?.startsWith('505#') &&
+        atoms[0]?.atomKey !== atoms[1]?.atomKey);
+}
+
+// ── Test 34: AI whitespace/casing differences are NOT stored ────────────────
+// Comprehensive test: the DB receives the ORIGINAL source text for body,
+// regardless of what whitespace or casing the AI returned.  Verifies that
+// all three body parameters passed to the UPSERT ($6) equal the source.
+console.log('\nTest 34: AI whitespace/casing variants are NOT stored — original source is');
+{
+  const ORIGINAL_BODY = 'Rule 505.  Must Slide.  A runner who does not slide is out.';
+  const SPAN_ORIG = { seq: 0, text: ORIGINAL_BODY, page: 1, charStart: 0, charEnd: ORIGINAL_BODY.length };
+  const ID_ORIG   = 'orig0000-0000-0000-0000-000000000001';
+
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    {
+      rule_number: '505',
+      title:       'Must Slide',
+      // AI collapses whitespace AND capitalises "Runner" — two differences
+      body:        'Rule 505. Must Slide. a Runner who does not slide is out.',
+      source_ids:  [ID_ORIG],
+    },
+  ]});
+
+  const atoms = await extractRuleAtoms({
+    spans:           [SPAN_ORIG],
+    spanIds:         [ID_ORIG],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+    versionId:       VERSION_ID,
+  });
+
+  const ruleCall = db.calls.find(c => c.text.includes('INSERT INTO rules'));
+  // $6 = body param in the new 7-param UPSERT
+  const storedBody = ruleCall?.values[5];
+  check('34a: guard passes (whitespace + casing excused)', atoms.length === 1,
+        `got ${atoms.length}`);
+  check('34b: stored body = ORIGINAL source (double-space, lowercase)',
+        storedBody === ORIGINAL_BODY, `got: "${storedBody}"`);
+  check('34c: stored body does NOT match AI version (single-space)',
+        storedBody !== 'Rule 505. Must Slide. a Runner who does not slide is out.');
+}
+
+// ── Test 35: atom_key is exposed on returned atoms (no DB) ─────────────────
+// When the DB path is not invoked (no dbClient), the in-memory atoms do not
+// have an atomKey.  When DB is invoked, atomKey IS present.
+// This confirms the atomKey field is threaded through correctly.
+console.log('\nTest 35: atomKey is always computed (memory-only and DB paths)');
+{
+  const payload = { atoms: [
+    { rule_number: '505', title: 'Must Slide', body: BODY_A_FULL, source_ids: [ID_A] },
+  ]};
+
+  // Memory-only path: atomKey must be present even without a DB client
+  const memAtoms = await extractRuleAtoms({
+    spans:           [SPAN_A],
+    spanIds:         [ID_A],
+    anthropicClient: makeMockClient(payload),
+  });
+  check('35a: memory-only atom has atomKey starting with "505#"',
+        memAtoms[0]?.atomKey?.startsWith('505#'), `got "${memAtoms[0]?.atomKey}"`);
+
+  // DB path: atomKey must be identical to what the memory path computed
+  const db = makeMockDb();
+  const dbAtoms = await extractRuleAtoms({
+    spans:           [SPAN_A],
+    spanIds:         [ID_A],
+    anthropicClient: makeMockClient(payload),
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+    versionId:       VERSION_ID,
+  });
+  check('35b: DB-written atom has same atomKey as memory-only atom',
+        dbAtoms[0]?.atomKey === memAtoms[0]?.atomKey,
+        `mem="${memAtoms[0]?.atomKey}" db="${dbAtoms[0]?.atomKey}"`);
+  check('35c: DB UPSERT $3 = atom.atomKey',
+        db.calls.find(c => c.text.includes('INSERT INTO rules'))?.values[2] === dbAtoms[0]?.atomKey);
+}
+
+// ── Test 36: third duplicate rule_number → atom_key "505-3" ────────────────
+// Extends test 33 to verify the sequence continues correctly for three atoms
+// with the same rule_number.
+console.log('\nTest 36: three atoms with same rule_number → atom_keys "505", "505-2", "505-3"');
+{
+  const SPAN_C_TEXT2 = 'Rule 505. Exception: no slide required on a pop-up fly ball.';
+  const ID_C2        = 'c2c20000-0000-0000-0000-000000000003';
+  const SPAN_C2      = { seq: 2, text: SPAN_C_TEXT2, page: 16, charStart: 0, charEnd: SPAN_C_TEXT2.length };
+
+  const db = makeMockDb();
+  const aiClient = makeMockClient({ atoms: [
+    { rule_number: '505', title: 'Part 1', body: BODY_A_FULL,    source_ids: [ID_A] },
+    { rule_number: '505', title: 'Part 2', body: BODY_B_FULL,    source_ids: [ID_B] },
+    { rule_number: '505', title: 'Part 3', body: SPAN_C_TEXT2,   source_ids: [ID_C2] },
+  ]});
+
+  await extractRuleAtoms({
+    spans:           [SPAN_A, SPAN_B, SPAN_C2],
+    spanIds:         [ID_A, ID_B, ID_C2],
+    anthropicClient: aiClient,
+    dbClient:        db,
+    leagueId:        LEAGUE_ID,
+    versionId:       VERSION_ID,
+  });
+
+  const ruleCalls = db.calls.filter(c => c.text.includes('INSERT INTO rules'));
+  check('36a: 3 rules UPSERTs',                    ruleCalls.length === 3, `got ${ruleCalls.length}`);
+  check('36b: atom_key[0] starts with "505#"',     ruleCalls[0]?.values[2]?.startsWith('505#'));
+  check('36c: atom_key[1] starts with "505#"',     ruleCalls[1]?.values[2]?.startsWith('505#'));
+  check('36d: atom_key[2] starts with "505#"',     ruleCalls[2]?.values[2]?.startsWith('505#'));
+  check('36e: all three atom_keys are distinct',
+        new Set([ruleCalls[0]?.values[2], ruleCalls[1]?.values[2], ruleCalls[2]?.values[2]]).size === 3);
+  check('36f: rule_number display always "505"',   ruleCalls.every(c => c.values[3] === '505'));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Stability tests (Tests 37–40) — atom_key is content-derived, not positional
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Test 37: Same atom → identical atom_key on two separate ingest calls ──────
+// Re-ingesting the same rulebook must produce exactly the same atom_key so that
+// the UPSERT ON CONFLICT finds the existing row instead of creating a duplicate.
+console.log('\nTest 37: stability — same atom produces identical atom_key on two ingest calls');
+{
+  const payload = { atoms: [
+    { rule_number: '505', title: 'Must Slide', body: BODY_A_FULL, source_ids: [ID_A] },
+  ]};
+
+  const [atoms1, atoms2] = await Promise.all([
+    extractRuleAtoms({ spans: [SPAN_A], spanIds: [ID_A], anthropicClient: makeMockClient(payload) }),
+    extractRuleAtoms({ spans: [SPAN_A], spanIds: [ID_A], anthropicClient: makeMockClient(payload) }),
+  ]);
+
+  check('37a: atom_key identical across two calls',
+        atoms1[0]?.atomKey === atoms2[0]?.atomKey,
+        `run1="${atoms1[0]?.atomKey}" run2="${atoms2[0]?.atomKey}"`);
+  check('37b: atom_key non-empty', Boolean(atoms1[0]?.atomKey));
+}
+
+// ── Test 38: Unnumbered atoms — atom_key is independent of array position ─────
+// Old sequence-based keys ([Unnumbered-1], [Unnumbered-2]) depended on position.
+// Content-derived keys must be the same for the same body regardless of position.
+console.log('\nTest 38: stability — unnumbered atom_key stable across position changes');
+{
+  // Run 1: SPAN_A is at index 0, SPAN_B is at index 1
+  const payload1 = { atoms: [
+    { rule_number: '', title: 'Alpha', body: BODY_A_FULL, source_ids: [ID_A] },
+    { rule_number: '', title: 'Beta',  body: BODY_B_FULL, source_ids: [ID_B] },
+  ]};
+  const run1 = await extractRuleAtoms({
+    spans: [SPAN_A, SPAN_B], spanIds: [ID_A, ID_B],
+    anthropicClient: makeMockClient(payload1),
+  });
+
+  // Run 2: SPAN_B first, SPAN_A second (reversed order)
+  const payload2 = { atoms: [
+    { rule_number: '', title: 'Beta',  body: BODY_B_FULL, source_ids: [ID_B] },
+    { rule_number: '', title: 'Alpha', body: BODY_A_FULL, source_ids: [ID_A] },
+  ]};
+  const run2 = await extractRuleAtoms({
+    spans: [SPAN_B, SPAN_A], spanIds: [ID_B, ID_A],
+    anthropicClient: makeMockClient(payload2),
+  });
+
+  // BODY_A atom: run1[0] vs run2[1]  — should have the same atom_key
+  // BODY_B atom: run1[1] vs run2[0]  — should have the same atom_key
+  check('38a: BODY_A atom_key same regardless of position',
+        run1[0]?.atomKey === run2[1]?.atomKey,
+        `pos0="${run1[0]?.atomKey}" pos1="${run2[1]?.atomKey}"`);
+  check('38b: BODY_B atom_key same regardless of position',
+        run1[1]?.atomKey === run2[0]?.atomKey,
+        `pos1="${run1[1]?.atomKey}" pos0="${run2[0]?.atomKey}"`);
+  check('38c: both atom_keys start with "unnumbered#"',
+        run1[0]?.atomKey?.startsWith('unnumbered#') &&
+        run1[1]?.atomKey?.startsWith('unnumbered#'));
+  check('38d: two different bodies produce different atom_keys',
+        run1[0]?.atomKey !== run1[1]?.atomKey);
+}
+
+// ── Test 39: Whitespace/case/smart-quote differences do not change atom_key ───
+// deriveAtomKey passes the source body through canonicalizeBody before hashing,
+// so minor formatting variations in the source produce the same hash.
+console.log('\nTest 39: stability — minor source formatting differences do not change atom_key');
+{
+  // Three bodies that differ only in whitespace / capitalisation / quotes
+  // but are semantically identical after canonicalization.
+  const bodyDoubleSpace = 'Rule 505.  Must Slide Rule.  A runner who does not slide is out.';
+  const bodySingleSpace = 'Rule 505. Must Slide Rule. A runner who does not slide is out.';
+  const bodyUpperCase   = 'RULE 505.  MUST SLIDE RULE.  A RUNNER WHO DOES NOT SLIDE IS OUT.';
+  const bodySmartQuote  = 'Rule 505.\u2009Must Slide Rule.\u2009A runner who does not slide is out.'; // thin spaces
+
+  const key1 = deriveAtomKey('505', bodyDoubleSpace);
+  const key2 = deriveAtomKey('505', bodySingleSpace);
+  const key3 = deriveAtomKey('505', bodyUpperCase);
+  const key4 = deriveAtomKey('505', bodySmartQuote);
+
+  check('39a: double-space == single-space → same atom_key',   key1 === key2,
+        `"${key1}" vs "${key2}"`);
+  check('39b: upper-case == lower-case → same atom_key',       key1 === key3,
+        `"${key1}" vs "${key3}"`);
+  check('39c: thin-space variant → same atom_key',             key1 === key4,
+        `"${key1}" vs "${key4}"`);
+  check('39d: all four keys are identical',                    new Set([key1, key2, key3, key4]).size === 1);
+
+  // A body with a DIFFERENT word must produce a different atom_key.
+  const bodyDifferentWord = 'Rule 505. Must Slide Rule. A player who does not slide is out.'; // "player" ≠ "runner"
+  const key5 = deriveAtomKey('505', bodyDifferentWord);
+  check('39e: different word → different atom_key',            key1 !== key5,
+        `"${key1}" vs "${key5}"`);
+}
+
+// ── Test 40: canonicalizeBody unit tests ──────────────────────────────────────
+// Directly verify the normalisation helper that feeds into deriveAtomKey.
+console.log('\nTest 40: canonicalizeBody — normalisation unit checks');
+{
+  check('40a: collapses double spaces',
+        canonicalizeBody('hello  world') === 'hello world');
+  check('40b: lowercases',
+        canonicalizeBody('HELLO WORLD') === 'hello world');
+  check('40c: trims leading/trailing',
+        canonicalizeBody('  hello  ') === 'hello');
+  check('40d: collapses newline to space',
+        canonicalizeBody('hello\nworld') === 'hello world');
+  check('40e: collapses tab to space',
+        canonicalizeBody('hello\tworld') === 'hello world');
+  check('40f: smart left single quote → straight apostrophe',
+        canonicalizeBody('it\u2018s') === "it's");
+  check('40g: smart right single quote → straight apostrophe',
+        canonicalizeBody('don\u2019t') === "don't");
+  check('40h: smart double quotes → straight double quote',
+        canonicalizeBody('\u201chello\u201d') === '"hello"');
+  check('40i: en dash → hyphen',
+        canonicalizeBody('one\u2013two') === 'one-two');
+  check('40j: em dash → hyphen',
+        canonicalizeBody('one\u2014two') === 'one-two');
+  check('40k: empty string → empty string',
+        canonicalizeBody('') === '');
+  check('40l: only whitespace → empty string',
+        canonicalizeBody('   \t\n  ') === '');
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────

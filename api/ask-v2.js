@@ -12,17 +12,18 @@
  *
  * Request body:
  *   question     {string}  — the umpire's question (required)
- *   league       {string}  — league key (optional, defaults to MLB)
+ *   league       {string}  — league slug (required; unknown or missing → 404 league_not_found)
  *   conversation {Array}   — prior Q/A turns for context (optional)
  *   matrix_state {object}  — present on follow-up requests during an interview:
  *                             { matrix_id: string, answers: { [question_id]: string } }
  *
  * Response shapes:
- *   State A: { state: "answered",            reply, usedFallback, fallbackLeague, originalLeague }
+ *   State A: { state: "answered",            reply, league_slug, active_version_id,
+ *               retrieved_source_ids, cited_rule_numbers }
  *   State B: { state: "needs_clarification", matrix_id, matrix_label, current_question,
  *               progress: { answered, remaining_estimated } }
- *   State C: { state: "ruling",              reply, usedFallback, fallbackLeague, originalLeague,
- *               matrix_id, answers_used }
+ *   State C: { state: "ruling",              reply, league_slug, active_version_id,
+ *               retrieved_source_ids, cited_rule_numbers, matrix_id, answers_used }
  */
 
 import path           from "path";
@@ -144,6 +145,14 @@ class LeagueNotFoundError extends Error {
   }
 }
 
+/** Thrown when the league exists in the DB but has no ACTIVE rulebook_version. */
+class RulebookNotActiveError extends Error {
+  constructor(message) {
+    super(message);
+    this.type = 'rulebook_not_active';
+  }
+}
+
 // ── Anthropic client ─────────────────────────────────────────────────────────
 import Anthropic from '@anthropic-ai/sdk';
 const anthropic = process.env.ANTHROPIC_API_KEY
@@ -206,110 +215,230 @@ async function classifyQuestion(question) {
   }
 }
 
-// ── Full-Context Answer Pipeline ─────────────────────────────────────────────
+// ── V3 Source-Span RAG Pipeline ───────────────────────────────────────────────
 //
-// Fetches ALL rules for the requested league from the DB and sends them to
-// Claude in a single prompt. No vector search, no thresholds, no fallbacks
-// based on embedding distance. Claude reads every rule and finds the answer
-// the same way a human would flip through a rulebook.
+// Three-step retrieval:
+//   1. resolveActiveVersion  — look up league + active rulebook_versions row.
+//      Throws LeagueNotFoundError if the league does not exist in the DB.
+//      Throws RulebookNotActiveError if the league exists but has no ACTIVE version.
 //
-// If the league has a parent (e.g. BAMSBL → MLB), parent rules are appended
-// so Claude can reference them for topics the local league doesn't override.
+//   2. fetchSourceSpans      — Postgres full-text search on rule_sources.exact_text,
+//      filtered strictly to rows that belong to the active version.
+//      Falls back to an empty span list if FTS produces no results (letting the
+//      model say "I could not find a specific rule" rather than hallucinating).
+//
+//   3. Prompt construction   — builds the Claude prompt from verbatim source spans
+//      only. The model cannot see rules that are not returned by the FTS step.
+//
+// Response metadata (always present):
+//   league_slug, active_version_id, retrieved_source_ids, cited_rule_numbers
+//
+// Debug metadata (present when RULEBOOK_DEBUG=1):
+//   _debug.retrieval_method, _debug.span_count, _debug.spans[]
 
-async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
-  const { slug: leagueSlug, leagueName } = resolveLeague(league);
+/**
+ * Looks up the league row and its single ACTIVE rulebook_version.
+ *
+ * @param {pg.PoolClient} dbClient
+ * @param {string}        leagueSlug
+ * @returns {{ leagueId, leagueName, activeVersionId }}
+ * @throws {LeagueNotFoundError}   if no leagues row with that slug exists.
+ * @throws {RulebookNotActiveError} if the league exists but has no active version.
+ */
+async function resolveActiveVersion(dbClient, leagueSlug) {
+  const res = await dbClient.query(`
+    SELECT l.id         AS league_id,
+           l.name       AS league_name,
+           rv.id        AS version_id
+    FROM   leagues l
+    LEFT   JOIN rulebook_versions rv
+             ON rv.league_id = l.id AND rv.status = 'active'
+    WHERE  l.slug = $1
+  `, [leagueSlug]);
 
-  if (!pool) throw new Error('DATABASE_URL not configured');
-  if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
+  if (res.rows.length === 0) {
+    throw new LeagueNotFoundError(
+      `No rulebook is loaded for league "${leagueSlug}". ` +
+      `Select a different league or contact an admin.`,
+    );
+  }
 
-  const dbClient = await pool.connect();
-    let leagueRules = [], parentRules = [], parentName = null;
+  const { league_id, league_name, version_id } = res.rows[0];
 
-    try {
-      // Check league exists and has an active rulebook
-      const leagueCheck = await dbClient.query(
-        `SELECT id, name, parent_league_id FROM leagues WHERE slug = $1`,
-        [leagueSlug]
-      );
-      if (leagueCheck.rows.length === 0) {
-        throw new LeagueNotFoundError('No rulebook is loaded for this league. Select a different league or contact an admin.');
-      }
+  if (!version_id) {
+    throw new RulebookNotActiveError(
+      `No active rulebook is loaded for "${league_name}". ` +
+      `An admin must activate a rulebook version before questions can be answered.`,
+    );
+  }
 
-      // Fetch all rules for the requested league
-      const leagueRes = await dbClient.query(`
-        SELECT l.name AS league_name, l.parent_league_id,
-               r.rule_number, r.title, r.body
-        FROM   rules r
-        JOIN   leagues l ON l.id = r.league_id
-        WHERE  l.slug = $1
-        ORDER  BY r.rule_number
-      `, [leagueSlug]);
+  return { leagueId: league_id, leagueName: league_name, activeVersionId: version_id };
+}
 
-      if (leagueRes.rows.length === 0) {
-        throw new LeagueNotFoundError('No rules are loaded for this league yet. Ingest a rulebook first.');
-      }
+/**
+ * Retrieves up to 8 source spans relevant to the question using Postgres FTS.
+ *
+ * Only spans whose rule_documents.version_id AND rules.rulebook_version_id both
+ * equal activeVersionId are considered — this guarantees no legacy NULL-version
+ * spans can appear in the results.
+ *
+ * If FTS returns zero results (stop-word-only query, no matches, or FTS error),
+ * the function returns an empty array so the caller can handle the no-results case.
+ *
+ * @param {pg.PoolClient} dbClient
+ * @param {string}        activeVersionId
+ * @param {string}        question         Plain-text question (used for plainto_tsquery)
+ * @returns {{ spans: Object[], method: string }}
+ */
+async function fetchSourceSpans(dbClient, activeVersionId, question) {
+  try {
+    const res = await dbClient.query(`
+      SELECT
+        rs.id                   AS source_id,
+        rs.exact_text,
+        rs.page_start,
+        rs.section_path,
+        string_agg(DISTINCT r.rule_number ORDER BY r.rule_number) AS rule_numbers,
+        ts_rank(
+          to_tsvector('english', rs.exact_text),
+          plainto_tsquery('english', $1)
+        )                       AS rank
+      FROM rule_sources     rs
+      JOIN rule_documents   rd  ON rd.id          = rs.document_id
+      JOIN rule_source_links rsl ON rsl.source_id = rs.id
+      JOIN rules            r   ON r.id           = rsl.rule_id
+      WHERE rd.version_id         = $2
+        AND r.rulebook_version_id = $2
+        AND to_tsvector('english', rs.exact_text) @@ plainto_tsquery('english', $1)
+      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
+      ORDER BY rank DESC
+      LIMIT 8
+    `, [question, activeVersionId]);
 
-      leagueRules = leagueRes.rows;
-      const parentId = leagueRes.rows[0].parent_league_id;
+    return { spans: res.rows, method: 'fts' };
+  } catch (err) {
+    console.warn('[ask-v2] FTS query failed — returning empty spans:', err.message);
+    return { spans: [], method: 'fts_error' };
+  }
+}
 
-      // Fetch parent league rules if one exists
-      if (parentId) {
-        const parentRes = await dbClient.query(`
-          SELECT l.name AS league_name, r.rule_number, r.title, r.body
-          FROM   rules r
-          JOIN   leagues l ON l.id = r.league_id
-          WHERE  l.id = $1
-          ORDER  BY r.rule_number
-        `, [parentId]);
-        parentRules = parentRes.rows;
-        parentName  = parentRes.rows[0]?.league_name ?? null;
-      }
-    } finally {
-      try { dbClient.release(); } catch { /* already released on early return */ }
-    }
-
-  // Format rules as a readable numbered list
-  const formatRules = (rows) =>
-    rows.map(r => `Rule ${r.rule_number}: ${r.title}\n${r.body}`).join('\n\n');
-
-  const leagueRulesText  = formatRules(leagueRules);
-  const parentRulesText  = parentRules.length > 0 ? formatRules(parentRules) : null;
-
+/**
+ * Build the Claude prompt from verbatim source span excerpts.
+ *
+ * The model is instructed to answer ONLY from the excerpts shown — it cannot
+ * fabricate rules or reference content that was not retrieved.
+ */
+function buildSpanPrompt({ spans, leagueName, sanitizedQuestion, extraContext, conversation }) {
   const validatedConversation = validateConversation(conversation);
   const historyText = validatedConversation.length > 0
-    ? 'Conversation history:\n' +
-      validatedConversation.map(t => `User: ${t.user}\nAssistant: ${t.ai}`).join('\n\n') + '\n\n'
+    ? 'Prior conversation:\n' +
+      validatedConversation.map(t => `Umpire: ${t.user}\nOfficial: ${t.ai}`).join('\n\n') + '\n\n'
     : '';
 
-  const prompt = `You are an expert baseball rules official for the ${leagueName}.
+  let excerptBlock;
+  if (spans.length === 0) {
+    excerptBlock =
+      '(No matching source excerpts found in the rulebook for this question. ' +
+      'You must respond that no specific rule was found.)';
+  } else {
+    excerptBlock = spans.map((s, i) => {
+      const ruleRef    = (s.rule_numbers ?? '').replace(/,/g, ' /').trim() || 'Unnumbered';
+      const pageNote   = s.page_start != null ? ` — p.${s.page_start}` : '';
+      const sectionNote = s.section_path ? ` — ${s.section_path}` : '';
+      return `[Source ${i + 1}] Rule ${ruleRef}${pageNote}${sectionNote}:\n"${s.exact_text}"`;
+    }).join('\n\n');
+  }
 
-Your job: answer the umpire's question accurately by reading the rulebook below. Always cite the specific rule number.
+  return `You are an expert baseball rules official for the ${leagueName}.
+
+Your job: answer the umpire's question using ONLY the verbatim source excerpts from the official rulebook shown below.
 
 ${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
 ${historyText}\
+RULEBOOK SOURCE EXCERPTS (${spans.length} retrieved):
+${excerptBlock}
+
 QUESTION: ${sanitizedQuestion}
 
-${leagueName.toUpperCase()} RULEBOOK (${leagueRules.length} rules):
-${leagueRulesText}
-${parentRulesText ? `\n\n${parentName?.toUpperCase() ?? 'PARENT LEAGUE'} RULEBOOK — applies where ${leagueName} has no specific rule (${parentRules.length} rules):\n${parentRulesText}` : ''}
-
 Instructions:
-- Search the rulebook above for every rule relevant to this question.
-- Give a clear, plain-English answer an umpire can act on immediately.
-- Cite the rule number(s) you are drawing from.
-- If the ${leagueName} rulebook has a specific rule, use that. Only reference the parent rulebook if the local league has no applicable rule.
-- If no rule covers the question at all, say so plainly.
+- Answer ONLY from the source excerpts above. Do NOT cite, invent, or infer rules that do not appear in the excerpts.
+- Cite the rule number(s) exactly as labelled in the excerpts (e.g. "Rule 505").
+- Give a clear, plain-English ruling an umpire can act on immediately.
+- If no excerpt covers the question, say exactly: "I could not find a specific rule about this in the loaded rulebook."
 
 Answer:`;
+}
+
+async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
+  const { slug: leagueSlug } = resolveLeague(league);
+
+  if (!pool)      throw new Error('DATABASE_URL not configured');
+  if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
+
+  const dbClient = await pool.connect();
+  let leagueName, activeVersionId, spans, method;
+
+  try {
+    // ── Step 1: Resolve active version (throws on league-not-found / not-active) ──
+    ({ leagueName, activeVersionId } = await resolveActiveVersion(dbClient, leagueSlug));
+
+    // ── Step 2: FTS retrieval — strictly version-scoped ──────────────────────
+    ({ spans, method } = await fetchSourceSpans(dbClient, activeVersionId, sanitizedQuestion));
+  } finally {
+    try { dbClient.release(); } catch { /* ignore */ }
+  }
+
+  // ── Step 3: Build prompt from source spans ───────────────────────────────
+  const prompt = buildSpanPrompt({
+    spans,
+    leagueName,
+    sanitizedQuestion,
+    extraContext,
+    conversation,
+  });
 
   const message = await anthropic.messages.create({
-    model:      'claude-sonnet-4-6',
+    model:      process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6',
     max_tokens: 1024,
     messages:   [{ role: 'user', content: prompt }],
   });
 
   const reply = message.content[0]?.text?.trim() || 'No answer received.';
-  return { reply, usedFallback: false, fallbackLeague: null, leagueName };
+
+  // ── Response metadata ────────────────────────────────────────────────────
+  const retrievedSourceIds = spans.map(s => s.source_id);
+  const citedRuleNumbers   = [
+    ...new Set(
+      spans.flatMap(s =>
+        (s.rule_numbers ?? '').split(',').map(n => n.trim()).filter(Boolean),
+      ),
+    ),
+  ];
+
+  const debugData = process.env.RULEBOOK_DEBUG === '1' ? {
+    retrieval_method: method,
+    span_count:       spans.length,
+    spans: spans.map(s => ({
+      source_id:    s.source_id,
+      rule_numbers: s.rule_numbers,
+      page_start:   s.page_start,
+      rank:         s.rank,
+      text_preview: (s.exact_text ?? '').slice(0, 120),
+    })),
+  } : undefined;
+
+  return {
+    reply,
+    usedFallback:          false,
+    fallbackLeague:        null,
+    leagueName,
+    // V3 retrieval metadata
+    league_slug:           leagueSlug,
+    active_version_id:     activeVersionId,
+    retrieved_source_ids:  retrievedSourceIds,
+    cited_rule_numbers:    citedRuleNumbers,
+    _debug:                debugData,
+  };
 }
 
 // ── DB Logging ───────────────────────────────────────────────────────────────
@@ -409,23 +538,32 @@ const handler = async (req, res) => {
 
         // ── State C: all answers collected → run RAG with context ────────
         const extraContext = buildRulingContext(matrix, matrixState.answers);
-        const { reply, usedFallback, fallbackLeague, leagueName } = await runRAG({
+        const ragResult = await runRAG({
           sanitizedQuestion,
           league,
           conversation,
           extraContext,
         });
+        const { reply, usedFallback, fallbackLeague, leagueName,
+                league_slug, active_version_id, retrieved_source_ids,
+                cited_rule_numbers, _debug } = ragResult;
 
         logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
 
         return res.status(200).json({
-          state:          'ruling',
-          matrix_id:      matrix.id,
-          answers_used:   matrixState.answers,
+          state:                'ruling',
+          matrix_id:            matrix.id,
+          answers_used:         matrixState.answers,
           reply,
           usedFallback,
           fallbackLeague,
-          originalLeague: leagueName,
+          originalLeague:       leagueName,
+          // V3 retrieval metadata
+          league_slug,
+          active_version_id,
+          retrieved_source_ids,
+          cited_rule_numbers,
+          ...(_debug ? { _debug } : {}),
         });
       }
     }
@@ -496,25 +634,37 @@ const handler = async (req, res) => {
     }
 
     // ── State A: factual question (or classifier fell through) ────────────
-    const { reply, usedFallback, fallbackLeague, leagueName } = await runRAG({
+    const ragResult = await runRAG({
       sanitizedQuestion,
       league,
       conversation,
     });
+    const { reply, usedFallback, fallbackLeague, leagueName,
+            league_slug, active_version_id, retrieved_source_ids,
+            cited_rule_numbers, _debug } = ragResult;
 
     logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
 
     return res.status(200).json({
-      state:          'answered',
+      state:                'answered',
       reply,
       usedFallback,
       fallbackLeague,
-      originalLeague: leagueName,
+      originalLeague:       leagueName,
+      // V3 retrieval metadata
+      league_slug,
+      active_version_id,
+      retrieved_source_ids,
+      cited_rule_numbers,
+      ...(_debug ? { _debug } : {}),
     });
 
   } catch (err) {
     if (err.type === 'league_not_found') {
       return res.status(404).json({ error: 'league_not_found', message: err.message });
+    }
+    if (err.type === 'rulebook_not_active') {
+      return res.status(404).json({ error: 'rulebook_not_active', message: err.message });
     }
     console.error('[ask-v2] ERROR:', err.message);
     console.error('[ask-v2] Stack:', err.stack);

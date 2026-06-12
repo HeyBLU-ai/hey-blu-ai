@@ -80,11 +80,16 @@ check('extractRuleAtoms() returns a Promise',
 check('verifyCoverage() returns a Promise',
   verifyCoverage({ spans: [dummySpan], atoms: [dummyAtom], spanIds: ['id1'] }) instanceof Promise);
 
-check('writeRulebookVersion() returns a Promise',
-  writeRulebookVersion({
+// writeRulebookVersion is async and returns a rejected Promise (not implemented).
+// Catch the rejection to avoid an UnhandledPromiseRejection warning.
+{
+  const p = writeRulebookVersion({
     db: dummyPool, leagueId: 'l1', label: 'test', sourceFileName: 'test.txt',
     spans: [dummySpan], atoms: [],
-  }) instanceof Promise);
+  });
+  p.catch(() => {}); // suppress the rejection
+  check('writeRulebookVersion() returns a Promise', p instanceof Promise);
+}
 
 // ── Argument-validation (throw on bad input) ─────────────────────────────────
 console.log('\nArgument validation — each function throws on missing required args:');
@@ -140,12 +145,18 @@ const report = await verifyCoverage({ spans: [dummySpan], atoms: [], spanIds: ['
 check('verifyCoverage stub .ok is boolean',        typeof report?.ok === 'boolean');
 check('verifyCoverage stub .issues is array',      Array.isArray(report?.issues));
 
-const vr = await writeRulebookVersion({
-  db: dummyPool, leagueId: 'l1', label: 'L', sourceFileName: 'f.txt',
-  spans: [dummySpan], atoms: [],
-});
-check('writeRulebookVersion stub .versionId is string', typeof vr?.versionId === 'string');
-check('writeRulebookVersion stub .status === "draft"',  vr?.status === 'draft');
+// writeRulebookVersion now throws "not implemented" — verify the throw and message.
+let wrErr;
+try {
+  await writeRulebookVersion({
+    db: dummyPool, leagueId: 'l1', label: 'L', sourceFileName: 'f.txt',
+    spans: [dummySpan], atoms: [],
+  });
+} catch (e) {
+  wrErr = e;
+}
+check('writeRulebookVersion throws "not implemented"',    wrErr instanceof Error);
+check('writeRulebookVersion error mentions createDraftVersion', wrErr?.message?.includes('createDraftVersion'));
 
 // ── Summary ──────────────────────────────────────────────────────────────────
 console.log('\n' + '─'.repeat(50));

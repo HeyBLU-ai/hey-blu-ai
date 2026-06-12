@@ -82,6 +82,17 @@ function validateConversation(conversation) {
 }
 
 const handler = async (req, res) => {
+  // This endpoint is superseded by /api/ask-v2, which uses the V3 versioned
+  // rulebook pipeline and never silently falls back to MLB rules.
+  // Clients must migrate to /api/ask-v2.
+  return res.status(410).json({
+    error:   'endpoint_deprecated',
+    message: '/api/ask is no longer active. Use /api/ask-v2.',
+    migrate_to: '/api/ask-v2',
+  });
+
+  // ── dead code below — kept for reference during migration ────────────────
+  /* eslint-disable no-unreachable */
   if (req.method !== 'POST') {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -202,6 +213,7 @@ Answer:`;
     // Security: Don't expose internal error details to client
     res.status(500).json({ error: "Something went wrong processing the rules." });
   }
+  /* eslint-enable no-unreachable */
 };
 
 export default withCors(handler);

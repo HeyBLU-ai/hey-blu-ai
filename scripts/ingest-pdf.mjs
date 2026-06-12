@@ -85,9 +85,10 @@ function flag(name) {
 }
 
 const [fileArg, leagueSlug] = argv.filter(a => !a.startsWith('--') && argv.indexOf(a) < 2);
-const season   = flag('--season') || String(new Date().getFullYear());
-const sport    = flag('--sport')  || 'baseball';
-const isDryRun = argv.includes('--dry-run');
+const season          = flag('--season') || String(new Date().getFullYear());
+const sport           = flag('--sport')  || 'baseball';
+const isDryRun        = argv.includes('--dry-run');
+const allowDupHash    = argv.includes('--allow-duplicate-hash');
 
 if (!fileArg || !leagueSlug) {
   console.error(
@@ -169,16 +170,23 @@ if (!isDryRun) {
   );
   if (dupRes.rows.length) {
     const existing = dupRes.rows[0];
+    if (!allowDupHash) {
+      console.warn(
+        `  ⚠ WARNING: This file (SHA-256 ${sourceHash.slice(0, 16)}…) was already ingested\n` +
+        `    for this league (version status: ${existing.status}, created: ${existing.created_at?.toISOString().slice(0, 10)}).\n` +
+        `    Re-ingesting identical content would normally be a no-op.  Aborting.\n` +
+        `    To force a fresh ingest (e.g. after pipeline code changes), add --allow-duplicate-hash.`,
+      );
+      await db.end();
+      process.exit(1);
+    }
     console.warn(
-      `  ⚠ WARNING: This file (SHA-256 ${sourceHash.slice(0, 16)}…) was already ingested\n` +
-      `    for this league (version status: ${existing.status}, created: ${existing.created_at?.toISOString().slice(0, 10)}).\n` +
-      `    Re-ingesting identical content is a no-op.  Aborting.\n` +
-      `    If you intended to re-run, use a modified file or contact an admin.`,
+      `  ⚠ Duplicate hash detected (${existing.status} version from ${existing.created_at?.toISOString().slice(0, 10)})\n` +
+      `    --allow-duplicate-hash supplied — proceeding with fresh ingest.`,
     );
-    await db.end();
-    process.exit(1);
+  } else {
+    console.log('  ✓ No duplicate source hash found — safe to proceed');
   }
-  console.log('  ✓ No duplicate source hash found — safe to proceed');
   console.log();
 }
 
