@@ -17,7 +17,8 @@
     "test:ingest:url": "node scripts/test-parse-url.mjs",
     "test:ingest:warnings": "node scripts/test-parse-warnings.mjs",
     "test:ingest:spans": "node scripts/test-create-spans.mjs",
-    "test:ingest:atoms": "node scripts/test-extract-atoms.mjs"
+    "test:ingest:atoms": "node scripts/test-extract-atoms.mjs",
+    "test:ingest:coverage": "node scripts/test-verify-coverage.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.1",
