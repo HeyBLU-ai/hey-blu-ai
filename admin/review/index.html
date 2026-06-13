@@ -370,6 +370,95 @@
     #toast.toast-ok   { border-color: #16a34a; color: #86efac; }
     #toast.toast-err  { border-color: #dc2626; color: #fca5a5; }
 
+    /* ── SOP panel ── */
+    .sop-bar {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+    }
+    .sop-toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 24px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      color: #94a3b8;
+      border: none;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+      transition: color .15s;
+    }
+    .sop-toggle:hover { color: #e2e8f0; }
+    .sop-toggle .sop-label { font-weight: 600; color: #cbd5e1; font-size: 13px; }
+    .sop-toggle .sop-hint  { font-size: 12px; color: #475569; margin-left: 2px; }
+    .sop-toggle .sop-caret {
+      margin-left: auto;
+      font-size: 11px;
+      color: #334155;
+      transition: transform .2s;
+    }
+    .sop-bar.open .sop-caret { transform: rotate(180deg); }
+
+    .sop-body {
+      display: none;
+      padding: 0 24px 20px;
+    }
+    .sop-bar.open .sop-body { display: block; }
+
+    .sop-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .sop-step {
+      background: #0a0f1e;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .sop-step-num {
+      background: #1e3a5f;
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .sop-step-content { flex: 1; }
+    .sop-step-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+    }
+    .sop-step-desc {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+    .sop-step-desc code {
+      background: #1e293b;
+      color: #93c5fd;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-size: 11px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+    .sop-step.step-ignore { border-color: #334155; opacity: .75; }
+    .sop-step.step-ignore .sop-step-num { background: #1e293b; color: #475569; }
+
     /* ── Form elements (auth) ── */
     input[type="password"], .auth-card input {
       width: 100%;
@@ -429,6 +518,73 @@
     <select id="version-select" disabled onchange="onVersionChange()">
       <option value="">— select a version —</option>
     </select>
+  </div>
+
+  <!-- Review SOP -->
+  <div class="sop-bar" id="sop-bar">
+    <button class="sop-toggle" onclick="toggleSop()" aria-expanded="false" aria-controls="sop-body">
+      <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" style="flex-shrink:0;color:#3b82f6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+      </svg>
+      <span class="sop-label">Review SOP</span>
+      <span class="sop-hint">— Standard Operating Procedure for contractor handoff</span>
+      <span class="sop-caret">▼</span>
+    </button>
+    <div class="sop-body" id="sop-body">
+      <div class="sop-steps">
+
+        <div class="sop-step">
+          <div class="sop-step-num">1</div>
+          <div class="sop-step-content">
+            <div class="sop-step-title">Check Duplicates</div>
+            <div class="sop-step-desc">
+              Look at the <strong style="color:#ef4444">Duplicate Rule #s</strong> metric card. If it's red, filter by that rule number and confirm the duplicate atoms aren't accidentally merging two distinct rules — they should share the same parent section.
+            </div>
+          </div>
+        </div>
+
+        <div class="sop-step">
+          <div class="sop-step-num">2</div>
+          <div class="sop-step-content">
+            <div class="sop-step-title">Filter In-Game Rules</div>
+            <div class="sop-step-desc">
+              Toggle <code>Show unnumbered only</code>. Skim the list and mentally skip administrative atoms (fees, roster limits, trading deadlines, jersey requirements). Those do not need a rule number.
+            </div>
+          </div>
+        </div>
+
+        <div class="sop-step">
+          <div class="sop-step-num">3</div>
+          <div class="sop-step-content">
+            <div class="sop-step-title">Fix Critical Rules</div>
+            <div class="sop-step-desc">
+              Use the search bar to hunt for critical mechanics by keyword: <code>collision</code> · <code>slide</code> · <code>interference</code> · <code>obstruction</code> · <code>ejection</code> · <code>appeal</code>. These are the atoms that must have a proper citation number.
+            </div>
+          </div>
+        </div>
+
+        <div class="sop-step">
+          <div class="sop-step-num">4</div>
+          <div class="sop-step-content">
+            <div class="sop-step-title">Update &amp; Save</div>
+            <div class="sop-step-desc">
+              Click the <strong style="color:#f59e0b">✏️ pencil icon</strong> on an unnumbered row. Look up the correct parent rule number in the source PDF. Type it in and press <code>Enter</code> or click <strong style="color:#22c55e">✓ Save</strong>. The row updates instantly.
+            </div>
+          </div>
+        </div>
+
+        <div class="sop-step step-ignore">
+          <div class="sop-step-num">5</div>
+          <div class="sop-step-content">
+            <div class="sop-step-title">Ignore the Rest</div>
+            <div class="sop-step-desc">
+              Leave glossary definitions, appendix items, and administrative bullets as unnumbered. Only in-game mechanics that an umpire or coach would cite during a game need a rule number.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
 
   <!-- Metrics bar -->
@@ -500,6 +656,25 @@ let password    = sessionStorage.getItem('admin_pw') ?? '';
 let leagues     = [];
 let allAtoms    = [];    // full list from API
 let shownAtoms  = [];    // after filter
+
+// ── SOP panel ─────────────────────────────────────────────────────────────────
+
+function toggleSop() {
+  const bar = document.getElementById('sop-bar');
+  const btn = bar.querySelector('.sop-toggle');
+  const isOpen = bar.classList.toggle('open');
+  btn.setAttribute('aria-expanded', isOpen);
+  sessionStorage.setItem('sop_open', isOpen ? '1' : '');
+}
+
+// Restore SOP state across page loads
+if (sessionStorage.getItem('sop_open') === '1') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const bar = document.getElementById('sop-bar');
+    const btn = bar?.querySelector('.sop-toggle');
+    if (bar) { bar.classList.add('open'); btn?.setAttribute('aria-expanded', 'true'); }
+  });
+}
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
