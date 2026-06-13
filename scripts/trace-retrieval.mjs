@@ -1,37 +1,45 @@
 /**
- * scripts/trace-retrieval.mjs
+ * Trace the production rule_units retrieval + draft + verifier pipeline.
  *
- * Full pipeline trace for a hardcoded question.
- * Replicates fetchSourceSpans + verifier exactly as ask-v2.js does,
- * logging every intermediate step so we can pinpoint the failure.
- *
- * Usage: node scripts/trace-retrieval.mjs
+ * Usage:
+ *   node scripts/trace-retrieval.mjs
  */
 
-import pg         from 'pg';
-import Anthropic  from '@anthropic-ai/sdk';
+import pg from 'pg';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
 
-// ── Load .env.local ───────────────────────────────────────────────────────────
 const __dirname = dirname(fileURLToPath(import.meta.url));
-try {
-  const lines = readFileSync(resolve(__dirname, '../.env.local'), 'utf8').split('\n');
-  for (const l of lines) {
-    const t = l.trim(); if (!t || t.startsWith('#')) continue;
-    const eq = t.indexOf('='); if (eq < 0) continue;
-    const k = t.slice(0, eq).trim();
-    let v = t.slice(eq + 1).trim();
-    if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) v = v.slice(1, -1);
-    if (!process.env[k]) process.env[k] = v;
-  }
-} catch { /* rely on env */ }
 
-// ── Config ────────────────────────────────────────────────────────────────────
-const QUESTION    = 'What are the requirements for player jerseys and caps?';
+function loadLocalEnv() {
+  try {
+    for (const line of readFileSync(resolve(__dirname, '../.env.local'), 'utf8').split('\n')) {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) continue;
+      const eq = t.indexOf('=');
+      if (eq < 0) continue;
+      const k = t.slice(0, eq).trim();
+      let v = t.slice(eq + 1).trim();
+      if ((v.startsWith('"') && v.endsWith('"')) || (v.startsWith("'") && v.endsWith("'"))) {
+        v = v.slice(1, -1);
+      }
+      process.env[k] ??= v;
+    }
+  } catch {}
+}
+
+loadLocalEnv();
+
+const QUESTION = 'is there a uniform rule?';
 const LEAGUE_SLUG = 'bamsbl';
-const LINE        = '─'.repeat(70);
+const LINE = '─'.repeat(78);
+
+const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const FTS_STOP_WORDS = new Set([
   'a','an','the','is','are','was','were','be','been','being',
@@ -42,10 +50,11 @@ const FTS_STOP_WORDS = new Set([
   'when','where','why','how','and','but','or','nor','for','yet','so',
   'in','on','at','to','of','by','from','up','about','into','through',
   'there','here','not','no','if','then','than','as','with','any','all',
+  'rule','rules','ruling','rulings','league','leagues',
 ]);
 
-function buildOrFallbackQuery(q) {
-  const words = q
+function buildOrFallbackQuery(question) {
+  const words = question
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
@@ -53,169 +62,64 @@ function buildOrFallbackQuery(q) {
   return [...new Set(words)].join(' | ');
 }
 
-// ── DB ────────────────────────────────────────────────────────────────────────
-const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
-const db   = await pool.connect();
-
-console.log(LINE);
-console.log('TRACE: ' + QUESTION);
-console.log(LINE);
-
-// Step 0: active version
-const { rows: [ver] } = await db.query(`
-  SELECT rv.id, rv.status
-  FROM rulebook_versions rv
-  JOIN leagues l ON l.id = rv.league_id
-  WHERE l.slug = $1 AND rv.status = 'active'
-`, [LEAGUE_SLUG]);
-if (!ver) { console.error('No active version!'); process.exit(1); }
-console.log(`\n[STEP 0] Active version: ${ver.id}`);
-
-const VID = ver.id;
-
-// ── Step 1: Pass 1 FTS (AND) ──────────────────────────────────────────────────
-const SPAN_COLS = `
-  SELECT
-    rs.id AS source_id, rs.exact_text, rs.page_start, rs.section_path,
-    string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers
-  FROM rule_sources rs
-  JOIN rule_documents rd ON rd.id = rs.document_id
-  JOIN rule_source_links rsl ON rsl.source_id = rs.id
-  JOIN rules r ON r.id = rsl.rule_id
-  WHERE rd.version_id = $2 AND r.rulebook_version_id = $2
-`;
-
-// Show what plainto_tsquery expands to
-const { rows: [tsqRow] } = await db.query(
-  `SELECT plainto_tsquery('english', $1)::text AS tsq`, [QUESTION],
-);
-console.log(`\n[STEP 1] Pass 1 — plainto_tsquery (AND) expansion:`);
-console.log(`  Input : "${QUESTION}"`);
-console.log(`  TSQuery: ${tsqRow.tsq}`);
-
-let pass1Rows = [];
-try {
-  const { rows } = await db.query(`
-    ${SPAN_COLS}
-      AND to_tsvector('english', rs.exact_text) @@ plainto_tsquery('english', $1)
-    GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-    ORDER BY ts_rank(to_tsvector('english', rs.exact_text), plainto_tsquery('english', $1)) DESC
-    LIMIT 8
-  `, [QUESTION, VID]);
-  pass1Rows = rows;
-} catch (e) {
-  console.log(`  !! Pass 1 SQL ERROR: ${e.message}`);
-}
-console.log(`  Result: ${pass1Rows.length} span(s)`);
-if (pass1Rows.length > 0) {
-  pass1Rows.forEach((r, i) => console.log(`    [${i+1}] rules=${r.rule_numbers || '(none)'} | ${r.exact_text.slice(0,100).replace(/\n/g,' ')}`));
+function vectorLiteral(values) {
+  return `[${values.map(v => Number.isFinite(v) ? v : 0).join(',')}]`;
 }
 
-// ── Step 2: Pass 2 FTS (OR) ───────────────────────────────────────────────────
-const orTerms = buildOrFallbackQuery(QUESTION);
-console.log(`\n[STEP 2] Pass 2 — OR-fallback keyword extraction:`);
-console.log(`  OR terms string : "${orTerms}"`);
+function buildAnswerPrompt(units) {
+  const excerptBlock = units.length === 0
+    ? '(No matching rule units found in the rulebook for this question. You must respond that no applicable rule was found.)'
+    : units.map((u, i) => {
+        const page = u.page_start != null ? ` — p.${u.page_start}` : '';
+        return `[Source ${i + 1}] Rule ${u.rule_number}${page}:\n"${u.full_text}"`;
+      }).join('\n\n');
 
-let pass2Rows = [];
-if (pass1Rows.length === 0) {
-  // Show what to_tsquery expands the OR terms to
-  try {
-    const { rows: [orTsqRow] } = await db.query(
-      `SELECT to_tsquery('english', $1)::text AS tsq`, [orTerms],
-    );
-    console.log(`  to_tsquery result: ${orTsqRow.tsq}`);
-  } catch (e) {
-    console.log(`  !! to_tsquery expansion ERROR: ${e.message}`);
-  }
+  return `You are an expert baseball rules official for the Bay Area Men's Senior Baseball League.
 
-  try {
-    const { rows } = await db.query(`
-      ${SPAN_COLS}
-        AND to_tsvector('english', rs.exact_text) @@ to_tsquery('english', $1)
-      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-      ORDER BY ts_rank(to_tsvector('english', rs.exact_text), to_tsquery('english', $1)) DESC
-      LIMIT 8
-    `, [orTerms, VID]);
-    pass2Rows = rows;
-  } catch (e) {
-    console.log(`  !! Pass 2 SQL ERROR: ${e.message}`);
-  }
-  console.log(`  Result: ${pass2Rows.length} span(s)`);
-  if (pass2Rows.length > 0) {
-    pass2Rows.forEach((r, i) => console.log(`    [${i+1}] rules=${r.rule_numbers || '(none)'} | ${r.exact_text.slice(0,100).replace(/\n/g,' ')}`));
-  }
-} else {
-  console.log('  (skipped — Pass 1 succeeded)');
-}
+Your job: answer the umpire's question using ONLY the complete rulebook rule units shown below.
 
-// ── Step 3: Full exact_text of retrieved spans ────────────────────────────────
-const spans = pass1Rows.length > 0 ? pass1Rows : pass2Rows;
-console.log(`\n[STEP 3] EXACT exact_text of ${spans.length} retrieved span(s):`);
-if (spans.length === 0) {
-  console.log('  !! ZERO SPANS — model will say "no rule found". Pipeline ends here.');
-} else {
-  spans.forEach((s, i) => {
-    console.log(`\n  ── Span ${i+1} [${s.source_id}] rule_numbers=${s.rule_numbers || '(none)'} ──`);
-    console.log(s.exact_text);
-  });
-}
-
-if (spans.length === 0) {
-  db.release(); await pool.end();
-  console.log('\n' + LINE);
-  console.log('DIAGNOSIS: Retrieval returns 0 spans. Nothing to send to verifier.');
-  console.log(LINE);
-  process.exit(0);
-}
-
-// ── Step 4: Build draft prompt (matches ask-v2 buildSpanPrompt) ───────────────
-const excerptBlock = spans.map((s, i) => {
-  const ruleRef  = (s.rule_numbers ?? '').replace(/,/g, ' /').trim() || 'Unnumbered';
-  const pageNote = s.page_start != null ? ` — p.${s.page_start}` : '';
-  return `[Source ${i+1}] Rule ${ruleRef}${pageNote}:\n"${s.exact_text}"`;
-}).join('\n\n');
-
-const draftPrompt = `You are an expert baseball rules official for the BAMSBL.
-
-Your job: answer the umpire's question using ONLY the verbatim source excerpts from the official rulebook shown below.
-
-RULEBOOK SOURCE EXCERPTS (${spans.length} retrieved):
+RULEBOOK RULE UNITS (${units.length} retrieved):
 ${excerptBlock}
 
 QUESTION: ${QUESTION}
 
 Instructions:
-- Answer ONLY from the source excerpts above. Do NOT cite, invent, or infer rules that do not appear in the excerpts.
-- If no excerpt covers the question, respond with exactly: "I could not find a specific rule about this in the loaded rulebook."
+- Answer ONLY from the rule units above. Do NOT cite, invent, or infer rules that do not appear in the rule units.
+- If no rule unit covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
+- Never mention retrieval internals or source availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the excerpts show".
 - Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
 
-**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately.
+**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the rule units.
 
-**The Book:** Provide the official citation(s) using these exact formats:
-- If the source excerpt has a clear rule number (e.g. "305"): **Official Rule [Number]:** "[Exact verbatim quote from the source excerpt]"`;
+**The Book:** On a new line after The Ruling, provide the official citation(s) using this exact format:
 
-console.log(`\n[STEP 4] Draft prompt sent to Sonnet (${draftPrompt.length} chars):`);
-console.log(LINE);
-console.log(draftPrompt);
-console.log(LINE);
+**Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the rule unit]"
 
-// ── Step 5: Call Sonnet for draft ─────────────────────────────────────────────
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+CRITICAL rules for The Book citation:
+- Use the rule number exactly as it appears in the source label.
+- The quoted text MUST be copied character-for-character from the rule unit.
+- Every factual rule requirement mentioned in The Ruling must have a matching citation line in The Book. If you mention a pitcher-specific uniform rule, cite that pitcher rule too.
+- Never add words or ellipses inside the quote that are not in the original.
 
-console.log('\n[STEP 5] Calling draft model (Sonnet)…');
-const draftMsg = await anthropic.messages.create({
-  model:      process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6',
-  max_tokens: 1024,
-  messages:   [{ role: 'user', content: draftPrompt }],
-});
-const draftAnswer = draftMsg.content[0]?.text?.trim() ?? '';
-console.log('\n  DRAFT ANSWER:');
-console.log(LINE);
-console.log(draftAnswer);
-console.log(LINE);
+Answer:`;
+}
 
-// ── Step 6: Build verifier prompt ─────────────────────────────────────────────
-const VERIFIER_SYSTEM = `You are a strict fact-checking verifier for a baseball rules Q&A system.
+function buildVerifierPrompt(draftAnswer, units) {
+  const sourceBlock = units
+    .map(u => `[Source ${u.id}]\nRule ${u.rule_number}:\n"${u.full_text}"`)
+    .join('\n\n');
+
+  return `DRAFT ANSWER TO VERIFY:
+${draftAnswer}
+
+ALLOWED SOURCE EXCERPTS:
+${sourceBlock}
+
+Verify every factual claim in the draft answer against the source excerpts above.
+Return JSON only.`;
+}
+
+const VERIFIER_SYSTEM_PROMPT = `You are a strict fact-checking verifier for a baseball rules Q&A system.
 
 You will receive:
 1. A DRAFT ANSWER produced by an AI assistant.
@@ -228,81 +132,161 @@ CRITICAL RULES:
 - Use ONLY the provided source excerpts. Do NOT draw on your own baseball knowledge.
 - A claim is "supported" only if a source excerpt explicitly states the same fact.
 - Reasonable inferences and implications do NOT count as supported.
-- If the draft correctly says "I could not find a specific rule about this", return status "no_rule_found".
+- If the draft correctly says no applicable rule was found, return status "no_rule_found".
 
 PARTIAL OR INCOMPLETE SOURCE TEXT:
-- If the source text partially addresses the question (e.g., acknowledges a rule or category
-  exists but does not list every sub-bullet or detail), do NOT mark the answer "unsupported".
-- If every claim the draft actually makes is backed by the source text, return "approved" —
-  even if the answer is incomplete relative to the full rule.
-- If the draft is correct but explicitly notes that details are missing or that the full rule
-  could not be found in the retrieved text, return "needs_fact".
-- Reserve "unsupported" ONLY for answers that assert or invent facts that are NOT present
-  anywhere in the provided source excerpts, or that directly contradict the sources.
+- If every claim the draft actually makes is backed by the source text, return "approved" — even if the answer is incomplete relative to the full rule.
+- If the draft is correct but explicitly notes that details are missing or that the full rule could not be found in the retrieved text, return "needs_fact".
+- Reserve "unsupported" ONLY for answers that assert or invent facts that are NOT present anywhere in the provided source excerpts, or that directly contradict the sources.
 
 Return ONLY valid JSON — no preamble, no markdown:
 {
   "status": "approved" | "unsupported" | "needs_fact" | "no_rule_found",
-  "claims": [{ "claim": "...", "supported": true|false, "source_ids": ["..."] }],
-  "unsupported_claims": ["..."],
+  "claims": [
+    {
+      "claim": "<exact factual claim from the draft>",
+      "supported": true | false,
+      "source_ids": ["<uuid of supporting source, or empty array if unsupported>"]
+    }
+  ],
+  "unsupported_claims": ["<verbatim list of unsupported claim texts>"],
   "confidence": "high" | "medium" | "low"
 }`;
 
-const sourceBlock = spans
-  .map(s => {
-    const ruleRef = (s.rule_numbers ?? '').replace(/,/g, ' /').trim() || 'Unnumbered';
-    return `[Source ${s.source_id}]\nRule ${ruleRef}:\n"${s.exact_text}"`;
-  })
-  .join('\n\n');
+async function main() {
+  const client = await pool.connect();
+  try {
+    console.log(LINE);
+    console.log(`TRACE: ${QUESTION}`);
+    console.log(LINE);
 
-const verifierUserMsg = `DRAFT ANSWER TO VERIFY:
-${draftAnswer}
+    const { rows: [active] } = await client.query(`
+      SELECT rv.id AS version_id
+      FROM rulebook_versions rv
+      JOIN leagues l ON l.id = rv.league_id
+      WHERE l.slug=$1 AND rv.status='active'
+    `, [LEAGUE_SLUG]);
+    if (!active) throw new Error('No active BAMSBL rulebook version.');
+    console.log(`\n[STEP 0] Active version: ${active.version_id}`);
 
-ALLOWED SOURCE EXCERPTS:
-${sourceBlock}
+    const orTerms = buildOrFallbackQuery(QUESTION);
+    const { rows: [strict] } = await client.query(
+      `SELECT plainto_tsquery('english', $1)::text AS q`,
+      [QUESTION],
+    );
+    const { rows: [orq] } = await client.query(
+      `SELECT CASE WHEN $1::text = '' THEN '' ELSE to_tsquery('english', $1)::text END AS q`,
+      [orTerms],
+    );
+    console.log(`\n[STEP 1] Lexical queries`);
+    console.log(`  plainto_tsquery: ${strict.q}`);
+    console.log(`  OR terms: "${orTerms}"`);
+    console.log(`  to_tsquery: ${orq.q}`);
 
-Verify every factual claim in the draft answer against the source excerpts above.
-Return JSON only.`;
+    console.log(`\n[STEP 2] Creating query embedding`);
+    const embeddingResult = await openai.embeddings.create({
+      model: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+      input: QUESTION,
+      dimensions: 1536,
+    });
+    const queryEmbedding = vectorLiteral(embeddingResult.data[0].embedding);
+    console.log(`  embedding dimensions: ${embeddingResult.data[0].embedding.length}`);
 
-console.log(`\n[STEP 6] Verifier prompt sent to Opus (${verifierUserMsg.length} chars):`);
-console.log(LINE);
-console.log(verifierUserMsg);
-console.log(LINE);
+    console.log(`\n[STEP 3] Hybrid vector + FTS rule_units retrieval`);
+    const { rows: units } = await client.query(`
+      WITH vector_candidates AS (
+        SELECT
+          id,
+          rule_number,
+          title,
+          full_text,
+          page_start,
+          page_end,
+          source_ids,
+          1 - (embedding <=> $3::vector) AS vector_score,
+          ts_rank(search_vector, plainto_tsquery('english', $1)) AS strict_fts_score,
+          CASE
+            WHEN $4::text = '' THEN 0
+            ELSE ts_rank(search_vector, to_tsquery('english', $4))
+          END AS or_fts_score
+        FROM rule_units
+        WHERE rulebook_version_id = $2
+          AND embedding IS NOT NULL
+        ORDER BY embedding <=> $3::vector
+        LIMIT 20
+      )
+      SELECT *,
+        (
+          vector_score * 0.75 +
+          greatest(strict_fts_score, or_fts_score) * 0.25 +
+          CASE WHEN lower($1) LIKE '%' || lower(rule_number) || '%' THEN 0.15 ELSE 0 END
+        ) AS hybrid_score
+      FROM vector_candidates
+      ORDER BY hybrid_score DESC, vector_score DESC
+      LIMIT 3
+    `, [QUESTION, active.version_id, queryEmbedding, orTerms]);
 
-// ── Step 7: Call Opus verifier ────────────────────────────────────────────────
-console.log('\n[STEP 7] Calling verifier model (Opus)…');
-const verifyMsg = await anthropic.messages.create({
-  model:      process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8',
-  max_tokens: 1024,
-  system:     VERIFIER_SYSTEM,
-  messages:   [{ role: 'user', content: verifierUserMsg }],
-});
-const verifyRaw = verifyMsg.content[0]?.text?.trim() ?? '';
-console.log('\n  VERIFIER RAW RESPONSE:');
-console.log(LINE);
-console.log(verifyRaw);
-console.log(LINE);
+    console.log(`  result count: ${units.length}`);
+    for (const [i, u] of units.entries()) {
+      console.log(`  #${i + 1} rule=${u.rule_number} title=${u.title ?? '(untitled)'} vector=${Number(u.vector_score).toFixed(4)} fts=${Number(Math.max(u.strict_fts_score, u.or_fts_score)).toFixed(4)} hybrid=${Number(u.hybrid_score).toFixed(4)}`);
+      console.log(`     text=${JSON.stringify(u.full_text)}`);
+    }
 
-// Parse
-let verifierAudit = null;
-try {
-  const start = verifyRaw.indexOf('{');
-  const end   = verifyRaw.lastIndexOf('}');
-  verifierAudit = JSON.parse(verifyRaw.slice(start, end + 1));
-} catch (e) {
-  console.log('  !! JSON parse error:', e.message);
+    const answerPrompt = buildAnswerPrompt(units);
+    console.log(`\n[STEP 4] Exact draft prompt sent to Sonnet`);
+    console.log(LINE);
+    console.log(answerPrompt);
+    console.log(LINE);
+
+    console.log(`\n[STEP 5] Calling draft model`);
+    const draft = await anthropic.messages.create({
+      model: process.env.ANTHROPIC_ANSWER_MODEL || 'claude-sonnet-4-6',
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: answerPrompt }],
+    });
+    const draftAnswer = draft.content[0]?.text?.trim() || '';
+    console.log('\nDRAFT ANSWER:');
+    console.log(LINE);
+    console.log(draftAnswer);
+    console.log(LINE);
+
+    const verifierPrompt = buildVerifierPrompt(draftAnswer, units);
+    console.log(`\n[STEP 6] Exact verifier prompt sent to Opus`);
+    console.log(LINE);
+    console.log(verifierPrompt);
+    console.log(LINE);
+
+    console.log(`\n[STEP 7] Calling verifier`);
+    const verifier = await anthropic.messages.create({
+      model: process.env.ANTHROPIC_VERIFY_MODEL || 'claude-opus-4-8',
+      max_tokens: 1024,
+      system: VERIFIER_SYSTEM_PROMPT,
+      messages: [{ role: 'user', content: verifierPrompt }],
+    });
+    const verifierRaw = verifier.content[0]?.text?.trim() || '';
+    console.log('\nVERIFIER RAW RESPONSE:');
+    console.log(LINE);
+    console.log(verifierRaw);
+    console.log(LINE);
+
+    let parsed = null;
+    try {
+      parsed = JSON.parse(verifierRaw.slice(verifierRaw.indexOf('{'), verifierRaw.lastIndexOf('}') + 1));
+    } catch {}
+    const blocked = !parsed || parsed.status === 'unsupported' || (parsed.unsupported_claims?.length ?? 0) > 0;
+    console.log(`\n[STEP 8] GATE RESULT`);
+    console.log(`  verifier_status: ${parsed?.status ?? 'PARSE_ERROR'}`);
+    console.log(`  unsupported_claims: ${JSON.stringify(parsed?.unsupported_claims ?? [])}`);
+    console.log(`  BLOCKED: ${blocked}`);
+    console.log(`  USER WOULD SEE: ${blocked ? 'blocked / unverifiable' : 'answer delivered'}`);
+    console.log('\n' + LINE);
+  } finally {
+    client.release();
+    await pool.end();
+  }
 }
 
-const isBlocked = verifierAudit
-  ? (verifierAudit.status === 'unsupported' || (verifierAudit.unsupported_claims?.length ?? 0) > 0)
-  : true;
-
-console.log(`\n[STEP 8] GATE RESULT:`);
-console.log(`  verifier_status  : ${verifierAudit?.status ?? 'PARSE_ERROR'}`);
-console.log(`  unsupported_claims: ${JSON.stringify(verifierAudit?.unsupported_claims ?? [])}`);
-console.log(`  BLOCKED          : ${isBlocked}`);
-console.log(`  USER WOULD SEE   : ${isBlocked ? '❌ blocked — unverifiable' : '✅ passes — answer delivered'}`);
-
-db.release();
-await pool.end();
-console.log('\n' + LINE + '\nTrace complete.\n');
+main().catch(err => {
+  console.error(err);
+  process.exit(1);
+});

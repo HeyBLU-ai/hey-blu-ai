@@ -437,4 +437,221 @@ node scripts/evict-cache.mjs  # or DELETE FROM verified_answer_cache WHERE leagu
 
 ---
 
-*Report generated from active codebase state, commit `7603158` and subsequent fix. All bugs documented from conversation history and git log.*
+---
+
+## 17. June 13 Corrective Addendum: The Previous "Resolved" Labels Are Not Evidence
+
+This report should not be read as proof that the application is working. It is an incident history and architectural diagnosis. Several earlier fixes improved individual failure modes but did not establish product correctness.
+
+The latest observed production failure is decisive:
+
+**User question:** `is there a uniform rule?`
+
+**Expected answer from source PDF:**
+
+```text
+300. EQUIPMENT AND UNIFORMS
+305. Uniforms (revised 2023)
+All teams participating in BAMSBL sanctioned games must meet league
+uniform requirements. Every player must have a number on the jersey,
+matching caps, pants & jerseys in presentable condition for each
+regular season and playoff game. Each team has until the 4th league
+game to get all their players (drafted or traded) properly attired.
+```
+
+There is also a separate, narrower rule:
+
+```text
+330. Pitcher’s Uniform
+Pitchers cannot wear white or gray sleeves, batting gloves, sweat
+bands, jewelry or other distracting items while on the mound.
+```
+
+The app answered with Rule 330 only, and then exposed internal retrieval failure language:
+
+```text
+However, the excerpts I have access to only show the rule's title and number...
+```
+
+That response is unacceptable for a consumer product. A user should never be told about "excerpts I have access to." The application must either answer from the rulebook or clearly state that the rulebook does not contain an applicable rule.
+
+### Verified Retrieval Trace After Latest Patch
+
+A direct database trace of the current FTS shape for `is there a uniform rule?` produced:
+
+```text
+orTerms: uniform
+pass1 tsquery: 'uniform' & 'rule'
+pass1 count: 0
+pass2 tsquery: 'uniform'
+pass2 count: 6
+
+P2 #1 rules=305 text="305. Uniforms"
+P2 #2 rules=305 text="All teams participating in BAMSBL sanctioned games must meet league uniform requirements."
+P2 #3 rules=330 text="330. Pitcher’s Uniform"
+P2 #4 rules=300 text="300. Equipment and Uniforms"
+P2 #5 rules=(none) text="Each team must have a minimum of 8 eligible players present, in full uniform..."
+P2 #6 rules=305 text="Every player must have a number on the jersey, matching caps, pants & jerseys..."
+```
+
+This proves the problem is no longer simply "zero retrieval." The current system retrieves fragments of the right rule but presents them as independent evidence chunks, ranks heading-only fragments above full rule text, and gives the model no reliable reconstructed rule unit.
+
+### Correct Root Cause
+
+The application retrieves and reasons over fragmented `rule_sources`, not complete rules.
+
+For Rule 305, the source PDF contains one logical rule:
+
+```text
+305. Uniforms (revised 2023)
+All teams participating...
+Every player...
+Each team has until...
+```
+
+The database stores this as separate searchable fragments:
+
+```text
+305. Uniforms
+All teams participating in BAMSBL sanctioned games must meet league uniform requirements.
+Every player must have a number on the jersey...
+```
+
+The RAG layer then asks the model to answer from whichever fragments FTS ranks highest. That is the wrong abstraction. Users ask for rules, not fragments. The retrieval unit should be a complete reconstructed rule section.
+
+### Correct Recovery Plan
+
+1. Build a canonical `rule_units` layer.
+
+   Each row should represent one complete citeable rule:
+
+   ```text
+   league_slug
+   rulebook_version_id
+   rule_number
+   title
+   parent_rule_number
+   full_text
+   page_start
+   page_end
+   source_ids[]
+   atom_ids[]
+   section_path
+   ```
+
+   Rule 305 should become one retrieval unit containing heading + all body sentences. Rule 330 should become a separate retrieval unit containing the pitcher-specific restriction text.
+
+2. Stop ranking heading-only spans against body paragraphs.
+
+   A heading like `330. Pitcher’s Uniform` is metadata. It should help retrieve the rule unit, but it should not be treated as a complete answer source unless no body exists.
+
+3. Replace span retrieval with rule-unit retrieval.
+
+   Search should return candidate rules, not raw fragments. The model prompt should receive:
+
+   ```text
+   [Rule 305] Uniforms (p.14)
+   305. Uniforms (revised 2023)
+   All teams...
+   Every player...
+   Each team...
+   ```
+
+   If a rule has multiple source spans, hydrate the full rule before generation.
+
+4. Add hybrid retrieval.
+
+   Use lexical retrieval for exact rule numbers and terms, but add dense embeddings for semantic matches:
+
+   ```text
+   query -> embedding -> top 20 rule_units by vector similarity
+         -> FTS/BM25 re-rank
+         -> hydrate top 5 complete rule_units
+         -> generate answer
+         -> verify answer
+   ```
+
+   This is necessary because users will ask `uniform`, `jersey`, `caps`, `attire`, `equipment`, and `properly dressed` for the same concept.
+
+5. Add a deterministic citation verifier before the LLM verifier.
+
+   Before Opus is asked to judge claims, validate:
+
+   - Every cited rule number exists in `rule_units`.
+   - Every quoted sentence is an exact substring of `rule_units.full_text`.
+   - If the answer cites a heading-only rule unit while another same-topic rule unit has body text, flag it.
+
+6. Remove internal retrieval language from consumer answers.
+
+   The answer prompt must forbid phrases like:
+
+   ```text
+   excerpts I have access to
+   retrieved portions
+   loaded rulebook
+   based on what was provided
+   ```
+
+   Consumer-facing wording should be:
+
+   ```text
+   The BAMSBL rulebook says...
+   ```
+
+   or:
+
+   ```text
+   I could not find an applicable BAMSBL rule for that question.
+   ```
+
+7. Rebuild the eval suite around real user phrasing.
+
+   Add adversarial-but-normal questions:
+
+   ```text
+   is there a uniform rule?
+   do players need matching hats?
+   what do jerseys need?
+   can pitchers wear white sleeves?
+   is there an equipment and uniforms section?
+   when does a team need uniforms by?
+   what does rule 305 say?
+   what does rule 330 say?
+   ```
+
+   These must assert both the expected rule number and exact expected quote.
+
+8. Do not trust deploy success as product success.
+
+   Every retrieval change must be validated against:
+
+   - local DB trace
+   - local API response
+   - production API response
+   - browser UI response after service worker/cache refresh
+
+   A GitHub push and Vercel deployment are not evidence that the product works.
+
+### Immediate Product Bar
+
+For the uniform question, acceptable behavior is:
+
+```text
+The Ruling:
+Yes. BAMSBL has a uniform rule. Rule 305 requires teams in BAMSBL sanctioned games to meet league uniform requirements. Every player must have a jersey number, and caps, pants, and jerseys must match and be in presentable condition for each regular season and playoff game. Teams have until the 4th league game to get all drafted or traded players properly attired.
+
+The Book:
+Official Rule 305 (p.[page]): "305. Uniforms (revised 2023) All teams participating in BAMSBL sanctioned games must meet league uniform requirements. Every player must have a number on the jersey, matching caps, pants & jerseys in presentable condition for each regular season and playoff game. Each team has until the 4th league game to get all their players (drafted or traded) properly attired."
+```
+
+Rule 330 may be included only as a separate narrower note:
+
+```text
+Official Rule 330 (p.[page]): "330. Pitcher’s Uniform Pitchers cannot wear white or gray sleeves, batting gloves, sweat bands, jewelry or other distracting items while on the mound."
+```
+
+The current app cannot reliably guarantee this until it retrieves complete rule units instead of fragmented source spans.
+
+---
+
+*Report generated from active codebase state, commit `7603158` and subsequent fix. Corrective addendum added after the Rule 305 / Rule 330 failure demonstrated that prior fixes did not establish product correctness.*

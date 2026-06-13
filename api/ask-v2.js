@@ -155,10 +155,15 @@ class RulebookNotActiveError extends Error {
 
 // ── Anthropic client ─────────────────────────────────────────────────────────
 import Anthropic from '@anthropic-ai/sdk';
+import OpenAI from 'openai';
 import { runVerifier, isVerifierBlocked } from './verifier.js';
 
 const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
+  : null;
+
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null;
 
 // ── Play-Type Classifier ─────────────────────────────────────────────────────
@@ -325,78 +330,120 @@ function buildOrFallbackQuery(question) {
   return [...new Set(words)].join(' | ');
 }
 
+function vectorLiteral(values) {
+  return `[${values.map(v => Number.isFinite(v) ? v : 0).join(',')}]`;
+}
+
+async function embedQuestion(question) {
+  if (!openai) return null;
+  try {
+    const result = await openai.embeddings.create({
+      model: process.env.OPENAI_EMBEDDING_MODEL || 'text-embedding-3-small',
+      input: question,
+      dimensions: 1536,
+    });
+    const embedding = result.data[0]?.embedding;
+    return embedding?.length === 1536 ? vectorLiteral(embedding) : null;
+  } catch (err) {
+    console.warn('[ask-v2] Question embedding failed — using lexical rule_units retrieval:', err.message);
+    return null;
+  }
+}
+
+function ruleUnitRowToSpan(row) {
+  return {
+    source_id:    row.unit_id,
+    unit_id:      row.unit_id,
+    exact_text:   row.full_text,
+    page_start:   row.page_start,
+    page_end:     row.page_end,
+    section_path: row.title,
+    rule_numbers: row.rule_number,
+    source_ids:   row.source_ids ?? [],
+    rank:         Number(row.rank ?? row.hybrid_score ?? row.vector_score ?? row.fts_score ?? 0),
+  };
+}
+
 async function fetchSourceSpans(dbClient, activeVersionId, question) {
-  // ── Build doc-vector SQL helper ───────────────────────────────────────────
-  // We search on exact_text PLUS all linked rule titles concatenated.
-  // This means a span titled "Player jersey numbers and uniform condition
-  // requirements" will match a query for "uniform" even if the span body
-  // only says "Every player must have a number on the jersey…".
-  //
-  // The CTE pre-computes the combined tsvector once so we don't repeat the
-  // heavy string concatenation in both HAVING and ORDER BY.
-  const spanCte = (tsqueryExpr) => `
-    WITH span_docs AS (
-      SELECT
-        rs.id                                               AS source_id,
-        rs.exact_text,
-        rs.page_start,
-        rs.section_path,
-        string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers,
-        to_tsvector('english',
-          rs.exact_text || ' ' || string_agg(coalesce(r.title, ''), ' ')
-        )                                                   AS doc_vec
-      FROM rule_sources      rs
-      JOIN rule_documents    rd  ON rd.id         = rs.document_id
-      JOIN rule_source_links rsl ON rsl.source_id = rs.id
-      JOIN rules             r   ON r.id          = rsl.rule_id
-      WHERE rd.version_id         = $2
-        AND r.rulebook_version_id = $2
-      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-    )
-    SELECT source_id, exact_text, page_start, section_path, rule_numbers
-    FROM   span_docs
-    WHERE  doc_vec @@ ${tsqueryExpr}
-    ORDER BY ts_rank(doc_vec, ${tsqueryExpr}) DESC
-    LIMIT  8
-  `;
+  const orTerms = buildOrFallbackQuery(question);
+  const embedding = await embedQuestion(question);
 
   try {
-    // ── Pass 1: strict AND — all question terms must appear ──────────────────
-    // plainto_tsquery is computed inside SQL so the tsquery type is unambiguous.
-    // e.g. "is there a uniform rule" → 'uniform' & 'rule'
-    const pass1 = await dbClient.query(
-      spanCte(`plainto_tsquery('english', $1)`),
-      [question, activeVersionId],
-    );
+    if (embedding) {
+      const res = await dbClient.query(`
+        WITH vector_candidates AS (
+          SELECT
+            id AS unit_id,
+            rule_number,
+            title,
+            full_text,
+            page_start,
+            page_end,
+            source_ids,
+            1 - (embedding <=> $3::vector) AS vector_score,
+            ts_rank(search_vector, plainto_tsquery('english', $1)) AS strict_fts_score,
+            CASE
+              WHEN $4::text = '' THEN 0
+              ELSE ts_rank(search_vector, to_tsquery('english', $4))
+            END AS or_fts_score
+          FROM rule_units
+          WHERE rulebook_version_id = $2
+            AND embedding IS NOT NULL
+          ORDER BY embedding <=> $3::vector
+          LIMIT 20
+        )
+        SELECT *,
+          (
+            vector_score * 0.75 +
+            greatest(strict_fts_score, or_fts_score) * 0.25 +
+            CASE WHEN lower($1) LIKE '%' || lower(rule_number) || '%' THEN 0.15 ELSE 0 END
+          ) AS hybrid_score
+        FROM vector_candidates
+        ORDER BY hybrid_score DESC, vector_score DESC
+        LIMIT 3
+      `, [question, activeVersionId, embedding, orTerms]);
 
-    if (pass1.rows.length > 0) {
-      return { spans: pass1.rows, method: 'fts' };
+      if (res.rows.length > 0) {
+        return {
+          spans:  res.rows.map(ruleUnitRowToSpan),
+          method: 'rule_units_vector_hybrid',
+        };
+      }
     }
 
-    // ── Pass 2: OR fallback — any significant content word matches ────────────
-    // Triggered when the AND query returns nothing (e.g. question says "uniform
-    // rule" but no single span has both "uniform" AND "rule" in its text+title).
-    // High-frequency domain noise words (rule, rules, league) are filtered via
-    // FTS_STOP_WORDS so they don't drown subject-matter terms in the ranking.
-    const orTerms = buildOrFallbackQuery(question);
-    if (!orTerms) return { spans: [], method: 'fts_no_keywords' };
+    const lexical = await dbClient.query(`
+      SELECT
+        id AS unit_id,
+        rule_number,
+        title,
+        full_text,
+        page_start,
+        page_end,
+        source_ids,
+        greatest(
+          ts_rank(search_vector, plainto_tsquery('english', $1)),
+          CASE
+            WHEN $3::text = '' THEN 0
+            ELSE ts_rank(search_vector, to_tsquery('english', $3))
+          END
+        ) AS rank
+      FROM rule_units
+      WHERE rulebook_version_id = $2
+        AND (
+          search_vector @@ plainto_tsquery('english', $1)
+          OR ($3::text <> '' AND search_vector @@ to_tsquery('english', $3))
+        )
+      ORDER BY rank DESC
+      LIMIT 3
+    `, [question, activeVersionId, orTerms]);
 
-    const pass2 = await dbClient.query(
-      spanCte(`to_tsquery('english', $1)`),
-      [orTerms, activeVersionId],
-    );
-
-    if (pass2.rows.length > 0) {
-      console.log(`[ask-v2] FTS OR-fallback triggered for "${question.slice(0,60)}" → ${pass2.rows.length} spans (terms: ${orTerms})`);
-    }
     return {
-      spans:  pass2.rows,
-      method: pass2.rows.length > 0 ? 'fts_or_fallback' : 'fts_no_match',
+      spans:  lexical.rows.map(ruleUnitRowToSpan),
+      method: lexical.rows.length > 0 ? 'rule_units_fts' : 'rule_units_no_match',
     };
-
   } catch (err) {
-    console.warn('[ask-v2] FTS query failed — returning empty spans:', err.message);
-    return { spans: [], method: 'fts_error' };
+    console.warn('[ask-v2] rule_units retrieval failed — returning empty spans:', err.message);
+    return { spans: [], method: 'rule_units_error' };
   }
 }
 
@@ -429,21 +476,22 @@ function buildSpanPrompt({ spans, leagueName, sanitizedQuestion, extraContext, c
 
   return `You are an expert baseball rules official for the ${leagueName}.
 
-Your job: answer the umpire's question using ONLY the verbatim source excerpts from the official rulebook shown below.
+Your job: answer the umpire's question using ONLY the complete rulebook rule units shown below.
 
 ${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
 ${historyText}\
-RULEBOOK SOURCE EXCERPTS (${spans.length} retrieved):
+RULEBOOK RULE UNITS (${spans.length} retrieved):
 ${excerptBlock}
 
 QUESTION: ${sanitizedQuestion}
 
 Instructions:
-- Answer ONLY from the source excerpts above. Do NOT cite, invent, or infer rules that do not appear in the excerpts.
-- If no excerpt covers the question, respond with exactly: "I could not find a specific rule about this in the loaded rulebook."
+- Answer ONLY from the rule units above. Do NOT cite, invent, or infer rules that do not appear in the rule units.
+- If no rule unit covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
+- Never mention retrieval internals or source availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the excerpts show".
 - Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
 
-**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the source excerpts.
+**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the rule units.
 
 **The Book:** On a new line after The Ruling, provide the official citation(s) using these exact formats:
 
@@ -455,6 +503,7 @@ CRITICAL rules for The Book citation:
 - Use the rule number exactly as it appears in the excerpt label (e.g. "505", "4.01"). If no number is present, use the "Official Rulebook Excerpt" format above.
 - The quoted text MUST be copied character-for-character from the source excerpt — do not paraphrase, summarise, rearrange words, or change punctuation. The downstream verifier checks this quote byte-for-byte against the original source.
 - If the answer draws on multiple rules, provide one citation line per rule in the same format.
+- Every factual rule requirement mentioned in The Ruling must have a matching citation line in The Book. If you mention a pitcher-specific uniform rule, cite that pitcher rule too.
 - Never add words or ellipses inside the quote that are not in the original.
 
 Answer:`;
