@@ -44,6 +44,16 @@ CRITICAL RULES:
 - Reasonable inferences and implications do NOT count as supported.
 - If the draft correctly says "I could not find a specific rule about this", return status "no_rule_found".
 
+PARTIAL OR INCOMPLETE SOURCE TEXT:
+- If the source text partially addresses the question (e.g., acknowledges a rule or category
+  exists but does not list every sub-bullet or detail), do NOT mark the answer "unsupported".
+- If every claim the draft actually makes is backed by the source text, return "approved" —
+  even if the answer is incomplete relative to the full rule.
+- If the draft is correct but explicitly notes that details are missing or that the full rule
+  could not be found in the retrieved text, return "needs_fact".
+- Reserve "unsupported" ONLY for answers that assert or invent facts that are NOT present
+  anywhere in the provided source excerpts, or that directly contradict the sources.
+
 Return ONLY valid JSON — no preamble, no markdown:
 {
   "status": "approved" | "unsupported" | "needs_fact" | "no_rule_found",
@@ -59,9 +69,12 @@ Return ONLY valid JSON — no preamble, no markdown:
 }
 
 Status definitions:
-  "approved"      — All claims are directly supported by the source excerpts.
-  "unsupported"   — One or more claims are not supported or contradict the sources.
-  "needs_fact"    — Answer is correct as far as it goes but requires context not in sources.
+  "approved"      — Every claim in the draft is directly supported by the source excerpts
+                    (answer may be incomplete, but nothing in it is invented or contradicted).
+  "unsupported"   — One or more claims invent or assert facts NOT present in the sources,
+                    or directly contradict the sources. Do NOT use this for partial answers.
+  "needs_fact"    — Draft is accurate as far as it goes but explicitly acknowledges that
+                    the retrieved text is incomplete or that additional details are missing.
   "no_rule_found" — Draft correctly states no applicable rule was found in the rulebook.`;
 
 // ── Prompt builder ────────────────────────────────────────────────────────────
