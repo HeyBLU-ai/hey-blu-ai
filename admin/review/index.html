@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HeyBLU Admin — Review Cockpit</title>
+  <meta name="robots" content="noindex, nofollow">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0f1e;
+      color: #e2e8f0;
+      min-height: 100vh;
+      line-height: 1.5;
+    }
+
+    /* ── Header ── */
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo svg { color: #3b82f6; flex-shrink: 0; }
+    .logo h1 { font-size: 18px; font-weight: 700; color: #f1f5f9; }
+    .logo span { font-size: 13px; color: #64748b; font-weight: 400; margin-left: 4px; }
+    .header-right { display: flex; gap: 10px; align-items: center; }
+    .header-link {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .header-link:hover { border-color: #64748b; color: #e2e8f0; }
+    #logout-btn { display: none; }
+
+    /* ── Password gate ── */
+    #auth-gate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 57px);
+    }
+    .auth-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 40px;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+    .auth-card .icon { font-size: 40px; margin-bottom: 16px; }
+    .auth-card h2 { font-size: 20px; margin-bottom: 6px; color: #f1f5f9; }
+    .auth-card p  { color: #64748b; font-size: 14px; margin-bottom: 24px; }
+    .auth-error   { color: #ef4444; font-size: 13px; margin-top: 10px; min-height: 20px; }
+    .btn-primary {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 11px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background .15s;
+    }
+    .btn-primary:hover { background: #2563eb; }
+
+    /* ── Main App ── */
+    #app { display: none; flex-direction: column; }
+    #app.visible { display: flex; }
+
+    /* ── Toolbar ── */
+    .toolbar {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 12px 24px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .toolbar label { font-size: 12px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    .toolbar select {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      min-width: 200px;
+    }
+    .toolbar select:focus { border-color: #3b82f6; }
+    .toolbar select option { background: #1e293b; }
+    .toolbar-sep { width: 1px; background: #1e293b; height: 24px; }
+
+    /* ── Metrics ── */
+    .metrics-bar {
+      background: #0a0f1e;
+      border-bottom: 1px solid #1e293b;
+      padding: 16px 24px;
+      display: none;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .metrics-bar.visible { display: flex; }
+    .metric-card {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 14px 20px;
+      min-width: 140px;
+      flex: 1;
+    }
+    .metric-card .metric-label { font-size: 11px; color: #64748b; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin-bottom: 4px; }
+    .metric-card .metric-value { font-size: 28px; font-weight: 700; color: #f1f5f9; line-height: 1; }
+    .metric-card.metric-warn .metric-value { color: #f59e0b; }
+    .metric-card.metric-danger .metric-value { color: #ef4444; }
+    .metric-card.metric-ok .metric-value { color: #22c55e; }
+
+    /* ── Filter bar ── */
+    .filter-bar {
+      background: #0a0f1e;
+      border-bottom: 1px solid #1e293b;
+      padding: 10px 24px;
+      display: none;
+      gap: 12px;
+      align-items: center;
+    }
+    .filter-bar.visible { display: flex; }
+    .filter-bar input[type="text"] {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+      flex: 1;
+      max-width: 360px;
+    }
+    .filter-bar input[type="text"]:focus { border-color: #3b82f6; }
+    .filter-bar input[type="text"]::placeholder { color: #475569; }
+    .filter-toggle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+    .filter-toggle input[type="checkbox"] { accent-color: #f59e0b; width: 15px; height: 15px; }
+    .count-badge {
+      margin-left: auto;
+      font-size: 12px;
+      color: #475569;
+    }
+    .count-badge strong { color: #94a3b8; }
+
+    /* ── Table ── */
+    .table-wrap {
+      flex: 1;
+      overflow: hidden;
+      display: none;
+      flex-direction: column;
+    }
+    .table-wrap.visible { display: flex; }
+    .table-scroll {
+      overflow-y: auto;
+      flex: 1;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      table-layout: fixed;
+    }
+    col.col-rn    { width: 110px; }
+    col.col-title { width: 230px; }
+    col.col-body  { width: auto; }
+    col.col-acts  { width: 60px; }
+    thead th {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 1px solid #1e293b;
+      color: #64748b;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      font-weight: 600;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid #0f172a; }
+    tbody tr:hover td { background: rgba(30,41,59,.5); }
+    tbody tr.row-unnumbered td { background: rgba(245,158,11,.04); }
+    tbody tr.row-unnumbered:hover td { background: rgba(245,158,11,.08); }
+    tbody td { padding: 9px 14px; vertical-align: top; color: #94a3b8; }
+
+    td.td-rn {
+      font-weight: 700;
+      white-space: nowrap;
+      width: 110px;
+    }
+    td.td-rn .rn-display { color: #93c5fd; }
+    td.td-rn .rn-empty   { color: #f59e0b; font-style: italic; }
+
+    td.td-title { color: #e2e8f0; }
+    td.td-title .title-text {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    td.td-body .body-preview {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: #64748b;
+      font-size: 12px;
+      line-height: 1.45;
+      cursor: pointer;
+    }
+    td.td-body .body-full {
+      display: none;
+      white-space: pre-wrap;
+      color: #94a3b8;
+      font-size: 12px;
+      line-height: 1.6;
+      background: #020817;
+      border-radius: 6px;
+      padding: 10px;
+      margin-top: 6px;
+      max-height: 260px;
+      overflow-y: auto;
+    }
+    tr.row-expanded td.td-body .body-preview { display: none; }
+    tr.row-expanded td.td-body .body-full    { display: block; }
+    td.td-body .expand-hint {
+      font-size: 11px;
+      color: #334155;
+      margin-top: 2px;
+      cursor: pointer;
+    }
+    td.td-body .expand-hint:hover { color: #64748b; }
+
+    td.td-acts { text-align: center; }
+
+    /* ── Edit widget ── */
+    .edit-wrap { display: flex; flex-direction: column; gap: 4px; }
+    .edit-input {
+      background: #1e293b;
+      border: 1px solid #3b82f6;
+      border-radius: 6px;
+      color: #f1f5f9;
+      padding: 5px 8px;
+      font-size: 13px;
+      font-weight: 700;
+      outline: none;
+      width: 80px;
+    }
+    .edit-actions { display: flex; gap: 4px; }
+    .btn-save {
+      background: #16a34a;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-save:hover { background: #15803d; }
+    .btn-cancel {
+      background: #334155;
+      color: #94a3b8;
+      border: none;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+    .btn-cancel:hover { background: #475569; }
+    .edit-error { font-size: 11px; color: #ef4444; }
+
+    /* Edit pencil in acts column */
+    .btn-edit {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #64748b;
+      border-radius: 5px;
+      padding: 4px 7px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-edit:hover { border-color: #f59e0b; color: #f59e0b; }
+
+    /* ── Empty / loading states ── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 72px 24px;
+      color: #334155;
+      text-align: center;
+    }
+    .empty-state .es-icon { font-size: 52px; margin-bottom: 14px; }
+    .empty-state p { font-size: 14px; }
+    .loading-row td { text-align: center; color: #475569; padding: 32px; }
+
+    /* ── Spinner ── */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid #334155;
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-size: 13px;
+      color: #e2e8f0;
+      max-width: 320px;
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .2s, transform .2s;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.toast-ok   { border-color: #16a34a; color: #86efac; }
+    #toast.toast-err  { border-color: #dc2626; color: #fca5a5; }
+
+    /* ── Form elements (auth) ── */
+    input[type="password"], .auth-card input {
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 9px 12px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s;
+      margin-bottom: 14px;
+    }
+    input[type="password"]:focus { border-color: #3b82f6; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+    </svg>
+    <h1>HeyBLU Admin <span>/ Review Cockpit</span></h1>
+  </div>
+  <div class="header-right">
+    <a class="header-link" href="/admin" id="admin-link" style="display:none">← Ingest</a>
+    <button class="header-link" id="logout-btn" onclick="logout()">Sign out</button>
+  </div>
+</header>
+
+<!-- Password Gate -->
+<div id="auth-gate">
+  <div class="auth-card">
+    <div class="icon">🔍</div>
+    <h2>Review Cockpit</h2>
+    <p>Enter your admin password to inspect and correct ingested rulebook atoms.</p>
+    <input type="password" id="password-input" placeholder="Admin password" autocomplete="current-password">
+    <button class="btn-primary" onclick="login()">Sign in →</button>
+    <div id="auth-error" class="auth-error"></div>
+  </div>
+</div>
+
+<!-- Main App -->
+<div id="app">
+
+  <!-- Toolbar: League + Version pickers -->
+  <div class="toolbar">
+    <label for="league-select">League</label>
+    <select id="league-select" onchange="onLeagueChange()">
+      <option value="">— select a league —</option>
+    </select>
+
+    <div class="toolbar-sep"></div>
+
+    <label for="version-select">Version</label>
+    <select id="version-select" disabled onchange="onVersionChange()">
+      <option value="">— select a version —</option>
+    </select>
+  </div>
+
+  <!-- Metrics bar -->
+  <div class="metrics-bar" id="metrics-bar">
+    <div class="metric-card" id="metric-total">
+      <div class="metric-label">Total Atoms</div>
+      <div class="metric-value" id="val-total">—</div>
+    </div>
+    <div class="metric-card" id="metric-unnumbered">
+      <div class="metric-label">Unnumbered</div>
+      <div class="metric-value" id="val-unnumbered">—</div>
+    </div>
+    <div class="metric-card" id="metric-duplicates">
+      <div class="metric-label">Duplicate Rule #s</div>
+      <div class="metric-value" id="val-duplicates">—</div>
+    </div>
+    <div class="metric-card" style="background:transparent;border-color:transparent;flex:2;min-width:0;">
+      <div class="metric-label">Version ID</div>
+      <div style="font-size:11px;color:#475569;margin-top:4px;font-family:monospace;word-break:break-all;" id="val-version-id">—</div>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="filter-bar" id="filter-bar">
+    <input type="text" id="filter-input" placeholder="Search rule number, title, or body…" oninput="applyFilter()">
+    <label class="filter-toggle">
+      <input type="checkbox" id="unnumbered-only" onchange="applyFilter()">
+      Show unnumbered only
+    </label>
+    <div class="count-badge" id="count-badge"></div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-wrap" id="table-wrap">
+    <div class="table-scroll" id="table-scroll">
+      <div class="empty-state" id="empty-state">
+        <div class="es-icon">📋</div>
+        <p>Select a league and version above to begin reviewing atoms.</p>
+      </div>
+      <table id="atoms-table" style="display:none">
+        <colgroup>
+          <col class="col-rn">
+          <col class="col-title">
+          <col class="col-body">
+          <col class="col-acts">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Rule #</th>
+            <th>Title</th>
+            <th>Body (click to expand)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="atoms-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+
+let password    = sessionStorage.getItem('admin_pw') ?? '';
+let leagues     = [];
+let allAtoms    = [];    // full list from API
+let shownAtoms  = [];    // after filter
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+async function login() {
+  const pw = document.getElementById('password-input').value.trim();
+  if (!pw) return;
+
+  const res = await fetch('/api/admin/leagues', {
+    headers: { 'Authorization': `Bearer ${pw}` },
+  });
+
+  if (res.status === 401) {
+    document.getElementById('auth-error').textContent = 'Incorrect password.';
+    return;
+  }
+  if (!res.ok) {
+    document.getElementById('auth-error').textContent = 'Server error — try again.';
+    return;
+  }
+
+  password = pw;
+  sessionStorage.setItem('admin_pw', pw);
+  const data = await res.json();
+  leagues = data.leagues ?? [];
+  showApp();
+}
+
+function logout() {
+  sessionStorage.removeItem('admin_pw');
+  password = '';
+  location.reload();
+}
+
+document.getElementById('password-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
+});
+
+// ── Startup ───────────────────────────────────────────────────────────────────
+
+(async () => {
+  if (!password) return;
+  const res = await fetch('/api/admin/leagues', {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+  if (!res.ok) { password = ''; sessionStorage.removeItem('admin_pw'); return; }
+  const data = await res.json();
+  leagues = data.leagues ?? [];
+  showApp();
+})();
+
+// ── Show app ──────────────────────────────────────────────────────────────────
+
+function showApp() {
+  document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('app').classList.add('visible');
+  document.getElementById('logout-btn').style.display = '';
+  document.getElementById('admin-link').style.display = '';
+
+  // Populate league dropdown
+  const sel = document.getElementById('league-select');
+  sel.innerHTML =
+    '<option value="">— select a league —</option>' +
+    leagues
+      .filter(l => l.rule_count > 0)
+      .map(l => `<option value="${esc(l.slug)}">${esc(l.name)} (${l.rule_count} atoms)</option>`)
+      .join('');
+
+  // Make the app area full height
+  document.getElementById('table-wrap').classList.add('visible');
+}
+
+// ── League change → load versions ─────────────────────────────────────────────
+
+async function onLeagueChange() {
+  const slug = document.getElementById('league-select').value;
+  const vSel = document.getElementById('version-select');
+
+  vSel.innerHTML = '<option value="">Loading…</option>';
+  vSel.disabled  = true;
+  hideMetrics();
+  clearTable();
+
+  if (!slug) {
+    vSel.innerHTML = '<option value="">— select a version —</option>';
+    return;
+  }
+
+  const res = await fetch(`/api/admin/review?league=${encodeURIComponent(slug)}`, {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+  if (!res.ok) { showToast('Failed to load versions', 'err'); return; }
+
+  const data = await res.json();
+  const versions = data.versions ?? [];
+
+  if (!versions.length) {
+    vSel.innerHTML = '<option value="">No versions found</option>';
+    return;
+  }
+
+  vSel.innerHTML =
+    '<option value="">— select a version —</option>' +
+    versions.map(v => {
+      const date  = new Date(v.created_at).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
+      const label = `${v.status.toUpperCase()} — ${date} (${v.atom_count} atoms)`;
+      return `<option value="${esc(v.id)}">${esc(label)}</option>`;
+    }).join('');
+
+  // Auto-select the active version if present
+  const active = versions.find(v => v.status === 'active');
+  if (active) {
+    vSel.value = active.id;
+    await loadVersion(active.id);
+  }
+
+  vSel.disabled = false;
+}
+
+// ── Version change → load atoms ───────────────────────────────────────────────
+
+async function onVersionChange() {
+  const vId = document.getElementById('version-select').value;
+  if (!vId) { hideMetrics(); clearTable(); return; }
+  await loadVersion(vId);
+}
+
+async function loadVersion(vId) {
+  hideMetrics();
+  showTableLoading();
+
+  const res = await fetch(`/api/admin/review?version_id=${encodeURIComponent(vId)}`, {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+  if (!res.ok) { showToast('Failed to load atoms', 'err'); clearTable(); return; }
+
+  const data = await res.json();
+  allAtoms = data.atoms ?? [];
+
+  // Metrics
+  const unnumCount = data.unnumbered ?? 0;
+  const dupCount   = data.duplicateRuleNumbers ?? 0;
+  document.getElementById('val-total').textContent      = (data.total ?? 0).toLocaleString();
+  document.getElementById('val-unnumbered').textContent = unnumCount.toLocaleString();
+  document.getElementById('val-duplicates').textContent = dupCount.toLocaleString();
+  document.getElementById('val-version-id').textContent = vId;
+
+  // Color coding
+  const mUn  = document.getElementById('metric-unnumbered');
+  const mDup = document.getElementById('metric-duplicates');
+  mUn.className  = 'metric-card' + (unnumCount > 0    ? ' metric-warn'   : ' metric-ok');
+  mDup.className = 'metric-card' + (dupCount   > 0    ? ' metric-danger' : ' metric-ok');
+
+  document.getElementById('metrics-bar').classList.add('visible');
+  document.getElementById('filter-bar').classList.add('visible');
+
+  // Clear filter
+  document.getElementById('filter-input').value = '';
+  document.getElementById('unnumbered-only').checked = false;
+
+  applyFilter();
+}
+
+// ── Filter ────────────────────────────────────────────────────────────────────
+
+function applyFilter() {
+  const q        = document.getElementById('filter-input').value.toLowerCase().trim();
+  const unnOnly  = document.getElementById('unnumbered-only').checked;
+
+  shownAtoms = allAtoms.filter(a => {
+    if (unnOnly && (a.rule_number?.trim())) return false;
+    if (!q) return true;
+    return (
+      (a.rule_number ?? '').toLowerCase().includes(q) ||
+      (a.title       ?? '').toLowerCase().includes(q) ||
+      (a.body        ?? '').toLowerCase().includes(q)
+    );
+  });
+
+  const badge = document.getElementById('count-badge');
+  badge.innerHTML = shownAtoms.length === allAtoms.length
+    ? `<strong>${allAtoms.length.toLocaleString()}</strong> atoms`
+    : `<strong>${shownAtoms.length.toLocaleString()}</strong> of ${allAtoms.length.toLocaleString()} atoms`;
+
+  renderTable(shownAtoms);
+}
+
+// ── Render table ──────────────────────────────────────────────────────────────
+
+function renderTable(atoms) {
+  const tbody = document.getElementById('atoms-tbody');
+  const tbl   = document.getElementById('atoms-table');
+  const empty = document.getElementById('empty-state');
+
+  if (!atoms.length) {
+    tbl.style.display   = 'none';
+    empty.style.display = '';
+    empty.innerHTML = `<div class="es-icon">🔍</div><p>No atoms match your filter.</p>`;
+    return;
+  }
+
+  tbl.style.display   = '';
+  empty.style.display = 'none';
+
+  tbody.innerHTML = atoms.map(a => {
+    const rn        = a.rule_number?.trim();
+    const isUnn     = !rn;
+    const rnDisplay = isUnn
+      ? `<span class="rn-empty">—</span>`
+      : `<span class="rn-display">${esc(rn)}</span>`;
+
+    const bodyText  = a.body ?? '';
+    const bodyPrev  = esc(bodyText.slice(0, 220));
+    const bodyFull  = esc(bodyText);
+    const hasMore   = bodyText.length > 220;
+
+    return `
+      <tr class="${isUnn ? 'row-unnumbered' : ''}" data-id="${esc(a.id)}" data-rn="${esc(rn ?? '')}">
+        <td class="td-rn">
+          <div class="rn-cell" id="rn-cell-${esc(a.id)}">${rnDisplay}</div>
+        </td>
+        <td class="td-title">
+          <div class="title-text">${esc(a.title ?? '')}</div>
+        </td>
+        <td class="td-body" onclick="toggleBodyRow(this.closest('tr'))">
+          <div class="body-preview">${bodyPrev}${hasMore ? '…' : ''}</div>
+          <div class="body-full">${bodyFull}</div>
+          ${hasMore ? `<div class="expand-hint">▸ click to expand</div>` : ''}
+        </td>
+        <td class="td-acts">
+          ${isUnn
+            ? `<button class="btn-edit" title="Set rule number" onclick="startEdit('${esc(a.id)}')">✏️</button>`
+            : ''}
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function toggleBodyRow(tr) {
+  tr.classList.toggle('row-expanded');
+}
+
+// ── Inline edit ───────────────────────────────────────────────────────────────
+
+function startEdit(atomId) {
+  const cell = document.getElementById(`rn-cell-${atomId}`);
+  if (!cell) return;
+
+  // Get the current rule number from the row's data attribute
+  const tr  = cell.closest('tr');
+  const cur = tr.dataset.rn ?? '';
+
+  cell.innerHTML = `
+    <div class="edit-wrap">
+      <input class="edit-input" id="edit-input-${atomId}" type="text"
+             value="${esc(cur)}" placeholder="e.g. 505" autocomplete="off"
+             onkeydown="handleEditKey(event, '${atomId}')">
+      <div class="edit-actions">
+        <button class="btn-save"   onclick="saveEdit('${atomId}')">✓ Save</button>
+        <button class="btn-cancel" onclick="cancelEdit('${atomId}', '${esc(cur)}')">✗</button>
+      </div>
+      <div class="edit-error" id="edit-err-${atomId}"></div>
+    </div>
+  `;
+
+  // Also hide the pencil button
+  const actsTd = tr.querySelector('.td-acts');
+  if (actsTd) actsTd.innerHTML = '';
+
+  document.getElementById(`edit-input-${atomId}`)?.focus();
+}
+
+function handleEditKey(e, atomId) {
+  if (e.key === 'Enter')  saveEdit(atomId);
+  if (e.key === 'Escape') {
+    const tr  = document.getElementById(`rn-cell-${atomId}`)?.closest('tr');
+    const cur = tr?.dataset.rn ?? '';
+    cancelEdit(atomId, cur);
+  }
+}
+
+async function saveEdit(atomId) {
+  const input = document.getElementById(`edit-input-${atomId}`);
+  if (!input) return;
+
+  const newRn = input.value.trim();
+  if (!newRn) {
+    document.getElementById(`edit-err-${atomId}`).textContent = 'Enter a rule number.';
+    return;
+  }
+
+  input.disabled = true;
+
+  const res = await fetch('/api/admin/review', {
+    method:  'PATCH',
+    headers: {
+      'Content-Type':  'application/json',
+      'Authorization': `Bearer ${password}`,
+    },
+    body: JSON.stringify({ id: atomId, rule_number: newRn }),
+  });
+
+  if (!res.ok) {
+    input.disabled = false;
+    const errBody = await res.json().catch(() => ({}));
+    document.getElementById(`edit-err-${atomId}`).textContent =
+      errBody.error ?? `Save failed (${res.status})`;
+    return;
+  }
+
+  // Update atom in local state so filter refresh retains the change
+  const atom = allAtoms.find(a => a.id === atomId);
+  if (atom) atom.rule_number = newRn;
+
+  // Update the row in-place (skip full re-render for smoothness)
+  const cell = document.getElementById(`rn-cell-${atomId}`);
+  cell.innerHTML = `<span class="rn-display">${esc(newRn)}</span>`;
+
+  const tr = cell.closest('tr');
+  tr.classList.remove('row-unnumbered');
+  tr.dataset.rn = newRn;
+  const actsTd = tr.querySelector('.td-acts');
+  if (actsTd) actsTd.innerHTML = '';
+
+  // Update metrics
+  refreshMetricsLocally();
+  showToast(`✓ Rule ${newRn} saved`, 'ok');
+}
+
+function cancelEdit(atomId, originalRn) {
+  const cell = document.getElementById(`rn-cell-${atomId}`);
+  if (!cell) return;
+  const isUnn = !originalRn;
+
+  cell.innerHTML = isUnn
+    ? `<span class="rn-empty">—</span>`
+    : `<span class="rn-display">${esc(originalRn)}</span>`;
+
+  const tr = cell.closest('tr');
+  const actsTd = tr.querySelector('.td-acts');
+  if (actsTd) {
+    actsTd.innerHTML = isUnn
+      ? `<button class="btn-edit" title="Set rule number" onclick="startEdit('${esc(atomId)}')">✏️</button>`
+      : '';
+  }
+}
+
+// ── Metrics refresh (local, no API call) ──────────────────────────────────────
+
+function refreshMetricsLocally() {
+  const unnumCount = allAtoms.filter(a => !a.rule_number?.trim()).length;
+  const numFreq    = {};
+  for (const a of allAtoms) {
+    const rn = a.rule_number?.trim();
+    if (rn) numFreq[rn] = (numFreq[rn] ?? 0) + 1;
+  }
+  const dupCount = Object.values(numFreq).filter(n => n > 1).length;
+
+  document.getElementById('val-unnumbered').textContent = unnumCount.toLocaleString();
+  document.getElementById('val-duplicates').textContent = dupCount.toLocaleString();
+
+  const mUn  = document.getElementById('metric-unnumbered');
+  const mDup = document.getElementById('metric-duplicates');
+  mUn.className  = 'metric-card' + (unnumCount > 0 ? ' metric-warn'   : ' metric-ok');
+  mDup.className = 'metric-card' + (dupCount   > 0 ? ' metric-danger' : ' metric-ok');
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function hideMetrics() {
+  document.getElementById('metrics-bar').classList.remove('visible');
+  document.getElementById('filter-bar').classList.remove('visible');
+}
+
+function clearTable() {
+  allAtoms   = [];
+  shownAtoms = [];
+  document.getElementById('atoms-table').style.display = 'none';
+  const empty = document.getElementById('empty-state');
+  empty.style.display  = '';
+  empty.innerHTML = `
+    <div class="es-icon">📋</div>
+    <p>Select a league and version above to begin reviewing atoms.</p>
+  `;
+}
+
+function showTableLoading() {
+  document.getElementById('atoms-table').style.display = '';
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('atoms-tbody').innerHTML = `
+    <tr class="loading-row">
+      <td colspan="4"><span class="spinner"></span> Loading atoms…</td>
+    </tr>
+  `;
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Toast ─────────────────────────────────────────────────────────────────────
+
+let toastTimer = null;
+function showToast(msg, type = 'ok') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = `show toast-${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, 3200);
+}
+</script>
+</body>
+</html>
