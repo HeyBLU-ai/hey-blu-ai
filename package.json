@@ -11,6 +11,7 @@
     "dev": "node -e \"console.log('vercel dev is running — open http://localhost:3000/rulebook'); process.stdin.resume()\"",
     "verify:models": "node scripts/verify-models.mjs",
     "smoke:ask-v2": "node scripts/smoke-ask-v2.mjs",
+    "smoke:legacy-ingest-disabled": "node scripts/smoke-legacy-ingest-disabled.mjs",
     "test:ingest:skeleton": "node scripts/test-ingest-skeleton.mjs",
     "test:ingest:pdf": "node scripts/test-parse-pdf.mjs",
     "test:ingest:docx": "node scripts/test-parse-docx.mjs",
