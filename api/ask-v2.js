@@ -293,6 +293,11 @@ async function resolveActiveVersion(dbClient, leagueSlug) {
  * @returns {{ spans: Object[], method: string }}
  */
 // English stop words excluded from the OR-fallback keyword extraction.
+// IMPORTANT: "rule" / "rules" / "ruling" are deliberately included here.
+// Every question to this app is a rules question, so those words appear in
+// virtually every source span and produce zero discriminating signal.
+// Including them in an OR query causes noise spans ("This rule is not…")
+// to rank above the actual subject-matter spans (uniforms, collisions, etc.).
 const FTS_STOP_WORDS = new Set([
   'a','an','the','is','are','was','were','be','been','being',
   'have','has','had','do','does','did','will','would','could','should',
@@ -302,6 +307,8 @@ const FTS_STOP_WORDS = new Set([
   'when','where','why','how','and','but','or','nor','for','yet','so',
   'in','on','at','to','of','by','from','up','about','into','through',
   'there','here','not','no','if','then','than','as','with','any','all',
+  // Rulebook-specific noise: appear in every span, provide no discrimination
+  'rule','rules','ruling','rulings','league','leagues',
 ]);
 
 /**
@@ -318,62 +325,69 @@ function buildOrFallbackQuery(question) {
   return [...new Set(words)].join(' | ');
 }
 
-// ── Shared span SELECT columns (version-scoped, joined through links) ─────────
-const SPAN_COLS = `
-  SELECT
-    rs.id                   AS source_id,
-    rs.exact_text,
-    rs.page_start,
-    rs.section_path,
-    string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers
-  FROM rule_sources      rs
-  JOIN rule_documents    rd  ON rd.id         = rs.document_id
-  JOIN rule_source_links rsl ON rsl.source_id = rs.id
-  JOIN rules             r   ON r.id          = rsl.rule_id
-  WHERE rd.version_id         = $2
-    AND r.rulebook_version_id = $2
-`;
-
 async function fetchSourceSpans(dbClient, activeVersionId, question) {
+  // ── Build doc-vector SQL helper ───────────────────────────────────────────
+  // We search on exact_text PLUS all linked rule titles concatenated.
+  // This means a span titled "Player jersey numbers and uniform condition
+  // requirements" will match a query for "uniform" even if the span body
+  // only says "Every player must have a number on the jersey…".
+  //
+  // The CTE pre-computes the combined tsvector once so we don't repeat the
+  // heavy string concatenation in both HAVING and ORDER BY.
+  const spanCte = (tsqueryExpr) => `
+    WITH span_docs AS (
+      SELECT
+        rs.id                                               AS source_id,
+        rs.exact_text,
+        rs.page_start,
+        rs.section_path,
+        string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers,
+        to_tsvector('english',
+          rs.exact_text || ' ' || string_agg(coalesce(r.title, ''), ' ')
+        )                                                   AS doc_vec
+      FROM rule_sources      rs
+      JOIN rule_documents    rd  ON rd.id         = rs.document_id
+      JOIN rule_source_links rsl ON rsl.source_id = rs.id
+      JOIN rules             r   ON r.id          = rsl.rule_id
+      WHERE rd.version_id         = $2
+        AND r.rulebook_version_id = $2
+      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
+    )
+    SELECT source_id, exact_text, page_start, section_path, rule_numbers
+    FROM   span_docs
+    WHERE  doc_vec @@ ${tsqueryExpr}
+    ORDER BY ts_rank(doc_vec, ${tsqueryExpr}) DESC
+    LIMIT  8
+  `;
+
   try {
     // ── Pass 1: strict AND — all question terms must appear ──────────────────
-    // plainto_tsquery converts the free-text question to a boolean AND query:
-    //   "is there a uniform rule" → 'uniform' & 'rule'
-    // This is computed inside SQL so the tsquery type is unambiguous.
-    const pass1 = await dbClient.query(`
-      ${SPAN_COLS}
-        AND to_tsvector('english', rs.exact_text) @@ plainto_tsquery('english', $1)
-      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-      ORDER BY ts_rank(to_tsvector('english', rs.exact_text),
-                       plainto_tsquery('english', $1)) DESC
-      LIMIT 8
-    `, [question, activeVersionId]);
+    // plainto_tsquery is computed inside SQL so the tsquery type is unambiguous.
+    // e.g. "is there a uniform rule" → 'uniform' & 'rule'
+    const pass1 = await dbClient.query(
+      spanCte(`plainto_tsquery('english', $1)`),
+      [question, activeVersionId],
+    );
 
     if (pass1.rows.length > 0) {
       return { spans: pass1.rows, method: 'fts' };
     }
 
     // ── Pass 2: OR fallback — any significant content word matches ────────────
-    // Triggered when the AND query returns nothing (e.g. question contains
-    // "rule" but section headings only say "Uniforms", not "Uniform Rule").
-    // We extract content words from the question and OR them together so
-    // any single keyword match is sufficient.
+    // Triggered when the AND query returns nothing (e.g. question says "uniform
+    // rule" but no single span has both "uniform" AND "rule" in its text+title).
+    // High-frequency domain noise words (rule, rules, league) are filtered via
+    // FTS_STOP_WORDS so they don't drown subject-matter terms in the ranking.
     const orTerms = buildOrFallbackQuery(question);
     if (!orTerms) return { spans: [], method: 'fts_no_keywords' };
 
-    // to_tsquery is used (not plainto_tsquery) so we can inject | operators.
-    // Computed inside SQL to keep the type unambiguous.
-    const pass2 = await dbClient.query(`
-      ${SPAN_COLS}
-        AND to_tsvector('english', rs.exact_text) @@ to_tsquery('english', $1)
-      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-      ORDER BY ts_rank(to_tsvector('english', rs.exact_text),
-                       to_tsquery('english', $1)) DESC
-      LIMIT 8
-    `, [orTerms, activeVersionId]);
+    const pass2 = await dbClient.query(
+      spanCte(`to_tsquery('english', $1)`),
+      [orTerms, activeVersionId],
+    );
 
     if (pass2.rows.length > 0) {
-      console.log(`[ask-v2] FTS OR-fallback triggered for "${question.slice(0,60)}" → ${pass2.rows.length} spans`);
+      console.log(`[ask-v2] FTS OR-fallback triggered for "${question.slice(0,60)}" → ${pass2.rows.length} spans (terms: ${orTerms})`);
     }
     return {
       spans:  pass2.rows,
