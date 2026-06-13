@@ -18,6 +18,7 @@
     "test:ingest:warnings": "node scripts/test-parse-warnings.mjs",
     "test:ingest:spans": "node scripts/test-create-spans.mjs",
     "test:ingest:atoms": "node scripts/test-extract-atoms.mjs",
+    "test:extract": "node scripts/test-extract-atoms.mjs",
     "test:ingest:coverage": "node scripts/test-verify-coverage.mjs",
     "test:ingest:version": "node scripts/test-write-version.mjs",
     "activate:rulebook": "node scripts/activate-version.mjs",
