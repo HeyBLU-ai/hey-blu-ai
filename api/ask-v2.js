@@ -292,32 +292,85 @@ async function resolveActiveVersion(dbClient, leagueSlug) {
  * @param {string}        question         Plain-text question (used for plainto_tsquery)
  * @returns {{ spans: Object[], method: string }}
  */
+// English stop words excluded from the OR-fallback keyword extraction.
+const FTS_STOP_WORDS = new Set([
+  'a','an','the','is','are','was','were','be','been','being',
+  'have','has','had','do','does','did','will','would','could','should',
+  'may','might','shall','can','need','dare','ought','used',
+  'i','me','my','we','our','you','your','he','his','she','her','it','its',
+  'they','their','them','this','that','these','those','who','which','what',
+  'when','where','why','how','and','but','or','nor','for','yet','so',
+  'in','on','at','to','of','by','from','up','about','into','through',
+  'there','here','not','no','if','then','than','as','with','any','all',
+]);
+
+/**
+ * Extract the most meaningful content words from a question for the FTS
+ * OR-fallback query.  Returns words longer than 3 chars that are not stop
+ * words, joined with ' | ' for use in to_tsquery().
+ */
+function buildOrFallbackQuery(question) {
+  const words = question
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 3 && !FTS_STOP_WORDS.has(w));
+  return [...new Set(words)].join(' | ');
+}
+
+const SPANS_SQL = `
+  SELECT
+    rs.id                   AS source_id,
+    rs.exact_text,
+    rs.page_start,
+    rs.section_path,
+    string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers,
+    ts_rank(
+      to_tsvector('english', rs.exact_text),
+      $3
+    )                       AS rank
+  FROM rule_sources      rs
+  JOIN rule_documents    rd  ON rd.id          = rs.document_id
+  JOIN rule_source_links rsl ON rsl.source_id  = rs.id
+  JOIN rules             r   ON r.id           = rsl.rule_id
+  WHERE rd.version_id         = $2
+    AND r.rulebook_version_id = $2
+    AND to_tsvector('english', rs.exact_text) @@ $3
+  GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
+  ORDER BY rank DESC
+  LIMIT 8
+`;
+
 async function fetchSourceSpans(dbClient, activeVersionId, question) {
   try {
-    const res = await dbClient.query(`
-      SELECT
-        rs.id                   AS source_id,
-        rs.exact_text,
-        rs.page_start,
-        rs.section_path,
-        string_agg(r.rule_number, ',' ORDER BY r.rule_number) AS rule_numbers,
-        ts_rank(
-          to_tsvector('english', rs.exact_text),
-          plainto_tsquery('english', $1)
-        )                       AS rank
-      FROM rule_sources     rs
-      JOIN rule_documents   rd  ON rd.id          = rs.document_id
-      JOIN rule_source_links rsl ON rsl.source_id = rs.id
-      JOIN rules            r   ON r.id           = rsl.rule_id
-      WHERE rd.version_id         = $2
-        AND r.rulebook_version_id = $2
-        AND to_tsvector('english', rs.exact_text) @@ plainto_tsquery('english', $1)
-      GROUP BY rs.id, rs.exact_text, rs.page_start, rs.section_path
-      ORDER BY rank DESC
-      LIMIT 8
-    `, [question, activeVersionId]);
+    // ── Pass 1: strict AND — all question terms must appear ──────────────────
+    const strictTsq = await dbClient.query(
+      `SELECT plainto_tsquery('english', $1) AS q`, [question],
+    );
+    const strictQuery = strictTsq.rows[0].q;
+    const pass1 = await dbClient.query(SPANS_SQL, [question, activeVersionId, strictQuery]);
 
-    return { spans: res.rows, method: 'fts' };
+    if (pass1.rows.length > 0) {
+      return { spans: pass1.rows, method: 'fts' };
+    }
+
+    // ── Pass 2: OR fallback — any significant content word matches ────────────
+    // Triggered when the AND query returns nothing (e.g. question contains
+    // "rule" but the section headings only say "Uniforms", not "Uniform Rule").
+    const orTerms = buildOrFallbackQuery(question);
+    if (!orTerms) return { spans: [], method: 'fts_no_keywords' };
+
+    const orTsq = await dbClient.query(
+      `SELECT to_tsquery('english', $1) AS q`, [orTerms],
+    );
+    const orQuery = orTsq.rows[0].q;
+    const pass2 = await dbClient.query(SPANS_SQL, [question, activeVersionId, orQuery]);
+
+    if (pass2.rows.length > 0) {
+      console.log(`[ask-v2] FTS OR-fallback triggered for: "${question.slice(0,60)}" (${pass2.rows.length} spans)`);
+    }
+    return { spans: pass2.rows, method: pass2.rows.length > 0 ? 'fts_or_fallback' : 'fts_no_match' };
+
   } catch (err) {
     console.warn('[ask-v2] FTS query failed — returning empty spans:', err.message);
     return { spans: [], method: 'fts_error' };
