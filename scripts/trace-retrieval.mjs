@@ -96,9 +96,12 @@ Instructions:
 **Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the rule unit]"
 
 CRITICAL rules for The Book citation:
+- Default to concise answers. The Ruling should usually be 2-4 sentences. Do not list every exception, penalty, or sub-rule unless the user specifically asks for details, penalties, exceptions, or the full rule.
+- For broad existence questions like "is there a slide rule" or "is there a uniform rule", answer the direct question first and cite the controlling rule. Mention that more detail exists only if needed.
+- The Book should usually include 1 citation. Include a second citation only when it directly answers a distinct part of the user's question. Do not cite every supporting sentence.
 - Use the rule number exactly as it appears in the source label.
 - The quoted text MUST be copied character-for-character from the rule unit.
-- Every factual rule requirement mentioned in The Ruling must have a matching citation line in The Book. If you mention a pitcher-specific uniform rule, cite that pitcher rule too.
+- Every factual rule requirement mentioned in The Ruling must be supported by at least one citation in The Book, but do not expand the answer just because more source text was retrieved.
 - Never add words or ellipses inside the quote that are not in the original.
 
 Answer:`;
@@ -133,6 +136,10 @@ CRITICAL RULES:
 - A claim is "supported" only if a source excerpt explicitly states the same fact.
 - Reasonable inferences and implications do NOT count as supported.
 - If the draft correctly says no applicable rule was found, return status "no_rule_found".
+- Verify baseball rule content claims. Do NOT mark citation formatting as unsupported merely because
+  a page label, source label, or "Official Rule X" display string is not literally part of the quoted
+  rule text. Only mark citation details unsupported if the rule number is wrong or the quoted rule
+  text is not present in the allowed source excerpts.
 
 PARTIAL OR INCOMPLETE SOURCE TEXT:
 - If every claim the draft actually makes is backed by the source text, return "approved" — even if the answer is incomplete relative to the full rule.

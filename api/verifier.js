@@ -43,6 +43,10 @@ CRITICAL RULES:
 - A claim is "supported" only if a source excerpt explicitly states the same fact.
 - Reasonable inferences and implications do NOT count as supported.
 - If the draft correctly says "I could not find a specific rule about this", return status "no_rule_found".
+- Verify baseball rule content claims. Do NOT mark citation formatting as unsupported merely because
+  a page label, source label, or "Official Rule X" display string is not literally part of the quoted
+  rule text. Only mark citation details unsupported if the rule number is wrong or the quoted rule
+  text is not present in the allowed source excerpts.
 
 PARTIAL OR INCOMPLETE SOURCE TEXT:
 - If the source text partially addresses the question (e.g., acknowledges a rule or category

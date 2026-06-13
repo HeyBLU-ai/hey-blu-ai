@@ -500,10 +500,13 @@ Instructions:
   Do NOT print the word "Unnumbered" in the citation under any circumstances.
 
 CRITICAL rules for The Book citation:
+- Default to concise answers. The Ruling should usually be 2-4 sentences. Do not list every exception, penalty, or sub-rule unless the user specifically asks for details, penalties, exceptions, or the full rule.
+- For broad existence questions like "is there a slide rule" or "is there a uniform rule", answer the direct question first and cite the controlling rule. Mention that more detail exists only if needed.
+- The Book should usually include 1 citation. Include a second citation only when it directly answers a distinct part of the user's question. Do not cite every supporting sentence.
 - Use the rule number exactly as it appears in the excerpt label (e.g. "505", "4.01"). If no number is present, use the "Official Rulebook Excerpt" format above.
 - The quoted text MUST be copied character-for-character from the source excerpt — do not paraphrase, summarise, rearrange words, or change punctuation. The downstream verifier checks this quote byte-for-byte against the original source.
 - If the answer draws on multiple rules, provide one citation line per rule in the same format.
-- Every factual rule requirement mentioned in The Ruling must have a matching citation line in The Book. If you mention a pitcher-specific uniform rule, cite that pitcher rule too.
+- Every factual rule requirement mentioned in The Ruling must be supported by at least one citation in The Book, but do not expand the answer just because more source text was retrieved.
 - Never add words or ellipses inside the quote that are not in the original.
 
 Answer:`;
