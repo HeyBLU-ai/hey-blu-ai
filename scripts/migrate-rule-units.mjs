@@ -391,8 +391,12 @@ async function fetchLinkDerivedRuleGroups(client, versionId) {
   // Repair narrow heading-only rules whose body was extracted as an unnumbered
   // atom. Keep this deterministic; generic orphan matching produced false
   // positives for pitcher-related playoff eligibility text.
-  const orphanBodyHints = new Map([
-    ['330', 'Pitchers cannot wear white or gray'],
+  const orphanBodyHintsByRule = new Map([
+    ['330', ['Pitchers cannot wear white or gray']],
+    ['401', [
+      'The Home team on the official schedule shall occupy',
+      'The Visiting team shall occupy',
+    ]],
   ]);
 
   const { rows: orphanAtoms } = await client.query(`
@@ -410,29 +414,32 @@ async function fetchLinkDerivedRuleGroups(client, versionId) {
   for (const group of groups.values()) {
     const spans = uniqueByText(group.spans);
     if (spans.length !== 1) continue;
-    const hint = orphanBodyHints.get(group.ruleNumber);
-    if (!hint) continue;
-    const best = orphanAtoms.find(atom =>
-      cleanText(atom.body).startsWith(hint) ||
-      cleanText(atom.exact_text).startsWith(hint)
-    );
-    if (!best) continue;
+    const hints = orphanBodyHintsByRule.get(group.ruleNumber);
+    if (!hints) continue;
 
-    group.rules.push({
-      id: best.atom_id,
-      title: best.title,
-      body: best.body,
-    });
-    if (best.source_id && best.exact_text) {
-      group.spans.push({
-        id: best.source_id,
-        exact_text: best.exact_text,
-        page_start: best.page_start,
-        page_end: best.page_end,
-        section_path: best.section_path,
-        char_start: best.char_start,
-        char_end: best.char_end,
+    for (const hint of hints) {
+      const best = orphanAtoms.find(atom =>
+        cleanText(atom.body).startsWith(hint) ||
+        cleanText(atom.exact_text).startsWith(hint)
+      );
+      if (!best) continue;
+
+      group.rules.push({
+        id: best.atom_id,
+        title: best.title,
+        body: best.body,
       });
+      if (best.source_id && best.exact_text) {
+        group.spans.push({
+          id: best.source_id,
+          exact_text: best.exact_text,
+          page_start: best.page_start,
+          page_end: best.page_end,
+          section_path: best.section_path,
+          char_start: best.char_start,
+          char_end: best.char_end,
+        });
+      }
     }
   }
 
