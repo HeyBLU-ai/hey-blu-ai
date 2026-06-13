@@ -369,11 +369,14 @@ Instructions:
 
 **The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the source excerpts.
 
-**The Book:** On a new line after The Ruling, provide the official citation using this exact format:
-**Official Rule [Number]:** "[Exact verbatim quote from the source excerpt]"
+**The Book:** On a new line after The Ruling, provide the official citation(s) using these exact formats:
+
+- If the source excerpt has a clear rule number (e.g. "505", "4.01"): **Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the source excerpt]"
+- If the source excerpt has no rule number, or has a placeholder like "Unnumbered": **Official Rulebook Excerpt (p.[Page]):** "[Exact verbatim quote from the source excerpt]"
+  Do NOT print the word "Unnumbered" in the citation under any circumstances.
 
 CRITICAL rules for The Book citation:
-- The rule number must match the label in the excerpts exactly (e.g. "505", "4.01").
+- Use the rule number exactly as it appears in the excerpt label (e.g. "505", "4.01"). If no number is present, use the "Official Rulebook Excerpt" format above.
 - The quoted text MUST be copied character-for-character from the source excerpt — do not paraphrase, summarise, rearrange words, or change punctuation. The downstream verifier checks this quote byte-for-byte against the original source.
 - If the answer draws on multiple rules, provide one citation line per rule in the same format.
 - Never add words or ellipses inside the quote that are not in the original.
