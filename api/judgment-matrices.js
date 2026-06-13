@@ -485,6 +485,8 @@ export function buildRulingContext(matrix, answers = {}) {
  */
 const DEFINITIONAL_PREFIXES = [
   'what is ', "what's ", 'what are ',
+  'what happens ', 'what happen ',
+  'what is the rule when ', 'what is the ruling when ',
   'define ', 'explain ', 'describe ',
   'how does ', 'how do ', 'how is ',
   'tell me about ',
