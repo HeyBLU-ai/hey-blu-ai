@@ -33,7 +33,7 @@ function loadLocalEnv() {
 
 loadLocalEnv();
 
-const QUESTION = 'is there a uniform rule?';
+const QUESTION = process.argv.slice(2).join(' ').trim() || 'is there a uniform rule?';
 const LEAGUE_SLUG = 'bamsbl';
 const LINE = '─'.repeat(78);
 
@@ -259,7 +259,7 @@ async function main() {
     console.log(`\n[STEP 7] Calling verifier`);
     const verifier = await anthropic.messages.create({
       model: process.env.ANTHROPIC_VERIFY_MODEL || 'claude-opus-4-8',
-      max_tokens: 1024,
+      max_tokens: 4096,
       system: VERIFIER_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: verifierPrompt }],
     });

@@ -146,7 +146,7 @@ export async function runVerifier({ anthropicClient, draftAnswer, spans }) {
   try {
     const msg = await anthropicClient.messages.create({
       model,
-      max_tokens: 1024,
+      max_tokens: 4096,
       system:     VERIFIER_SYSTEM_PROMPT,
       messages:   [{ role: 'user', content: buildVerifierPrompt(draftAnswer, spans) }],
     });

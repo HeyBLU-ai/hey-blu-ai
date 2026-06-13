@@ -993,7 +993,7 @@
         }
 
         // ── State A (answered) or State C (ruling) — standard flow ────────
-        const reply = data?.reply || 'No answer returned.';
+        const reply = data?.reply || data?.message || 'No answer returned.';
         conversation[currentTurnIndex].ai     = reply;
         conversation[currentTurnIndex].league = league;
         if (data.usedFallback) {
@@ -1115,7 +1115,7 @@
         } else if (data.state === 'ruling' || data.state === 'answered') {
           // Interview complete — populate the pending conversation turn
           const idx = interviewState.pendingTurnIndex;
-          const reply = data.reply || 'No answer returned.';
+          const reply = data.reply || data.message || 'No answer returned.';
 
           conversation[idx].ai     = reply;
           conversation[idx].league = interviewState.originalLeague;
