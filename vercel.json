@@ -55,6 +55,10 @@
       "src": "api/admin/review.js",
       "use": "@vercel/node"
     },
+    {
+      "src": "api/feedback.js",
+      "use": "@vercel/node"
+    },
     { "src": "admin/index.html", "use": "@vercel/static" },
     { "src": "admin/review/index.html", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" },
@@ -129,6 +133,7 @@
     { "src": "/api/admin/leagues",    "dest": "api/admin/leagues.js"    },
     { "src": "/api/admin/rules",      "dest": "api/admin/rules.js"      },
     { "src": "/api/admin/review",     "dest": "api/admin/review.js"     },
+    { "src": "/api/feedback",         "dest": "api/feedback.js"         },
     { "src": "/admin/review",         "dest": "/admin/review/index.html" },
     { "src": "/admin/review/",        "dest": "/admin/review/index.html" },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },

@@ -1240,7 +1240,7 @@
       console.log(`Feedback for turn (user: "${turn.user}", ai: "${turn.ai}"): ${feedbackType}, Text: "${feedbackText}"`);
 
       // Disable all feedback icons for this specific turn after one is clicked
-      const turnElement = button.closest('.conversation-turn');
+      const turnElement = button?.closest('.conversation-turn');
       if (turnElement) {
         turnElement.querySelectorAll('.icon-btn').forEach(icon => {
           icon.disabled = true; // Disable the button
@@ -1253,7 +1253,7 @@
       turn.feedbackText = feedbackText; // Store the detailed feedback
 
       // Visually update the clicked button
-      button.classList.add('active'); // Add a class to style the active feedback
+      if (button) button.classList.add('active'); // Add a class to style the active feedback
 
       // Show both refine section and feedback section immediately for negative feedback
       if (feedbackType === 'negative' && !turn.refined) {
@@ -1267,21 +1267,26 @@
         feedbackSection.style.display = 'none';
       }
 
-      // In a real application, you would send this feedback to your backend API
-      // fetch('/api/submit-feedback', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     question: turn.user,
-      //     answer: turn.ai,
-      //     league: turn.league,
-      //     feedbackType: feedbackType,
-      //     feedbackText: feedbackText, // Include the detailed text
-      //     timestamp: new Date().toISOString()
-      //   })
-      // }).then(response => {
-      //   if (!response.ok) console.error('Failed to send feedback');
-      // }).catch(error => console.error('Error sending feedback:', error));
+      fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: turn.user,
+          answer: turn.ai,
+          league: turn.league,
+          feedback: feedbackType,
+          feedbackText,
+        }),
+      }).then(async response => {
+        if (!response.ok) {
+          console.error('Failed to send feedback');
+          return;
+        }
+        const result = await response.json().catch(() => ({}));
+        if (feedbackType === 'negative' && result.cacheDeleted > 0) {
+          console.log(`Cleared ${result.cacheDeleted} cached answer(s) for negative feedback.`);
+        }
+      }).catch(error => console.error('Error sending feedback:', error));
     }
 
     function handleShare(question, answer, league, shortUrl) {
