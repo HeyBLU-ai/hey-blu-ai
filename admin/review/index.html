@@ -136,6 +136,12 @@
     .metric-card.metric-warn .metric-value { color: #f59e0b; }
     .metric-card.metric-danger .metric-value { color: #ef4444; }
     .metric-card.metric-ok .metric-value { color: #22c55e; }
+    .metric-card.metric-clickable { cursor: pointer; transition: border-color .15s, background .15s; }
+    .metric-card.metric-clickable:hover { border-color: #475569; background: #162032; }
+    .metric-card.metric-clickable .metric-hint { font-size: 10px; color: #334155; margin-top: 6px; letter-spacing: .03em; transition: color .15s; }
+    .metric-card.metric-clickable:hover .metric-hint { color: #64748b; }
+    .metric-card.metric-active { border-color: #3b82f6 !important; background: #0f2040 !important; box-shadow: 0 0 0 1px #3b82f633; }
+    .metric-card.metric-active .metric-hint { color: #3b82f6 !important; }
 
     /* ── Filter bar ── */
     .filter-bar {
@@ -593,13 +599,15 @@
       <div class="metric-label">Total Atoms</div>
       <div class="metric-value" id="val-total">—</div>
     </div>
-    <div class="metric-card" id="metric-unnumbered">
+    <div class="metric-card metric-clickable" id="metric-unnumbered" onclick="clickMetricUnnumbered()" title="Click to filter unnumbered atoms">
       <div class="metric-label">Unnumbered</div>
       <div class="metric-value" id="val-unnumbered">—</div>
+      <div class="metric-hint">↑ click to filter</div>
     </div>
-    <div class="metric-card" id="metric-duplicates">
+    <div class="metric-card metric-clickable" id="metric-duplicates" onclick="clickMetricDuplicates()" title="Click to filter duplicate rule numbers">
       <div class="metric-label">Duplicate Rule #s</div>
       <div class="metric-value" id="val-duplicates">—</div>
+      <div class="metric-hint">↑ click to filter</div>
     </div>
     <div class="metric-card" style="background:transparent;border-color:transparent;flex:2;min-width:0;">
       <div class="metric-label">Version ID</div>
@@ -652,10 +660,11 @@
 <script>
 // ── State ─────────────────────────────────────────────────────────────────────
 
-let password    = sessionStorage.getItem('admin_pw') ?? '';
-let leagues     = [];
-let allAtoms    = [];    // full list from API
-let shownAtoms  = [];    // after filter
+let password      = sessionStorage.getItem('admin_pw') ?? '';
+let leagues       = [];
+let allAtoms      = [];    // full list from API
+let shownAtoms    = [];    // after filter
+let duplicatesMode = false; // true when "Duplicate Rule #s" card is active
 
 // ── SOP panel ─────────────────────────────────────────────────────────────────
 
@@ -830,10 +839,40 @@ async function loadVersion(vId) {
   document.getElementById('metrics-bar').classList.add('visible');
   document.getElementById('filter-bar').classList.add('visible');
 
-  // Clear filter
+  // Clear filter + reset card active states
   document.getElementById('filter-input').value = '';
   document.getElementById('unnumbered-only').checked = false;
+  duplicatesMode = false;
+  document.getElementById('metric-unnumbered').classList.remove('metric-active');
+  document.getElementById('metric-duplicates').classList.remove('metric-active');
 
+  applyFilter();
+}
+
+// ── Metric card click filters ─────────────────────────────────────────────────
+
+function clickMetricUnnumbered() {
+  // Toggle the "Show unnumbered only" checkbox and sync duplicatesMode off
+  const cb = document.getElementById('unnumbered-only');
+  cb.checked = !cb.checked;
+  if (cb.checked) {
+    duplicatesMode = false;
+    document.getElementById('metric-duplicates').classList.remove('metric-active');
+  }
+  document.getElementById('metric-unnumbered')
+    .classList.toggle('metric-active', cb.checked);
+  applyFilter();
+}
+
+function clickMetricDuplicates() {
+  // Toggle duplicates mode and sync unnumbered checkbox off
+  duplicatesMode = !duplicatesMode;
+  if (duplicatesMode) {
+    document.getElementById('unnumbered-only').checked = false;
+    document.getElementById('metric-unnumbered').classList.remove('metric-active');
+  }
+  document.getElementById('metric-duplicates')
+    .classList.toggle('metric-active', duplicatesMode);
   applyFilter();
 }
 
@@ -843,8 +882,25 @@ function applyFilter() {
   const q        = document.getElementById('filter-input').value.toLowerCase().trim();
   const unnOnly  = document.getElementById('unnumbered-only').checked;
 
+  // Compute the set of duplicate rule numbers once per filter call
+  let dupSet = null;
+  if (duplicatesMode) {
+    const freq = {};
+    for (const a of allAtoms) {
+      const rn = a.rule_number?.trim();
+      if (rn) freq[rn] = (freq[rn] ?? 0) + 1;
+    }
+    dupSet = new Set(Object.entries(freq).filter(([, n]) => n > 1).map(([rn]) => rn));
+  }
+
   shownAtoms = allAtoms.filter(a => {
-    if (unnOnly && (a.rule_number?.trim())) return false;
+    // Card: duplicates mode — only atoms whose rule_number is duplicated
+    if (duplicatesMode) {
+      if (!dupSet.has(a.rule_number?.trim())) return false;
+    } else if (unnOnly && a.rule_number?.trim()) {
+      // Checkbox: unnumbered only
+      return false;
+    }
     if (!q) return true;
     return (
       (a.rule_number ?? '').toLowerCase().includes(q) ||
