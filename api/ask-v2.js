@@ -85,13 +85,62 @@ function sanitizeInput(input, maxLength = 5000) {
   return input.trim().slice(0, maxLength).replace(/[\x00-\x08\x0B-\x0C\x0E-\x1F\x7F]/g, '');
 }
 
-function validateConversation(conversation) {
+// ── League Mapping ───────────────────────────────────────────────────────────
+
+class LeagueNotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.type = 'league_not_found';
+  }
+}
+
+/** Thrown when the league exists in the DB but has no ACTIVE rulebook_version. */
+class RulebookNotActiveError extends Error {
+  constructor(message) {
+    super(message);
+    this.type = 'rulebook_not_active';
+  }
+}
+
+/**
+ * Maps common league name strings to their DB slug.
+ * The DB is the authority — unknown slugs produce a league_not_found error
+ * in runRAG rather than silently defaulting to MLB.
+ */
+function resolveLeague(league) {
+  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase().trim();
+  if (!leagueNorm) throw new LeagueNotFoundError('A league must be specified. No rulebook is loaded for an empty or missing league value.');
+  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',          leagueName: 'USSSA Baseball' };
+  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',  leagueName: 'Little League International' };
+  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa', leagueName: 'Mill Valley AAA' };
+  if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',         leagueName: 'Bay Area Men\'s Senior Baseball League' };
+  if (leagueNorm === 'mlb' || leagueNorm === 'mlb official rules of baseball')       return { slug: 'mlb',            leagueName: 'MLB Official Rules of Baseball' };
+  // Unknown league — pass through as-is; DB check in runRAG will return 404.
+  return { slug: leagueNorm, leagueName: league };
+}
+
+export function leagueInputToSlug(league) {
+  try {
+    return resolveLeague(league).slug;
+  } catch {
+    return '';
+  }
+}
+
+export function validateConversation(conversation, currentLeagueSlug = '') {
   if (!conversation || !Array.isArray(conversation)) return [];
+  const leagueNorm = leagueInputToSlug(currentLeagueSlug);
   return conversation
     .slice(0, 10)
     .map(turn => {
       if (!turn || typeof turn !== 'object') return null;
-      return { user: sanitizeInput(turn.user, 1000), ai: sanitizeInput(turn.ai, 2000) };
+      const turnSlug = leagueInputToSlug(turn.league ?? '');
+      // Require each turn to match the current league; drop cross-league or untagged legacy turns.
+      if (leagueNorm && turnSlug !== leagueNorm) return null;
+      return {
+        user: sanitizeInput(turn.user, 1000),
+        ai: sanitizeInput(turn.ai, 2000),
+      };
     })
     .filter(t => t?.user && t?.ai);
 }
@@ -115,52 +164,15 @@ function validateMatrixState(raw) {
   };
 }
 
-// ── League Mapping ───────────────────────────────────────────────────────────
-
-/**
- * Maps a league string (from the client) to the DB slug and display name.
- */
-/**
- * Maps common league name strings to their DB slug.
- * The DB is the authority — unknown slugs produce a league_not_found error
- * in runRAG rather than silently defaulting to MLB.
- */
-function resolveLeague(league) {
-  const leagueNorm = sanitizeInput(league ?? '', 50).toLowerCase().trim();
-  if (!leagueNorm) throw new LeagueNotFoundError('A league must be specified. No rulebook is loaded for an empty or missing league value.');
-  if (leagueNorm === 'usssa' || leagueNorm === 'usssa baseball')                      return { slug: 'usssa',          leagueName: 'USSSA Baseball' };
-  if (leagueNorm === 'little league' || leagueNorm === 'little league international') return { slug: 'little-league',  leagueName: 'Little League International' };
-  if (leagueNorm === 'mill valley aaa' || leagueNorm === 'mill valley')               return { slug: 'mill-valley-aaa', leagueName: 'Mill Valley AAA' };
-  if (leagueNorm === 'bamsbl')                                                         return { slug: 'bamsbl',         leagueName: 'Bay Area Men\'s Senior Baseball League' };
-  if (leagueNorm === 'mlb' || leagueNorm === 'mlb official rules of baseball')       return { slug: 'mlb',            leagueName: 'MLB Official Rules of Baseball' };
-  // Unknown league — pass through as-is; DB check in runRAG will return 404.
-  return { slug: leagueNorm, leagueName: league };
-}
-
-// ── Typed errors ─────────────────────────────────────────────────────────────
-class LeagueNotFoundError extends Error {
-  constructor(message) {
-    super(message);
-    this.type = 'league_not_found';
-  }
-}
-
-/** Thrown when the league exists in the DB but has no ACTIVE rulebook_version. */
-class RulebookNotActiveError extends Error {
-  constructor(message) {
-    super(message);
-    this.type = 'rulebook_not_active';
-  }
-}
-
 // ── Anthropic client ─────────────────────────────────────────────────────────
 import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
 import { runVerifier, isVerifierBlocked } from './verifier.js';
 import {
-  fetchEvidenceBundles,
+  fetchEvidenceBundlesWithFallback,
   formatEvidenceBundlesForPrompt,
   vectorLiteral,
+  DEFAULT_EVIDENCE_FALLBACK_SCORE_THRESHOLD,
 } from '../lib/ingest/evidence-bundle.js';
 
 const anthropic = process.env.ANTHROPIC_API_KEY
@@ -249,23 +261,43 @@ async function classifyQuestion(question) {
 // Debug metadata (present when RULEBOOK_DEBUG=1):
 //   _debug.retrieval_method, _debug.span_count, _debug.spans[]
 
+const EVIDENCE_FALLBACK_SCORE_THRESHOLD = Number(
+  process.env.EVIDENCE_FALLBACK_SCORE_THRESHOLD ?? DEFAULT_EVIDENCE_FALLBACK_SCORE_THRESHOLD,
+);
+
 /**
  * Looks up the league row and its single ACTIVE rulebook_version.
  *
  * @param {pg.PoolClient} dbClient
  * @param {string}        leagueSlug
- * @returns {{ leagueId, leagueName, activeVersionId }}
+ * @returns {{
+ *   leagueId: string,
+ *   leagueName: string,
+ *   activeVersionId: string,
+ *   fallbackLeagueId: string|null,
+ *   fallbackLeagueSlug: string|null,
+ *   fallbackLeagueName: string|null,
+ *   fallbackActiveVersionId: string|null,
+ * }}
  * @throws {LeagueNotFoundError}   if no leagues row with that slug exists.
  * @throws {RulebookNotActiveError} if the league exists but has no active version.
  */
 async function resolveActiveVersion(dbClient, leagueSlug) {
   const res = await dbClient.query(`
-    SELECT l.id         AS league_id,
-           l.name       AS league_name,
-           rv.id        AS version_id
+    SELECT l.id              AS league_id,
+           l.name            AS league_name,
+           l.fallback_league_id,
+           rv.id             AS version_id,
+           fb.slug           AS fallback_slug,
+           fb.name           AS fallback_name,
+           fb_rv.id          AS fallback_version_id
     FROM   leagues l
     LEFT   JOIN rulebook_versions rv
              ON rv.league_id = l.id AND rv.status = 'active'
+    LEFT   JOIN leagues fb
+             ON fb.id = l.fallback_league_id
+    LEFT   JOIN rulebook_versions fb_rv
+             ON fb_rv.league_id = fb.id AND fb_rv.status = 'active'
     WHERE  l.slug = $1
   `, [leagueSlug]);
 
@@ -276,7 +308,15 @@ async function resolveActiveVersion(dbClient, leagueSlug) {
     );
   }
 
-  const { league_id, league_name, version_id } = res.rows[0];
+  const {
+    league_id,
+    league_name,
+    version_id,
+    fallback_league_id,
+    fallback_slug,
+    fallback_name,
+    fallback_version_id,
+  } = res.rows[0];
 
   if (!version_id) {
     throw new RulebookNotActiveError(
@@ -285,7 +325,15 @@ async function resolveActiveVersion(dbClient, leagueSlug) {
     );
   }
 
-  return { leagueId: league_id, leagueName: league_name, activeVersionId: version_id };
+  return {
+    leagueId:                league_id,
+    leagueName:              league_name,
+    activeVersionId:         version_id,
+    fallbackLeagueId:        fallback_league_id ?? null,
+    fallbackLeagueSlug:      fallback_slug ?? null,
+    fallbackLeagueName:      fallback_name ?? null,
+    fallbackActiveVersionId: fallback_version_id ?? null,
+  };
 }
 
 /**
@@ -328,22 +376,35 @@ async function embedQuestion(question) {
  * @param {string}        question
  * @returns {Promise<{ bundles: Object[], method: string }>}
  */
-async function fetchEvidenceBundleResults(dbClient, activeVersionId, question) {
+async function fetchEvidenceBundleResults(dbClient, activeVersionId, question, fallbackVersionId = null) {
   const queryEmbedding = await embedQuestion(question);
-  const { bundles, method } = await fetchEvidenceBundles(
+  const result = await fetchEvidenceBundlesWithFallback(
     dbClient,
     activeVersionId,
     question,
-    { queryEmbedding },
+    {
+      queryEmbedding,
+      fallbackVersionId,
+      scoreThreshold: EVIDENCE_FALLBACK_SCORE_THRESHOLD,
+    },
   );
-  return { bundles, method };
+  return result;
 }
 
 /**
  * Build the Claude prompt from hierarchical Evidence Bundles.
  */
-function buildEvidencePrompt({ bundles, leagueName, sanitizedQuestion, extraContext, conversation }) {
-  const validatedConversation = validateConversation(conversation);
+function buildEvidencePrompt({
+  bundles,
+  leagueName,
+  sanitizedQuestion,
+  extraContext,
+  conversation,
+  leagueSlug,
+  usedFallback = false,
+  fallbackLeagueName = null,
+}) {
+  const validatedConversation = validateConversation(conversation, leagueSlug);
   const historyText = validatedConversation.length > 0
     ? 'Prior conversation:\n' +
       validatedConversation.map(t => `Umpire: ${t.user}\nOfficial: ${t.ai}`).join('\n\n') + '\n\n'
@@ -351,11 +412,19 @@ function buildEvidencePrompt({ bundles, leagueName, sanitizedQuestion, extraCont
 
   const bundleBlock = formatEvidenceBundlesForPrompt(bundles);
 
+  const fallbackNote = usedFallback && fallbackLeagueName
+    ? `The question concerns ${leagueName} play. Local ${leagueName} rulebook retrieval did not surface sufficiently strong evidence, so the Evidence Bundles below are from the governing ${fallbackLeagueName} rulebook configured as this league's fallback authority.\n\n`
+    : '';
+
+  const noRuleMessage = usedFallback && fallbackLeagueName
+    ? `I could not find an applicable rule for that question in the ${leagueName} or ${fallbackLeagueName} rulebooks.`
+    : `I could not find an applicable rule for that question in the ${leagueName} rulebook.`;
+
   return `You are an expert baseball rules official for the ${leagueName}.
 
 Your job: answer the umpire's question using ONLY the Evidence Bundles shown below. Each bundle contains a rule node's canonical text, its ancestor heading path, and any attached comments, exceptions, or penalties.
 
-${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
+${fallbackNote}${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
 ${historyText}\
 EVIDENCE BUNDLES (${bundles.length} retrieved):
 ${bundleBlock}
@@ -364,7 +433,7 @@ QUESTION: ${sanitizedQuestion}
 
 Instructions:
 - Answer ONLY from the Evidence Bundles above. Do NOT cite, invent, or infer rules that do not appear in the bundles.
-- If no bundle covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
+- If no bundle covers the question, respond with exactly: "${noRuleMessage}"
 - Never mention retrieval internals or bundle availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the bundles show".
 - Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
 
@@ -531,10 +600,19 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
 
   const dbClient = await pool.connect();
   let leagueName, activeVersionId, bundles, method;
+  let usedFallback = false;
+  let fallbackLeagueName = null;
+  let fallbackActiveVersionId = null;
+  let retrievalMeta = {};
 
   try {
     // ── Step 1: Resolve active version (throws on league-not-found / not-active) ──
-    ({ leagueName, activeVersionId } = await resolveActiveVersion(dbClient, leagueSlug));
+    ({
+      leagueName,
+      activeVersionId,
+      fallbackLeagueName,
+      fallbackActiveVersionId,
+    } = await resolveActiveVersion(dbClient, leagueSlug));
 
     // ── Step 1b: Cache read ───────────────────────────────────────────────────
     //   Only checked for non-contextual questions (no extraContext from an interview).
@@ -562,8 +640,29 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       }
     }
 
-    // ── Step 2: Hybrid evidence bundle retrieval — version-scoped ─────────────
-    ({ bundles, method } = await fetchEvidenceBundleResults(dbClient, activeVersionId, sanitizedQuestion));
+    // ── Step 2: Hybrid evidence bundle retrieval — version-scoped with fallback ─
+    const retrieval = await fetchEvidenceBundleResults(
+      dbClient,
+      activeVersionId,
+      sanitizedQuestion,
+      fallbackActiveVersionId,
+    );
+    ({
+      bundles,
+      method,
+      usedFallback,
+      primaryBestScore,
+      fallbackBestScore,
+      scoreThreshold,
+      primaryMethod,
+    } = retrieval);
+    retrievalMeta = {
+      primaryBestScore,
+      fallbackBestScore,
+      scoreThreshold,
+      primaryMethod,
+      fallbackVersionId: usedFallback ? fallbackActiveVersionId : null,
+    };
   } finally {
     try { dbClient.release(); } catch { /* ignore */ }
   }
@@ -575,6 +674,9 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     sanitizedQuestion,
     extraContext,
     conversation,
+    leagueSlug,
+    usedFallback,
+    fallbackLeagueName,
   });
 
   const message = await anthropic.messages.create({
@@ -596,7 +698,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
   //   Only write if the verifier explicitly approved the answer AND this is not
   //   an interview ruling (interview rulings are play-context-specific).
-  if (canWriteToAnswerCache({ verifierStatus: verifierAudit.status, extraContext })) {
+  if (canWriteToAnswerCache({ verifierStatus: verifierAudit.status, extraContext }) && !usedFallback) {
     const retrievedSourceIdsForCache = bundles.map(b => b.bundle_id);
     const citedRuleNumbersForCache   = [
       ...new Set(bundles.map(b => b.rule_number).filter(Boolean)),
@@ -622,13 +724,16 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   const debugData = process.env.RULEBOOK_DEBUG === '1' ? {
     retrieval_method: method,
     bundle_count:     bundles.length,
+    used_fallback:    usedFallback,
+    ...retrievalMeta,
     bundles: bundles.map(b => ({
-      bundle_id:     b.bundle_id,
-      rule_number:   b.rule_number,
-      ancestor_path: b.ancestor_path,
-      page_start:    b.page_start,
-      hybrid_score:  b.hybrid_score,
-      text_preview:  (b.canonical_text ?? '').slice(0, 120),
+      bundle_id:       b.bundle_id,
+      rule_number:     b.rule_number,
+      ancestor_path:   b.ancestor_path,
+      page_start:      b.page_start,
+      hybrid_score:    b.hybrid_score,
+      rulebook_source: b.rulebook_source,
+      text_preview:    (b.canonical_text ?? '').slice(0, 120),
     })),
     verifier_audit: verifierAudit,
   } : undefined;
@@ -638,8 +743,9 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     cached:                false,
     blocked,
     verifierAudit,
-    usedFallback:          false,
-    fallbackLeague:        null,
+    usedFallback,
+    fallbackLeague:        usedFallback ? fallbackLeagueName : null,
+    fallback_version_id:   usedFallback ? fallbackActiveVersionId : null,
     leagueName,
     // V3 retrieval metadata
     league_slug:           leagueSlug,
@@ -754,7 +860,7 @@ const handler = async (req, res) => {
           extraContext,
         });
         const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
-                league_slug, active_version_id, retrieved_source_ids,
+                league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
                 cited_rule_numbers, _debug } = ragResult;
 
         // ── Verifier gate (fail-closed) ───────────────────────────────────
@@ -783,6 +889,7 @@ const handler = async (req, res) => {
           // V3 retrieval metadata
           league_slug,
           active_version_id,
+          fallback_version_id,
           retrieved_source_ids,
           cited_rule_numbers,
           verifier_status:      verifierAudit.status,
@@ -863,7 +970,7 @@ const handler = async (req, res) => {
       conversation,
     });
     const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
-            league_slug, active_version_id, retrieved_source_ids,
+            league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
             cited_rule_numbers, _debug } = ragResult;
 
     // ── Verifier gate (fail-closed) ──────────────────────────────────────
@@ -890,6 +997,7 @@ const handler = async (req, res) => {
       // V3 retrieval metadata
       league_slug,
       active_version_id,
+      fallback_version_id:  fallback_version_id ?? null,
       retrieved_source_ids,
       cited_rule_numbers,
       verifier_status:      verifierAudit.status,

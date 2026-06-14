@@ -41,11 +41,14 @@ const handler = async (req, res) => {
         l.is_foundation,
         p.name  AS parent_name,
         p.slug  AS parent_slug,
+        fb.name AS fallback_name,
+        fb.slug AS fallback_slug,
         COUNT(r.id)::int AS rule_count
       FROM  leagues l
-      LEFT JOIN leagues p ON p.id = l.parent_league_id
-      LEFT JOIN rules   r ON r.league_id = l.id
-      GROUP BY l.id, l.slug, l.name, l.is_foundation, p.name, p.slug
+      LEFT JOIN leagues p  ON p.id  = l.parent_league_id
+      LEFT JOIN leagues fb ON fb.id = l.fallback_league_id
+      LEFT JOIN rules   r  ON r.league_id = l.id
+      GROUP BY l.id, l.slug, l.name, l.is_foundation, p.name, p.slug, fb.name, fb.slug
       ORDER BY l.name
     `);
     return res.status(200).json({ leagues: rows });

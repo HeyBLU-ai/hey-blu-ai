@@ -403,7 +403,7 @@ function showActionToast(message) {
       const conversationContext = conversation
         .slice(0, currentTurnIndex)
         .slice(-CONVERSATION_LIMIT)
-        .map(t => ({ user: t.user, ai: t.ai }));
+        .map(t => ({ user: t.user, ai: t.ai, league: t.league }));
 
       renderConversation(); // show spinner for this turn
       setAskingState(true);

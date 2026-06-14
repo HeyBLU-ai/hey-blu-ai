@@ -242,9 +242,12 @@ await withDb(async c => {
 
     // Upsert the new league
     const { rows } = await c.query(`
-      INSERT INTO leagues (slug, name, parent_league_id, is_foundation, effective_date)
-      VALUES ($1, $2, $3, $4, CURRENT_DATE)
-      ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name, parent_league_id = EXCLUDED.parent_league_id
+      INSERT INTO leagues (slug, name, parent_league_id, fallback_league_id, is_foundation, effective_date)
+      VALUES ($1, $2, $3, $3, $4, CURRENT_DATE)
+      ON CONFLICT (slug) DO UPDATE SET
+        name = EXCLUDED.name,
+        parent_league_id = EXCLUDED.parent_league_id,
+        fallback_league_id = COALESCE(leagues.fallback_league_id, EXCLUDED.fallback_league_id)
       RETURNING id, name
     `, [newSlug, newLeague, pid, pid === null]);
 

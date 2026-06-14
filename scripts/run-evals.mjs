@@ -331,7 +331,10 @@ async function runEval(evalCase, dbClient) {
     const c3 = await checkExpectedSourceText(dbClient, bundleIds, expected_source_text);
     if (!c3.ok) failures.push(c3.reason);
 
-    const c4 = await checkVersionIsolation(dbClient, bundleIds, body.active_version_id);
+    const evidenceVersionId = body.usedFallback && body.fallback_version_id
+      ? body.fallback_version_id
+      : body.active_version_id;
+    const c4 = await checkVersionIsolation(dbClient, bundleIds, evidenceVersionId);
     if (!c4.ok) failures.push(c4.reason);
 
     const c5 = await checkValidRuleNodes(dbClient, bundleIds);
