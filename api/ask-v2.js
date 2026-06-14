@@ -157,6 +157,11 @@ class RulebookNotActiveError extends Error {
 import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
 import { runVerifier, isVerifierBlocked } from './verifier.js';
+import {
+  fetchEvidenceBundles,
+  formatEvidenceBundlesForPrompt,
+  vectorLiteral,
+} from '../lib/ingest/evidence-bundle.js';
 
 const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -229,7 +234,8 @@ async function classifyQuestion(question) {
 //      Throws LeagueNotFoundError if the league does not exist in the DB.
 //      Throws RulebookNotActiveError if the league exists but has no ACTIVE version.
 //
-//   2. fetchSourceSpans      — Postgres full-text search on rule_sources.exact_text,
+//   2. fetchEvidenceBundleResults — hybrid search on rule_node_chunks,
+//      assemble hierarchical Evidence Bundles for the drafter and verifier.
 //      filtered strictly to rows that belong to the active version.
 //      Falls back to an empty span list if FTS produces no results (letting the
 //      model say "I could not find a specific rule" rather than hallucinating).
@@ -297,42 +303,6 @@ async function resolveActiveVersion(dbClient, leagueSlug) {
  * @param {string}        question         Plain-text question (used for plainto_tsquery)
  * @returns {{ spans: Object[], method: string }}
  */
-// English stop words excluded from the OR-fallback keyword extraction.
-// IMPORTANT: "rule" / "rules" / "ruling" are deliberately included here.
-// Every question to this app is a rules question, so those words appear in
-// virtually every source span and produce zero discriminating signal.
-// Including them in an OR query causes noise spans ("This rule is not…")
-// to rank above the actual subject-matter spans (uniforms, collisions, etc.).
-const FTS_STOP_WORDS = new Set([
-  'a','an','the','is','are','was','were','be','been','being',
-  'have','has','had','do','does','did','will','would','could','should',
-  'may','might','shall','can','need','dare','ought','used',
-  'i','me','my','we','our','you','your','he','his','she','her','it','its',
-  'they','their','them','this','that','these','those','who','which','what',
-  'when','where','why','how','and','but','or','nor','for','yet','so',
-  'in','on','at','to','of','by','from','up','about','into','through',
-  'there','here','not','no','if','then','than','as','with','any','all',
-  // Rulebook-specific noise: appear in every span, provide no discrimination
-  'rule','rules','ruling','rulings','league','leagues',
-]);
-
-/**
- * Extract the most meaningful content words from a question for the FTS
- * OR-fallback query.  Returns words longer than 3 chars that are not stop
- * words, joined with ' | ' for use in to_tsquery().
- */
-function buildOrFallbackQuery(question) {
-  const words = question
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length > 3 && !FTS_STOP_WORDS.has(w));
-  return [...new Set(words)].join(' | ');
-}
-
-function vectorLiteral(values) {
-  return `[${values.map(v => Number.isFinite(v) ? v : 0).join(',')}]`;
-}
 
 async function embedQuestion(question) {
   if (!openai) return null;
@@ -345,168 +315,72 @@ async function embedQuestion(question) {
     const embedding = result.data[0]?.embedding;
     return embedding?.length === 1536 ? vectorLiteral(embedding) : null;
   } catch (err) {
-    console.warn('[ask-v2] Question embedding failed — using lexical rule_units retrieval:', err.message);
+    console.warn('[ask-v2] Question embedding failed — using lexical evidence retrieval:', err.message);
     return null;
   }
 }
 
-function ruleUnitRowToSpan(row) {
-  return {
-    source_id:    row.unit_id,
-    unit_id:      row.unit_id,
-    exact_text:   row.full_text,
-    page_start:   row.page_start,
-    page_end:     row.page_end,
-    section_path: row.title,
-    rule_numbers: row.rule_number,
-    source_ids:   row.source_ids ?? [],
-    rank:         Number(row.rank ?? row.hybrid_score ?? row.vector_score ?? row.fts_score ?? 0),
-  };
-}
-
-async function fetchSourceSpans(dbClient, activeVersionId, question) {
-  const orTerms = buildOrFallbackQuery(question);
-  const embedding = await embedQuestion(question);
-
-  try {
-    if (embedding) {
-      const res = await dbClient.query(`
-        WITH vector_candidates AS (
-          SELECT
-            id AS unit_id,
-            rule_number,
-            title,
-            full_text,
-            page_start,
-            page_end,
-            source_ids,
-            1 - (embedding <=> $3::vector) AS vector_score,
-            ts_rank(search_vector, plainto_tsquery('english', $1)) AS strict_fts_score,
-            CASE
-              WHEN $4::text = '' THEN 0
-              ELSE ts_rank(search_vector, to_tsquery('english', $4))
-            END AS or_fts_score
-          FROM rule_units
-          WHERE rulebook_version_id = $2
-            AND embedding IS NOT NULL
-          ORDER BY embedding <=> $3::vector
-          LIMIT 20
-        )
-        SELECT *,
-          (
-            vector_score * 0.75 +
-            greatest(strict_fts_score, or_fts_score) * 0.25 +
-            CASE WHEN lower($1) LIKE '%' || lower(rule_number) || '%' THEN 0.15 ELSE 0 END
-          ) AS hybrid_score
-        FROM vector_candidates
-        ORDER BY hybrid_score DESC, vector_score DESC
-        LIMIT 3
-      `, [question, activeVersionId, embedding, orTerms]);
-
-      if (res.rows.length > 0) {
-        return {
-          spans:  res.rows.map(ruleUnitRowToSpan),
-          method: 'rule_units_vector_hybrid',
-        };
-      }
-    }
-
-    const lexical = await dbClient.query(`
-      SELECT
-        id AS unit_id,
-        rule_number,
-        title,
-        full_text,
-        page_start,
-        page_end,
-        source_ids,
-        greatest(
-          ts_rank(search_vector, plainto_tsquery('english', $1)),
-          CASE
-            WHEN $3::text = '' THEN 0
-            ELSE ts_rank(search_vector, to_tsquery('english', $3))
-          END
-        ) AS rank
-      FROM rule_units
-      WHERE rulebook_version_id = $2
-        AND (
-          search_vector @@ plainto_tsquery('english', $1)
-          OR ($3::text <> '' AND search_vector @@ to_tsquery('english', $3))
-        )
-      ORDER BY rank DESC
-      LIMIT 3
-    `, [question, activeVersionId, orTerms]);
-
-    return {
-      spans:  lexical.rows.map(ruleUnitRowToSpan),
-      method: lexical.rows.length > 0 ? 'rule_units_fts' : 'rule_units_no_match',
-    };
-  } catch (err) {
-    console.warn('[ask-v2] rule_units retrieval failed — returning empty spans:', err.message);
-    return { spans: [], method: 'rule_units_error' };
-  }
+/**
+ * Hybrid retrieval over rule_node_chunks → hierarchical Evidence Bundles.
+ *
+ * @param {pg.PoolClient} dbClient
+ * @param {string}        activeVersionId
+ * @param {string}        question
+ * @returns {Promise<{ bundles: Object[], method: string }>}
+ */
+async function fetchEvidenceBundleResults(dbClient, activeVersionId, question) {
+  const queryEmbedding = await embedQuestion(question);
+  const { bundles, method } = await fetchEvidenceBundles(
+    dbClient,
+    activeVersionId,
+    question,
+    { queryEmbedding },
+  );
+  return { bundles, method };
 }
 
 /**
- * Build the Claude prompt from verbatim source span excerpts.
- *
- * The model is instructed to answer ONLY from the excerpts shown — it cannot
- * fabricate rules or reference content that was not retrieved.
+ * Build the Claude prompt from hierarchical Evidence Bundles.
  */
-function buildSpanPrompt({ spans, leagueName, sanitizedQuestion, extraContext, conversation }) {
+function buildEvidencePrompt({ bundles, leagueName, sanitizedQuestion, extraContext, conversation }) {
   const validatedConversation = validateConversation(conversation);
   const historyText = validatedConversation.length > 0
     ? 'Prior conversation:\n' +
       validatedConversation.map(t => `Umpire: ${t.user}\nOfficial: ${t.ai}`).join('\n\n') + '\n\n'
     : '';
 
-  let excerptBlock;
-  if (spans.length === 0) {
-    excerptBlock =
-      '(No matching source excerpts found in the rulebook for this question. ' +
-      'You must respond that no specific rule was found.)';
-  } else {
-    excerptBlock = spans.map((s, i) => {
-      const ruleRef    = (s.rule_numbers ?? '').replace(/,/g, ' /').trim() || 'Unnumbered';
-      const pageNote   = s.page_start != null ? ` — p.${s.page_start}` : '';
-      const sectionNote = s.section_path ? ` — ${s.section_path}` : '';
-      return `[Source ${i + 1}] Rule ${ruleRef}${pageNote}${sectionNote}:\n"${s.exact_text}"`;
-    }).join('\n\n');
-  }
+  const bundleBlock = formatEvidenceBundlesForPrompt(bundles);
 
   return `You are an expert baseball rules official for the ${leagueName}.
 
-Your job: answer the umpire's question using ONLY the complete rulebook rule units shown below.
+Your job: answer the umpire's question using ONLY the Evidence Bundles shown below. Each bundle contains a rule node's canonical text, its ancestor heading path, and any attached comments, exceptions, or penalties.
 
 ${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
 ${historyText}\
-RULEBOOK RULE UNITS (${spans.length} retrieved):
-${excerptBlock}
+EVIDENCE BUNDLES (${bundles.length} retrieved):
+${bundleBlock}
 
 QUESTION: ${sanitizedQuestion}
 
 Instructions:
-- Answer ONLY from the rule units above. Do NOT cite, invent, or infer rules that do not appear in the rule units.
-- If no rule unit covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
-- Never mention retrieval internals or source availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the excerpts show".
+- Answer ONLY from the Evidence Bundles above. Do NOT cite, invent, or infer rules that do not appear in the bundles.
+- If no bundle covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
+- Never mention retrieval internals or bundle availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the bundles show".
 - Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
 
-**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the rule units.
+**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the canonical text.
 
 **The Book:** On a new line after The Ruling, provide the official citation(s) using these exact formats:
 
-- If the source excerpt has a clear rule number (e.g. "505", "4.01"): **Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the source excerpt]"
-- If the source excerpt has no rule number, or has a placeholder like "Unnumbered": **Official Rulebook Excerpt (p.[Page]):** "[Exact verbatim quote from the source excerpt]"
-  Do NOT print the word "Unnumbered" in the citation under any circumstances.
+- If the bundle has a clear rule number (e.g. "305", "505"): **Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the canonical text]"
+- If the bundle has no rule number: **Official Rulebook Excerpt (p.[Page]):** "[Exact verbatim quote from the canonical text]"
 
 CRITICAL rules for The Book citation:
 - Default to concise answers. The Ruling should usually be 2-4 sentences. Do not list every exception, penalty, or sub-rule unless the user specifically asks for details, penalties, exceptions, or the full rule.
 - For broad existence questions like "is there a slide rule" or "is there a uniform rule", answer the direct question first and cite the controlling rule. Mention that more detail exists only if needed.
-- The Book should usually include 1 citation. Include a second citation only when it directly answers a distinct part of the user's question. Do not cite every supporting sentence.
-- Use the rule number exactly as it appears in the excerpt label (e.g. "505", "4.01"). If no number is present, use the "Official Rulebook Excerpt" format above.
-- The quoted text MUST be copied character-for-character from the source excerpt — do not paraphrase, summarise, rearrange words, or change punctuation. The downstream verifier checks this quote byte-for-byte against the original source.
-- If the answer draws on multiple rules, provide one citation line per rule in the same format.
-- Every factual rule requirement mentioned in The Ruling must be supported by at least one citation in The Book, but do not expand the answer just because more source text was retrieved.
+- The Book should usually include 1 citation. Include a second citation only when it directly answers a distinct part of the user's question.
+- Use the rule number exactly as it appears in the bundle. The quoted text MUST be copied character-for-character from the canonical text.
+- Every factual rule requirement mentioned in The Ruling must be supported by at least one citation in The Book.
 - Never add words or ellipses inside the quote that are not in the original.
 
 Answer:`;
@@ -515,9 +389,30 @@ Answer:`;
 // ── Verified Answer Cache ─────────────────────────────────────────────────────
 //
 // Cache layer for answers that have already been verified by the verifier LLM.
-// Only answers with verifier_status = 'approved' are ever written here.
-// The cache is scoped by (league_slug, rulebook_version_id, normalized_question),
-// so activating a new rulebook version automatically invalidates old entries.
+// Only answers with verifier_status = 'approved' are ever written or read here.
+// Negative outcomes (no_rule_found, unsupported, needs_fact, etc.) are never
+// cached — stale failure rows must not poison future lookups.
+//
+// Cache key: (league_slug, rulebook_version_id, prompt_version, normalized_question).
+// rulebook_version_id is the active rulebook version; prompt_version invalidates
+// entries when the answer or verifier prompt changes.
+
+/** Bump when answer/verifier prompts change to invalidate stale cache rows. */
+export const ANSWER_PROMPT_VERSION = process.env.ANSWER_PROMPT_VERSION ?? '2026-06-14-evidence-bundle';
+
+const CACHEABLE_VERIFIER_STATUSES = new Set(['approved']);
+
+/**
+ * Whether a verifier outcome may be persisted in verified_answer_cache.
+ * Exported for tests.
+ *
+ * @param {{ verifierStatus: string, extraContext?: string }} opts
+ * @returns {boolean}
+ */
+export function canWriteToAnswerCache({ verifierStatus, extraContext = '' }) {
+  if (extraContext) return false;
+  return CACHEABLE_VERIFIER_STATUSES.has(verifierStatus);
+}
 
 /**
  * Normalize a question for use as a cache key.
@@ -555,9 +450,11 @@ async function readAnswerCache(dbClient, leagueSlug, activeVersionId, normalized
       FROM   verified_answer_cache
       WHERE  league_slug         = $1
         AND  rulebook_version_id = $2
-        AND  normalized_question = $3
+        AND  prompt_version      = $3
+        AND  normalized_question = $4
+        AND  verifier_status     = 'approved'
       LIMIT  1
-    `, [leagueSlug, activeVersionId, normalizedQ]);
+    `, [leagueSlug, activeVersionId, ANSWER_PROMPT_VERSION, normalizedQ]);
     return res.rows[0] ?? null;
   } catch (err) {
     console.warn('[ask-v2] Cache read failed (skipping):', err.message);
@@ -592,17 +489,20 @@ function bumpCacheHit(dbPool, cacheId) {
 function writeAnswerCache(dbPool, {
   leagueSlug, activeVersionId, normalizedQ,
   answer, citedSourceIds, citedRuleNumbers, verifierStatus,
+  extraContext = '',
 }) {
+  if (!canWriteToAnswerCache({ verifierStatus, extraContext })) return;
+
   const draftModel  = process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6';
   const verifyModel = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
 
   dbPool.query(`
     INSERT INTO verified_answer_cache
-      (league_slug, rulebook_version_id, normalized_question,
+      (league_slug, rulebook_version_id, prompt_version, normalized_question,
        answer, cited_source_ids, cited_rule_numbers,
        verifier_status, draft_model, verify_model)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    ON CONFLICT (league_slug, rulebook_version_id, normalized_question)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    ON CONFLICT (league_slug, rulebook_version_id, prompt_version, normalized_question)
     DO UPDATE SET
       answer             = EXCLUDED.answer,
       cited_source_ids   = EXCLUDED.cited_source_ids,
@@ -612,7 +512,7 @@ function writeAnswerCache(dbPool, {
       verify_model       = EXCLUDED.verify_model,
       last_used_at       = now()
   `, [
-    leagueSlug, activeVersionId, normalizedQ,
+    leagueSlug, activeVersionId, ANSWER_PROMPT_VERSION, normalizedQ,
     answer,
     citedSourceIds,
     citedRuleNumbers ?? [],
@@ -630,7 +530,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   if (!anthropic) throw new Error('ANTHROPIC_API_KEY not configured');
 
   const dbClient = await pool.connect();
-  let leagueName, activeVersionId, spans, method;
+  let leagueName, activeVersionId, bundles, method;
 
   try {
     // ── Step 1: Resolve active version (throws on league-not-found / not-active) ──
@@ -662,15 +562,15 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       }
     }
 
-    // ── Step 2: FTS retrieval — strictly version-scoped ──────────────────────
-    ({ spans, method } = await fetchSourceSpans(dbClient, activeVersionId, sanitizedQuestion));
+    // ── Step 2: Hybrid evidence bundle retrieval — version-scoped ─────────────
+    ({ bundles, method } = await fetchEvidenceBundleResults(dbClient, activeVersionId, sanitizedQuestion));
   } finally {
     try { dbClient.release(); } catch { /* ignore */ }
   }
 
-  // ── Step 3: Build prompt from source spans ───────────────────────────────
-  const prompt = buildSpanPrompt({
-    spans,
+  // ── Step 3: Build prompt from Evidence Bundles ───────────────────────────
+  const prompt = buildEvidencePrompt({
+    bundles,
     leagueName,
     sanitizedQuestion,
     extraContext,
@@ -690,20 +590,16 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   // Every factual claim in the draft is checked against the retrieved source
   // spans.  The verifier is fail-closed — any error or ambiguity blocks the
   // draft from reaching the user.
-  const verifierAudit = await runVerifier({ anthropicClient: anthropic, draftAnswer: reply, spans });
+  const verifierAudit = await runVerifier({ anthropicClient: anthropic, draftAnswer: reply, bundles });
   const blocked       = isVerifierBlocked(verifierAudit);
 
   // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
   //   Only write if the verifier explicitly approved the answer AND this is not
   //   an interview ruling (interview rulings are play-context-specific).
-  if (!blocked && verifierAudit.status === 'approved' && !extraContext) {
-    const retrievedSourceIdsForCache = spans.map(s => s.source_id);
+  if (canWriteToAnswerCache({ verifierStatus: verifierAudit.status, extraContext })) {
+    const retrievedSourceIdsForCache = bundles.map(b => b.bundle_id);
     const citedRuleNumbersForCache   = [
-      ...new Set(
-        spans.flatMap(s =>
-          (s.rule_numbers ?? '').split(',').map(n => n.trim()).filter(Boolean),
-        ),
-      ),
+      ...new Set(bundles.map(b => b.rule_number).filter(Boolean)),
     ];
     writeAnswerCache(pool, {
       leagueSlug:       leagueSlug,
@@ -713,28 +609,26 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       citedSourceIds:   retrievedSourceIdsForCache,
       citedRuleNumbers: citedRuleNumbersForCache,
       verifierStatus:   verifierAudit.status,
+      extraContext,
     });
   }
 
   // ── Response metadata ────────────────────────────────────────────────────
-  const retrievedSourceIds = spans.map(s => s.source_id);
+  const retrievedSourceIds = bundles.map(b => b.bundle_id);
   const citedRuleNumbers   = [
-    ...new Set(
-      spans.flatMap(s =>
-        (s.rule_numbers ?? '').split(',').map(n => n.trim()).filter(Boolean),
-      ),
-    ),
+    ...new Set(bundles.map(b => b.rule_number).filter(Boolean)),
   ];
 
   const debugData = process.env.RULEBOOK_DEBUG === '1' ? {
     retrieval_method: method,
-    span_count:       spans.length,
-    spans: spans.map(s => ({
-      source_id:    s.source_id,
-      rule_numbers: s.rule_numbers,
-      page_start:   s.page_start,
-      rank:         s.rank,
-      text_preview: (s.exact_text ?? '').slice(0, 120),
+    bundle_count:     bundles.length,
+    bundles: bundles.map(b => ({
+      bundle_id:     b.bundle_id,
+      rule_number:   b.rule_number,
+      ancestor_path: b.ancestor_path,
+      page_start:    b.page_start,
+      hybrid_score:  b.hybrid_score,
+      text_preview:  (b.canonical_text ?? '').slice(0, 120),
     })),
     verifier_audit: verifierAudit,
   } : undefined;

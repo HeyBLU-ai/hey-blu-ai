@@ -48,19 +48,19 @@ function mockFailingClient(errorMessage) {
   };
 }
 
-// Sample source spans (used in multiple tests)
-const SAMPLE_SPANS = [
+// Sample evidence bundles (used in multiple tests)
+const SAMPLE_BUNDLES = [
   {
-    source_id:    'aaaa-1111',
-    rule_numbers: '505',
-    exact_text:   'Runners never have to slide but, if a runner chooses to do so, the slide must be legal.',
-    page_start:   12,
+    bundle_id:      'aaaa-1111',
+    rule_number:    '505',
+    canonical_text: 'Runners never have to slide but, if a runner chooses to do so, the slide must be legal.',
+    page_start:     12,
   },
   {
-    source_id:    'bbbb-2222',
-    rule_numbers: '505',
-    exact_text:   'If a runner slides, the runner must slide within reach of the base with either a hand or a foot.',
-    page_start:   12,
+    bundle_id:      'bbbb-2222',
+    rule_number:    '505',
+    canonical_text: 'If a runner slides, the runner must slide within reach of the base with either a hand or a foot.',
+    page_start:     12,
   },
 ];
 
@@ -88,7 +88,7 @@ console.log('\nTest 1: approved verifier response → gate passes');
   const audit = await runVerifier({
     anthropicClient: mockClient(approvedJson),
     draftAnswer:     APPROVED_DRAFT,
-    spans:           SAMPLE_SPANS,
+    bundles:         SAMPLE_BUNDLES,
   });
 
   check('status = approved',              audit.status === 'approved',       `got "${audit.status}"`);
@@ -118,7 +118,7 @@ console.log('\nTest 2: unsupported verifier response → gate blocks (hallucinat
   const audit = await runVerifier({
     anthropicClient: mockClient(blockedJson),
     draftAnswer:     HALLUCINATED_DRAFT,
-    spans:           SAMPLE_SPANS,
+    bundles:         SAMPLE_BUNDLES,
   });
 
   check('status = unsupported',            audit.status === 'unsupported',   `got "${audit.status}"`);
@@ -143,7 +143,7 @@ console.log('\nTest 3: no_rule_found verifier response → gate passes (correct 
   const audit = await runVerifier({
     anthropicClient: mockClient(noRuleJson),
     draftAnswer:     NO_RULE_DRAFT,
-    spans:           [],
+    bundles:         [],
   });
 
   check('status = no_rule_found',   audit.status === 'no_rule_found',  `got "${audit.status}"`);
@@ -160,7 +160,7 @@ console.log('\nTest 4: malformed verifier JSON → fail-closed (gate blocks)');
   const audit = await runVerifier({
     anthropicClient: mockClient(malformedResponse),
     draftAnswer:     APPROVED_DRAFT,
-    spans:           SAMPLE_SPANS,
+    bundles:         SAMPLE_BUNDLES,
   });
 
   check('status = unsupported (sentinel)', audit.status === 'unsupported',     `got "${audit.status}"`);
@@ -176,7 +176,7 @@ console.log('\nTest 5: verifier API throws → fail-closed (gate blocks)');
   const audit = await runVerifier({
     anthropicClient: mockFailingClient('overloaded_error: service unavailable'),
     draftAnswer:     APPROVED_DRAFT,
-    spans:           SAMPLE_SPANS,
+    bundles:         SAMPLE_BUNDLES,
   });
 
   check('status = unsupported (sentinel)', audit.status === 'unsupported',     `got "${audit.status}"`);
@@ -204,7 +204,7 @@ console.log('\nTest 6: mixed claims (one unsupported) → gate blocks even if st
   const audit = await runVerifier({
     anthropicClient: mockClient(mixedJson),
     draftAnswer:     'Runners do not have to slide. Runners must also tag up after every fly ball.',
-    spans:           SAMPLE_SPANS,
+    bundles:         SAMPLE_BUNDLES,
   });
 
   check('status = approved (as returned by verifier)', audit.status === 'approved');
@@ -215,9 +215,9 @@ console.log('\nTest 6: mixed claims (one unsupported) → gate blocks even if st
 
 // ── Test 7: buildVerifierPrompt includes source IDs ───────────────────────────
 
-console.log('\nTest 7: buildVerifierPrompt correctly formats source IDs and rule numbers');
+console.log('\nTest 7: buildVerifierPrompt correctly formats bundle IDs and rule numbers');
 {
-  const prompt = buildVerifierPrompt(APPROVED_DRAFT, SAMPLE_SPANS);
+  const prompt = buildVerifierPrompt(APPROVED_DRAFT, SAMPLE_BUNDLES);
 
   check('prompt contains source_id aaaa-1111', prompt.includes('aaaa-1111'));
   check('prompt contains source_id bbbb-2222', prompt.includes('bbbb-2222'));

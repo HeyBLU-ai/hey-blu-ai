@@ -1,8 +1,9 @@
 /**
- * Trace the production rule_units retrieval + draft + verifier pipeline.
+ * Trace the production Evidence Bundle retrieval + draft + verifier pipeline.
  *
  * Usage:
  *   node scripts/trace-retrieval.mjs
+ *   node scripts/trace-retrieval.mjs "is there a uniform rule?"
  */
 
 import pg from 'pg';
@@ -11,6 +12,14 @@ import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import {
+  fetchEvidenceBundles,
+  formatEvidenceBundlesForPrompt,
+  formatEvidenceBundlesForVerifier,
+  buildOrFallbackQuery,
+  vectorLiteral,
+} from '../lib/ingest/evidence-bundle.js';
+import { VERIFIER_SYSTEM_PROMPT } from '../api/verifier.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -40,125 +49,6 @@ const LINE = '─'.repeat(78);
 const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const FTS_STOP_WORDS = new Set([
-  'a','an','the','is','are','was','were','be','been','being',
-  'have','has','had','do','does','did','will','would','could','should',
-  'may','might','shall','can','need','dare','ought','used',
-  'i','me','my','we','our','you','your','he','his','she','her','it','its',
-  'they','their','them','this','that','these','those','who','which','what',
-  'when','where','why','how','and','but','or','nor','for','yet','so',
-  'in','on','at','to','of','by','from','up','about','into','through',
-  'there','here','not','no','if','then','than','as','with','any','all',
-  'rule','rules','ruling','rulings','league','leagues',
-]);
-
-function buildOrFallbackQuery(question) {
-  const words = question
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter(w => w.length > 3 && !FTS_STOP_WORDS.has(w));
-  return [...new Set(words)].join(' | ');
-}
-
-function vectorLiteral(values) {
-  return `[${values.map(v => Number.isFinite(v) ? v : 0).join(',')}]`;
-}
-
-function buildAnswerPrompt(units) {
-  const excerptBlock = units.length === 0
-    ? '(No matching rule units found in the rulebook for this question. You must respond that no applicable rule was found.)'
-    : units.map((u, i) => {
-        const page = u.page_start != null ? ` — p.${u.page_start}` : '';
-        return `[Source ${i + 1}] Rule ${u.rule_number}${page}:\n"${u.full_text}"`;
-      }).join('\n\n');
-
-  return `You are an expert baseball rules official for the Bay Area Men's Senior Baseball League.
-
-Your job: answer the umpire's question using ONLY the complete rulebook rule units shown below.
-
-RULEBOOK RULE UNITS (${units.length} retrieved):
-${excerptBlock}
-
-QUESTION: ${QUESTION}
-
-Instructions:
-- Answer ONLY from the rule units above. Do NOT cite, invent, or infer rules that do not appear in the rule units.
-- If no rule unit covers the question, respond with exactly: "I could not find an applicable rule for that question in the BAMSBL rulebook."
-- Never mention retrieval internals or source availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the excerpts show".
-- Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
-
-**The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the rule units.
-
-**The Book:** On a new line after The Ruling, provide the official citation(s) using this exact format:
-
-**Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the rule unit]"
-
-CRITICAL rules for The Book citation:
-- Default to concise answers. The Ruling should usually be 2-4 sentences. Do not list every exception, penalty, or sub-rule unless the user specifically asks for details, penalties, exceptions, or the full rule.
-- For broad existence questions like "is there a slide rule" or "is there a uniform rule", answer the direct question first and cite the controlling rule. Mention that more detail exists only if needed.
-- The Book should usually include 1 citation. Include a second citation only when it directly answers a distinct part of the user's question. Do not cite every supporting sentence.
-- Use the rule number exactly as it appears in the source label.
-- The quoted text MUST be copied character-for-character from the rule unit.
-- Every factual rule requirement mentioned in The Ruling must be supported by at least one citation in The Book, but do not expand the answer just because more source text was retrieved.
-- Never add words or ellipses inside the quote that are not in the original.
-
-Answer:`;
-}
-
-function buildVerifierPrompt(draftAnswer, units) {
-  const sourceBlock = units
-    .map(u => `[Source ${u.id}]\nRule ${u.rule_number}:\n"${u.full_text}"`)
-    .join('\n\n');
-
-  return `DRAFT ANSWER TO VERIFY:
-${draftAnswer}
-
-ALLOWED SOURCE EXCERPTS:
-${sourceBlock}
-
-Verify every factual claim in the draft answer against the source excerpts above.
-Return JSON only.`;
-}
-
-const VERIFIER_SYSTEM_PROMPT = `You are a strict fact-checking verifier for a baseball rules Q&A system.
-
-You will receive:
-1. A DRAFT ANSWER produced by an AI assistant.
-2. ALLOWED SOURCE EXCERPTS — verbatim passages from the official rulebook.
-
-Your task: for every factual claim in the draft answer, determine whether it is
-directly and explicitly stated in the provided source excerpts.
-
-CRITICAL RULES:
-- Use ONLY the provided source excerpts. Do NOT draw on your own baseball knowledge.
-- A claim is "supported" only if a source excerpt explicitly states the same fact.
-- Reasonable inferences and implications do NOT count as supported.
-- If the draft correctly says no applicable rule was found, return status "no_rule_found".
-- Verify baseball rule content claims. Do NOT mark citation formatting as unsupported merely because
-  a page label, source label, or "Official Rule X" display string is not literally part of the quoted
-  rule text. Only mark citation details unsupported if the rule number is wrong or the quoted rule
-  text is not present in the allowed source excerpts.
-
-PARTIAL OR INCOMPLETE SOURCE TEXT:
-- If every claim the draft actually makes is backed by the source text, return "approved" — even if the answer is incomplete relative to the full rule.
-- If the draft is correct but explicitly notes that details are missing or that the full rule could not be found in the retrieved text, return "needs_fact".
-- Reserve "unsupported" ONLY for answers that assert or invent facts that are NOT present anywhere in the provided source excerpts, or that directly contradict the sources.
-
-Return ONLY valid JSON — no preamble, no markdown:
-{
-  "status": "approved" | "unsupported" | "needs_fact" | "no_rule_found",
-  "claims": [
-    {
-      "claim": "<exact factual claim from the draft>",
-      "supported": true | false,
-      "source_ids": ["<uuid of supporting source, or empty array if unsupported>"]
-    }
-  ],
-  "unsupported_claims": ["<verbatim list of unsupported claim texts>"],
-  "confidence": "high" | "medium" | "low"
-}`;
 
 async function main() {
   const client = await pool.connect();
@@ -199,57 +89,74 @@ async function main() {
     const queryEmbedding = vectorLiteral(embeddingResult.data[0].embedding);
     console.log(`  embedding dimensions: ${embeddingResult.data[0].embedding.length}`);
 
-    console.log(`\n[STEP 3] Hybrid vector + FTS rule_units retrieval`);
-    const { rows: units } = await client.query(`
-      WITH vector_candidates AS (
-        SELECT
-          id,
-          rule_number,
-          title,
-          full_text,
-          page_start,
-          page_end,
-          source_ids,
-          1 - (embedding <=> $3::vector) AS vector_score,
-          ts_rank(search_vector, plainto_tsquery('english', $1)) AS strict_fts_score,
-          CASE
-            WHEN $4::text = '' THEN 0
-            ELSE ts_rank(search_vector, to_tsquery('english', $4))
-          END AS or_fts_score
-        FROM rule_units
-        WHERE rulebook_version_id = $2
-          AND embedding IS NOT NULL
-        ORDER BY embedding <=> $3::vector
-        LIMIT 20
-      )
-      SELECT *,
-        (
-          vector_score * 0.75 +
-          greatest(strict_fts_score, or_fts_score) * 0.25 +
-          CASE WHEN lower($1) LIKE '%' || lower(rule_number) || '%' THEN 0.15 ELSE 0 END
-        ) AS hybrid_score
-      FROM vector_candidates
-      ORDER BY hybrid_score DESC, vector_score DESC
-      LIMIT 3
-    `, [QUESTION, active.version_id, queryEmbedding, orTerms]);
-
-    console.log(`  result count: ${units.length}`);
-    for (const [i, u] of units.entries()) {
-      console.log(`  #${i + 1} rule=${u.rule_number} title=${u.title ?? '(untitled)'} vector=${Number(u.vector_score).toFixed(4)} fts=${Number(Math.max(u.strict_fts_score, u.or_fts_score)).toFixed(4)} hybrid=${Number(u.hybrid_score).toFixed(4)}`);
-      console.log(`     text=${JSON.stringify(u.full_text)}`);
+    console.log(`\n[STEP 3] Hybrid vector + FTS rule_node_chunks retrieval`);
+    const { bundles, method, chunkHits, extraction_run_id } = await fetchEvidenceBundles(
+      client,
+      active.version_id,
+      QUESTION,
+      { queryEmbedding },
+    );
+    console.log(`  extraction_run_id: ${extraction_run_id}`);
+    console.log(`  method: ${method}`);
+    console.log(`  chunk hit count: ${chunkHits.length}`);
+    for (const [i, hit] of chunkHits.slice(0, 8).entries()) {
+      console.log(`  chunk#${i + 1} rule=${hit.rule_number ?? '(none)'} node_type=${hit.node_type} vector=${Number(hit.vector_score ?? 0).toFixed(4)} hybrid=${Number(hit.hybrid_score ?? 0).toFixed(4)}`);
+      console.log(`           chunk_text=${JSON.stringify(String(hit.chunk_text).slice(0, 100))}`);
     }
 
-    const answerPrompt = buildAnswerPrompt(units);
-    console.log(`\n[STEP 4] Exact draft prompt sent to Sonnet`);
+    console.log(`\n[STEP 4] Evidence Bundles assembled (${bundles.length})`);
+    for (const [i, b] of bundles.entries()) {
+      console.log(`\n  Bundle #${i + 1}`);
+      console.log(`    bundle_id:     ${b.bundle_id}`);
+      console.log(`    rule_number:   ${b.rule_number ?? '(none)'}`);
+      console.log(`    node_type:     ${b.node_type}`);
+      console.log(`    ancestor_path: ${b.ancestor_path || '(root)'}`);
+      console.log(`    page:          ${b.page_start ?? '?'}–${b.page_end ?? '?'}`);
+      console.log(`    hybrid_score:  ${Number(b.hybrid_score).toFixed(4)}`);
+      console.log(`    matched_chunk: ${JSON.stringify(String(b.matched_chunk_text).slice(0, 120))}`);
+      console.log(`    annotations:   ${b.annotations?.length ?? 0}`);
+      console.log(`    canonical_text:`);
+      console.log('    """');
+      console.log(b.canonical_text.split('\n').map(l => `    ${l}`).join('\n'));
+      console.log('    """');
+    }
+
+    const rule305 = bundles.find(b => b.rule_number === '305');
+    console.log(`\n[STEP 4b] Rule 305 isolation check`);
+    if (rule305) {
+      console.log(`  ✓ Rule 305 present in bundles (rank #${bundles.indexOf(rule305) + 1})`);
+      console.log(`  title: ${rule305.title}`);
+      console.log(`  path:  ${rule305.ancestor_path}`);
+    } else {
+      console.log(`  ✗ Rule 305 NOT in top ${bundles.length} bundles`);
+      const chunk305 = chunkHits.find(h => h.rule_number === '305');
+      if (chunk305) {
+        console.log(`  (Rule 305 chunk exists in hits at hybrid=${Number(chunk305.hybrid_score).toFixed(4)} but was deduped/outranked)`);
+      }
+    }
+
+    const answerPrompt = formatEvidenceBundlesForPrompt(bundles);
+    const fullPrompt = `You are an expert baseball rules official for the Bay Area Men's Senior Baseball League.
+
+Your job: answer the umpire's question using ONLY the Evidence Bundles shown below.
+
+EVIDENCE BUNDLES (${bundles.length} retrieved):
+${answerPrompt}
+
+QUESTION: ${QUESTION}
+
+Answer:`;
+
+    console.log(`\n[STEP 5] Exact draft prompt sent to Sonnet`);
     console.log(LINE);
-    console.log(answerPrompt);
+    console.log(fullPrompt);
     console.log(LINE);
 
-    console.log(`\n[STEP 5] Calling draft model`);
+    console.log(`\n[STEP 6] Calling draft model`);
     const draft = await anthropic.messages.create({
       model: process.env.ANTHROPIC_ANSWER_MODEL || 'claude-sonnet-4-6',
       max_tokens: 1024,
-      messages: [{ role: 'user', content: answerPrompt }],
+      messages: [{ role: 'user', content: fullPrompt }],
     });
     const draftAnswer = draft.content[0]?.text?.trim() || '';
     console.log('\nDRAFT ANSWER:');
@@ -257,13 +164,21 @@ async function main() {
     console.log(draftAnswer);
     console.log(LINE);
 
-    const verifierPrompt = buildVerifierPrompt(draftAnswer, units);
-    console.log(`\n[STEP 6] Exact verifier prompt sent to Opus`);
+    const verifierPrompt = `DRAFT ANSWER TO VERIFY:
+${draftAnswer}
+
+ALLOWED EVIDENCE BUNDLES:
+${formatEvidenceBundlesForVerifier(bundles)}
+
+Verify every factual claim in the draft answer against the evidence bundles above.
+Return JSON only.`;
+
+    console.log(`\n[STEP 7] Exact verifier prompt sent to Opus`);
     console.log(LINE);
     console.log(verifierPrompt);
     console.log(LINE);
 
-    console.log(`\n[STEP 7] Calling verifier`);
+    console.log(`\n[STEP 8] Calling verifier`);
     const verifier = await anthropic.messages.create({
       model: process.env.ANTHROPIC_VERIFY_MODEL || 'claude-opus-4-8',
       max_tokens: 4096,
@@ -281,7 +196,7 @@ async function main() {
       parsed = JSON.parse(verifierRaw.slice(verifierRaw.indexOf('{'), verifierRaw.lastIndexOf('}') + 1));
     } catch {}
     const blocked = !parsed || parsed.status === 'unsupported' || (parsed.unsupported_claims?.length ?? 0) > 0;
-    console.log(`\n[STEP 8] GATE RESULT`);
+    console.log(`\n[STEP 9] GATE RESULT`);
     console.log(`  verifier_status: ${parsed?.status ?? 'PARSE_ERROR'}`);
     console.log(`  unsupported_claims: ${JSON.stringify(parsed?.unsupported_claims ?? [])}`);
     console.log(`  BLOCKED: ${blocked}`);

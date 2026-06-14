@@ -8,10 +8,8 @@
  *   node scripts/migrate-v3-answer-cache.mjs
  *
  * Design notes:
- *   - UNIQUE (league_slug, rulebook_version_id, normalized_question) means cache
- *     entries are automatically scoped to the active rulebook version.  Activating
- *     a new version produces a new rulebook_version_id, so stale cache entries are
- *     never returned.
+ *   - UNIQUE (league_slug, rulebook_version_id, prompt_version, normalized_question)
+ *     scopes cache to active rulebook version and answer prompt version.
  *   - ON DELETE CASCADE on rulebook_version_id means retiring/deleting a version
  *     cleans up its cache rows automatically.
  *   - Only answers that passed the verifier (verifier_status = 'approved') should
@@ -47,6 +45,7 @@ try {
       id                  UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
       league_slug         TEXT        NOT NULL,
       rulebook_version_id UUID        NOT NULL REFERENCES rulebook_versions(id) ON DELETE CASCADE,
+      prompt_version      TEXT        NOT NULL DEFAULT '2026-06-13',
       normalized_question TEXT        NOT NULL,
       answer              TEXT        NOT NULL,
       cited_source_ids    UUID[]      NOT NULL,
@@ -57,7 +56,7 @@ try {
       created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
       last_used_at        TIMESTAMPTZ,
       hit_count           INT         NOT NULL DEFAULT 0,
-      UNIQUE (league_slug, rulebook_version_id, normalized_question)
+      UNIQUE (league_slug, rulebook_version_id, prompt_version, normalized_question)
     )
   `);
   console.log('  ✓ verified_answer_cache table created (or already exists)');

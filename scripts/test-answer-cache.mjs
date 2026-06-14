@@ -18,8 +18,12 @@
  *   node scripts/test-answer-cache.mjs
  */
 
-// Import only the exported pure function — avoids triggering DB/Anthropic init.
-import { normalizeQuestion } from '../api/ask-v2.js';
+// Import exported cache helpers — avoids triggering DB/Anthropic init.
+import {
+  normalizeQuestion,
+  ANSWER_PROMPT_VERSION,
+  canWriteToAnswerCache,
+} from '../api/ask-v2.js';
 
 // ── Re-implement the internal helpers locally for isolated DB-mock tests ──────
 // (They mirror the code in api/ask-v2.js exactly so regressions are caught.)
@@ -31,9 +35,11 @@ async function readAnswerCache(dbClient, leagueSlug, activeVersionId, normalized
       FROM   verified_answer_cache
       WHERE  league_slug         = $1
         AND  rulebook_version_id = $2
-        AND  normalized_question = $3
+        AND  prompt_version      = $3
+        AND  normalized_question = $4
+        AND  verifier_status     = 'approved'
       LIMIT  1
-    `, [leagueSlug, activeVersionId, normalizedQ]);
+    `, [leagueSlug, activeVersionId, ANSWER_PROMPT_VERSION, normalizedQ]);
     return res.rows[0] ?? null;
   } catch (err) {
     return null;
@@ -52,18 +58,20 @@ function bumpCacheHit(dbPool, cacheId) {
 function writeAnswerCache(dbPool, {
   leagueSlug, activeVersionId, normalizedQ,
   answer, citedSourceIds, citedRuleNumbers, verifierStatus,
+  extraContext = '',
 }) {
+  if (!canWriteToAnswerCache({ verifierStatus, extraContext })) return;
+
   const draftModel  = process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6';
   const verifyModel = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
 
-  // Fire-and-forget: errors are swallowed (mirrors ask-v2.js exactly)
   dbPool.query(`
     INSERT INTO verified_answer_cache
-      (league_slug, rulebook_version_id, normalized_question,
+      (league_slug, rulebook_version_id, prompt_version, normalized_question,
        answer, cited_source_ids, cited_rule_numbers,
        verifier_status, draft_model, verify_model)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-    ON CONFLICT (league_slug, rulebook_version_id, normalized_question)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+    ON CONFLICT (league_slug, rulebook_version_id, prompt_version, normalized_question)
     DO UPDATE SET
       answer             = EXCLUDED.answer,
       cited_source_ids   = EXCLUDED.cited_source_ids,
@@ -73,7 +81,7 @@ function writeAnswerCache(dbPool, {
       verify_model       = EXCLUDED.verify_model,
       last_used_at       = now()
   `, [
-    leagueSlug, activeVersionId, normalizedQ,
+    leagueSlug, activeVersionId, ANSWER_PROMPT_VERSION, normalizedQ,
     answer, citedSourceIds, citedRuleNumbers ?? [],
     verifierStatus, draftModel, verifyModel,
   ]).catch(() => {});
@@ -154,8 +162,8 @@ console.log('\nTest 7: readAnswerCache — cache miss returns null');
   check('7b: query was executed',   client._calls.length === 1);
   check('7c: query targets correct table',
     client._calls[0].sql.includes('verified_answer_cache'));
-  check('7d: params include league_slug, version_id, normalized_q',
-    JSON.stringify(client._calls[0].params) === JSON.stringify(['bamsbl', 'version-uuid', 'must slide']));
+  check('7d: params include league_slug, version_id, prompt_version, normalized_q',
+    JSON.stringify(client._calls[0].params) === JSON.stringify(['bamsbl', 'version-uuid', ANSWER_PROMPT_VERSION, 'must slide']));
 }
 
 // ── Test 8: readAnswerCache — cache hit ───────────────────────────────────────
@@ -235,9 +243,10 @@ console.log('\nTest 11: writeAnswerCache — fires INSERT…ON CONFLICT with cor
   check('11d: DO UPDATE SET present',          pool._calls[0]?.sql.includes('DO UPDATE SET'));
   check('11e: league_slug param correct',      pool._calls[0]?.params[0] === 'bamsbl');
   check('11f: version_id param correct',       pool._calls[0]?.params[1] === 'version-uuid');
-  check('11g: normalized_q param correct',     pool._calls[0]?.params[2] === 'must slide');
-  check('11h: answer param correct',           pool._calls[0]?.params[3] === 'Runners do not have to slide.');
-  check('11i: verifier_status param correct',  pool._calls[0]?.params[6] === 'approved');
+  check('11g: prompt_version param correct',   pool._calls[0]?.params[2] === ANSWER_PROMPT_VERSION);
+  check('11h: normalized_q param correct',     pool._calls[0]?.params[3] === 'must slide');
+  check('11i: answer param correct',           pool._calls[0]?.params[4] === 'Runners do not have to slide.');
+  check('11j: verifier_status param correct',  pool._calls[0]?.params[7] === 'approved');
 }
 
 // ── Test 12: writeAnswerCache — DB error is swallowed ─────────────────────────
@@ -312,6 +321,34 @@ console.log('\nTest 14: extraContext (interview ruling) flag prevents cache read
     (!false && 'approved' === 'approved' && !noContext)    === true,  'should cache empty context');
   check('14d: cache write blocked by extraContext',
     (!false && 'approved' === 'approved' && !extraContext) === false, 'should NOT cache interview ruling');
+}
+
+// ── Test 15: negative caching guard ───────────────────────────────────────────
+
+console.log('\nTest 15: canWriteToAnswerCache — failures are never cached');
+{
+  check('15a: approved is cacheable',
+    canWriteToAnswerCache({ verifierStatus: 'approved' }) === true);
+  check('15b: no_rule_found is NOT cacheable',
+    canWriteToAnswerCache({ verifierStatus: 'no_rule_found' }) === false);
+  check('15c: unsupported is NOT cacheable',
+    canWriteToAnswerCache({ verifierStatus: 'unsupported' }) === false);
+  check('15d: needs_fact is NOT cacheable',
+    canWriteToAnswerCache({ verifierStatus: 'needs_fact' }) === false);
+  check('15e: interview context blocks cache write',
+    canWriteToAnswerCache({ verifierStatus: 'approved', extraContext: 'runner on first' }) === false);
+}
+
+console.log('\nTest 16: writeAnswerCache — skips non-approved statuses');
+{
+  const { pool } = mockPool();
+  writeAnswerCache(pool, {
+    leagueSlug: 'bamsbl', activeVersionId: 'v', normalizedQ: 'uniform rule',
+    answer: 'no rule found', citedSourceIds: [], citedRuleNumbers: [],
+    verifierStatus: 'no_rule_found',
+  });
+  await new Promise(r => setTimeout(r, 0));
+  check('16: no INSERT fired for no_rule_found', pool._calls.length === 0);
 }
 
 // ── Summary ───────────────────────────────────────────────────────────────────

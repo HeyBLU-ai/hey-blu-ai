@@ -28,25 +28,27 @@
 
 // ── System prompt ─────────────────────────────────────────────────────────────
 
+import { formatEvidenceBundlesForVerifier } from '../lib/ingest/evidence-bundle.js';
+
 export const VERIFIER_SYSTEM_PROMPT = `\
 You are a strict fact-checking verifier for a baseball rules Q&A system.
 
 You will receive:
 1. A DRAFT ANSWER produced by an AI assistant.
-2. ALLOWED SOURCE EXCERPTS — verbatim passages from the official rulebook.
+2. ALLOWED EVIDENCE BUNDLES — canonical rule text from the official rulebook, including ancestor paths and annotations.
 
 Your task: for every factual claim in the draft answer, determine whether it is
-directly and explicitly stated in the provided source excerpts.
+directly and explicitly stated in the provided evidence bundles.
 
 CRITICAL RULES:
-- Use ONLY the provided source excerpts. Do NOT draw on your own baseball knowledge.
-- A claim is "supported" only if a source excerpt explicitly states the same fact.
+- Use ONLY the provided evidence bundles. Do NOT draw on your own baseball knowledge.
+- A claim is "supported" only if a bundle's canonical text explicitly states the same fact.
 - Reasonable inferences and implications do NOT count as supported.
 - If the draft correctly says "I could not find a specific rule about this", return status "no_rule_found".
 - Verify baseball rule content claims. Do NOT mark citation formatting as unsupported merely because
-  a page label, source label, or "Official Rule X" display string is not literally part of the quoted
+  a page label, bundle label, or "Official Rule X" display string is not literally part of the quoted
   rule text. Only mark citation details unsupported if the rule number is wrong or the quoted rule
-  text is not present in the allowed source excerpts.
+  text is not present in the allowed evidence bundles.
 
 PARTIAL OR INCOMPLETE SOURCE TEXT:
 - If the source text partially addresses the question (e.g., acknowledges a rule or category
@@ -56,7 +58,7 @@ PARTIAL OR INCOMPLETE SOURCE TEXT:
 - If the draft is correct but explicitly notes that details are missing or that the full rule
   could not be found in the retrieved text, return "needs_fact".
 - Reserve "unsupported" ONLY for answers that assert or invent facts that are NOT present
-  anywhere in the provided source excerpts, or that directly contradict the sources.
+  anywhere in the provided evidence bundles, or that directly contradict the bundles.
 
 Return ONLY valid JSON — no preamble, no markdown:
 {
@@ -73,10 +75,10 @@ Return ONLY valid JSON — no preamble, no markdown:
 }
 
 Status definitions:
-  "approved"      — Every claim in the draft is directly supported by the source excerpts
+  "approved"      — Every claim in the draft is directly supported by the evidence bundles
                     (answer may be incomplete, but nothing in it is invented or contradicted).
-  "unsupported"   — One or more claims invent or assert facts NOT present in the sources,
-                    or directly contradict the sources. Do NOT use this for partial answers.
+  "unsupported"   — One or more claims invent or assert facts NOT present in the bundles,
+                    or directly contradict the bundles. Do NOT use this for partial answers.
   "needs_fact"    — Draft is accurate as far as it goes but explicitly acknowledges that
                     the retrieved text is incomplete or that additional details are missing.
   "no_rule_found" — Draft correctly states no applicable rule was found in the rulebook.`;
@@ -86,28 +88,20 @@ Status definitions:
 /**
  * Builds the user-turn message for the verifier call.
  *
- * @param {string}   draftAnswer  — The AI-generated draft answer to verify.
- * @param {Object[]} spans        — Source spans returned by fetchSourceSpans.
- *   Each span must have: source_id, exact_text, rule_numbers (optional).
+ * @param {string}   draftAnswer
+ * @param {Object[]} bundles — Evidence bundles from fetchEvidenceBundles.
  * @returns {string}
  */
-export function buildVerifierPrompt(draftAnswer, spans) {
-  const sourceBlock = spans.length === 0
-    ? '(No source excerpts were retrieved for this question.)'
-    : spans
-        .map(s => {
-          const ruleRef = (s.rule_numbers ?? '').replace(/,/g, ' /').trim() || 'Unnumbered';
-          return `[Source ${s.source_id}]\nRule ${ruleRef}:\n"${s.exact_text}"`;
-        })
-        .join('\n\n');
+export function buildVerifierPrompt(draftAnswer, bundles) {
+  const sourceBlock = formatEvidenceBundlesForVerifier(bundles);
 
   return `DRAFT ANSWER TO VERIFY:
 ${draftAnswer}
 
-ALLOWED SOURCE EXCERPTS:
+ALLOWED EVIDENCE BUNDLES:
 ${sourceBlock}
 
-Verify every factual claim in the draft answer against the source excerpts above.
+Verify every factual claim in the draft answer against the evidence bundles above.
 Return JSON only.`;
 }
 
@@ -139,10 +133,10 @@ export function isVerifierBlocked(audit) {
  * @param {Object} opts
  * @param {Object} opts.anthropicClient — Anthropic SDK instance.
  * @param {string} opts.draftAnswer     — Draft answer text to verify.
- * @param {Object[]} opts.spans         — Source spans from fetchSourceSpans.
+ * @param {Object[]} opts.bundles — Evidence bundles from fetchEvidenceBundles.
  * @returns {Promise<Object>}  Verifier audit (may be a synthetic error sentinel).
  */
-export async function runVerifier({ anthropicClient, draftAnswer, spans }) {
+export async function runVerifier({ anthropicClient, draftAnswer, bundles }) {
   const model = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
 
   // ── 1. Call the verifier LLM ───────────────────────────────────────────────
@@ -152,7 +146,7 @@ export async function runVerifier({ anthropicClient, draftAnswer, spans }) {
       model,
       max_tokens: 4096,
       system:     VERIFIER_SYSTEM_PROMPT,
-      messages:   [{ role: 'user', content: buildVerifierPrompt(draftAnswer, spans) }],
+      messages:   [{ role: 'user', content: buildVerifierPrompt(draftAnswer, bundles) }],
     });
     raw = msg.content[0]?.text?.trim() ?? '';
   } catch (err) {
