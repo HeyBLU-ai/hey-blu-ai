@@ -46,6 +46,8 @@ const { default: askHandler }         = await import('./api/ask.js').catch(() =>
 const { default: adminLeaguesHandler } = await import('./api/admin/leagues.js');
 const { default: adminRulesHandler }   = await import('./api/admin/rules.js');
 const { default: adminIngestHandler }  = await import('./api/admin/ingest.js');
+const { default: adminWarningsHandler } = await import('./api/admin/warnings.js');
+const { default: adminRuleNodesHandler } = await import('./api/admin/rule-nodes.js');
 
 // ── MIME types ────────────────────────────────────────────────────────────────
 
@@ -149,8 +151,8 @@ const server = http.createServer(async (req, res) => {
 
   // ── CORS pre-flight ────────────────────────────────────────────────────────
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (method === 'OPTIONS') { res.writeHead(204); res.end(); return; }
 
   // ── API routes ─────────────────────────────────────────────────────────────
@@ -179,6 +181,18 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/admin/ingest') {
     req.body = await readBody(req);
     return adminIngestHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/warnings') {
+    req.query = Object.fromEntries(url.searchParams);
+    req.body  = method === 'POST' ? await readBody(req) : {};
+    return adminWarningsHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/rule-nodes') {
+    req.query = Object.fromEntries(url.searchParams);
+    req.body  = method === 'PUT' ? await readBody(req) : {};
+    return adminRuleNodesHandler(req, makeRes(res));
   }
 
   // ── Static files ───────────────────────────────────────────────────────────

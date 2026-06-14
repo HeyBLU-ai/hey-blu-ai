@@ -81,7 +81,7 @@ try {
 //   question             — question sent to the API (affects routing; see notes above)
 //   expected_state       — API response.state that must match
 //   expected_rule_number — if set, must appear (prefix/exact) in response.cited_rule_numbers
-//   expected_source_text — if set, must appear as substring in any retrieved source span body
+//   expected_source_text — if set, must appear as substring in a retrieved rule_node canonical text
 //   case_type            — human-readable intent category
 //   tier                 — 'critical' | 'broad'
 //   source               — 'human' | 'feedback'
@@ -470,7 +470,7 @@ const EVAL_CASES = [
   // ── LOCAL OVERRIDE / LOCAL-SPECIFIC (8 new) ────────────────────────────────
   //
   // Rules specific to BAMSBL that differ from or are absent in the parent rulebook.
-  // All expected_state: 'answered' — these should be served from BAMSBL source spans.
+  // All expected_state: 'answered' — these should be served from BAMSBL rule_nodes.
 
   {
     id:                   'ec000002-0000-0000-0000-000000000027',

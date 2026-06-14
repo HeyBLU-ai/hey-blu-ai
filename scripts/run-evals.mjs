@@ -13,19 +13,18 @@
  *     expected_rule_number appears in body.cited_rule_numbers
  *     (prefix/exact match, e.g. "505" matches "505.1")
  *
- *   CHECK 3 — Source text in retrieved spans (when expected_source_text is set)
+ *   CHECK 3 — Expected text in Evidence Bundle (when expected_source_text is set)
  *     expected_source_text is a case-insensitive substring of at least one
- *     retrieved source_span.body in the DB.
- *     Skipped when expected_source_text is NULL.
+ *     retrieved rule_node's canonical text (title + body + comment/exception/
+ *     penalty children). Skipped when expected_source_text is NULL.
  *
  *   CHECK 4 — Version isolation (answered / ruling states only)
- *     Every UUID in body.retrieved_source_ids belongs to the
- *     body.active_version_id rulebook version.  Cross-version retrieval
- *     would indicate a data-isolation bug.
+ *     Every UUID in body.retrieved_source_ids is a rule_node.id belonging to
+ *     body.active_version_id. Cross-version retrieval indicates isolation bug.
  *
- *   CHECK 5 — No null rulebook_version_id (answered / ruling states only)
- *     No source_span returned by the API has a NULL rulebook_version_id.
- *     A NULL version_id indicates a dangling span (write-path bug).
+ *   CHECK 5 — Valid rule_node citations (answered / ruling states only)
+ *     Every UUID in body.retrieved_source_ids resolves to a rule_nodes row
+ *     with a non-null rulebook_version_id.
  *
  *   CHECK 6 — Unsupported verifier never leaks a draft answer
  *     If body.verifier_status === 'unsupported', the state MUST be
@@ -41,8 +40,7 @@
  *     Exactly one current_question is returned (not zero, not an array).
  *
  * CHECKS 3–5 REQUIRE DATABASE ACCESS.
- *   The runner holds an open Postgres connection to query rule_sources.
- *   DATABASE_URL must point to the same DB backing the API under test.
+ *   The runner queries rule_nodes (Evidence Bundle IDs) in the same DB as the API.
  *
  * EXIT CODES:
  *   0 — all cases passed all checks
@@ -61,6 +59,7 @@ import pg   from 'pg';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, resolve } from 'path';
+import { buildCanonicalText } from '../lib/ingest/evidence-bundle.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -128,48 +127,95 @@ function ruleNumberSatisfied(expected, citedRuleNumbers) {
 }
 
 /**
- * Check 3: expected_source_text is a case-insensitive substring of at least
- * one retrieved source_span.body.
- * Returns { ok: boolean, reason: string|null }.
+ * Build canonical text for rule_node Evidence Bundles (mirrors retrieval layer).
+ *
+ * @param {import('pg').PoolClient} dbClient
+ * @param {string[]} nodeIds — rule_node UUIDs (API retrieved_source_ids / bundle_ids)
+ * @returns {Promise<Array<{ id: string, rule_number: string|null, canonical_text: string }>>}
  */
-async function checkSourceText(dbClient, sourceIds, expectedText) {
-  if (!expectedText || !sourceIds?.length) return { ok: true, reason: null };
+async function loadNodeCanonicalTexts(dbClient, nodeIds) {
+  if (!nodeIds?.length) return [];
+
+  const { rows: nodes } = await dbClient.query(`
+    SELECT id, rule_number, title, body_text, node_type, rulebook_version_id
+    FROM   rule_nodes
+    WHERE  id = ANY($1::uuid[])
+  `, [nodeIds]);
+
+  const out = [];
+  for (const node of nodes) {
+    const { rows: children } = await dbClient.query(`
+      SELECT node_type, title, body_text
+      FROM   rule_nodes
+      WHERE  parent_id = $1
+        AND  node_type IN ('comment', 'exception', 'penalty')
+      ORDER  BY sort_order ASC, created_at ASC
+    `, [node.id]);
+
+    const { rows: ancestors } = await dbClient.query(`
+      WITH RECURSIVE chain AS (
+        SELECT id, parent_id, node_type, rule_number, title, 0 AS depth
+        FROM   rule_nodes WHERE id = $1
+        UNION ALL
+        SELECT rn.id, rn.parent_id, rn.node_type, rn.rule_number, rn.title, chain.depth + 1
+        FROM   rule_nodes rn
+        JOIN   chain ON rn.id = chain.parent_id
+      )
+      SELECT node_type, rule_number, title
+      FROM   chain
+      ORDER  BY depth DESC
+    `, [node.id]);
+
+    const ancestorPath = ancestors.slice(0, -1).map(a => {
+      const num = a.rule_number ? `${a.rule_number}. ` : '';
+      return `${a.node_type} ${num}${a.title ?? ''}`.trim();
+    }).filter(Boolean).join(' → ');
+
+    out.push({
+      id:             node.id,
+      rule_number:    node.rule_number,
+      canonical_text: buildCanonicalText(node, ancestorPath, children),
+    });
+  }
+  return out;
+}
+
+/**
+ * Check 3: expected_source_text appears in a retrieved rule_node canonical text.
+ */
+async function checkExpectedSourceText(dbClient, bundleIds, expectedText) {
+  if (!expectedText || !bundleIds?.length) return { ok: true, reason: null };
   try {
-    const { rows } = await dbClient.query(
-      `SELECT exact_text FROM rule_sources WHERE id = ANY($1::uuid[]) AND exact_text IS NOT NULL`,
-      [sourceIds],
-    );
+    const nodes  = await loadNodeCanonicalTexts(dbClient, bundleIds);
     const needle = expectedText.toLowerCase();
-    const found  = rows.some(r => r.exact_text?.toLowerCase().includes(needle));
+    const found  = nodes.some(n => n.canonical_text?.toLowerCase().includes(needle));
     if (found) return { ok: true, reason: null };
     return {
       ok:     false,
-      reason: `CHECK3_SOURCE_TEXT: "${expectedText}" not found in any of ${rows.length} retrieved source span(s)`,
+      reason: `CHECK3_BUNDLE_TEXT: "${expectedText}" not found in any of ${nodes.length} retrieved rule_node bundle(s)`,
     };
   } catch (err) {
-    return { ok: false, reason: `CHECK3_SOURCE_TEXT: DB query failed — ${err.message}` };
+    return { ok: false, reason: `CHECK3_BUNDLE_TEXT: DB query failed — ${err.message}` };
   }
 }
 
 /**
- * Check 4: all retrieved_source_ids belong to the active rulebook version.
- * rule_sources links to rulebook_versions via: rule_sources.document_id → rule_documents.version_id
- * Returns { ok: boolean, reason: string|null }.
+ * Check 4: all retrieved bundle IDs belong to the active rulebook version.
  */
-async function checkVersionIsolation(dbClient, sourceIds, activeVersionId) {
-  if (!sourceIds?.length || !activeVersionId) return { ok: true, reason: null };
+async function checkVersionIsolation(dbClient, bundleIds, activeVersionId) {
+  if (!bundleIds?.length || !activeVersionId) return { ok: true, reason: null };
   try {
     const { rows } = await dbClient.query(
-      `SELECT rs.id
-       FROM rule_sources rs
-       JOIN rule_documents rd ON rd.id = rs.document_id
-       WHERE rs.id = ANY($1::uuid[]) AND rd.version_id != $2::uuid`,
-      [sourceIds, activeVersionId],
+      `SELECT id, rule_number
+       FROM   rule_nodes
+       WHERE  id = ANY($1::uuid[])
+         AND  rulebook_version_id != $2::uuid`,
+      [bundleIds, activeVersionId],
     );
     if (rows.length === 0) return { ok: true, reason: null };
     return {
       ok:     false,
-      reason: `CHECK4_VERSION: ${rows.length} source span(s) belong to a different rulebook version than active_version_id="${activeVersionId}"`,
+      reason: `CHECK4_VERSION: ${rows.length} rule_node(s) belong to a different version than active_version_id="${activeVersionId}"`,
     };
   } catch (err) {
     return { ok: false, reason: `CHECK4_VERSION: DB query failed — ${err.message}` };
@@ -177,29 +223,55 @@ async function checkVersionIsolation(dbClient, sourceIds, activeVersionId) {
 }
 
 /**
- * Check 5: no retrieved source span has a missing or NULL version linkage.
- * Catches orphaned rule_sources (no document_id) and documents without a version.
- * Returns { ok: boolean, reason: string|null }.
+ * Check 5: every retrieved_source_id resolves to a valid rule_node with version linkage.
  */
-async function checkNoNullVersion(dbClient, sourceIds) {
-  if (!sourceIds?.length) return { ok: true, reason: null };
+async function checkValidRuleNodes(dbClient, bundleIds) {
+  if (!bundleIds?.length) return { ok: true, reason: null };
   try {
     const { rows } = await dbClient.query(
-      `SELECT rs.id
-       FROM rule_sources rs
-       LEFT JOIN rule_documents rd ON rd.id = rs.document_id
-       WHERE rs.id = ANY($1::uuid[])
-         AND (rs.document_id IS NULL OR rd.id IS NULL OR rd.version_id IS NULL)`,
-      [sourceIds],
+      `SELECT id, rulebook_version_id
+       FROM   rule_nodes
+       WHERE  id = ANY($1::uuid[])`,
+      [bundleIds],
     );
-    if (rows.length === 0) return { ok: true, reason: null };
-    return {
-      ok:     false,
-      reason: `CHECK5_NULL_VERSION: ${rows.length} source span(s) have no rulebook version linkage`,
-    };
+    const foundIds = new Set(rows.map(r => r.id));
+    const missing  = bundleIds.filter(id => !foundIds.has(id));
+    const nullVer  = rows.filter(r => !r.rulebook_version_id);
+
+    if (missing.length > 0) {
+      return {
+        ok:     false,
+        reason: `CHECK5_INVALID_NODE: ${missing.length} retrieved_source_id(s) are not valid rule_nodes`,
+      };
+    }
+    if (nullVer.length > 0) {
+      return {
+        ok:     false,
+        reason: `CHECK5_INVALID_NODE: ${nullVer.length} rule_node(s) have null rulebook_version_id`,
+      };
+    }
+    return { ok: true, reason: null };
   } catch (err) {
-    return { ok: false, reason: `CHECK5_NULL_VERSION: DB query failed — ${err.message}` };
+    return { ok: false, reason: `CHECK5_INVALID_NODE: DB query failed — ${err.message}` };
   }
+}
+
+/**
+ * Map a failure reason string to a triage category.
+ *
+ * @param {string} reason
+ * @returns {string}
+ */
+function classifyFailure(reason) {
+  if (reason.includes('unverifiable') || reason.startsWith('CHECK6_VERIFIER')) return 'Verifier blocked';
+  if (reason.startsWith('CHECK1_STATE')) return 'Routing error';
+  if (reason.startsWith('CHECK2_RULE')) return 'Wrong rule retrieved';
+  if (reason.startsWith('CHECK3_BUNDLE_TEXT')) return 'Missing expected text in bundle';
+  if (reason.startsWith('CHECK4_VERSION') || reason.startsWith('CHECK5_INVALID_NODE')) return 'Version isolation';
+  if (reason.startsWith('CHECK6_VERIFIER_GATE')) return 'Verifier gate broken';
+  if (reason.startsWith('CHECK7_NC')) return 'Interview structure error';
+  if (reason.startsWith('Network/timeout')) return 'Network/timeout';
+  return 'Other';
 }
 
 /**
@@ -251,21 +323,18 @@ async function runEval(evalCase, dbClient) {
     );
   }
 
-  // ── Checks 3–5: DB source validation (answered/ruling states only) ─────────
+  // ── Checks 3–5: Evidence Bundle / rule_node validation (RAG states only) ───
   const isRagState = RAG_STATES.has(body.state);
-  const sourceIds  = isRagState ? (body.retrieved_source_ids ?? []) : [];
+  const bundleIds  = isRagState ? (body.retrieved_source_ids ?? []) : [];
 
   if (isRagState && !SKIP_DB_CHECKS) {
-    // Check 3: expected source text in retrieved span bodies
-    const c3 = await checkSourceText(dbClient, sourceIds, expected_source_text);
+    const c3 = await checkExpectedSourceText(dbClient, bundleIds, expected_source_text);
     if (!c3.ok) failures.push(c3.reason);
 
-    // Check 4: all sources belong to the active rulebook version
-    const c4 = await checkVersionIsolation(dbClient, sourceIds, body.active_version_id);
+    const c4 = await checkVersionIsolation(dbClient, bundleIds, body.active_version_id);
     if (!c4.ok) failures.push(c4.reason);
 
-    // Check 5: no source has a null rulebook_version_id
-    const c5 = await checkNoNullVersion(dbClient, sourceIds);
+    const c5 = await checkValidRuleNodes(dbClient, bundleIds);
     if (!c5.ok) failures.push(c5.reason);
   }
 
@@ -418,13 +487,26 @@ console.log('─'.repeat(60) + '\n');
 
 if (totalFailed > 0) {
   console.error('Failed cases:');
+  const grouped = {};
   for (let i = 0; i < results.length; i++) {
     const r = results[i];
     if (r.passed) continue;
     console.error(`  • ${r.label}`);
     for (const f of r.failures ?? []) {
       console.error(`      ${f}`);
+      const cat = classifyFailure(f);
+      grouped[cat] = grouped[cat] ?? [];
+      grouped[cat].push({ label: r.label, reason: f });
     }
+  }
+
+  console.error('\nFailure summary by category:');
+  for (const [cat, items] of Object.entries(grouped).sort((a, b) => b[1].length - a[1].length)) {
+    console.error(`  ${cat}: ${items.length}`);
+    for (const item of items.slice(0, 5)) {
+      console.error(`    - ${item.label}`);
+    }
+    if (items.length > 5) console.error(`    … +${items.length - 5} more`);
   }
   console.error('');
   process.exit(1);

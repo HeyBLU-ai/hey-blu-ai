@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HeyBLU Admin — League Ingest</title>
+  <title>HeyBLU Admin — QA Dashboard</title>
   <meta name="robots" content="noindex, nofollow">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -62,17 +62,16 @@
     .auth-error   { color: #ef4444; font-size: 13px; margin-top: 10px; }
 
     /* ── Main layout ── */
-    #app {
+    #app { display: none; }
+
+    /* ── QA Warnings (primary panel) ── */
+    #warnings-panel {
       display: none;
       max-width: 1100px;
-      margin: 0 auto;
-      padding: 28px 20px;
-      gap: 24px;
+      margin: 28px auto 32px;
+      padding: 0 20px;
     }
-    #app.visible { display: grid; grid-template-columns: 420px 1fr; }
-    @media (max-width: 800px) { #app.visible { grid-template-columns: 1fr; } }
-
-    /* ── Panels ── */
+    #warnings-panel.visible { display: block; }
     .panel {
       background: #0f172a;
       border: 1px solid #1e293b;
@@ -417,6 +416,171 @@
     .badge-low      { background: #dc262622; color: #fca5a5; border: 1px solid #dc262644; }
     .badge-embed-ok { background: #0e749022; color: #67e8f9; border: 1px solid #0e749044; }
     .badge-no-embed { background: #33415522; color: #64748b;  border: 1px solid #33415544; }
+
+    /* ── Find & Edit Rule ── */
+    #edit-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 28px auto 24px;
+      padding: 0 20px;
+    }
+    #edit-panel.visible { display: block; }
+
+    .edit-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .edit-toolbar input[type="text"],
+    .edit-toolbar select {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      font-size: 13px;
+      outline: none;
+    }
+    .edit-toolbar input[type="text"] { width: 120px; }
+    .edit-toolbar select { min-width: 180px; }
+    .edit-toolbar input:focus,
+    .edit-toolbar select:focus { border-color: #3b82f6; }
+
+    .btn-fetch, .btn-save {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-fetch { background: #3b82f6; color: #fff; }
+    .btn-fetch:hover:not(:disabled) { background: #2563eb; }
+    .btn-save { background: #22c55e; color: #052e16; }
+    .btn-save:hover:not(:disabled) { background: #16a34a; color: #fff; }
+    .btn-fetch:disabled, .btn-save:disabled { opacity: .5; cursor: not-allowed; }
+
+    .edit-body { padding: 18px 20px; }
+    .edit-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .edit-path {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+    .edit-status { font-size: 12px; color: #64748b; margin-top: 10px; }
+    .edit-status.error { color: #fca5a5; }
+    .edit-status.ok { color: #86efac; }
+
+    /* ── QA Warnings ── */
+    .warnings-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .warnings-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .warnings-count strong { color: #f1f5f9; }
+
+    .warning-card {
+      border-bottom: 1px solid #1e293b;
+      padding: 18px 20px;
+    }
+    .warning-card:last-child { border-bottom: none; }
+
+    .warning-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .warning-message {
+      font-size: 14px;
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .warning-path {
+      font-size: 12px;
+      color: #93c5fd;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    .warning-textarea {
+      width: 100%;
+      min-height: 140px;
+      background: #020817;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #cbd5e1;
+      padding: 12px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+    .warning-textarea:focus { border-color: #3b82f6; }
+
+    .warning-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .btn-resolve {
+      background: #22c55e;
+      color: #052e16;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-resolve:hover:not(:disabled) { background: #16a34a; color: #fff; }
+    .btn-resolve:disabled { opacity: .5; cursor: not-allowed; }
+    .warning-status { font-size: 12px; color: #64748b; }
+    .warning-status.error { color: #fca5a5; }
+    .warning-status.ok { color: #86efac; }
+
+    .badge-blocking { background: #dc262622; color: #fca5a5; border: 1px solid #dc262644; }
+    .badge-severity-warning { background: #d9770622; color: #fcd34d; border: 1px solid #d9770644; }
+    .badge-severity-error { background: #7f1d1d22; color: #fca5a5; border: 1px solid #7f1d1d44; }
+
+    .btn-toggle-orphans {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #94a3b8;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .btn-toggle-orphans:hover { border-color: #64748b; color: #e2e8f0; }
+    .btn-toggle-orphans.active { border-color: #3b82f6; color: #93c5fd; }
+
+    .orphans-section-label {
+      padding: 12px 20px 0;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
@@ -426,7 +590,7 @@
     <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
     </svg>
-    <h1>HeyBLU Admin <span>/ League Ingest</span></h1>
+    <h1>HeyBLU Admin <span>/ QA Dashboard</span></h1>
   </div>
   <button id="logout-btn" style="display:none" onclick="logout()">Sign out</button>
 </header>
@@ -445,136 +609,50 @@
   </div>
 </div>
 
-<!-- Main App -->
-<div id="app">
-
-  <!-- Left: Form -->
+<!-- Find & Edit Rule Panel -->
+<div id="edit-panel">
   <div class="panel">
-    <div class="panel-header">📋 Ingest Settings</div>
-    <div class="panel-body">
-
-      <!-- Source tabs -->
-      <div class="field">
-        <label>Rulebook Source</label>
-        <div class="tabs">
-          <div class="tab active" onclick="setSource('file')">📄 File (.pdf / .docx)</div>
-          <div class="tab"       onclick="setSource('url')">🔗 URL</div>
-        </div>
-
-        <div id="url-input" style="display:none">
-          <input type="url" id="url" placeholder="https://www.littleleague.org/playing-rules/">
-        </div>
-
-        <div id="file-input">
-          <div id="file-zone" onclick="document.getElementById('file-picker').click()"
-               ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
-            <strong>Drop file here or click to browse</strong>
-            <p>Supports .pdf and .docx  ·  Max 20 MB</p>
-            <input type="file" id="file-picker" accept=".pdf,.docx" onchange="handleFileSelect(event)">
-          </div>
-          <p id="file-name" style="font-size:12px;color:#64748b;margin-top:6px;"></p>
-        </div>
+    <div class="panel-header">✏️ Find &amp; Edit Rule</div>
+    <div class="edit-toolbar">
+      <select id="edit-league-select" title="League">
+        <option value="bamsbl">bamsbl</option>
+      </select>
+      <input type="text" id="edit-node-key" placeholder="Rule # (e.g. 430)" onkeydown="if(event.key==='Enter')fetchRuleNode()">
+      <button class="btn-fetch" onclick="fetchRuleNode()">Fetch</button>
+      <span class="edit-status" id="edit-fetch-status"></span>
+    </div>
+    <div class="edit-body" id="edit-body" style="display:none">
+      <div class="edit-meta" id="edit-meta"></div>
+      <div class="edit-path" id="edit-path"></div>
+      <textarea class="warning-textarea" id="edit-canonical-text" rows="14"></textarea>
+      <div class="warning-actions">
+        <button class="btn-save" id="edit-save-btn" onclick="saveRuleNode()">Save Changes</button>
+        <span class="edit-status" id="edit-save-status"></span>
       </div>
-
-      <!-- League -->
-      <div class="field">
-        <label>League</label>
-        <select id="league-select" onchange="onLeagueChange()">
-          <option value="">Loading leagues…</option>
-        </select>
-        <div id="new-league-form">
-          <div class="field">
-            <label>League Display Name</label>
-            <input type="text" id="new-league-name" placeholder="e.g. District 4 Little League 2026"
-                   oninput="autoSlug()">
-          </div>
-          <div class="field">
-            <label>League Slug (unique ID)</label>
-            <input type="text" id="new-league-slug" placeholder="district-4-ll-2026">
-          </div>
-          <div class="field">
-            <label>Parent League (for override detection)</label>
-            <select id="parent-league-select">
-              <option value="">None (standalone / foundation)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Sport -->
-      <div class="field">
-        <label>Sport</label>
-        <div class="radio-row">
-          <label><input type="radio" name="sport" value="baseball" checked> Baseball</label>
-          <label><input type="radio" name="sport" value="softball"> Softball</label>
-          <label><input type="radio" name="sport" value="both"> Both</label>
-        </div>
-      </div>
-
-      <!-- Options -->
-      <div class="field">
-        <label>Options</label>
-        <div class="toggle-row">
-          <input type="checkbox" id="replace">
-          <label for="replace">Replace existing rules (clears current rulebook first)</label>
-        </div>
-        <div class="toggle-row">
-          <input type="checkbox" id="dry-run">
-          <label for="dry-run">Dry run — parse &amp; chunk only, no DB writes</label>
-        </div>
-      </div>
-
-      <button id="submit-btn" onclick="startIngest()">⚡ Start Ingest</button>
-
     </div>
   </div>
-
-  <!-- Right: Progress + Results -->
-  <div class="panel">
-    <div class="panel-header">📊 Progress</div>
-    <div class="panel-body">
-
-      <!-- Steps -->
-      <div class="steps">
-        <div class="step" id="step-parse">
-          <span class="step-icon">📄</span>
-          <span class="step-label">Parse</span>
-        </div>
-        <div class="step" id="step-league">
-          <span class="step-icon">🏟️</span>
-          <span class="step-label">League</span>
-        </div>
-        <div class="step" id="step-chunk">
-          <span class="step-icon">🤖</span>
-          <span class="step-label">AI Chunk</span>
-        </div>
-        <div class="step" id="step-write">
-          <span class="step-icon">💾</span>
-          <span class="step-label">Write</span>
-        </div>
-        <div class="step" id="step-embed">
-          <span class="step-icon">🔍</span>
-          <span class="step-label">Embed</span>
-        </div>
-      </div>
-
-      <!-- Log -->
-      <div id="log">
-        <div class="empty" style="padding:24px 0">
-          <div class="icon" style="font-size:32px">⚡</div>
-          <p>Configure a source and league, then click Start Ingest.</p>
-        </div>
-      </div>
-
-      <!-- Results -->
-      <div id="results"></div>
-
-    </div>
-  </div>
-
 </div>
 
-<!-- Rule Browser Panel (full-width, below ingest) -->
+<!-- QA Warnings Panel (primary) -->
+<div id="warnings-panel">
+  <div class="panel">
+    <div class="panel-header">⚠️ QA Warnings</div>
+    <div class="warnings-toolbar">
+      <span style="font-size:13px;color:#94a3b8">Actionable canonicalization issues first</span>
+      <button class="tab" style="padding:6px 12px;font-size:12px" onclick="loadWarnings()">↻ Refresh</button>
+      <button class="btn-toggle-orphans" id="toggle-orphans-btn" onclick="toggleOrphans()"></button>
+      <span class="warnings-count" id="warnings-count"></span>
+    </div>
+    <div id="warnings-body">
+      <div class="empty">
+        <div class="icon">✅</div>
+        <p>Loading warnings…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Rule Browser Panel -->
 <div id="browser-panel">
   <div class="panel">
     <div class="panel-header">🔍 Browse Rules</div>
@@ -601,10 +679,7 @@
 // ── State ─────────────────────────────────────────────────────────────────────
 
 let password    = sessionStorage.getItem('admin_pw') ?? '';
-let sourceMode  = 'file';
-let fileData    = null;   // { base64, name }
 let leagues     = [];
-let running     = false;
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -660,265 +735,136 @@ document.getElementById('password-input').addEventListener('keydown', e => {
 
 function showApp() {
   document.getElementById('auth-gate').style.display = 'none';
-  document.getElementById('app').classList.add('visible');
+  document.getElementById('edit-panel').classList.add('visible');
+  document.getElementById('warnings-panel').classList.add('visible');
   document.getElementById('browser-panel').classList.add('visible');
   document.getElementById('logout-btn').style.display = '';
-  populateLeagueDropdown();
   populateBrowserDropdown();
+  populateEditLeagueDropdown();
+  loadWarnings();
 }
 
-function populateLeagueDropdown() {
-  const sel = document.getElementById('league-select');
-  sel.innerHTML =
-    `<option value="">— select a league —</option>` +
-    leagues.map(l =>
-      `<option value="${l.slug}">${l.name} (${l.rule_count} rules)${l.parent_name ? ' ↳ '+l.parent_name : ''}</option>`
-    ).join('') +
-    `<option value="__new__">➕ Add new league…</option>`;
-
-  // Also populate parent dropdown
-  const par = document.getElementById('parent-league-select');
-  par.innerHTML =
-    `<option value="">None (standalone / foundation)</option>` +
-    leagues.map(l => `<option value="${l.slug}">${l.name}</option>`).join('');
+function populateEditLeagueDropdown() {
+  const sel = document.getElementById('edit-league-select');
+  if (!sel) return;
+  sel.innerHTML = leagues.length
+    ? leagues.map(l => `<option value="${l.slug}">${l.name}</option>`).join('')
+    : '<option value="bamsbl">bamsbl</option>';
 }
 
-// ── Source toggle ─────────────────────────────────────────────────────────────
+// ── Find & Edit Rule ──────────────────────────────────────────────────────────
 
-function setSource(mode) {
-  sourceMode = mode;
-  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === (mode === 'url' ? 0 : 1)));
-  document.getElementById('url-input').style.display  = mode === 'url'  ? '' : 'none';
-  document.getElementById('file-input').style.display = mode === 'file' ? '' : 'none';
-}
+let editNode = null;
 
-// ── League select ─────────────────────────────────────────────────────────────
+async function fetchRuleNode() {
+  const nodeKey = document.getElementById('edit-node-key').value.trim();
+  const league  = document.getElementById('edit-league-select').value;
+  const status  = document.getElementById('edit-fetch-status');
+  const bodyEl  = document.getElementById('edit-body');
 
-function onLeagueChange() {
-  const v = document.getElementById('league-select').value;
-  document.getElementById('new-league-form').classList.toggle('visible', v === '__new__');
-}
-
-function autoSlug() {
-  const name = document.getElementById('new-league-name').value;
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-  document.getElementById('new-league-slug').value = slug;
-}
-
-// ── File handling ─────────────────────────────────────────────────────────────
-
-function handleFileSelect(e) {
-  const file = e.target.files[0];
-  if (file) loadFile(file);
-}
-function handleDragOver(e) {
-  e.preventDefault();
-  document.getElementById('file-zone').classList.add('drag-over');
-}
-function handleDragLeave(e) {
-  document.getElementById('file-zone').classList.remove('drag-over');
-}
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('file-zone').classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file) loadFile(file);
-}
-function loadFile(file) {
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const base64 = ev.target.result.split(',')[1];
-    fileData = { base64, name: file.name };
-    document.getElementById('file-name').textContent = `✓ ${file.name} (${(file.size/1024).toFixed(0)} KB)`;
-  };
-  reader.readAsDataURL(file);
-}
-
-// ── Ingest ────────────────────────────────────────────────────────────────────
-
-async function startIngest() {
-  if (running) return;
-
-  // Gather inputs
-  const leagueVal     = document.getElementById('league-select').value;
-  const newLeagueName = document.getElementById('new-league-name').value.trim();
-  const newLeagueSlug = document.getElementById('new-league-slug').value.trim();
-  const parentSlug    = document.getElementById('parent-league-select').value;
-  const sport         = document.querySelector('input[name="sport"]:checked').value;
-  const replace       = document.getElementById('replace').checked;
-  const dryRun        = document.getElementById('dry-run').checked;
-  const url           = document.getElementById('url').value.trim();
-
-  // Validation
-  if (sourceMode === 'url' && !url)            { alert('Please enter a URL.'); return; }
-  if (sourceMode === 'file' && !fileData)      { alert('Please select a file.'); return; }
-  if (!leagueVal)                               { alert('Please select a league.'); return; }
-  if (leagueVal === '__new__' && !newLeagueName){ alert('Enter a league name.'); return; }
-  if (leagueVal === '__new__' && !newLeagueSlug){ alert('Enter a league slug.'); return; }
-
-  // Build body
-  const body = { sport, replace, dryRun };
-  if (sourceMode === 'url')  body.url = url;
-  else { body.fileBase64 = fileData.base64; body.fileName = fileData.name; }
-
-  if (leagueVal === '__new__') {
-    body.newLeagueName = newLeagueName;
-    body.newLeagueSlug = newLeagueSlug;
-    if (parentSlug) body.parentSlug = parentSlug;
-  } else {
-    body.leagueSlug = leagueVal;
+  if (!nodeKey) {
+    status.textContent = 'Enter a rule number.';
+    status.className = 'edit-status error';
+    return;
   }
 
-  // Reset UI
-  running = true;
-  document.getElementById('submit-btn').disabled = true;
-  document.getElementById('submit-btn').textContent = '⏳ Running…';
-  document.getElementById('results').style.display = 'none';
-  document.getElementById('results').innerHTML = '';
-  clearLog();
-  resetSteps();
+  status.textContent = 'Loading…';
+  status.className = 'edit-status';
+  bodyEl.style.display = 'none';
+  editNode = null;
 
-  // Open SSE stream
-  try {
-    const res = await fetch('/api/admin/ingest', {
-      method:  'POST',
-      headers: { 'Authorization': `Bearer ${password}`, 'Content-Type': 'application/json' },
-      body:    JSON.stringify(body),
-    });
+  const res = await fetch(
+    `/api/admin/rule-nodes?node_key=${encodeURIComponent(nodeKey)}&league=${encodeURIComponent(league)}`,
+    { headers: { 'Authorization': `Bearer ${password}` } },
+  );
 
-    if (res.status === 401) { alert('Session expired — please sign in again.'); logout(); return; }
-    if (!res.ok)             { throw new Error(`HTTP ${res.status}`); }
-
-    const reader  = res.body.getReader();
-    const decoder = new TextDecoder();
-    let   buffer  = '';
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buffer += decoder.decode(value, { stream: true });
-
-      const lines = buffer.split('\n');
-      buffer = lines.pop();   // keep incomplete line
-
-      for (const line of lines) {
-        if (!line.startsWith('data: ')) continue;
-        try {
-          const event = JSON.parse(line.slice(6));
-          handleEvent(event);
-        } catch {}
-      }
-    }
-
-  } catch (err) {
-    addLog('error', `Connection error: ${err.message}`);
+  if (res.status === 401) {
+    status.textContent = 'Session expired.';
+    status.className = 'edit-status error';
+    return;
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    status.textContent = err.error ?? `Failed (${res.status})`;
+    status.className = 'edit-status error';
+    return;
   }
 
-  running = false;
-  document.getElementById('submit-btn').disabled = false;
-  document.getElementById('submit-btn').textContent = '⚡ Start Ingest';
-}
+  const data = await res.json();
+  editNode = data.node;
+  status.textContent = `Loaded ${editNode.node_key}`;
+  status.className = 'edit-status ok';
 
-// ── Event handler ─────────────────────────────────────────────────────────────
-
-function handleEvent(ev) {
-  const { step, status, message } = ev;
-
-  // Update step indicator
-  if (step && step !== 'complete' && step !== 'error') {
-    const el = document.getElementById(`step-${step}`);
-    if (el) {
-      el.className = `step ${status}`;
-      if (status === 'running') el.querySelector('.step-icon').textContent = '⏳';
-      if (status === 'done')    el.querySelector('.step-icon').textContent = stepDoneIcon(step);
-      if (status === 'error')   el.querySelector('.step-icon').textContent = '❌';
-    }
-  }
-
-  // Log line
-  addLog(status === 'error' ? 'error' : status === 'done' ? 'done' : 'running',
-    `[${step}] ${message}`);
-
-  // Results
-  if (step === 'complete' && status === 'done') {
-    showResults(ev);
-  }
-  if (step === 'error') {
-    document.querySelectorAll('.step.running').forEach(s => s.classList.replace('running', 'error'));
-  }
-}
-
-function stepDoneIcon(step) {
-  return { parse: '📄', league: '🏟️', chunk: '🤖', write: '💾', embed: '🔍' }[step] ?? '✅';
-}
-
-// ── Log ───────────────────────────────────────────────────────────────────────
-
-function clearLog() {
-  document.getElementById('log').innerHTML = '';
-}
-function addLog(cls, text) {
-  const log  = document.getElementById('log');
-  const line = document.createElement('div');
-  line.className = `log-line ${cls}`;
-  line.textContent = `${new Date().toLocaleTimeString()}  ${text}`;
-  log.appendChild(line);
-  log.scrollTop = log.scrollHeight;
-}
-function resetSteps() {
-  ['parse','league','chunk','write','embed'].forEach(s => {
-    const el = document.getElementById(`step-${s}`);
-    el.className = 'step';
-    el.querySelector('.step-icon').textContent = stepDoneIcon(s);
-  });
-}
-
-// ── Results ───────────────────────────────────────────────────────────────────
-
-function showResults(ev) {
-  const { leagueName, inserted = 0, skipped = 0, quality = '?', preview = [], dryRun } = ev;
-  const qClass = { good: 'quality-good', partial: 'quality-partial', poor: 'quality-poor' }[quality] ?? '';
-
-  const div = document.getElementById('results');
-  div.style.display = '';
-  div.innerHTML = `
-    <h3>${dryRun ? '🔍 Dry Run Preview' : '✅ Ingest Complete'}</h3>
-    <div>
-      ${!dryRun ? `
-        <div class="result-stat"><span>Inserted</span> <strong>${inserted}</strong></div>
-        <div class="result-stat"><span>Skipped</span> <strong>${skipped}</strong></div>
-      ` : `
-        <div class="result-stat"><span>Would insert</span> <strong>${ev.rules ?? 0}</strong></div>
-      `}
-      <div class="result-stat"><span>Quality</span> <strong class="${qClass}">${quality}</strong></div>
-    </div>
-    ${preview.length > 0 ? `
-      <table class="rules-table">
-        <thead><tr><th>Rule #</th><th>Title</th></tr></thead>
-        <tbody>
-          ${preview.map(r => `<tr><td>${esc(r.rule_number)}</td><td>${esc(r.title)}</td></tr>`).join('')}
-        </tbody>
-      </table>
-      ${preview.length >= 30 ? `<p style="font-size:12px;color:#64748b;margin-top:6px;">Showing first 30 rules.</p>` : ''}
-    ` : ''}
-    ${!dryRun && leagueName ? `
-      <a class="test-link" href="/rulebook" target="_blank">
-        Test "${leagueName}" in /rulebook →
-      </a>
-    ` : ''}
+  document.getElementById('edit-meta').innerHTML = `
+    <span class="badge badge-high">Rule ${esc(editNode.rule_number ?? '—')}</span>
+    <span class="badge badge-no-embed">${esc(editNode.node_type)}</span>
+    <span class="badge badge-embed-ok">${esc(editNode.node_key)}</span>
+    ${editNode.has_canonical_override ? '<span class="badge badge-override">Override</span>' : ''}
   `;
-
-  // Auto-load rule browser for the ingested league
-  if (!dryRun && ev.leagueSlug) {
-    setTimeout(() => autoLoadBrowser(ev.leagueSlug), 500);
-  }
+  document.getElementById('edit-path').textContent = editNode.rule_path || '(no path)';
+  document.getElementById('edit-canonical-text').value = editNode.canonical_text ?? '';
+  document.getElementById('edit-save-status').textContent = '';
+  bodyEl.style.display = '';
 }
+
+async function saveRuleNode() {
+  if (!editNode) return;
+
+  const league = document.getElementById('edit-league-select').value;
+  const text   = document.getElementById('edit-canonical-text').value.trim();
+  const btn    = document.getElementById('edit-save-btn');
+  const status = document.getElementById('edit-save-status');
+
+  if (!text) {
+    status.textContent = 'Canonical text cannot be empty.';
+    status.className = 'edit-status error';
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = 'Saving…';
+  status.className = 'edit-status';
+
+  const res = await fetch('/api/admin/rule-nodes', {
+    method:  'PUT',
+    headers: {
+      'Authorization': `Bearer ${password}`,
+      'Content-Type':  'application/json',
+    },
+    body: JSON.stringify({
+      node_key:       editNode.node_key,
+      league,
+      canonical_text: text,
+    }),
+  });
+
+  if (res.status === 401) {
+    alert('Session expired — please sign in again.');
+    logout();
+    return;
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    status.textContent = err.error ?? `Failed (${res.status})`;
+    status.className = 'edit-status error';
+    btn.disabled = false;
+    return;
+  }
+
+  const data = await res.json();
+  editNode = data.node;
+  document.getElementById('edit-canonical-text').value = editNode.canonical_text ?? text;
+  status.textContent = 'Saved — canonical_text and chunk 0 updated.';
+  status.className = 'edit-status ok';
+  btn.disabled = false;
+}
+
+// ── Rule Browser ──────────────────────────────────────────────────────────────
 
 function esc(s) {
   return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
-
-// ── Rule Browser ──────────────────────────────────────────────────────────────
 
 let allRules    = [];   // full result from API
 let browseLeague = '';
@@ -1013,13 +959,186 @@ function toggleRow(tr) {
   tr.classList.toggle('expanded');
 }
 
-// Auto-load browser after a successful ingest
-function autoLoadBrowser(leagueSlug) {
-  if (!leagueSlug) return;
-  const sel = document.getElementById('browser-league-select');
-  if (sel.value !== leagueSlug) sel.value = leagueSlug;
-  loadRules();
-  document.getElementById('browser-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+// ── QA Warnings ───────────────────────────────────────────────────────────────
+
+let qaWarnings = [];
+let showOrphans = false;
+
+const WARNING_SORT_ORDER = {
+  SHORT_BODY: 0,
+  DUPLICATE_RULE: 1,
+  ORPHAN_BODY: 99,
+};
+
+function sortWarnings(list) {
+  return [...list].sort((a, b) => {
+    const pa = WARNING_SORT_ORDER[a.warning_code] ?? 50;
+    const pb = WARNING_SORT_ORDER[b.warning_code] ?? 50;
+    if (pa !== pb) return pa - pb;
+    const ra = a.rule_number ?? '';
+    const rb = b.rule_number ?? '';
+    if (ra !== rb) return ra.localeCompare(rb, undefined, { numeric: true });
+    return (a.message ?? '').localeCompare(b.message ?? '');
+  });
+}
+
+function splitWarnings(list) {
+  const sorted = sortWarnings(list);
+  return {
+    actionable: sorted.filter(w => w.warning_code !== 'ORPHAN_BODY'),
+    orphans: sorted.filter(w => w.warning_code === 'ORPHAN_BODY'),
+  };
+}
+
+function updateWarningsCount(actionable, orphans) {
+  const countEl = document.getElementById('warnings-count');
+  const orphanBtn = document.getElementById('toggle-orphans-btn');
+  const visible = actionable.length + (showOrphans ? orphans.length : 0);
+
+  countEl.innerHTML = orphans.length
+    ? `<strong>${visible}</strong> shown · <strong>${actionable.length}</strong> actionable`
+    : `<strong>${visible}</strong> unresolved`;
+
+  if (orphans.length > 0) {
+    orphanBtn.style.display = '';
+    orphanBtn.textContent = showOrphans
+      ? `Hide Orphans (${orphans.length})`
+      : `Show Orphans (${orphans.length})`;
+    orphanBtn.classList.toggle('active', showOrphans);
+  } else {
+    orphanBtn.style.display = 'none';
+  }
+}
+
+function toggleOrphans() {
+  showOrphans = !showOrphans;
+  renderWarnings();
+}
+
+async function loadWarnings() {
+  const bodyEl  = document.getElementById('warnings-body');
+  const countEl = document.getElementById('warnings-count');
+  bodyEl.innerHTML = `<div class="empty"><div class="icon" style="font-size:32px">⏳</div><p>Loading warnings…</p></div>`;
+  countEl.textContent = '';
+
+  const res = await fetch('/api/admin/warnings', {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+
+  if (res.status === 401) {
+    bodyEl.innerHTML = `<div class="empty"><p style="color:#fca5a5">Session expired — please sign in again.</p></div>`;
+    return;
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    bodyEl.innerHTML = `<div class="empty"><p style="color:#fca5a5">Failed to load warnings (${res.status})${err.detail ? ': ' + esc(err.detail) : ''}</p></div>`;
+    return;
+  }
+
+  const data = await res.json();
+  qaWarnings = sortWarnings(data.warnings ?? []);
+  renderWarnings();
+}
+
+function severityBadge(severity, isBlocking) {
+  if (isBlocking) return `<span class="badge badge-blocking">blocking</span>`;
+  const cls = severity === 'error' ? 'badge-severity-error' : 'badge-severity-warning';
+  return `<span class="badge ${cls}">${esc(severity)}</span>`;
+}
+
+function renderWarningCard(w) {
+  return `
+    <div class="warning-card" id="warning-${w.id}">
+      <div class="warning-meta">
+        <span class="warning-message">${esc(w.message)}</span>
+        ${severityBadge(w.severity, w.is_blocking)}
+        <span class="badge badge-no-embed">${esc(w.warning_code)}</span>
+        ${w.rule_number ? `<span class="badge badge-high">Rule ${esc(w.rule_number)}</span>` : ''}
+      </div>
+      <div class="warning-path">${w.rule_path ? esc(w.rule_path) : '<em style="color:#64748b">No rule path</em>'}</div>
+      <textarea class="warning-textarea" id="text-${w.id}" rows="8">${esc(w.canonical_text ?? '')}</textarea>
+      <div class="warning-actions">
+        <button class="btn-resolve" id="btn-${w.id}" onclick="resolveWarning('${w.id}')">Save &amp; Resolve</button>
+        <span class="warning-status" id="status-${w.id}"></span>
+      </div>
+    </div>`;
+}
+
+function renderWarnings() {
+  const bodyEl = document.getElementById('warnings-body');
+  const { actionable, orphans } = splitWarnings(qaWarnings);
+  updateWarningsCount(actionable, orphans);
+
+  if (!qaWarnings.length) {
+    bodyEl.innerHTML = `
+      <div class="empty">
+        <div class="icon">✅</div>
+        <p>No unresolved canonicalization warnings.</p>
+      </div>`;
+    return;
+  }
+
+  const parts = [];
+
+  if (actionable.length > 0) {
+    parts.push(actionable.map(renderWarningCard).join(''));
+  } else if (!showOrphans) {
+    parts.push(`
+      <div class="empty" style="padding:32px 20px">
+        <div class="icon" style="font-size:32px">✅</div>
+        <p>No actionable warnings. Orphan blocks are hidden — use <strong>Show Orphans</strong> to review.</p>
+      </div>`);
+  }
+
+  if (showOrphans && orphans.length > 0) {
+    parts.push(`<div class="orphans-section-label">Orphan body blocks (${orphans.length})</div>`);
+    parts.push(orphans.map(renderWarningCard).join(''));
+  }
+
+  bodyEl.innerHTML = parts.join('');
+}
+
+async function resolveWarning(warningId) {
+  const textarea = document.getElementById(`text-${warningId}`);
+  const btn      = document.getElementById(`btn-${warningId}`);
+  const status   = document.getElementById(`status-${warningId}`);
+  const updated  = textarea?.value?.trim();
+
+  if (!updated) {
+    status.textContent = 'Canonical text cannot be empty.';
+    status.className = 'warning-status error';
+    return;
+  }
+
+  btn.disabled = true;
+  status.textContent = 'Saving…';
+  status.className = 'warning-status';
+
+  const res = await fetch('/api/admin/warnings', {
+    method:  'POST',
+    headers: {
+      'Authorization': `Bearer ${password}`,
+      'Content-Type':  'application/json',
+    },
+    body: JSON.stringify({ warning_id: warningId, updated_text: updated }),
+  });
+
+  if (res.status === 401) {
+    alert('Session expired — please sign in again.');
+    logout();
+    return;
+  }
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    status.textContent = err.error ?? `Failed (${res.status})`;
+    status.className = 'warning-status error';
+    btn.disabled = false;
+    return;
+  }
+
+  qaWarnings = qaWarnings.filter(w => w.id !== warningId);
+  renderWarnings();
 }
 </script>
 </body>

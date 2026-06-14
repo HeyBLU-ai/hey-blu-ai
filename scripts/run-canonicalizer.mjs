@@ -100,7 +100,8 @@ try {
 
   await client.query('BEGIN');
 
-  // Clear prior graph for this extraction run (idempotent).
+  // Clear prior graph + QA warnings for this extraction run (idempotent).
+  await client.query(`DELETE FROM canonicalization_warnings WHERE extraction_run_id = $1`, [run.id]);
   await client.query(`DELETE FROM rule_nodes WHERE extraction_run_id = $1`, [run.id]);
 
   const canonicalizer = new Canonicalizer(client, run.id);
@@ -109,7 +110,7 @@ try {
   console.log(`\nCanonicalized: ${nodes.length} nodes, ${chunks.length} chunks, ${warnings.length} warnings`);
   if (warnings.length > 0) {
     console.log('Warnings (first 5):');
-    for (const w of warnings.slice(0, 5)) console.log(`  • ${w}`);
+    for (const w of warnings.slice(0, 5)) console.log(`  • [${w.warning_code}] ${w.message}`);
   }
 
   const keyToId = new Map();
@@ -178,6 +179,30 @@ try {
     ]);
   }
 
+  let warningsInserted = 0;
+  for (const w of warnings) {
+    const ruleNodeId = w.node_key ? keyToId.get(w.node_key) ?? null : null;
+    await client.query(`
+      INSERT INTO canonicalization_warnings (
+        extraction_run_id, rulebook_version_id, rule_node_id,
+        source_block_id, source_page_id,
+        warning_code, severity, message, details, is_blocking
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::jsonb, $10)
+    `, [
+      run.id,
+      run.rulebook_version_id,
+      ruleNodeId,
+      w.source_block_id ?? null,
+      w.source_page_id ?? null,
+      w.warning_code,
+      w.severity ?? 'warning',
+      w.message,
+      JSON.stringify(w.details ?? {}),
+      w.is_blocking ?? false,
+    ]);
+    warningsInserted += 1;
+  }
+
   await client.query(`
     UPDATE extraction_runs
     SET node_count = $2, warning_count = $3
@@ -193,7 +218,7 @@ try {
 
   printRuleTree(persisted, 5);
 
-  console.log(`✓ Wrote ${nodes.length} rule_nodes and ${chunks.length} rule_node_chunks`);
+  console.log(`✓ Wrote ${nodes.length} rule_nodes, ${chunks.length} rule_node_chunks, ${warningsInserted} canonicalization_warnings`);
 } catch (err) {
   await client.query('ROLLBACK');
   console.error('Canonicalizer failed:', err.message);
