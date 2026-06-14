@@ -145,6 +145,53 @@ async function findRuleNode(client, leagueSlug, nodeKeyInput) {
   return rows[0]?.id ?? null;
 }
 
+/**
+ * @param {import('pg').Client} client
+ * @param {string} ruleNodeId
+ * @returns {Promise<number>}
+ */
+export async function deleteDescendantNodes(client, ruleNodeId) {
+  const { rows: [parent] } = await client.query(`
+    SELECT id, node_key, materialized_path
+    FROM   rule_nodes
+    WHERE  id = $1::uuid
+  `, [ruleNodeId]);
+
+  if (!parent) return 0;
+
+  const pathPrefix = parent.materialized_path
+    ? `${parent.materialized_path}/%`
+    : null;
+  const keyPrefix = `${parent.node_key}/%`;
+
+  const { rowCount } = await client.query(`
+    WITH RECURSIVE descendants AS (
+      SELECT id
+      FROM   rule_nodes
+      WHERE  parent_id = $1::uuid
+      UNION ALL
+      SELECT rn.id
+      FROM   rule_nodes rn
+      JOIN   descendants d ON rn.parent_id = d.id
+    ),
+    to_delete AS (
+      SELECT id FROM descendants
+      UNION
+      SELECT rn.id
+      FROM   rule_nodes rn
+      WHERE  rn.id != $1::uuid
+        AND  (
+          rn.materialized_path LIKE $2::text
+          OR rn.materialized_path LIKE $3::text
+        )
+    )
+    DELETE FROM rule_nodes
+    WHERE id IN (SELECT id FROM to_delete)
+  `, [ruleNodeId, pathPrefix ?? keyPrefix, keyPrefix]);
+
+  return rowCount ?? 0;
+}
+
 const handler = async (req, res) => {
   if (!process.env.DATABASE_URL) {
     return res.status(500).json({ error: 'DATABASE_URL not configured' });
@@ -213,10 +260,12 @@ const handler = async (req, res) => {
         WHERE  rule_node_id = $2::uuid AND chunk_index = 0
       `, [bodyText || trimmedText, ruleNodeId]);
 
+      const deletedChildren = await deleteDescendantNodes(client, ruleNodeId);
+
       await client.query('COMMIT');
 
       const updated = await buildNodeResponse(client, ruleNodeId);
-      return res.status(200).json({ ok: true, league, node: updated });
+      return res.status(200).json({ ok: true, league, node: updated, deleted_children: deletedChildren });
     }
 
     return res.status(405).json({ error: 'Method not allowed' });
