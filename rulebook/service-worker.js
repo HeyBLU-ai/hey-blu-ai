@@ -1,11 +1,12 @@
-const CACHE_NAME = 'heyblu-v1.0.0';
-const STATIC_CACHE = 'heyblu-static-v1.0.0';
-const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.0';
+const CACHE_NAME = 'heyblu-v1.0.1';
+const STATIC_CACHE = 'heyblu-static-v1.0.1';
+const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.1';
 
 // Files to cache immediately
 const STATIC_FILES = [
   './',
   './index.html',
+  './app.js',
   './share.html',
   './legal.html',
   '../images/BLU_B_logo2.png',
