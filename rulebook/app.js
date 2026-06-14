@@ -1,3 +1,4 @@
+(function () {
 'use strict';
 
 function showActionToast(message) {
@@ -97,11 +98,10 @@ function showActionToast(message) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const speechSupported = !!SpeechRecognition;
 
-    const requiredControls = [questionInput, askForm, submitButton, clearButton, micButton];
-    if (requiredControls.some(el => !el)) {
-      console.error('[rulebook] Missing required controls — buttons will not work.');
+    if (!questionInput || !submitButton || !clearButton || !micButton) {
+      console.error('[rulebook] Missing core controls — buttons will not work.');
       showActionToast('Page failed to load. Please refresh.');
-      throw new Error('Rulebook UI failed to initialize');
+      return;
     }
 
     // Restore controls when iOS/Android returns this page from back-forward cache
@@ -117,16 +117,16 @@ function showActionToast(message) {
     // --- EVENT LISTENERS ---
 
     function updateSubmitButtonState() {
-      submitButton.disabled = isAsking || isListening || !questionInput.value.trim();
+      submitButton.disabled = isAsking || isListening;
     }
 
     function setAskingState(asking) {
       isAsking = asking;
-      submitButton.disabled = asking || isListening || !questionInput.value.trim();
+      submitButton.disabled = asking || isListening;
       micButton.disabled = asking || isListening;
       questionInput.disabled = asking;
-      // Clear is always tappable — it is the escape hatch on mobile
       clearButton.disabled = false;
+      updateSubmitButtonState();
     }
 
     function unlockInputControls() {
@@ -150,13 +150,15 @@ function showActionToast(message) {
       updateSubmitButtonState();
     }
 
-    questionInput.addEventListener("input", updateSubmitButtonState);
+    ["input", "keyup", "change", "paste"].forEach((evt) => {
+      questionInput.addEventListener(evt, updateSubmitButtonState);
+    });
     questionInput.addEventListener("focus", () => {
-      // Keep Submit visible above the mobile keyboard
       setTimeout(() => submitButton.scrollIntoView({ behavior: "smooth", block: "nearest" }), 300);
     });
 
-    askForm.addEventListener("submit", (event) => {
+    const askFormEl = askForm || questionInput.closest("form") || document;
+    askFormEl.addEventListener("submit", (event) => {
       event.preventDefault();
       handleNewQuestion(questionInput.value);
     });
@@ -168,7 +170,9 @@ function showActionToast(message) {
     });
 
     // Event delegation for dynamically created buttons (feedback, share, speech)
-    conversationHistoryContainer.addEventListener('click', (event) => {
+    if (!conversationHistoryContainer) {
+      console.warn('[rulebook] conversation-history container missing');
+    } else conversationHistoryContainer.addEventListener('click', (event) => {
       const target = event.target;
       console.log("Click event on:", target.className, target.dataset);
       
@@ -195,7 +199,7 @@ function showActionToast(message) {
     });
 
     // Refine button click
-    refineBtn.addEventListener('click', () => {
+    if (refineBtn) refineBtn.addEventListener('click', () => {
       const context = refineInput.value.trim();
       if (!context) return; // No context to add
 
@@ -208,7 +212,7 @@ function showActionToast(message) {
     });
 
     // Feedback button clicks
-    submitFeedbackBtn.addEventListener('click', () => {
+    if (submitFeedbackBtn) submitFeedbackBtn.addEventListener('click', () => {
       const feedback = feedbackTextarea.value.trim();
       // Find the current turn that needs feedback
       const currentTurn = conversation[conversation.length - 1];
@@ -219,7 +223,7 @@ function showActionToast(message) {
       feedbackTextarea.value = '';
     });
 
-    skipFeedbackBtn.addEventListener('click', () => {
+    if (skipFeedbackBtn) skipFeedbackBtn.addEventListener('click', () => {
       feedbackSection.style.display = 'none';
       feedbackTextarea.value = '';
     });
@@ -231,7 +235,7 @@ function showActionToast(message) {
     if (cancelFeedbackButton) {
       cancelFeedbackButton.addEventListener('click', () => feedbackModal.style.display = 'none');
     }
-    submitFeedbackButton.addEventListener('click', () => {
+    if (submitFeedbackButton) submitFeedbackButton.addEventListener('click', () => {
       const currentTurn = feedbackModal.currentTurn; // Get the turn object stored when modal opened
       const feedback = feedbackTextarea.value.trim();
       if (currentTurn) {
@@ -250,14 +254,14 @@ function showActionToast(message) {
     });
 
     // Interview panel — option button clicks (event delegation)
-    interviewOptionsEl.addEventListener('click', (event) => {
+    if (interviewOptionsEl) interviewOptionsEl.addEventListener('click', (event) => {
       const btn = event.target.closest('.interview-option-btn');
       if (!btn || btn.disabled) return;
       submitInterviewAnswer(btn.dataset.questionId, btn.dataset.answer);
     });
 
     // Interview cancel — full reset
-    interviewCancelBtn.addEventListener('click', () => {
+    if (interviewCancelBtn) interviewCancelBtn.addEventListener('click', () => {
       resetConversation();
     });
 
@@ -839,7 +843,7 @@ function showActionToast(message) {
 // Register service worker for PWA functionality
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./service-worker.js')
+        navigator.serviceWorker.register('/rulebook/service-worker.js')
           .then((registration) => {
             console.log('Service Worker registered successfully:', registration.scope);
             
@@ -998,3 +1002,5 @@ function showActionToast(message) {
       console.log('HeyBLU.AI was installed');
       deferredPrompt = null;
     });
+
+})();

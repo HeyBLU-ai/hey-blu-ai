@@ -1,18 +1,18 @@
-const CACHE_NAME = 'heyblu-v1.0.1';
-const STATIC_CACHE = 'heyblu-static-v1.0.1';
-const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.1';
+const CACHE_NAME = 'heyblu-v1.0.2';
+const STATIC_CACHE = 'heyblu-static-v1.0.2';
+const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.2';
 
-// Files to cache immediately
+// Files to cache immediately (paths relative to /rulebook/ scope)
 const STATIC_FILES = [
-  './',
-  './index.html',
-  './app.js',
-  './share.html',
-  './legal.html',
-  '../images/BLU_B_logo2.png',
-  '../dist/output.css',
+  '/rulebook/',
+  '/rulebook/index.html',
+  '/rulebook/app.js',
+  '/rulebook/share.html',
+  '/rulebook/legal.html',
+  '/public/output.css',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap',
-  'https://cdn.jsdelivr.net/npm/marked/marked.min.js'
+  'https://cdn.jsdelivr.net/npm/marked/marked.min.js',
+  'https://cdn.jsdelivr.net/npm/dompurify@3.2.6/dist/purify.min.js',
 ];
 
 // Install event - cache static files
@@ -77,9 +77,33 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // HTML + app shell: network first so deploys reach mobile immediately
+  if (request.headers.get('accept')?.includes('text/html') ||
+      url.pathname === '/rulebook/app.js' ||
+      url.pathname === '/rulebook/index.html' ||
+      url.pathname === '/rulebook') {
+    event.respondWith(handleNetworkFirstRequest(request));
+    return;
+  }
+
   // Handle static file requests
   event.respondWith(handleStaticRequest(request));
 });
+
+async function handleNetworkFirstRequest(request) {
+  try {
+    const networkResponse = await fetch(request);
+    if (networkResponse.ok) {
+      const cache = await caches.open(DYNAMIC_CACHE);
+      cache.put(request, networkResponse.clone());
+    }
+    return networkResponse;
+  } catch (error) {
+    const cachedResponse = await caches.match(request);
+    if (cachedResponse) return cachedResponse;
+    throw error;
+  }
+}
 
 // Handle API requests - network first, cache fallback
 async function handleApiRequest(request) {
@@ -141,7 +165,7 @@ async function handleStaticRequest(request) {
     
     // Return offline page for HTML requests
     if (request.headers.get('accept').includes('text/html')) {
-      return caches.match('./index.html');
+      return caches.match('/rulebook/index.html');
     }
     
     // Return generic offline response
