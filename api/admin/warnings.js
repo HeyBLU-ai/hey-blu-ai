@@ -130,7 +130,9 @@ const handler = async (req, res) => {
           rn.materialized_path
         FROM canonicalization_warnings w
         LEFT JOIN rule_nodes rn ON rn.id = w.rule_node_id
+        JOIN rulebook_versions rv ON rv.id = w.rulebook_version_id
         WHERE w.resolved_at IS NULL
+          AND rv.status IN ('active', 'draft')
         ORDER BY w.is_blocking DESC, w.created_at ASC
       `);
 
