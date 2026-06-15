@@ -603,6 +603,10 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   let usedFallback = false;
   let fallbackLeagueName = null;
   let fallbackActiveVersionId = null;
+  let primaryBestScore = null;
+  let fallbackBestScore = null;
+  let scoreThreshold = null;
+  let primaryMethod = null;
   let retrievalMeta = {};
 
   try {
