@@ -13,6 +13,7 @@ import {
   formatAncestorPath,
 } from '../../lib/ingest/evidence-bundle.js';
 import { rechunkNodes } from '../../lib/ingest/rechunk-nodes.mjs';
+import { resolveZeroChunkWarnings } from '../../lib/ingest/integrity-gates.mjs';
 
 const { Client } = pg;
 
@@ -195,7 +196,7 @@ const handler = async (req, res) => {
       }
 
       const { rows: [node] } = await client.query(`
-        SELECT id, title, rule_number, extraction_run_id
+        SELECT id, title, rule_number, extraction_run_id, rulebook_version_id
         FROM   rule_nodes
         WHERE  id = $1
       `, [warning.rule_node_id]);
@@ -217,6 +218,7 @@ const handler = async (req, res) => {
 
       if (bodyText.trim() && node.extraction_run_id) {
         await rechunkNodes(client, [warning.rule_node_id], node.extraction_run_id);
+        await resolveZeroChunkWarnings(client, node.rulebook_version_id, [warning.rule_node_id], 'admin-warnings');
       }
 
       const { rowCount } = await client.query(`

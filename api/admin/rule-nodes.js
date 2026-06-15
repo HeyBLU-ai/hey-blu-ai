@@ -13,6 +13,7 @@ import {
   formatAncestorPath,
 } from '../../lib/ingest/evidence-bundle.js';
 import { rechunkNodes } from '../../lib/ingest/rechunk-nodes.mjs';
+import { resolveZeroChunkWarnings } from '../../lib/ingest/integrity-gates.mjs';
 
 const { Client } = pg;
 
@@ -257,6 +258,13 @@ const handler = async (req, res) => {
 
       if (bodyText.trim() && node.extraction_run_id) {
         await rechunkNodes(client, [ruleNodeId], node.extraction_run_id);
+        const { rows: [versionRow] } = await client.query(
+          `SELECT rulebook_version_id FROM rule_nodes WHERE id = $1::uuid`,
+          [ruleNodeId],
+        );
+        if (versionRow?.rulebook_version_id) {
+          await resolveZeroChunkWarnings(client, versionRow.rulebook_version_id, [ruleNodeId], 'admin-rule-nodes');
+        }
       }
 
       const deletedChildren = await deleteDescendantNodes(client, ruleNodeId);
