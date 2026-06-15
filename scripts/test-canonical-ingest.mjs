@@ -27,9 +27,10 @@ for (const line of (await fs.readFile(path.join(__dirname, '../.env.local'), 'ut
 const [fileArg, leagueSlug, ...rest] = process.argv.slice(2);
 const seasonFlag = rest.indexOf('--season');
 const season = seasonFlag >= 0 ? rest[seasonFlag + 1] : String(new Date().getFullYear());
+const allowDuplicateHash = rest.includes('--allow-duplicate-hash');
 
 if (!fileArg || !leagueSlug) {
-  console.error('Usage: node scripts/test-canonical-ingest.mjs <pdf-path> <league-slug> [--season 2026]');
+  console.error('Usage: node scripts/test-canonical-ingest.mjs <pdf-path> <league-slug> [--season 2026] [--allow-duplicate-hash]');
   process.exit(1);
 }
 
@@ -48,6 +49,7 @@ try {
     pdfBuffer,
     filename: path.basename(pdfPath),
     openai,
+    allowDuplicateHash,
     onProgress(step, message) {
       console.log(`  [${step}] ${message}`);
     },

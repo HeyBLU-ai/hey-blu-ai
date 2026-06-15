@@ -27,7 +27,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const LEAGUE_SLUG = 'bamsbl';
 
 /**
- * Expected rule numbers for the trimmed BAMSBL rulebook (rules 420–550).
+ * Expected rule numbers for the trimmed BAMSBL rulebook (rules 300–550).
  * Set to null when no local rule exists and MLB fallback is the correct path.
  */
 const PILOT_CASES = [
@@ -36,9 +36,9 @@ const PILOT_CASES = [
   { query: 'dropped third strike', expected: null },
   { query: 'balk penalty', expected: null },
   { query: 'time limit', expected: ['445'] },
-  { query: 'cleat requirements', expected: null },
+  { query: 'cleat requirements', expected: ['310'] },
   { query: 'pitching limits', expected: null },
-  { query: 'can a pitcher wear sunglasses', expected: null },
+  { query: 'can a pitcher wear sunglasses', expected: ['330'] },
   { query: 'coach mound visits', expected: null },
   { query: 'interference by catcher', expected: ['440'] },
   { query: 'collision rule must slide', expected: ['505'] },
@@ -46,11 +46,11 @@ const PILOT_CASES = [
   { query: 'batting out of order', expected: ['420'] },
   { query: 'illegal pitch', expected: null },
   { query: 'protest a call', expected: ['470'] },
-  { query: 'mercy rule', expected: null },
+  { query: 'mercy rule', expected: ['405'] },
   { query: 'extra innings tiebreaker', expected: null },
   { query: 'pitcher re-entry', expected: null },
   { query: 'obstruction on base paths', expected: ['505'] },
-  { query: 'uniform jersey requirements', expected: null },
+  { query: 'uniform jersey requirements', expected: ['305'] },
 ];
 
 function loadLocalEnv() {
