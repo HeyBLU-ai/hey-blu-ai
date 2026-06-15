@@ -12,6 +12,7 @@ import {
   fetchChildAnnotations,
   formatAncestorPath,
 } from '../../lib/ingest/evidence-bundle.js';
+import { rechunkNodes } from '../../lib/ingest/rechunk-nodes.mjs';
 
 const { Client } = pg;
 
@@ -236,7 +237,7 @@ const handler = async (req, res) => {
       }
 
       const { rows: [node] } = await client.query(`
-        SELECT id, title, rule_number
+        SELECT id, title, rule_number, extraction_run_id
         FROM   rule_nodes
         WHERE  id = $1::uuid
       `, [ruleNodeId]);
@@ -254,11 +255,9 @@ const handler = async (req, res) => {
         WHERE  id = $3::uuid
       `, [trimmedText, bodyText, ruleNodeId]);
 
-      await client.query(`
-        UPDATE rule_node_chunks
-        SET    chunk_text = $1::text
-        WHERE  rule_node_id = $2::uuid AND chunk_index = 0
-      `, [bodyText || trimmedText, ruleNodeId]);
+      if (bodyText.trim() && node.extraction_run_id) {
+        await rechunkNodes(client, [ruleNodeId], node.extraction_run_id);
+      }
 
       const deletedChildren = await deleteDescendantNodes(client, ruleNodeId);
 

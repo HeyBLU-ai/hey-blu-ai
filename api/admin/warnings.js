@@ -12,6 +12,7 @@ import {
   fetchChildAnnotations,
   formatAncestorPath,
 } from '../../lib/ingest/evidence-bundle.js';
+import { rechunkNodes } from '../../lib/ingest/rechunk-nodes.mjs';
 
 const { Client } = pg;
 
@@ -194,7 +195,7 @@ const handler = async (req, res) => {
       }
 
       const { rows: [node] } = await client.query(`
-        SELECT id, title, rule_number
+        SELECT id, title, rule_number, extraction_run_id
         FROM   rule_nodes
         WHERE  id = $1
       `, [warning.rule_node_id]);
@@ -214,11 +215,9 @@ const handler = async (req, res) => {
         WHERE  id = $3
       `, [trimmedText, bodyText, warning.rule_node_id]);
 
-      await client.query(`
-        UPDATE rule_node_chunks
-        SET    chunk_text = $1
-        WHERE  rule_node_id = $2 AND chunk_index = 0
-      `, [bodyText || trimmedText, warning.rule_node_id]);
+      if (bodyText.trim() && node.extraction_run_id) {
+        await rechunkNodes(client, [warning.rule_node_id], node.extraction_run_id);
+      }
 
       const { rowCount } = await client.query(`
         UPDATE canonicalization_warnings
