@@ -40,7 +40,8 @@ const handler = async (req, res) => {
   try {
     await client.connect();
     const { rows } = await client.query(
-      `SELECT id, league_slug, question, ai_response, is_positive, comments, created_at
+      `SELECT id, league_slug, question, ai_response, retrieved_rule_codes,
+              is_positive, comments, created_at
        FROM user_feedback
        ORDER BY created_at DESC
        LIMIT $1`,

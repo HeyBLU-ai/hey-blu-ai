@@ -388,6 +388,24 @@
       white-space: pre-wrap;
       word-break: break-word;
     }
+    .feedback-rules {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+    .feedback-rules strong { color: #e2e8f0; }
+    .feedback-rule-chip {
+      display: inline-block;
+      margin: 0.1rem 0.35rem 0.1rem 0;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
     .badge-positive { background: #14532d22; color: #86efac; border: 1px solid #14532d55; }
     .badge-negative { background: #7f1d1d22; color: #fca5a5; border: 1px solid #7f1d1d55; }
 
@@ -1195,6 +1213,13 @@ function renderFeedbackCard(item) {
     ? '<span class="badge badge-positive">👍 Helpful</span>'
     : '<span class="badge badge-negative">👎 Not helpful</span>';
 
+  const rules = Array.isArray(item.retrieved_rule_codes)
+    ? item.retrieved_rule_codes.filter(Boolean)
+    : [];
+  const rulesHtml = rules.length
+    ? `<div class="feedback-rules"><strong>Retrieved rules:</strong> ${rules.map(code => `<span class="feedback-rule-chip">Rule ${esc(code)}</span>`).join('')}</div>`
+    : `<div class="feedback-rules"><strong>Retrieved rules:</strong> <em style="color:#64748b">none recorded</em></div>`;
+
   const commentsHtml = item.comments
     ? `<div class="feedback-comments"><strong>Comment:</strong> ${esc(item.comments)}</div>`
     : '';
@@ -1208,6 +1233,7 @@ function renderFeedbackCard(item) {
       </div>
       <div class="feedback-question">Q: ${esc(item.question)}</div>
       <div class="feedback-answer">${esc(truncateText(item.ai_response))}</div>
+      ${rulesHtml}
       ${commentsHtml}
     </div>
   `;

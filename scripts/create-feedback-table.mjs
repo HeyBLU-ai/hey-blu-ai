@@ -38,16 +38,23 @@ try {
 
   await client.query(`
     CREATE TABLE IF NOT EXISTS user_feedback (
-      id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
-      league_slug TEXT        NOT NULL,
-      question    TEXT        NOT NULL,
-      ai_response TEXT        NOT NULL,
-      is_positive BOOLEAN     NOT NULL,
-      comments    TEXT,
-      created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+      id                   UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
+      league_slug          TEXT        NOT NULL,
+      question             TEXT        NOT NULL,
+      ai_response          TEXT        NOT NULL,
+      retrieved_rule_codes TEXT[]      NOT NULL DEFAULT '{}',
+      is_positive          BOOLEAN     NOT NULL,
+      comments             TEXT,
+      created_at           TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `);
   console.log('  ✓ user_feedback table created (or already exists)');
+
+  await client.query(`
+    ALTER TABLE user_feedback
+    ADD COLUMN IF NOT EXISTS retrieved_rule_codes TEXT[] NOT NULL DEFAULT '{}'
+  `);
+  console.log('  ✓ retrieved_rule_codes column ensured');
 
   await client.query(`
     CREATE INDEX IF NOT EXISTS idx_user_feedback_created_at

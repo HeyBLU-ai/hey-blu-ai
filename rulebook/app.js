@@ -224,10 +224,6 @@ function showActionToast(message) {
     });
 
     if (skipFeedbackBtn) skipFeedbackBtn.addEventListener('click', () => {
-      const currentTurn = conversation[conversation.length - 1];
-      if (currentTurn && currentTurn.feedbackStatus === 'negative' && !currentTurn.feedbackSubmitted) {
-        submitFeedbackToApi(currentTurn, false, '');
-      }
       feedbackSection.style.display = 'none';
       feedbackTextarea.value = '';
     });
@@ -376,6 +372,13 @@ function showActionToast(message) {
       turn.fallbackLeagueLinkText     = data.fallback_league_link_text ?? turn.fallbackLeagueDisplayName;
     }
 
+    function applyRetrievalMeta(turn, data) {
+      if (!turn || !data) return;
+      if (Array.isArray(data.cited_rule_numbers) && data.cited_rule_numbers.length) {
+        turn.retrievedRuleCodes = data.cited_rule_numbers.map(String).filter(Boolean);
+      }
+    }
+
     function renderLeagueReference(name, url, linkText) {
       const label = linkText || name;
       if (url) {
@@ -515,6 +518,7 @@ function showActionToast(message) {
           conversation[currentTurnIndex].originalLeague = data.originalLeague;
         }
         applyDisclaimerMeta(conversation[currentTurnIndex], data);
+        applyRetrievalMeta(conversation[currentTurnIndex], data);
 
         const shortUrl = await getShortUrl(question, reply, league, '');
         conversation[currentTurnIndex].shortUrl = shortUrl;
@@ -650,6 +654,7 @@ function showActionToast(message) {
           conversation[idx].originalLeague = data.originalLeague;
         }
         applyDisclaimerMeta(conversation[idx], data);
+        applyRetrievalMeta(conversation[idx], data);
 
         exitInterviewMode();
         renderConversation();
@@ -727,6 +732,7 @@ function showActionToast(message) {
             conversation[idx].originalLeague = data.originalLeague;
           }
           applyDisclaimerMeta(conversation[idx], data);
+          applyRetrievalMeta(conversation[idx], data);
 
           exitInterviewMode();
           renderConversation();
@@ -846,8 +852,15 @@ function showActionToast(message) {
     }
 
     function submitFeedbackToApi(turn, isPositive, comments = '') {
-      if (!turn || turn.feedbackSubmitted) return;
-      turn.feedbackSubmitted = true;
+      if (!turn) return;
+      const commentText = (comments ?? '').trim();
+      if (commentText) {
+        if (turn.feedbackCommentSubmitted) return;
+        turn.feedbackCommentSubmitted = true;
+      } else {
+        if (turn.feedbackSubmitted) return;
+        turn.feedbackSubmitted = true;
+      }
 
       fetch('/api/submit-feedback', {
         method: 'POST',
@@ -856,12 +869,14 @@ function showActionToast(message) {
           league_slug: turn.league,
           question: turn.user,
           ai_response: plainAiResponse(turn.ai),
+          retrieved_rule_codes: turn.retrievedRuleCodes ?? [],
           is_positive: isPositive,
-          comments: comments || null,
+          comments: commentText || null,
         }),
       }).then(async response => {
         if (!response.ok) {
-          turn.feedbackSubmitted = false;
+          if (commentText) turn.feedbackCommentSubmitted = false;
+          else turn.feedbackSubmitted = false;
           console.error('Failed to send feedback');
           return;
         }
@@ -870,7 +885,8 @@ function showActionToast(message) {
           console.log(`Cleared ${result.cacheDeleted} cached answer(s) for negative feedback.`);
         }
       }).catch(error => {
-        turn.feedbackSubmitted = false;
+        if (commentText) turn.feedbackCommentSubmitted = false;
+        else turn.feedbackSubmitted = false;
         console.error('Error sending feedback:', error);
       });
     }
@@ -906,6 +922,8 @@ function showActionToast(message) {
         feedbackSection.style.display = 'block';
         feedbackTextarea.value = '';
       }
+
+      submitFeedbackToApi(turn, false, '');
     }
 
     function openFeedbackModal(turn, button) {

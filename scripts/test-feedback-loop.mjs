@@ -36,8 +36,9 @@ const positive = await call(submitFeedback, {
   headers: {},
   body: {
     league_slug: 'bamsbl',
-    question: 'What is catchers interference?',
-    ai_response: 'The batter is awarded first base.',
+    question: 'What is the courtesy runner rule?',
+    ai_response: 'Rule 430 governs courtesy runners.',
+    retrieved_rule_codes: ['430', '432', '435'],
     is_positive: true,
     comments: null,
   },
@@ -51,6 +52,7 @@ const negative = await call(submitFeedback, {
     league_slug: 'BAMSBL',
     question: 'Checked swing interference call?',
     ai_response: 'Wrong matrix routed me here.',
+    retrieved_rule_codes: ['505', '432'],
     is_positive: false,
     comments: 'It sent me to runner collision instead of catcher interference.',
   },
@@ -64,10 +66,15 @@ const admin = await call(adminFeedback, {
 });
 console.log('admin list:', admin.status, 'count:', admin.body.feedback?.length);
 
+const latest = admin.body.feedback?.[0];
+const rulesOk = Array.isArray(latest?.retrieved_rule_codes) && latest.retrieved_rule_codes.includes('505');
+console.log('latest retrieved_rule_codes:', latest?.retrieved_rule_codes);
+
 const ok =
   positive.status === 200 && positive.body.ok &&
   negative.status === 200 && negative.body.ok &&
-  admin.status === 200 && (admin.body.feedback?.length ?? 0) >= 2;
+  admin.status === 200 && (admin.body.feedback?.length ?? 0) >= 2 &&
+  rulesOk;
 
 if (!ok) process.exit(1);
 console.log('\n✓ Feedback loop smoke test passed');

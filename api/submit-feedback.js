@@ -7,8 +7,9 @@
  *   league_slug  {string}   — league slug (required)
  *   question     {string}   — user question (required)
  *   ai_response  {string}   — AI answer text (required)
- *   is_positive  {boolean}  — true = thumbs up, false = thumbs down
- *   comments     {string?}  — optional free-text feedback
+ *   is_positive           {boolean}  — true = thumbs up, false = thumbs down
+ *   comments              {string?}  — optional free-text feedback
+ *   retrieved_rule_codes  {string[]} — rule numbers the RAG retrieved (optional)
  */
 
 import pg from 'pg';
@@ -59,6 +60,16 @@ function resolveLeagueSlug(league) {
   return value;
 }
 
+function normalizeRuleCodes(value) {
+  if (!Array.isArray(value)) return [];
+  return [...new Set(
+    value
+      .map((code) => String(code ?? '').trim())
+      .filter(Boolean)
+      .slice(0, 20),
+  )];
+}
+
 const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -71,6 +82,7 @@ const handler = async (req, res) => {
     ai_response: rawAiResponse,
     is_positive: rawIsPositive,
     comments: rawComments,
+    retrieved_rule_codes: rawRetrievedRuleCodes,
   } = req.body ?? {};
 
   const leagueSlug = resolveLeagueSlug(rawLeagueSlug || league);
@@ -80,6 +92,7 @@ const handler = async (req, res) => {
     ? null
     : sanitizeText(rawComments, 2000);
   const isPositive = rawIsPositive === true;
+  const retrievedRuleCodes = normalizeRuleCodes(rawRetrievedRuleCodes);
 
   if (!leagueSlug) {
     return res.status(400).json({ error: 'league_slug is required' });
@@ -107,10 +120,11 @@ const handler = async (req, res) => {
     await client.connect();
 
     const { rows } = await client.query(
-      `INSERT INTO user_feedback (league_slug, question, ai_response, is_positive, comments)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO user_feedback (
+         league_slug, question, ai_response, retrieved_rule_codes, is_positive, comments
+       ) VALUES ($1, $2, $3, $4::text[], $5, $6)
        RETURNING id, created_at`,
-      [leagueSlug, question, aiResponse, isPositive, comments],
+      [leagueSlug, question, aiResponse, retrievedRuleCodes, isPositive, comments],
     );
 
     let cacheDeleted = 0;
