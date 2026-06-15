@@ -455,6 +455,8 @@ function buildEvidencePrompt({
 
   return `You are an expert baseball rules official for the ${leagueName}.
 
+Assume questions are about live game play unless explicitly about league administration.
+
 Your job: answer the umpire's question using ONLY the Evidence Bundles shown below. Each bundle contains a rule node's canonical text, its ancestor heading path, and any attached comments, exceptions, or penalties.
 
 ${fallbackNote}${extraContext ? `PLAY CONTEXT:\n${extraContext}\n\n` : ''}\
@@ -499,7 +501,7 @@ Answer:`;
 // entries when the answer or verifier prompt changes.
 
 /** Bump when answer/verifier prompts change to invalidate stale cache rows. */
-export const ANSWER_PROMPT_VERSION = process.env.ANSWER_PROMPT_VERSION ?? '2026-06-15-fallback-citation';
+export const ANSWER_PROMPT_VERSION = process.env.ANSWER_PROMPT_VERSION ?? '2026-06-15-in-game-assumption';
 
 const CACHEABLE_VERIFIER_STATUSES = new Set(['approved']);
 

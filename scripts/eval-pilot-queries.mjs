@@ -3,6 +3,12 @@
  * Baseline retrieval accuracy eval for BAMSBL pilot queries.
  * Uses the same dual-path hybrid search as ask-v2 (primary rulebook only).
  *
+ * Grading (when `expected` is set):
+ *   PASS — expected rule is Top-1
+ *   WARN — expected rule is Top-2 or Top-3 only
+ *   FAIL — expected rule missing from Top-3
+ *   SKIP — no local expected rule (trimmed rulebook has no governing rule; MLB fallback expected)
+ *
  * Usage:
  *   node scripts/eval-pilot-queries.mjs
  */
@@ -20,27 +26,31 @@ import {
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const LEAGUE_SLUG = 'bamsbl';
 
-const PILOT_QUERIES = [
-  'courtesy runner rule',
-  'infield fly',
-  'dropped third strike',
-  'balk penalty',
-  'time limit',
-  'cleat requirements',
-  'pitching limits',
-  'can a pitcher wear sunglasses',
-  'coach mound visits',
-  'interference by catcher',
-  'collision rule must slide',
-  'home run over fence',
-  'batting out of order',
-  'illegal pitch',
-  'protest a call',
-  'mercy rule',
-  'extra innings tiebreaker',
-  'pitcher re-entry',
-  'obstruction on base paths',
-  'uniform jersey requirements',
+/**
+ * Expected rule numbers for the trimmed BAMSBL rulebook (rules 420–550).
+ * Set to null when no local rule exists and MLB fallback is the correct path.
+ */
+const PILOT_CASES = [
+  { query: 'courtesy runner rule', expected: ['430'] },
+  { query: 'infield fly', expected: null },
+  { query: 'dropped third strike', expected: null },
+  { query: 'balk penalty', expected: null },
+  { query: 'time limit', expected: ['445'] },
+  { query: 'cleat requirements', expected: null },
+  { query: 'pitching limits', expected: null },
+  { query: 'can a pitcher wear sunglasses', expected: null },
+  { query: 'coach mound visits', expected: null },
+  { query: 'interference by catcher', expected: ['440'] },
+  { query: 'collision rule must slide', expected: ['505'] },
+  { query: 'home run over fence', expected: null },
+  { query: 'batting out of order', expected: ['420'] },
+  { query: 'illegal pitch', expected: null },
+  { query: 'protest a call', expected: ['470'] },
+  { query: 'mercy rule', expected: null },
+  { query: 'extra innings tiebreaker', expected: null },
+  { query: 'pitcher re-entry', expected: null },
+  { query: 'obstruction on base paths', expected: ['505'] },
+  { query: 'uniform jersey requirements', expected: null },
 ];
 
 function loadLocalEnv() {
@@ -85,6 +95,18 @@ function topRuleCodes(chunkHits, limit = 3) {
   return codes;
 }
 
+/**
+ * @param {string[]|null} expected
+ * @param {string[]} topCodes
+ */
+function gradeResult(expected, topCodes) {
+  if (!expected?.length) return 'SKIP';
+  const [r1, r2, r3] = topCodes;
+  if (expected.includes(r1)) return 'PASS';
+  if (expected.includes(r2) || expected.includes(r3)) return 'WARN';
+  return 'FAIL';
+}
+
 function padEnd(str, len) {
   const s = String(str ?? '');
   return s.length >= len ? s.slice(0, len - 1) + '…' : s + ' '.repeat(len - s.length);
@@ -104,6 +126,8 @@ async function main() {
   const client = await pool.connect();
   const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+  const counts = { PASS: 0, WARN: 0, FAIL: 0, SKIP: 0 };
+
   try {
     const { rows: [league] } = await client.query(`
       SELECT rv.id AS version_id, l.name AS league_name
@@ -118,16 +142,17 @@ async function main() {
       process.exit(1);
     }
 
-    console.log(`BAMSBL pilot retrieval baseline (${PILOT_QUERIES.length} queries)`);
+    console.log(`BAMSBL pilot retrieval baseline (${PILOT_CASES.length} queries)`);
     console.log(`League: ${league.league_name}`);
     console.log(`Version: ${league.version_id}`);
     console.log(`Method: evidence_bundle_dual_path_hybrid\n`);
 
     const rows = [];
 
-    for (const query of PILOT_QUERIES) {
+    for (const testCase of PILOT_CASES) {
+      const { query, expected } = testCase;
       const embedding = await embedQuestion(openai, query);
-      const { chunkHits, method, bundles } = await fetchEvidenceBundles(client, league.version_id, query, {
+      const { chunkHits, bundles } = await fetchEvidenceBundles(client, league.version_id, query, {
         queryEmbedding: embedding,
         limit: 3,
       });
@@ -135,32 +160,43 @@ async function main() {
       const sorted = [...(chunkHits ?? [])].sort(
         (a, b) => Number(b.hybrid_score ?? 0) - Number(a.hybrid_score ?? 0),
       );
-      const [r1, r2, r3] = topRuleCodes(sorted, 3);
+      const topCodes = topRuleCodes(sorted, 3);
+      const [r1, r2, r3] = topCodes;
       const topScore = bestEvidenceScore(bundles.length ? bundles : sorted);
+      const status = gradeResult(expected, topCodes);
+      counts[status] += 1;
 
       rows.push({
         query,
+        expected: expected?.join(',') ?? '—',
         r1,
         r2,
         r3,
         topScore,
-        method,
+        status,
       });
     }
 
-    const qCol = Math.max(34, ...rows.map((r) => r.query.length + 2));
-    const header = `${padEnd('Query', qCol)} | Top-1 | Top-2 | Top-3 | Best Score`;
+    const qCol = Math.max(30, ...rows.map((r) => r.query.length + 2));
+    const header = `${padEnd('Query', qCol)} | Expect | Top-1 | Top-2 | Top-3 | Score  | Grade`;
     const rule = '-'.repeat(header.length);
 
     console.log(header);
     console.log(rule);
     for (const r of rows) {
       console.log(
-        `${padEnd(r.query, qCol)} | ${padEnd(r.r1, 5)} | ${padEnd(r.r2, 5)} | ${padEnd(r.r3, 5)} | ${r.topScore.toFixed(4)}`,
+        `${padEnd(r.query, qCol)} | ${padEnd(r.expected, 6)} | ${padEnd(r.r1, 5)} | ${padEnd(r.r2, 5)} | ${padEnd(r.r3, 5)} | ${r.topScore.toFixed(4)} | ${r.status}`,
       );
     }
 
-    console.log(`\nEvaluated ${rows.length} queries.`);
+    console.log(`\nSummary: PASS=${counts.PASS}  WARN=${counts.WARN}  FAIL=${counts.FAIL}  SKIP=${counts.SKIP}`);
+
+    if (counts.FAIL > 0) {
+      console.error('\n✗ Retrieval regressions detected (FAIL).');
+      process.exit(1);
+    }
+
+    console.log('\n✓ No FAIL grades.');
   } finally {
     client.release();
     await pool.end();
