@@ -16,6 +16,7 @@
  *   conversation {Array}   — prior Q/A turns for context (optional)
  *   matrix_state {object}  — present on follow-up requests during an interview:
  *                             { matrix_id: string, answers: { [question_id]: string } }
+ *   force_rag    {boolean} — when true, skip judgment-matrix routing and run standard RAG
  *
  * Response shapes:
  *   State A: { state: "answered",            reply, league_slug, active_version_id,
@@ -37,6 +38,7 @@ import {
   buildRulingContext,
   prescreenForMatrix,
 } from './judgment-matrices.js';
+import { citationLabelFor, getLeagueMetadata } from '../lib/league-metadata.js';
 
 const { Client, Pool } = pg;
 const __filename  = fileURLToPath(import.meta.url);
@@ -394,6 +396,28 @@ async function fetchEvidenceBundleResults(dbClient, activeVersionId, question, f
 /**
  * Build the Claude prompt from hierarchical Evidence Bundles.
  */
+function buildDisclaimerMeta({
+  leagueSlug,
+  leagueName,
+  fallbackLeagueSlug = null,
+  fallbackLeagueName = null,
+  usedFallback = false,
+}) {
+  const primaryMeta = getLeagueMetadata(leagueSlug);
+  const fallbackMeta = usedFallback ? getLeagueMetadata(fallbackLeagueSlug) : null;
+
+  return {
+    league_display_name:          leagueName,
+    league_website_url:           primaryMeta.websiteUrl,
+    league_link_text:             primaryMeta.linkText ?? leagueName,
+    fallback_league_display_name: usedFallback ? fallbackLeagueName : null,
+    fallback_league_website_url:  usedFallback ? (fallbackMeta?.websiteUrl ?? null) : null,
+    fallback_league_link_text:    usedFallback
+      ? (fallbackMeta?.linkText ?? fallbackLeagueName)
+      : null,
+  };
+}
+
 function buildEvidencePrompt({
   bundles,
   leagueName,
@@ -403,6 +427,7 @@ function buildEvidencePrompt({
   leagueSlug,
   usedFallback = false,
   fallbackLeagueName = null,
+  fallbackLeagueSlug = null,
 }) {
   const validatedConversation = validateConversation(conversation, leagueSlug);
   const historyText = validatedConversation.length > 0
@@ -412,6 +437,10 @@ function buildEvidencePrompt({
 
   const bundleBlock = formatEvidenceBundlesForPrompt(bundles);
 
+  const fallbackCitationLabel = usedFallback
+    ? citationLabelFor(fallbackLeagueSlug, fallbackLeagueName)
+    : citationLabelFor(leagueSlug, leagueName);
+
   const fallbackNote = usedFallback && fallbackLeagueName
     ? `The question concerns ${leagueName} play. Local ${leagueName} rulebook retrieval did not surface sufficiently strong evidence, so the Evidence Bundles below are from the governing ${fallbackLeagueName} rulebook configured as this league's fallback authority.\n\n`
     : '';
@@ -419,6 +448,10 @@ function buildEvidencePrompt({
   const noRuleMessage = usedFallback && fallbackLeagueName
     ? `I could not find an applicable rule for that question in the ${leagueName} or ${fallbackLeagueName} rulebooks.`
     : `I could not find an applicable rule for that question in the ${leagueName} rulebook.`;
+
+  const citationFormatBlock = usedFallback
+    ? `- Because the Evidence Bundles are from the fallback rulebook (${fallbackLeagueName}), every citation in **The Book** MUST use this prefix: **${fallbackCitationLabel} Official Rule [Number] (p.[Page]):** "[quote]". Never write "Official Rule [Number]" without the "${fallbackCitationLabel}" prefix.\n`
+    : `- If the bundle has a clear rule number (e.g. "305", "505"): **${fallbackCitationLabel} Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the canonical text]"\n- If the bundle has no rule number: **${fallbackCitationLabel} Official Rulebook Excerpt (p.[Page]):** "[Exact verbatim quote from the canonical text]"\n`;
 
   return `You are an expert baseball rules official for the ${leagueName}.
 
@@ -435,15 +468,14 @@ Instructions:
 - Answer ONLY from the Evidence Bundles above. Do NOT cite, invent, or infer rules that do not appear in the bundles.
 - If no bundle covers the question, respond with exactly: "${noRuleMessage}"
 - Never mention retrieval internals or bundle availability. Forbidden phrases include: "excerpts I have access to", "retrieved portions", "loaded rulebook", "based on what was provided", "I only have", and "the bundles show".
+- Do NOT include any disclaimer, fallback notice, legal notice, or "visit official rulebook" text. The application renders disclaimers separately.
 - Otherwise, structure your response in EXACTLY these two parts, in this order, with these exact headings:
 
 **The Ruling:** Write a conversational, plain-English explanation that an umpire can understand and act on immediately. You may paraphrase lightly here to make the rule clear, but every factual claim must be grounded in the canonical text.
 
 **The Book:** On a new line after The Ruling, provide the official citation(s) using these exact formats:
 
-- If the bundle has a clear rule number (e.g. "305", "505"): **Official Rule [Number] (p.[Page]):** "[Exact verbatim quote from the canonical text]"
-- If the bundle has no rule number: **Official Rulebook Excerpt (p.[Page]):** "[Exact verbatim quote from the canonical text]"
-
+${citationFormatBlock}
 CRITICAL rules for The Book citation:
 - Default to concise answers. The Ruling should usually be 2-4 sentences. Do not list every exception, penalty, or sub-rule unless the user specifically asks for details, penalties, exceptions, or the full rule.
 - For broad existence questions like "is there a slide rule" or "is there a uniform rule", answer the direct question first and cite the controlling rule. Mention that more detail exists only if needed.
@@ -467,7 +499,7 @@ Answer:`;
 // entries when the answer or verifier prompt changes.
 
 /** Bump when answer/verifier prompts change to invalidate stale cache rows. */
-export const ANSWER_PROMPT_VERSION = process.env.ANSWER_PROMPT_VERSION ?? '2026-06-14-evidence-bundle';
+export const ANSWER_PROMPT_VERSION = process.env.ANSWER_PROMPT_VERSION ?? '2026-06-15-fallback-citation';
 
 const CACHEABLE_VERIFIER_STATUSES = new Set(['approved']);
 
@@ -602,6 +634,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   let leagueName, activeVersionId, bundles, method;
   let usedFallback = false;
   let fallbackLeagueName = null;
+  let fallbackLeagueSlug = null;
   let fallbackActiveVersionId = null;
   let primaryBestScore = null;
   let fallbackBestScore = null;
@@ -615,6 +648,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       leagueName,
       activeVersionId,
       fallbackLeagueName,
+      fallbackLeagueSlug,
       fallbackActiveVersionId,
     } = await resolveActiveVersion(dbClient, leagueSlug));
 
@@ -637,6 +671,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
           active_version_id:    activeVersionId,
           retrieved_source_ids: hit.cited_source_ids ?? [],
           cited_rule_numbers:   hit.cited_rule_numbers ?? [],
+          ...buildDisclaimerMeta({ leagueSlug, leagueName }),
           _debug: process.env.RULEBOOK_DEBUG === '1'
             ? { retrieval_method: 'cache', cache_id: hit.id }
             : undefined,
@@ -681,6 +716,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     leagueSlug,
     usedFallback,
     fallbackLeagueName,
+    fallbackLeagueSlug,
   });
 
   const message = await anthropic.messages.create({
@@ -756,6 +792,13 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     active_version_id:     activeVersionId,
     retrieved_source_ids:  retrievedSourceIds,
     cited_rule_numbers:    citedRuleNumbers,
+    ...buildDisclaimerMeta({
+      leagueSlug,
+      leagueName,
+      fallbackLeagueSlug,
+      fallbackLeagueName,
+      usedFallback,
+    }),
     _debug:                debugData,
   };
 }
@@ -792,7 +835,8 @@ const handler = async (req, res) => {
 
   // ── 1. Input validation ──────────────────────────────────────────────────
 
-  const { question, league, conversation, matrix_state: rawMatrixState } = req.body ?? {};
+  const { question, league, conversation, matrix_state: rawMatrixState, force_rag: forceRag } = req.body ?? {};
+  const skipMatrixRouter = forceRag === true;
 
   if (!question || typeof question !== 'string') {
     return res.status(400).json({ error: 'question is required and must be a string' });
@@ -819,7 +863,7 @@ const handler = async (req, res) => {
     //   request. Either advance to the next question (State B) or, if all
     //   questions are answered, synthesize a ruling (State C).
 
-    if (matrixState) {
+    if (matrixState && !skipMatrixRouter) {
       const matrix = findMatrix(matrixState.matrix_id);
 
       if (!matrix) {
@@ -865,7 +909,9 @@ const handler = async (req, res) => {
         });
         const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
                 league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
-                cited_rule_numbers, _debug } = ragResult;
+                cited_rule_numbers, _debug,
+                league_display_name, league_website_url, league_link_text,
+                fallback_league_display_name, fallback_league_website_url, fallback_league_link_text } = ragResult;
 
         // ── Verifier gate (fail-closed) ───────────────────────────────────
         if (blocked) {
@@ -897,11 +943,18 @@ const handler = async (req, res) => {
           retrieved_source_ids,
           cited_rule_numbers,
           verifier_status:      verifierAudit.status,
+          league_display_name,
+          league_website_url,
+          league_link_text,
+          fallback_league_display_name,
+          fallback_league_website_url,
+          fallback_league_link_text,
           ...(_debug ? { _debug } : {}),
         });
       }
     }
 
+    if (!skipMatrixRouter) {
     // ── 4. New question: route via pre-screen + classifier ─────────────────
     //
     //   Step 1: Keyword pre-screen (zero latency, no API call).
@@ -966,8 +1019,9 @@ const handler = async (req, res) => {
         });
       }
     }
+    }
 
-    // ── State A: factual question (or classifier fell through) ────────────
+    // ── State A: factual question (or classifier fell through, or force_rag) ─
     const ragResult = await runRAG({
       sanitizedQuestion,
       league,
@@ -975,7 +1029,9 @@ const handler = async (req, res) => {
     });
     const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
             league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
-            cited_rule_numbers, _debug } = ragResult;
+            cited_rule_numbers, _debug,
+            league_display_name, league_website_url, league_link_text,
+            fallback_league_display_name, fallback_league_website_url, fallback_league_link_text } = ragResult;
 
     // ── Verifier gate (fail-closed) ──────────────────────────────────────
     if (blocked) {
@@ -1005,6 +1061,12 @@ const handler = async (req, res) => {
       retrieved_source_ids,
       cited_rule_numbers,
       verifier_status:      verifierAudit.status,
+      league_display_name,
+      league_website_url,
+      league_link_text,
+      fallback_league_display_name,
+      fallback_league_website_url,
+      fallback_league_link_text,
       ...(_debug ? { _debug } : {}),
     });
 

@@ -54,6 +54,7 @@ function showActionToast(message) {
     let conversation = []; // Holds the entire chat history: [{ user, ai, league, shortUrl, feedbackStatus }]
     let lastUserQuestion = '';
     const CONVERSATION_LIMIT = 4;
+    const INTERVIEW_ESCAPE_LABEL = 'None of these / Ask standard question';
     let isAsking = false;
     let isListening = false;
     let voiceSafetyTimer = null;
@@ -183,9 +184,9 @@ function showActionToast(message) {
 
       if (target.classList.contains('icon-btn')) {
         if (target.dataset.feedbackType === 'positive') {
-          handleFeedback('positive', turn, target);
+          handleThumbsUp(turn, target);
         } else if (target.dataset.feedbackType === 'negative') {
-          handleFeedback('negative', turn, target); // Directly handle negative feedback
+          handleThumbsDown(turn, target);
         } else if (target.classList.contains('speech-btn')) {
           // Handle speech button click
           const turnIndex = parseInt(target.dataset.index);
@@ -214,16 +215,19 @@ function showActionToast(message) {
     // Feedback button clicks
     if (submitFeedbackBtn) submitFeedbackBtn.addEventListener('click', () => {
       const feedback = feedbackTextarea.value.trim();
-      // Find the current turn that needs feedback
       const currentTurn = conversation[conversation.length - 1];
       if (currentTurn && currentTurn.feedbackStatus === 'negative') {
-        handleFeedback('negative', currentTurn, null, feedback);
+        submitFeedbackToApi(currentTurn, false, feedback);
       }
       feedbackSection.style.display = 'none';
       feedbackTextarea.value = '';
     });
 
     if (skipFeedbackBtn) skipFeedbackBtn.addEventListener('click', () => {
+      const currentTurn = conversation[conversation.length - 1];
+      if (currentTurn && currentTurn.feedbackStatus === 'negative' && !currentTurn.feedbackSubmitted) {
+        submitFeedbackToApi(currentTurn, false, '');
+      }
       feedbackSection.style.display = 'none';
       feedbackTextarea.value = '';
     });
@@ -236,13 +240,13 @@ function showActionToast(message) {
       cancelFeedbackButton.addEventListener('click', () => feedbackModal.style.display = 'none');
     }
     if (submitFeedbackButton) submitFeedbackButton.addEventListener('click', () => {
-      const currentTurn = feedbackModal.currentTurn; // Get the turn object stored when modal opened
-      const feedback = feedbackTextarea.value.trim();
+      const currentTurn = feedbackModal.currentTurn;
+      const feedback = feedbackTextareaOld?.value?.trim() ?? '';
       if (currentTurn) {
-        handleFeedback('negative', currentTurn, currentTurn.feedbackButton, feedback);
+        submitFeedbackToApi(currentTurn, false, feedback);
       }
       feedbackModal.style.display = 'none';
-      feedbackTextarea.value = ''; // Clear textarea
+      if (feedbackTextareaOld) feedbackTextareaOld.value = '';
     });
 
     // Close modal if clicked outside content
@@ -255,8 +259,13 @@ function showActionToast(message) {
 
     // Interview panel — option button clicks (event delegation)
     if (interviewOptionsEl) interviewOptionsEl.addEventListener('click', (event) => {
+      const escapeBtn = event.target.closest('.interview-escape-btn');
+      if (escapeBtn && !escapeBtn.disabled) {
+        escapeInterviewToStandardRag();
+        return;
+      }
       const btn = event.target.closest('.interview-option-btn');
-      if (!btn || btn.disabled) return;
+      if (!btn || btn.disabled || btn.classList.contains('interview-escape-btn')) return;
       submitInterviewAnswer(btn.dataset.questionId, btn.dataset.answer);
     });
 
@@ -281,84 +290,65 @@ function showActionToast(message) {
         return text;
     }
 
+    function applyDisclaimerMeta(turn, data) {
+      if (!turn || !data) return;
+      turn.leagueDisplayName          = data.league_display_name ?? data.originalLeague ?? turn.league;
+      turn.leagueWebsiteUrl           = data.league_website_url ?? null;
+      turn.leagueLinkText             = data.league_link_text ?? turn.leagueDisplayName;
+      turn.fallbackLeagueDisplayName  = data.fallback_league_display_name ?? data.fallbackLeague ?? null;
+      turn.fallbackLeagueWebsiteUrl   = data.fallback_league_website_url ?? null;
+      turn.fallbackLeagueLinkText     = data.fallback_league_link_text ?? turn.fallbackLeagueDisplayName;
+    }
+
+    function renderLeagueReference(name, url, linkText) {
+      const label = linkText || name;
+      if (url) {
+        return `<a href="${url}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${label}</a>`;
+      }
+      return `<span class="font-medium">${name}</span>`;
+    }
+
     function generateDisclaimerHtml(league, turn = null) {
-        // League-specific disclaimer information
-        const leagueDisclaimers = {
-            'MLB': {
-                name: 'Major League Baseball (MLB)',
-                link: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
-                text: 'MLB Official Rules'
-            },
-            'Little League': {
-                name: 'Little League International',
-                link: 'https://www.littleleague.org/playing-rules/',
-                text: 'Little League Official Rules'
-            },
-            'Little League International': {
-                name: 'Little League International',
-                link: 'https://www.littleleague.org/playing-rules/',
-                text: 'Little League Official Rules'
-            },
-            'USSSA': {
-                name: 'USSSA Baseball',
-                link: 'https://www.usssabaseball.org/images/USSSA_National_By-Laws5-16-2025.pdf',
-                text: 'USSSA Baseball Rules'
-            },
-            'Mill Valley AAA': {
-                name: 'Mill Valley AAA',
-                link: 'https://www.littleleague.org/playing-rules/',
-                text: 'Little League Official Rules (with local modifications)'
-            },
-            'BAMSBL': {
-                name: 'BAMSBL',
-                link: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
-                text: 'MLB Official Rules (with local modifications)'
-            }
-        };
+        if (!league) return '';
+
+        const primaryName = turn?.leagueDisplayName || league;
+        const primaryUrl  = turn?.leagueWebsiteUrl ?? null;
+        const primaryLink = turn?.leagueLinkText || primaryName;
 
         // Handle fallback cases
         if (turn && turn.usedFallback) {
-            const originalInfo = leagueDisclaimers[turn.originalLeague] || {
-                name: turn.originalLeague,
-                link: 'legal.html',
-                text: 'official rulebook'
-            };
-            const fallbackInfo = leagueDisclaimers[turn.fallbackLeague] || {
-                name: turn.fallbackLeague,
-                link: 'legal.html',
-                text: 'official rulebook'
-            };
+            const fallbackName = turn.fallbackLeagueDisplayName || turn.fallbackLeague || 'the governing rulebook';
+            const fallbackUrl  = turn.fallbackLeagueWebsiteUrl ?? null;
+            const fallbackLink = turn.fallbackLeagueLinkText || fallbackName;
+
+            const primaryRef  = renderLeagueReference(primaryName, primaryUrl, primaryLink);
+            const fallbackRef = renderLeagueReference(fallbackName, fallbackUrl, fallbackLink);
+            const visitLine   = (primaryUrl || fallbackUrl)
+              ? `For the complete, official rulebooks, visit ${primaryRef} and ${fallbackRef}.`
+              : `For the complete, official rulebooks, consult ${primaryRef} and ${fallbackRef} directly.`;
 
             return `
                 <div class="rule-disclaimer">
                     <p class="text-xs text-gray-600 leading-relaxed">
-                        <strong>Fallback Notice:</strong> This question was not specifically covered in <span class="font-medium">${originalInfo.name}</span> rules, 
-                        so we referenced <span class="font-medium">${fallbackInfo.name}</span> rules as the governing authority. 
-                        For the complete, official rulebooks, visit <a href="${originalInfo.link}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${originalInfo.text}</a> 
-                        and <a href="${fallbackInfo.link}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${fallbackInfo.text}</a>. 
+                        <strong>Fallback Notice:</strong> This question was not specifically covered in <span class="font-medium">${primaryName}</span> rules,
+                        so we referenced <span class="font-medium">${fallbackName}</span> rules as the governing authority.
+                        ${visitLine}
                         This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
                     </p>
                 </div>
             `;
         }
 
-        // Find the appropriate disclaimer info for this league
-        const disclaimerInfo = leagueDisclaimers[league] || {
-            name: league || 'Unknown League',
-            link: 'legal.html',
-            text: 'official rulebook'
-        };
-
-        // Only show disclaimer if there's an answer (not for loading state)
-        if (!league) {
-            return '';
-        }
+        const primaryRef = renderLeagueReference(primaryName, primaryUrl, primaryLink);
+        const visitLine  = primaryUrl
+          ? `For the complete, official rulebook, visit ${primaryRef}.`
+          : `For the complete, official rulebook, consult ${primaryRef} directly.`;
 
         return `
             <div class="rule-disclaimer">
                 <p class="text-xs text-gray-600 leading-relaxed">
-                    <strong>Disclaimer:</strong> This answer references <span class="font-medium">${disclaimerInfo.name}</span> rules. 
-                    For the complete, official rulebook, visit <a href="${disclaimerInfo.link}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${disclaimerInfo.text}</a>. 
+                    <strong>Disclaimer:</strong> This answer references <span class="font-medium">${primaryName}</span> rules.
+                    ${visitLine}
                     This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
                 </p>
             </div>
@@ -398,7 +388,8 @@ function showActionToast(message) {
       askApi(question, selectedLeague);
     }
 
-    async function askApi(question, league) {
+    async function askApi(question, league, options = {}) {
+      const { forceRag = false } = options;
       const currentTurnIndex = conversation.length - 1;
       const conversationContext = conversation
         .slice(0, currentTurnIndex)
@@ -412,7 +403,9 @@ function showActionToast(message) {
 
       try {
         const body = { question, league, conversation: conversationContext };
-        if (interviewState.active) {
+        if (forceRag) {
+          body.force_rag = true;
+        } else if (interviewState.active) {
           body.matrix_state = { matrix_id: interviewState.matrix_id, answers: { ...interviewState.answers } };
         }
 
@@ -441,6 +434,7 @@ function showActionToast(message) {
           conversation[currentTurnIndex].fallbackLeague = data.fallbackLeague;
           conversation[currentTurnIndex].originalLeague = data.originalLeague;
         }
+        applyDisclaimerMeta(conversation[currentTurnIndex], data);
 
         const shortUrl = await getShortUrl(question, reply, league, '');
         conversation[currentTurnIndex].shortUrl = shortUrl;
@@ -511,7 +505,99 @@ function showActionToast(message) {
         interviewOptionsEl.appendChild(btn);
       });
 
+      appendInterviewEscapeHatch();
+
       interviewCancelBtn.style.display = 'inline-block';
+    }
+
+    function appendInterviewEscapeHatch() {
+      const escapeBtn       = document.createElement('button');
+      escapeBtn.type        = 'button';
+      escapeBtn.className   = 'interview-option-btn opt-escape interview-escape-btn';
+      escapeBtn.textContent = INTERVIEW_ESCAPE_LABEL;
+      interviewOptionsEl.appendChild(escapeBtn);
+    }
+
+    function buildConversationContext(upToIndex) {
+      return conversation
+        .slice(0, upToIndex)
+        .slice(-CONVERSATION_LIMIT)
+        .map(t => ({ user: t.user, ai: t.ai, league: t.league }));
+    }
+
+    async function escapeInterviewToStandardRag() {
+      const question = interviewState.originalQuestion;
+      const league   = interviewState.originalLeague;
+      const idx      = interviewState.pendingTurnIndex;
+      if (!question || idx === null) return;
+
+      interviewOptionsEl.innerHTML = `
+        <div class="interview-loading">
+          <div class="spinner"></div>
+          <span>Looking up the rule directly\u2026</span>
+        </div>`;
+      interviewCancelBtn.style.display = 'none';
+      setAskingState(true);
+
+      try {
+        const response = await fetch('/api/ask-v2', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({
+            question,
+            league,
+            conversation: buildConversationContext(idx),
+            force_rag:    true,
+          }),
+        });
+
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+
+        if (data.state === 'needs_clarification') {
+          throw new Error('Standard lookup was routed to the decision tree again.');
+        }
+
+        const reply = data.reply || data.message || 'No answer returned.';
+        conversation[idx].ai     = reply;
+        conversation[idx].league = league;
+        if (data.state === 'unverifiable') {
+          conversation[idx].unverifiable = true;
+        }
+        if (data.usedFallback) {
+          conversation[idx].usedFallback   = true;
+          conversation[idx].fallbackLeague = data.fallbackLeague;
+          conversation[idx].originalLeague = data.originalLeague;
+        }
+        applyDisclaimerMeta(conversation[idx], data);
+
+        exitInterviewMode();
+        renderConversation();
+        conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+
+        getShortUrl(question, reply, league, '')
+          .then(url => {
+            if (url) {
+              conversation[idx].shortUrl = url;
+              renderConversation();
+            }
+          });
+
+        speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+      } catch (err) {
+        console.error('Interview escape error:', err);
+        interviewOptionsEl.innerHTML = `
+          <p style="color:#dc2626;font-size:0.88rem;margin-bottom:0.75rem;">
+            Could not run a standard lookup. Please try again.
+          </p>`;
+        const retryBtn     = document.createElement('button');
+        retryBtn.className = 'interview-option-btn opt-primary interview-escape-btn';
+        retryBtn.textContent = INTERVIEW_ESCAPE_LABEL;
+        interviewOptionsEl.appendChild(retryBtn);
+        interviewCancelBtn.style.display = 'inline-block';
+      } finally {
+        unlockInputControls();
+      }
     }
 
     async function submitInterviewAnswer(questionId, answer) {
@@ -560,6 +646,7 @@ function showActionToast(message) {
             conversation[idx].fallbackLeague = data.fallbackLeague;
             conversation[idx].originalLeague = data.originalLeague;
           }
+          applyDisclaimerMeta(conversation[idx], data);
 
           exitInterviewMode();
           renderConversation();
@@ -591,6 +678,7 @@ function showActionToast(message) {
         retryBtn.textContent = 'Try again';
         retryBtn.addEventListener('click', () => submitInterviewAnswer(questionId, answer));
         interviewOptionsEl.appendChild(retryBtn);
+        appendInterviewEscapeHatch();
         interviewCancelBtn.style.display = 'inline-block';
       }
     }
@@ -665,34 +753,69 @@ function showActionToast(message) {
 
     // --- UTILITY & HANDLER FUNCTIONS ---
 
-    function openFeedbackModal(turn, button) {
-      feedbackModal.style.display = 'flex'; // Show modal
-      feedbackModal.currentTurn = turn; // Store the current turn object
-      feedbackModal.currentTurn.feedbackButton = button; // Store the button that triggered it
-      feedbackTextarea.value = ''; // Clear any previous feedback
+    function plainAiResponse(html) {
+      return (html ?? '').replace(/<[^>]*>/g, '').trim();
     }
 
-    function handleFeedback(feedbackType, turn, button, feedbackText = '') {
-      console.log(`Feedback for turn (user: "${turn.user}", ai: "${turn.ai}"): ${feedbackType}, Text: "${feedbackText}"`);
+    function disableFeedbackButtons(turnElement) {
+      if (!turnElement) return;
+      turnElement.querySelectorAll('.icon-btn[data-feedback-type]').forEach(icon => {
+        icon.disabled = true;
+        icon.classList.add('opacity-50');
+      });
+    }
 
-      // Disable all feedback icons for this specific turn after one is clicked
-      const turnElement = button?.closest('.conversation-turn');
-      if (turnElement) {
-        turnElement.querySelectorAll('.icon-btn').forEach(icon => {
-          icon.disabled = true; // Disable the button
-          icon.classList.add('opacity-50'); // Visually indicate disabled
-        });
-      }
+    function submitFeedbackToApi(turn, isPositive, comments = '') {
+      if (!turn || turn.feedbackSubmitted) return;
+      turn.feedbackSubmitted = true;
 
-      // Update the state for the specific turn
-      turn.feedbackStatus = feedbackType;
-      turn.feedbackText = feedbackText; // Store the detailed feedback
+      fetch('/api/submit-feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          league_slug: turn.league,
+          question: turn.user,
+          ai_response: plainAiResponse(turn.ai),
+          is_positive: isPositive,
+          comments: comments || null,
+        }),
+      }).then(async response => {
+        if (!response.ok) {
+          turn.feedbackSubmitted = false;
+          console.error('Failed to send feedback');
+          return;
+        }
+        const result = await response.json().catch(() => ({}));
+        if (!isPositive && result.cacheDeleted > 0) {
+          console.log(`Cleared ${result.cacheDeleted} cached answer(s) for negative feedback.`);
+        }
+      }).catch(error => {
+        turn.feedbackSubmitted = false;
+        console.error('Error sending feedback:', error);
+      });
+    }
 
-      // Visually update the clicked button
-      if (button) button.classList.add('active'); // Add a class to style the active feedback
+    function handleThumbsUp(turn, button) {
+      if (turn.feedbackStatus) return;
 
-      // Show both refine section and feedback section immediately for negative feedback
-      if (feedbackType === 'negative' && !turn.refined) {
+      turn.feedbackStatus = 'positive';
+      disableFeedbackButtons(button?.closest('.conversation-turn'));
+      if (button) button.classList.add('active');
+
+      refineSection.style.display = 'none';
+      feedbackSection.style.display = 'none';
+
+      submitFeedbackToApi(turn, true);
+    }
+
+    function handleThumbsDown(turn, button) {
+      if (turn.feedbackStatus) return;
+
+      turn.feedbackStatus = 'negative';
+      disableFeedbackButtons(button?.closest('.conversation-turn'));
+      if (button) button.classList.add('active');
+
+      if (!turn.refined) {
         refineSection.style.display = 'block';
         refineInput.value = '';
         feedbackSection.style.display = 'block';
@@ -700,29 +823,16 @@ function showActionToast(message) {
         turn.refined = true;
       } else {
         refineSection.style.display = 'none';
-        feedbackSection.style.display = 'none';
+        feedbackSection.style.display = 'block';
+        feedbackTextarea.value = '';
       }
+    }
 
-      fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          question: turn.user,
-          answer: turn.ai,
-          league: turn.league,
-          feedback: feedbackType,
-          feedbackText,
-        }),
-      }).then(async response => {
-        if (!response.ok) {
-          console.error('Failed to send feedback');
-          return;
-        }
-        const result = await response.json().catch(() => ({}));
-        if (feedbackType === 'negative' && result.cacheDeleted > 0) {
-          console.log(`Cleared ${result.cacheDeleted} cached answer(s) for negative feedback.`);
-        }
-      }).catch(error => console.error('Error sending feedback:', error));
+    function openFeedbackModal(turn, button) {
+      feedbackModal.style.display = 'flex';
+      feedbackModal.currentTurn = turn;
+      feedbackModal.currentTurn.feedbackButton = button;
+      if (feedbackTextareaOld) feedbackTextareaOld.value = '';
     }
 
     function handleShare(question, answer, league, shortUrl) {

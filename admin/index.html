@@ -316,6 +316,81 @@
     .empty .icon { font-size: 48px; margin-bottom: 12px; }
     .empty p { font-size: 14px; }
 
+    .btn-toggle-orphans.active { border-color: #3b82f6; color: #93c5fd; }
+
+    /* ── User Feedback ── */
+    #feedback-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 0 auto 32px;
+      padding: 0 20px;
+    }
+    #feedback-panel.visible { display: block; }
+
+    .feedback-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid #1e293b;
+    }
+    .feedback-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .feedback-count strong { color: #f1f5f9; }
+
+    .feedback-card {
+      border-bottom: 1px solid #1e293b;
+      padding: 18px 20px;
+    }
+    .feedback-card:last-child { border-bottom: none; }
+
+    .feedback-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .feedback-question {
+      font-size: 14px;
+      color: #f1f5f9;
+      font-weight: 600;
+      width: 100%;
+    }
+    .feedback-league {
+      font-size: 12px;
+      color: #93c5fd;
+    }
+    .feedback-time {
+      font-size: 12px;
+      color: #64748b;
+      margin-left: auto;
+    }
+    .feedback-answer {
+      font-size: 13px;
+      color: #cbd5e1;
+      line-height: 1.55;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .feedback-comments {
+      font-size: 13px;
+      color: #fca5a5;
+      background: #7f1d1d18;
+      border: 1px solid #7f1d1d44;
+      border-radius: 8px;
+      padding: 10px 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .badge-positive { background: #14532d22; color: #86efac; border: 1px solid #14532d55; }
+    .badge-negative { background: #7f1d1d22; color: #fca5a5; border: 1px solid #7f1d1d55; }
+
     /* ── Rule Browser ── */
     #browser-panel {
       display: none;
@@ -708,6 +783,24 @@
   </div>
 </div>
 
+<!-- Recent Feedback Panel -->
+<div id="feedback-panel">
+  <div class="panel">
+    <div class="panel-header">💬 Recent Feedback</div>
+    <div class="feedback-toolbar">
+      <span style="font-size:13px;color:#94a3b8">Latest rulebook ratings and comments</span>
+      <button class="tab" style="padding:6px 12px;font-size:12px" onclick="loadFeedback()">↻ Refresh</button>
+      <span class="feedback-count" id="feedback-count"></span>
+    </div>
+    <div id="feedback-body">
+      <div class="empty">
+        <div class="icon">💬</div>
+        <p>Loading feedback…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Rule Browser Panel -->
 <div id="browser-panel">
   <div class="panel">
@@ -796,12 +889,14 @@ function showApp() {
   document.getElementById('ingest-panel').classList.add('visible');
   document.getElementById('edit-panel').classList.add('visible');
   document.getElementById('warnings-panel').classList.add('visible');
+  document.getElementById('feedback-panel').classList.add('visible');
   document.getElementById('browser-panel').classList.add('visible');
   document.getElementById('logout-btn').style.display = '';
   populateBrowserDropdown();
   populateEditLeagueDropdown();
   populateIngestLeagueDropdown();
   loadWarnings();
+  loadFeedback();
 }
 
 function populateEditLeagueDropdown() {
@@ -1073,6 +1168,90 @@ function updateWarningsCount(actionable, orphans) {
 function toggleOrphans() {
   showOrphans = !showOrphans;
   renderWarnings();
+}
+
+// ── User Feedback ─────────────────────────────────────────────────────────────
+
+let recentFeedback = [];
+
+function formatFeedbackTime(value) {
+  if (!value) return '';
+  try {
+    return new Date(value).toLocaleString();
+  } catch {
+    return String(value);
+  }
+}
+
+function truncateText(text, max = 320) {
+  const value = (text ?? '').trim();
+  if (value.length <= max) return value;
+  return `${value.slice(0, max)}…`;
+}
+
+function renderFeedbackCard(item) {
+  const ratingBadge = item.is_positive
+    ? '<span class="badge badge-positive">👍 Helpful</span>'
+    : '<span class="badge badge-negative">👎 Not helpful</span>';
+
+  const commentsHtml = item.comments
+    ? `<div class="feedback-comments"><strong>Comment:</strong> ${esc(item.comments)}</div>`
+    : '';
+
+  return `
+    <div class="feedback-card" id="feedback-${item.id}">
+      <div class="feedback-meta">
+        ${ratingBadge}
+        <span class="feedback-league">${esc(item.league_slug || 'unknown')}</span>
+        <span class="feedback-time">${esc(formatFeedbackTime(item.created_at))}</span>
+      </div>
+      <div class="feedback-question">Q: ${esc(item.question)}</div>
+      <div class="feedback-answer">${esc(truncateText(item.ai_response))}</div>
+      ${commentsHtml}
+    </div>
+  `;
+}
+
+function renderFeedback() {
+  const bodyEl  = document.getElementById('feedback-body');
+  const countEl = document.getElementById('feedback-count');
+
+  if (!recentFeedback.length) {
+    bodyEl.innerHTML = `
+      <div class="empty">
+        <div class="icon">💬</div>
+        <p>No user feedback yet.</p>
+      </div>`;
+    countEl.innerHTML = '<strong>0</strong> entries';
+    return;
+  }
+
+  const negativeCount = recentFeedback.filter(f => !f.is_positive).length;
+  countEl.innerHTML = `<strong>${recentFeedback.length}</strong> shown · <strong>${negativeCount}</strong> negative`;
+  bodyEl.innerHTML = recentFeedback.map(renderFeedbackCard).join('');
+}
+
+async function loadFeedback() {
+  const bodyEl = document.getElementById('feedback-body');
+  bodyEl.innerHTML = `<div class="empty"><div class="icon" style="font-size:32px">⏳</div><p>Loading feedback…</p></div>`;
+
+  const res = await fetch('/api/admin/feedback', {
+    headers: { 'Authorization': `Bearer ${password}` },
+  });
+
+  if (res.status === 401) {
+    bodyEl.innerHTML = `<div class="empty"><p style="color:#fca5a5">Session expired — please sign in again.</p></div>`;
+    return;
+  }
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    bodyEl.innerHTML = `<div class="empty"><p style="color:#fca5a5">Failed to load feedback (${res.status})${err.error ? ': ' + esc(err.error) : ''}</p></div>`;
+    return;
+  }
+
+  const data = await res.json();
+  recentFeedback = data.feedback ?? [];
+  renderFeedback();
 }
 
 async function loadWarnings() {

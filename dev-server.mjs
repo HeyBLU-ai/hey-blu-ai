@@ -49,6 +49,8 @@ const { default: adminIngestHandler }  = await import('./api/admin/ingest.js');
 const { default: adminWarningsHandler } = await import('./api/admin/warnings.js');
 const { default: adminRuleNodesHandler } = await import('./api/admin/rule-nodes.js');
 const { default: adminIngestCanonicalHandler } = await import('./api/admin/ingest-canonical.js');
+const { default: submitFeedbackHandler } = await import('./api/submit-feedback.js');
+const { default: adminFeedbackHandler } = await import('./api/admin/feedback.js');
 
 // ── MIME types ────────────────────────────────────────────────────────────────
 
@@ -199,6 +201,17 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/admin/ingest-canonical') {
     req.body = await readBody(req);
     return adminIngestCanonicalHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/submit-feedback') {
+    req.body = await readBody(req);
+    return submitFeedbackHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/feedback') {
+    req.query = Object.fromEntries(url.searchParams);
+    req.body  = {};
+    return adminFeedbackHandler(req, makeRes(res));
   }
 
   // ── Static files ───────────────────────────────────────────────────────────

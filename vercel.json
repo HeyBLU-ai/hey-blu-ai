@@ -78,6 +78,14 @@
       }
     },
     {
+      "src": "api/submit-feedback.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "api/admin/feedback.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/feedback.js",
       "use": "@vercel/node"
     },
@@ -159,7 +167,9 @@
     { "src": "/api/admin/warnings",   "dest": "api/admin/warnings.js"   },
     { "src": "/api/admin/rule-nodes", "dest": "api/admin/rule-nodes.js" },
     { "src": "/api/admin/ingest-canonical", "dest": "api/admin/ingest-canonical.js" },
-    { "src": "/api/feedback",         "dest": "api/feedback.js"         },
+    { "src": "/api/submit-feedback",      "dest": "api/submit-feedback.js"      },
+    { "src": "/api/admin/feedback",       "dest": "api/admin/feedback.js"       },
+    { "src": "/api/feedback",             "dest": "api/feedback.js"             },
     { "src": "/admin/review",         "dest": "/admin/review/index.html" },
     { "src": "/admin/review/",        "dest": "/admin/review/index.html" },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
