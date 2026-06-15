@@ -109,11 +109,7 @@
 
             <!-- Per-Answer Disclaimer -->
             <div id="rule-disclaimer" class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-lg" style="display: none;">
-                <p class="text-xs text-gray-600 leading-relaxed">
-                    <strong>Disclaimer:</strong> This answer references <span id="disclaimer-league" class="font-medium"></span> rules. 
-                    For the complete, official rulebook, visit <a id="disclaimer-link" href="#" target="_blank" rel="noopener" class="text-blue-600 hover:underline">official website</a>. 
-                    This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
-                </p>
+                <p id="disclaimer-text" class="text-xs text-gray-600 leading-relaxed"></p>
             </div>
 
             <div class="mt-8 pt-6 border-t-2 border-dashed border-gray-200">
@@ -230,9 +226,9 @@
                 text: 'Little League Official Rules (with local modifications)'
             },
             'BAMSBL': {
-                name: 'BAMSBL',
-                link: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
-                text: 'MLB Official Rules (with local modifications)'
+                name: "Bay Area Men's Senior Baseball League",
+                link: null,
+                text: null
             }
         };
 
@@ -284,22 +280,27 @@
 
             // Set up the per-answer disclaimer
             const disclaimerDiv = document.getElementById('rule-disclaimer');
-            const disclaimerLeague = document.getElementById('disclaimer-league');
-            const disclaimerLink = document.getElementById('disclaimer-link');
-            
-            // Find the appropriate disclaimer info for this league
+            const disclaimerText = document.getElementById('disclaimer-text');
+
             const disclaimerInfo = leagueDisclaimers[league] || {
                 name: league,
-                link: 'https://heyblu.ai/legal.html',
-                text: 'official rulebook'
+                link: null,
+                text: null
             };
-            
-            // Populate the disclaimer
-            disclaimerLeague.textContent = disclaimerInfo.name;
-            disclaimerLink.href = disclaimerInfo.link;
-            disclaimerLink.textContent = disclaimerInfo.text;
-            
-            // Show the disclaimer
+
+            const officialRef = disclaimerInfo.link
+              ? `<a href="${disclaimerInfo.link}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">${disclaimerInfo.text || disclaimerInfo.name}</a>`
+              : `<span class="font-medium">${disclaimerInfo.name}</span>`;
+            const visitLine = disclaimerInfo.link
+              ? `For the complete, official rulebook, visit ${officialRef}.`
+              : `For the complete, official rulebook, consult ${officialRef} directly.`;
+
+            disclaimerText.innerHTML = `
+                <strong>Disclaimer:</strong> This answer references <span class="font-medium">${disclaimerInfo.name}</span> rules.
+                ${visitLine}
+                This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
+                <a href="/rulebook/legal.html" class="text-blue-600 hover:underline">Legal information</a>.`;
+
             disclaimerDiv.style.display = 'block';
             
             // Add event listener for the Listen button

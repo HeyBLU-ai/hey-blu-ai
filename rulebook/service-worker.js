@@ -1,6 +1,6 @@
-const CACHE_NAME = 'heyblu-v1.0.2';
-const STATIC_CACHE = 'heyblu-static-v1.0.2';
-const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.2';
+const CACHE_NAME = 'heyblu-v1.0.3';
+const STATIC_CACHE = 'heyblu-static-v1.0.3';
+const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.3';
 
 // Files to cache immediately (paths relative to /rulebook/ scope)
 const STATIC_FILES = [

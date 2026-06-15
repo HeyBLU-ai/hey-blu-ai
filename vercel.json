@@ -1,5 +1,9 @@
 {
   "version": 2,
+  "redirects": [
+    { "source": "/legal.html", "destination": "/rulebook/legal.html", "permanent": true },
+    { "source": "/legal", "destination": "/rulebook/legal.html", "permanent": true }
+  ],
   "builds": [
     {
       "src": "api/ask.js",

@@ -276,18 +276,94 @@ function showActionToast(message) {
 
     // --- CORE FUNCTIONS ---
 
+    const LEAGUE_DISCLAIMER_META = {
+      bamsbl: {
+        name: "Bay Area Men's Senior Baseball League",
+        url: null,
+        linkText: null,
+      },
+      mlb: {
+        name: 'MLB Official Rules of Baseball',
+        url: 'https://mktg.mlbstatic.com/mlb/official-information/2025-official-baseball-rules.pdf',
+        linkText: 'MLB Official Rules',
+      },
+      'little-league': {
+        name: 'Little League International',
+        url: 'https://www.littleleague.org/playing-rules/',
+        linkText: 'Little League Official Rules',
+      },
+      usssa: {
+        name: 'USSSA Baseball',
+        url: 'https://www.usssabaseball.org/images/USSSA_National_By-Laws5-16-2025.pdf',
+        linkText: 'USSSA Baseball Rules',
+      },
+      'mill-valley-aaa': {
+        name: 'Mill Valley Little League AAA',
+        url: 'https://www.littleleague.org/playing-rules/',
+        linkText: 'Little League Official Rules (with local modifications)',
+      },
+    };
+
+    const LEGAL_INFO_URL = '/rulebook/legal.html';
+
+    function leagueToSlug(value) {
+      const v = (value ?? '').toLowerCase().trim();
+      if (!v) return '';
+      if (v === 'bamsbl' || v.includes('bay area')) return 'bamsbl';
+      if (v === 'mlb' || v.includes('major league baseball') || v.includes('mlb official')) return 'mlb';
+      if (v === 'usssa' || v.includes('usssa')) return 'usssa';
+      if (v === 'little league international' || v === 'little league' || v.includes('little league')) return 'little-league';
+      if (v === 'mill valley aaa' || v === 'mill valley') return 'mill-valley-aaa';
+      return v.replace(/\s+/g, '-');
+    }
+
+    function lookupLeagueDisclaimer(value) {
+      const slug = leagueToSlug(value);
+      return LEAGUE_DISCLAIMER_META[slug] ?? null;
+    }
+
+    /** Remove LLM-generated fallback/disclaimer blocks; the UI renders those separately. */
+    function stripEmbeddedDisclaimer(text) {
+      if (!text) return text;
+      const match = text.match(/\n\s*\*{0,2}Fallback Notice:\*{0,2}/i);
+      if (!match || match.index == null) return text;
+      return text.slice(0, match.index).trim();
+    }
+
+    function enrichDisclaimerMeta(turn) {
+      if (!turn) return;
+
+      const primaryMeta = lookupLeagueDisclaimer(turn.leagueDisplayName || turn.league || turn.originalLeague);
+      if (primaryMeta) {
+        turn.leagueDisplayName ??= primaryMeta.name;
+        if (turn.leagueWebsiteUrl == null) turn.leagueWebsiteUrl = primaryMeta.url;
+        turn.leagueLinkText ??= primaryMeta.linkText ?? primaryMeta.name;
+      }
+
+      if (!turn.usedFallback) return;
+
+      const fallbackMeta = lookupLeagueDisclaimer(
+        turn.fallbackLeagueDisplayName || turn.fallbackLeague,
+      );
+      if (fallbackMeta) {
+        turn.fallbackLeagueDisplayName ??= fallbackMeta.name;
+        if (turn.fallbackLeagueWebsiteUrl == null) turn.fallbackLeagueWebsiteUrl = fallbackMeta.url;
+        turn.fallbackLeagueLinkText ??= fallbackMeta.linkText ?? fallbackMeta.name;
+      }
+    }
+
     function formatAnswerText(text) {
-        // Split the text into natural language explanation and quoted rule
-        const parts = text.split(/Rule \d+:/);
+        const cleaned = stripEmbeddedDisclaimer(text);
+        const parts = cleaned.split(/Rule \d+:/);
         if (parts.length > 1) {
-            const ruleMatch = text.match(/Rule \d+:/);
+            const ruleMatch = cleaned.match(/Rule \d+:/);
             const ruleNumber = ruleMatch[0];
             const naturalLanguage = parts[0].trim();
             const quotedRule = ruleNumber + parts[1].trim();
-            
+
             return `${naturalLanguage}<div class="rule-quote">${quotedRule}</div>`;
         }
-        return text;
+        return cleaned;
     }
 
     function applyDisclaimerMeta(turn, data) {
@@ -310,6 +386,8 @@ function showActionToast(message) {
 
     function generateDisclaimerHtml(league, turn = null) {
         if (!league) return '';
+
+        enrichDisclaimerMeta(turn);
 
         const primaryName = turn?.leagueDisplayName || league;
         const primaryUrl  = turn?.leagueWebsiteUrl ?? null;
@@ -334,6 +412,7 @@ function showActionToast(message) {
                         so we referenced <span class="font-medium">${fallbackName}</span> rules as the governing authority.
                         ${visitLine}
                         This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
+                        <a href="${LEGAL_INFO_URL}" class="text-blue-600 hover:underline">Legal information</a>.
                     </p>
                 </div>
             `;
@@ -350,6 +429,7 @@ function showActionToast(message) {
                     <strong>Disclaimer:</strong> This answer references <span class="font-medium">${primaryName}</span> rules.
                     ${visitLine}
                     This interpretation is for educational purposes only and should not replace official rulebooks or umpire decisions.
+                    <a href="${LEGAL_INFO_URL}" class="text-blue-600 hover:underline">Legal information</a>.
                 </p>
             </div>
         `;
@@ -426,7 +506,7 @@ function showActionToast(message) {
         }
 
         // ── State A (answered) or State C (ruling) — standard flow ────────
-        const reply = data?.reply || data?.message || 'No answer returned.';
+        const reply = stripEmbeddedDisclaimer(data?.reply || data?.message || 'No answer returned.');
         conversation[currentTurnIndex].ai     = reply;
         conversation[currentTurnIndex].league = league;
         if (data.usedFallback) {
@@ -558,7 +638,7 @@ function showActionToast(message) {
           throw new Error('Standard lookup was routed to the decision tree again.');
         }
 
-        const reply = data.reply || data.message || 'No answer returned.';
+        const reply = stripEmbeddedDisclaimer(data.reply || data.message || 'No answer returned.');
         conversation[idx].ai     = reply;
         conversation[idx].league = league;
         if (data.state === 'unverifiable') {
@@ -637,7 +717,7 @@ function showActionToast(message) {
         } else if (data.state === 'ruling' || data.state === 'answered') {
           // Interview complete — populate the pending conversation turn
           const idx = interviewState.pendingTurnIndex;
-          const reply = data.reply || data.message || 'No answer returned.';
+          const reply = stripEmbeddedDisclaimer(data.reply || data.message || 'No answer returned.');
 
           conversation[idx].ai     = reply;
           conversation[idx].league = interviewState.originalLeague;
