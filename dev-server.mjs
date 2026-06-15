@@ -48,6 +48,7 @@ const { default: adminRulesHandler }   = await import('./api/admin/rules.js');
 const { default: adminIngestHandler }  = await import('./api/admin/ingest.js');
 const { default: adminWarningsHandler } = await import('./api/admin/warnings.js');
 const { default: adminRuleNodesHandler } = await import('./api/admin/rule-nodes.js');
+const { default: adminIngestCanonicalHandler } = await import('./api/admin/ingest-canonical.js');
 
 // ── MIME types ────────────────────────────────────────────────────────────────
 
@@ -193,6 +194,11 @@ const server = http.createServer(async (req, res) => {
     req.query = Object.fromEntries(url.searchParams);
     req.body  = method === 'PUT' ? await readBody(req) : {};
     return adminRuleNodesHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/admin/ingest-canonical') {
+    req.body = await readBody(req);
+    return adminIngestCanonicalHandler(req, makeRes(res));
   }
 
   // ── Static files ───────────────────────────────────────────────────────────

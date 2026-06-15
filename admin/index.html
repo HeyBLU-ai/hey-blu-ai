@@ -581,6 +581,14 @@
       letter-spacing: .06em;
       color: #64748b;
     }
+
+    #ingest-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 28px auto 24px;
+      padding: 0 20px;
+    }
+    #ingest-panel.visible { display: block; }
   </style>
 </head>
 <body>
@@ -590,7 +598,7 @@
     <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
     </svg>
-    <h1>HeyBLU Admin <span>/ QA Dashboard</span></h1>
+    <h1>HeyBLU Admin <span>/ QA &amp; Ingest</span></h1>
   </div>
   <button id="logout-btn" style="display:none" onclick="logout()">Sign out</button>
 </header>
@@ -606,6 +614,54 @@
     </div>
     <button class="tab active" style="width:100%;padding:11px" onclick="login()">Sign in →</button>
     <div id="auth-error" class="auth-error"></div>
+  </div>
+</div>
+
+<!-- Ingest Rulebook Panel -->
+<div id="ingest-panel">
+  <div class="panel">
+    <div class="panel-header">📥 Ingest Rulebook (Canonical Pipeline)</div>
+    <div class="panel-body">
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">
+        Upload a PDF to extract, canonicalize, embed, and activate a new rulebook version for the selected league.
+        This may take several minutes for large rulebooks.
+      </p>
+
+      <div class="field">
+        <label for="ingest-league-select">League</label>
+        <select id="ingest-league-select">
+          <option value="">— select a league —</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="ingest-season">Season</label>
+        <input type="text" id="ingest-season" value="2026" placeholder="2026">
+      </div>
+
+      <div class="field">
+        <label>PDF Rulebook</label>
+        <div id="file-zone" onclick="document.getElementById('file-picker').click()"
+             ondragover="handleDragOver(event)" ondrop="handleDrop(event)" ondragleave="handleDragLeave(event)">
+          <strong id="file-zone-label">Drop PDF here or click to browse</strong>
+          <p>PDF only · Max 15 MB · Runs extract → canonicalize → embed → activate</p>
+          <input type="file" id="file-picker" accept=".pdf,application/pdf" onchange="handleFilePick(event)">
+        </div>
+      </div>
+
+      <div class="steps" id="ingest-steps" style="display:none">
+        <div class="step" id="step-league"><span class="step-icon">1</span><span class="step-label">League</span></div>
+        <div class="step" id="step-extract"><span class="step-icon">2</span><span class="step-label">Extract</span></div>
+        <div class="step" id="step-canonicalize"><span class="step-icon">3</span><span class="step-label">Canonicalize</span></div>
+        <div class="step" id="step-embed"><span class="step-icon">4</span><span class="step-label">Embed</span></div>
+        <div class="step" id="step-activate"><span class="step-icon">5</span><span class="step-label">Activate</span></div>
+      </div>
+
+      <div id="log" style="display:none"></div>
+      <div id="ingest-results" style="display:none"></div>
+
+      <button id="submit-btn" onclick="startCanonicalIngest()">⚡ Start Canonical Ingest</button>
+    </div>
   </div>
 </div>
 
@@ -680,6 +736,8 @@
 
 let password    = sessionStorage.getItem('admin_pw') ?? '';
 let leagues     = [];
+let ingestFile  = null;
+let ingestRunning = false;
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -735,12 +793,14 @@ document.getElementById('password-input').addEventListener('keydown', e => {
 
 function showApp() {
   document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('ingest-panel').classList.add('visible');
   document.getElementById('edit-panel').classList.add('visible');
   document.getElementById('warnings-panel').classList.add('visible');
   document.getElementById('browser-panel').classList.add('visible');
   document.getElementById('logout-btn').style.display = '';
   populateBrowserDropdown();
   populateEditLeagueDropdown();
+  populateIngestLeagueDropdown();
   loadWarnings();
 }
 
@@ -1139,6 +1199,174 @@ async function resolveWarning(warningId) {
 
   qaWarnings = qaWarnings.filter(w => w.id !== warningId);
   renderWarnings();
+}
+
+// ── Canonical Ingest ─────────────────────────────────────────────────────────
+
+function populateIngestLeagueDropdown() {
+  const sel = document.getElementById('ingest-league-select');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">— select a league —</option>';
+  for (const l of leagues) {
+    const opt = document.createElement('option');
+    opt.value = l.slug;
+    opt.textContent = `${l.name} (${l.slug})`;
+    sel.appendChild(opt);
+  }
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  document.getElementById('file-zone')?.classList.add('drag-over');
+}
+function handleDragLeave(e) {
+  document.getElementById('file-zone')?.classList.remove('drag-over');
+}
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('file-zone')?.classList.remove('drag-over');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) loadIngestFile(file);
+}
+function handleFilePick(e) {
+  const file = e.target?.files?.[0];
+  if (file) loadIngestFile(file);
+}
+
+function loadIngestFile(file) {
+  if (!file.name.toLowerCase().endsWith('.pdf')) {
+    alert('Please select a PDF file.');
+    return;
+  }
+  if (file.size > 15 * 1024 * 1024) {
+    alert('PDF must be 15 MB or smaller for dashboard ingest.');
+    return;
+  }
+  ingestFile = file;
+  const mb = (file.size / (1024 * 1024)).toFixed(2);
+  document.getElementById('file-zone-label').textContent = `${file.name} (${mb} MB)`;
+}
+
+function setIngestStep(stepId, state) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  el.classList.remove('running', 'done', 'error');
+  if (state) el.classList.add(state);
+}
+
+function appendLogLine(text, cls = '') {
+  const log = document.getElementById('log');
+  const line = document.createElement('div');
+  line.className = `log-line ${cls}`.trim();
+  line.textContent = text;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = String(reader.result ?? '');
+      const comma = result.indexOf(',');
+      resolve(comma >= 0 ? result.slice(comma + 1) : result);
+    };
+    reader.onerror = () => reject(reader.error ?? new Error('Failed to read file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function mapStepToUi(step) {
+  if (step === 'league' || step === 'hash' || step === 'cleanup' || step === 'version') return 'step-league';
+  if (step === 'extract' || step === 'persist') return 'step-extract';
+  if (step === 'canonicalize') return 'step-canonicalize';
+  if (step === 'embed') return 'step-embed';
+  if (step === 'activate') return 'step-activate';
+  return null;
+}
+
+async function startCanonicalIngest() {
+  if (ingestRunning) return;
+
+  const leagueSlug = document.getElementById('ingest-league-select')?.value?.trim();
+  const season     = document.getElementById('ingest-season')?.value?.trim() || '2026';
+
+  if (!leagueSlug) { alert('Select a league.'); return; }
+  if (!ingestFile) { alert('Choose a PDF rulebook file.'); return; }
+
+  ingestRunning = true;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Ingesting…';
+
+  document.getElementById('ingest-steps').style.display = '';
+  document.getElementById('log').style.display = '';
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('ingest-results').style.display = 'none';
+
+  ['step-league', 'step-extract', 'step-canonicalize', 'step-embed', 'step-activate'].forEach(id => setIngestStep(id, ''));
+
+  try {
+    appendLogLine('Reading PDF…', 'running');
+    const fileBase64 = await fileToBase64(ingestFile);
+    appendLogLine('Uploading and running canonical pipeline…', 'running');
+
+    const res = await fetch('/api/admin/ingest-canonical', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${password}`,
+        'Content-Type':  'application/json',
+      },
+      body: JSON.stringify({
+        league_slug:  leagueSlug,
+        season,
+        filename:     ingestFile.name,
+        file_base64:  fileBase64,
+      }),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    for (const s of data.steps ?? []) {
+      const ui = mapStepToUi(s.step);
+      if (ui) setIngestStep(ui, 'done');
+      appendLogLine(`[${s.step}] ${s.message}`, 'done');
+    }
+
+    if (!res.ok) {
+      throw new Error(data.message ?? data.error ?? `HTTP ${res.status}`);
+    }
+
+    setIngestStep('step-activate', 'done');
+    appendLogLine('Ingest complete.', 'done');
+
+    const results = document.getElementById('ingest-results');
+    results.style.display = 'block';
+    results.innerHTML = `
+      <h3>✅ Ingest Complete — ${esc(data.league_name ?? leagueSlug)}</h3>
+      <div class="result-stat"><span>Version</span> <strong>${esc((data.version_id ?? '').slice(0, 8))}…</strong></div>
+      <div class="result-stat"><span>Nodes</span> <strong>${data.node_count ?? 0}</strong></div>
+      <div class="result-stat"><span>Chunks</span> <strong>${data.chunk_count ?? 0}</strong></div>
+      <div class="result-stat"><span>Embedded</span> <strong>${data.embedded_count ?? 0}</strong></div>
+      <div class="result-stat"><span>Warnings</span> <strong>${data.warning_count ?? 0}</strong></div>
+      <a class="test-link" href="/rulebook" target="_blank" rel="noopener">Test in Rulebook →</a>
+    `;
+
+    await loadWarnings();
+    populateBrowserDropdown();
+    populateEditLeagueDropdown();
+  } catch (err) {
+    appendLogLine(err.message ?? 'Ingest failed', 'error');
+    ['step-league', 'step-extract', 'step-canonicalize', 'step-embed', 'step-activate'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el.classList.contains('done')) el.classList.add('error');
+    });
+    alert(`Ingest failed: ${err.message ?? err}`);
+  } finally {
+    ingestRunning = false;
+    btn.disabled = false;
+    btn.textContent = '⚡ Start Canonical Ingest';
+  }
 }
 </script>
 </body>

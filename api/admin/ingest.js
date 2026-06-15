@@ -24,7 +24,8 @@ export default function handler(_req, res) {
 
   return res.status(410).json({
     error:   'legacy_ingest_disabled',
-    message: 'Legacy admin ingest is disabled. Use the V3 CLI ingestion pipeline.',
-    docs:    'node scripts/ingest-pdf.mjs <file> <league-slug> --season <year>',
+    message: 'Legacy admin ingest is disabled. Use POST /api/admin/ingest-canonical from the Admin Dashboard.',
+    migrate_to: '/api/admin/ingest-canonical',
+    docs:    'Upload a PDF on /admin — Ingest Rulebook panel.',
   });
 }
