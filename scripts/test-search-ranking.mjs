@@ -154,8 +154,9 @@ function printChunkHits(label, hits, orTerms) {
     const score = Number(hit.hybrid_score ?? 0).toFixed(4);
     const vec = Number(hit.vector_score ?? 0).toFixed(4);
     const fts = Number(hit.strict_fts_score ?? 0).toFixed(4);
+    const paths = Array.isArray(hit.retrieval_paths) ? hit.retrieval_paths.join('+') : '—';
     const body = snippet(hit.chunk_text || hit.body_text);
-    console.log(`${String(i + 1).padStart(2)}. rule_code=${ruleCode}  score=${score}  vector=${vec}  fts=${fts}`);
+    console.log(`${String(i + 1).padStart(2)}. rule_code=${ruleCode}  score=${score}  vector=${vec}  fts=${fts}  paths=${paths}`);
     console.log(`    title: ${hit.title ?? '(none)'}`);
     console.log(`    chunk_index: ${hit.chunk_index ?? '—'}  chunk_id: ${hit.chunk_id}`);
     console.log(`    body: ${body}`);
