@@ -7,6 +7,7 @@
  * Usage:
  *   node scripts/test-search-ranking.mjs
  *   node scripts/test-search-ranking.mjs "courtesy runner rule"
+ *   node scripts/test-search-ranking.mjs "infield fly" nsll-minors-aaa
  */
 import pg from 'pg';
 import OpenAI from 'openai';
@@ -16,12 +17,13 @@ import { dirname, resolve } from 'path';
 import {
   buildOrFallbackQuery,
   fetchEvidenceBundles,
+  fetchEvidenceBundlesWithFallback,
   vectorLiteral,
 } from '../lib/ingest/evidence-bundle.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const QUESTION = process.argv[2] ?? 'courtesy runner rule';
-const LEAGUE_SLUG = 'bamsbl';
+const LEAGUE_SLUG = process.argv[3] ?? 'bamsbl';
 const TOP_N = 10;
 
 function loadLocalEnv() {
@@ -75,17 +77,23 @@ function snippet(text, max = 160) {
   return s.length <= max ? s : `${s.slice(0, max)}…`;
 }
 
-async function resolveBamsblVersion(client) {
+async function resolveLeagueVersion(client, slug) {
   const { rows: [row] } = await client.query(`
     SELECT l.id AS league_id,
            l.name AS league_name,
+           l.fallback_league_id,
            rv.id AS version_id,
            rv.status,
-           rv.created_at
+           rv.created_at,
+           fb.slug AS fallback_slug,
+           fb.name AS fallback_name,
+           fbv.id AS fallback_version_id
     FROM leagues l
     JOIN rulebook_versions rv ON rv.league_id = l.id AND rv.status = 'active'
+    LEFT JOIN leagues fb ON fb.id = l.fallback_league_id
+    LEFT JOIN rulebook_versions fbv ON fbv.league_id = fb.id AND fbv.status = 'active'
     WHERE l.slug = $1
-  `, [LEAGUE_SLUG]);
+  `, [slug]);
   return row ?? null;
 }
 
@@ -166,20 +174,25 @@ function printChunkHits(label, hits, orTerms) {
 async function main() {
   const client = await pool.connect();
   try {
-    console.log('BAMSBL search ranking diagnostic');
+    console.log('Search ranking diagnostic');
     console.log(`Query: "${QUESTION}"`);
+    console.log(`League slug: ${LEAGUE_SLUG}`);
 
-    const league = await resolveBamsblVersion(client);
+    const league = await resolveLeagueVersion(client, LEAGUE_SLUG);
     if (!league) {
-      console.error('No active BAMSBL rulebook version found.');
+      console.error(`No active rulebook version found for ${LEAGUE_SLUG}.`);
       process.exit(1);
     }
     console.log(`\nLeague: ${league.league_name} (${LEAGUE_SLUG})`);
     console.log(`Active version: ${league.version_id}`);
+    if (league.fallback_slug) {
+      console.log(`Fallback: ${league.fallback_name} (${league.fallback_slug})`);
+      console.log(`Fallback version: ${league.fallback_version_id ?? 'none'}`);
+    }
 
     const run = await resolveExtractionRun(client, league.version_id);
     if (!run) {
-      console.error('No completed extraction run for active BAMSBL version.');
+      console.error(`No completed extraction run for active ${LEAGUE_SLUG} version.`);
       process.exit(1);
     }
     console.log(`Extraction run: ${run.id}`);
@@ -187,10 +200,23 @@ async function main() {
     const embedding = await embedQuestion(QUESTION);
     console.log(`Embedding: ${embedding ? 'yes (1536-dim)' : 'no — FTS fallback only'}`);
 
-    const production = await fetchEvidenceBundles(client, league.version_id, QUESTION, {
-      queryEmbedding: embedding,
-      limit: 3,
-    });
+    const production = league.fallback_version_id
+      ? await fetchEvidenceBundlesWithFallback(client, league.version_id, QUESTION, {
+          queryEmbedding: embedding,
+          limit: 3,
+          fallbackVersionId: league.fallback_version_id,
+        })
+      : await fetchEvidenceBundles(client, league.version_id, QUESTION, {
+          queryEmbedding: embedding,
+          limit: 3,
+        });
+
+    if (production.usedFallback != null) {
+      console.log(`\nFallback used: ${production.usedFallback}`);
+      console.log(`Primary best score: ${Number(production.primaryBestScore ?? 0).toFixed(4)}`);
+      console.log(`Fallback best score: ${Number(production.fallbackBestScore ?? 0).toFixed(4)}`);
+      console.log(`Threshold: ${Number(production.scoreThreshold ?? 0).toFixed(4)}`);
+    }
 
     const allChunkHits = (production.chunkHits ?? [])
       .slice()
@@ -210,29 +236,67 @@ async function main() {
       console.log(`   body: ${snippet(b.matched_chunk_text || b.canonical_text)}`);
     });
 
-    const rule430 = await inspectRule430(client, league.version_id);
-    console.log('\nRule 430 / Courtesy Runners existence check');
-    console.log('─'.repeat(72));
-    console.log(`Nodes with rule_number = '430': ${rule430.byNumber.length}`);
-    for (const n of rule430.byNumber) {
-      console.log(`  • ${n.rule_number} — ${n.title} (${n.node_type}, body_len=${n.body_len})`);
-      console.log(`    preview: ${snippet(n.body_preview, 120)}`);
-    }
-    console.log(`\nNodes matching "Courtesy Runner" in title/body: ${rule430.byTitle.length}`);
-    for (const n of rule430.byTitle) {
-      console.log(`  • rule_code=${n.rule_number ?? '—'} — ${n.title}`);
-    }
-    console.log(`\nChunks for rule_number '430': ${rule430.chunks430.length}`);
-    for (const c of rule430.chunks430) {
-      console.log(`  • chunk_index=${c.chunk_index}  has_embedding=${c.has_embedding}  len=${c.chunk_len}`);
-      console.log(`    preview: ${snippet(c.chunk_preview, 120)}`);
+    if (LEAGUE_SLUG === 'bamsbl') {
+      const rule430 = await inspectRule430(client, league.version_id);
+      console.log('\nRule 430 / Courtesy Runners existence check');
+      console.log('─'.repeat(72));
+      console.log(`Nodes with rule_number = '430': ${rule430.byNumber.length}`);
+      for (const n of rule430.byNumber) {
+        console.log(`  • ${n.rule_number} — ${n.title} (${n.node_type}, body_len=${n.body_len})`);
+        console.log(`    preview: ${snippet(n.body_preview, 120)}`);
+      }
+      console.log(`\nNodes matching "Courtesy Runner" in title/body: ${rule430.byTitle.length}`);
+      for (const n of rule430.byTitle) {
+        console.log(`  • rule_code=${n.rule_number ?? '—'} — ${n.title}`);
+      }
+      console.log(`\nChunks for rule_number '430': ${rule430.chunks430.length}`);
+      for (const c of rule430.chunks430) {
+        console.log(`  • chunk_index=${c.chunk_index}  has_embedding=${c.has_embedding}  len=${c.chunk_len}`);
+        console.log(`    preview: ${snippet(c.chunk_preview, 120)}`);
+      }
+
+      const rank430 = allChunkHits.findIndex(h => h.rule_number === '430');
+      if (rank430 >= 0) {
+        console.log(`\nRule 430 appears at chunk rank #${rank430 + 1} in top-${TOP_N} (score=${Number(allChunkHits[rank430].hybrid_score).toFixed(4)})`);
+      } else {
+        console.log(`\nRule 430 is NOT in the top-${TOP_N} chunk hits for this query.`);
+      }
     }
 
-    const rank430 = allChunkHits.findIndex(h => h.rule_number === '430');
-    if (rank430 >= 0) {
-      console.log(`\nRule 430 appears at chunk rank #${rank430 + 1} in top-${TOP_N} (score=${Number(allChunkHits[rank430].hybrid_score).toFixed(4)})`);
-    } else {
-      console.log(`\nRule 430 is NOT in the top-${TOP_N} chunk hits for this query.`);
+    if (LEAGUE_SLUG === 'nsll-minors-aaa') {
+      console.log('\nNSLL fallback verification');
+      console.log('─'.repeat(72));
+
+      // Standard LL rule not covered locally — must fall through to little-league.
+      const balkEmbedding = await embedQuestion('balk');
+      const balkResult = await fetchEvidenceBundlesWithFallback(client, league.version_id, 'balk', {
+        queryEmbedding: balkEmbedding,
+        limit: 3,
+        fallbackVersionId: league.fallback_version_id,
+      });
+      const balkFromLl = (balkResult.chunkHits ?? []).some((h) =>
+        /balk|8\.05|illegal pitch/i.test(h.title ?? '')
+        || /balk|illegal pitch/i.test(h.chunk_text ?? ''),
+      );
+      console.log(`balk → usedFallback: ${balkResult.usedFallback === true ? 'yes' : 'no'}`);
+      console.log(`balk → Little League rule content: ${balkFromLl ? 'yes' : 'no'}`);
+      if (balkResult.usedFallback !== true || !balkFromLl) {
+        console.error('✗ Expected balk query to use Little League fallback.');
+        process.exit(1);
+      }
+
+      // Infield fly: NSLL local PR-5 explicitly addresses this ("no infield fly in AAA").
+      // Local coverage should win; fallback is not required.
+      const hasInfieldFlyContent = (production.chunkHits ?? []).some((h) =>
+        /infield fly/i.test(h.chunk_text ?? '') || /infield fly/i.test(h.body_text ?? ''),
+      );
+      console.log(`infield fly → usedFallback: ${production.usedFallback === true ? 'yes' : 'no'}`);
+      console.log(`infield fly → infield-fly content in results: ${hasInfieldFlyContent ? 'yes' : 'no'}`);
+      if (production.usedFallback !== true || !hasInfieldFlyContent) {
+        console.error('✗ Expected infield fly query to fall back to Little League with relevant content.');
+        process.exit(1);
+      }
+      console.log('✓ NSLL local rules and Little League fallback behave correctly.');
     }
   } finally {
     client.release();

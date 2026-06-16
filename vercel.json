@@ -48,6 +48,10 @@
       }
     },
     {
+      "src": "api/get-leagues.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/admin/leagues.js",
       "use": "@vercel/node"
     },
@@ -165,6 +169,7 @@
     { "src": "/api/shorten", "dest": "api/shorten.ts" },
     { "src": "/api/ingest/parse",     "dest": "api/ingest/parse.js"     },
     { "src": "/api/ingest/structure", "dest": "api/ingest/structure.js" },
+    { "src": "/api/get-leagues",  "dest": "api/get-leagues.js"  },
     { "src": "/api/admin/leagues",    "dest": "api/admin/leagues.js"    },
     { "src": "/api/admin/rules",      "dest": "api/admin/rules.js"      },
     { "src": "/api/admin/review",     "dest": "api/admin/review.js"     },

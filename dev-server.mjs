@@ -42,6 +42,7 @@ try {
 // ── Import API handlers (after env is loaded) ─────────────────────────────────
 
 const { default: askV2Handler }       = await import('./api/ask-v2.js');
+const { default: getLeaguesHandler }  = await import('./api/get-leagues.js');
 const { default: askHandler }         = await import('./api/ask.js').catch(() => ({ default: null }));
 const { default: adminLeaguesHandler } = await import('./api/admin/leagues.js');
 const { default: adminRulesHandler }   = await import('./api/admin/rules.js');
@@ -168,6 +169,11 @@ const server = http.createServer(async (req, res) => {
   if (pathname === '/api/ask' && askHandler) {
     req.body = await readBody(req);
     return askHandler(req, makeRes(res));
+  }
+
+  if (pathname === '/api/get-leagues') {
+    req.body = {};
+    return getLeaguesHandler(req, makeRes(res));
   }
 
   if (pathname === '/api/admin/leagues') {
