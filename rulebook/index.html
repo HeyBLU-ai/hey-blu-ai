@@ -624,8 +624,8 @@
       <div class="grid md:grid-cols-3 gap-6 text-center">
         <div>
           <div class="text-3xl mb-2">📚</div>
-          <h3 class="font-semibold mb-2">1. We Train on Your Rules</h3>
-          <p class="text-sm text-gray-600">Upload your league's rulebook and we'll customize HeyBLU for your specific rules.</p>
+          <h3 class="font-semibold mb-2">1. We Ingest Your Local Rules</h3>
+          <p class="text-sm text-gray-600">Send us your division's local rules document and we build a league-specific rulebook engine for your coaches and umpires.</p>
         </div>
         <div>
           <div class="text-3xl mb-2">🤖</div>
@@ -640,20 +640,34 @@
       </div>
     </section>
 
-    <!-- Request My League Form Section (from index-old.html) -->
-    <section class="bg-white py-16 sm:py-24 px-4">
+    <!-- League Onboarding Form -->
+    <section id="request-league" class="bg-white py-16 sm:py-24 px-4">
          <div class="max-w-2xl mx-auto">
             <div class="text-center mb-10">
-                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Be Your League's First Rules Superhero</h2>
-                <p class="text-lg text-gray-600 mt-3">We're adding new league rulebooks all the time. Request yours and we'll notify you the moment it's live.</p>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Your League's Rules Live</h2>
+                <p class="text-lg text-gray-600 mt-3">Submit one division at a time. We typically turn around pilot access within a few business days after we receive a clean Word document.</p>
             </div>
             <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8 border">
                 <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
-                    <!-- Email Input -->
-                    <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your Email</label>
+                    <input type="hidden" name="_subject" value="League onboarding request">
+                    <input type="hidden" name="form_source" value="rulebook-onboarding">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label for="contact_name" class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
+                        <input type="text" name="contact_name" id="contact_name" placeholder="Jordan Smith" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                      </div>
+                      <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Your email</label>
                         <input type="email" name="email" id="email" placeholder="you@example.com" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                      </div>
                     </div>
+
+                    <div>
+                      <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone <span class="text-gray-400 font-normal">(optional)</span></label>
+                      <input type="tel" name="phone" id="phone" placeholder="(555) 123-4567" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                    </div>
+
                     <!-- Role Checkboxes -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700">I'm a:</label>
@@ -661,25 +675,84 @@
                             <div class="flex items-center"><input id="role-coach" name="role" type="checkbox" value="Coach" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-coach" class="ml-2 block text-sm text-gray-800">Coach</label></div>
                             <div class="flex items-center"><input id="role-umpire" name="role" type="checkbox" value="Umpire" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-umpire" class="ml-2 block text-sm text-gray-800">Umpire</label></div>
                             <div class="flex items-center"><input id="role-parent" name="role" type="checkbox" value="Parent" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-parent" class="ml-2 block text-sm text-gray-800">Parent</label></div>
-                            <div class="flex items-center"><input id="role-admin" name="role" type="checkbox" value="Admin" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-admin" class="ml-2 block text-sm text-gray-800">Admin</label></div>
+                            <div class="flex items-center"><input id="role-admin" name="role" type="checkbox" value="Admin" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-admin" class="ml-2 block text-sm text-gray-800">League Admin</label></div>
                             <div class="flex items-center"><input id="role-player" name="role" type="checkbox" value="Player" class="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"><label for="role-player" class="ml-2 block text-sm text-gray-800">Player</label></div>
                         </div>
                     </div>
-                    <!-- League Input -->
+
                     <div>
-                        <label for="league-form" class="block text-sm font-medium text-gray-700 mb-1">League + Age</label>
-                        <input type="text" name="league" id="league-form" placeholder="e.g. Mill Valley Little League 13U" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                      <label for="organization" class="block text-sm font-medium text-gray-700 mb-1">League organization</label>
+                      <input type="text" name="organization" id="organization" placeholder="e.g. North Seattle Little League" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                     </div>
-                    <!-- League Rules Link Input -->
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label for="division" class="block text-sm font-medium text-gray-700 mb-1">Division</label>
+                        <input type="text" name="division" id="division" placeholder="e.g. Minors AAA, Majors, 13U" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                      </div>
+                      <div>
+                        <label for="season" class="block text-sm font-medium text-gray-700 mb-1">Season</label>
+                        <input type="text" name="season" id="season" value="2026" placeholder="2026" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                      </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label for="foundation_rules" class="block text-sm font-medium text-gray-700 mb-1">Parent / foundation rulebook</label>
+                        <select name="foundation_rules" id="foundation_rules" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                          <option value="">— Select if known —</option>
+                          <option value="Little League">Little League</option>
+                          <option value="MLB">MLB (OBR)</option>
+                          <option value="Babe Ruth / Cal Ripken">Babe Ruth / Cal Ripken</option>
+                          <option value="USSSA">USSSA</option>
+                          <option value="Other">Other</option>
+                          <option value="Not sure">Not sure</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label for="division_count" class="block text-sm font-medium text-gray-700 mb-1">How many division rulebooks total?</label>
+                        <select name="division_count" id="division_count" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                          <option value="1">1 division (this submission)</option>
+                          <option value="2">2 divisions</option>
+                          <option value="3">3 divisions</option>
+                          <option value="4">4 divisions</option>
+                          <option value="5">5 divisions</option>
+                          <option value="6+">6 or more</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-gray-700 leading-relaxed">
+                      <p class="font-semibold text-green-900 mb-2">Preferred format: Word (.docx)</p>
+                      <ul class="list-disc pl-5 space-y-1">
+                        <li>Share a <strong>viewable link</strong> to your file (Google Drive, Dropbox, OneDrive, or league website).</li>
+                        <li>Keep it <strong>under 4.5 MB</strong> and <strong>rules only</strong> — remove snack schedules, board emails, and other admin filler.</li>
+                        <li><strong>Bold each rule header on its own line</strong> so our engine can parse sections correctly.</li>
+                      </ul>
+                    </div>
+
                     <div>
-                        <label for="rules_link" class="block text-sm font-medium text-gray-700 mb-1">Drop a link to your league's rules</label>
-                        <input type="url" name="rules_link" id="rules_link" placeholder="https://yourleague.com/rules.pdf" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <label for="rules_link" class="block text-sm font-medium text-gray-700 mb-1">Link to this division's local rules document</label>
+                        <input type="url" name="rules_link" id="rules_link" placeholder="https://drive.google.com/.../NSLL-Minors-AAA-2026.docx" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
+                        <p class="text-xs text-gray-500 mt-2">Use a share link that anyone with the link can view. One division per submission — submit again for each additional division.</p>
                     </div>
-                    <!-- Submit Button -->
+
+                    <details id="pdf-format-note" class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-gray-700">
+                      <summary class="font-semibold text-amber-900 cursor-pointer">PDF only? Read this first</summary>
+                      <p class="mt-3 leading-relaxed">We can work from PDFs, but they take longer to process and may incur a <strong>paid conversion fee</strong> because of higher extraction costs. The fastest (and currently free) path is a clean <strong>.docx</strong> export from Word.</p>
+                      <p class="mt-2 leading-relaxed">In Word: <em>File → Save As → Word Document (.docx)</em>. If you only have PDF, still submit the link above and note it in the optional comments — we'll follow up with timing and any fees.</p>
+                    </details>
+
+                    <div>
+                      <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Anything else we should know? <span class="text-gray-400 font-normal">(optional)</span></label>
+                      <textarea name="notes" id="notes" rows="3" placeholder="e.g. PDF only, multiple files in folder, special local exceptions to Little League rule 6.05…" class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"></textarea>
+                    </div>
+
                     <div>
                         <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out transform hover:scale-105">
-                            Request My League
+                            Submit League for Onboarding
                         </button>
+                        <p class="text-xs text-gray-500 text-center mt-3">We'll email you when your division is live on the rulebook pilot. Questions? <a href="mailto:support@heyblu.ai" class="text-blue-600 hover:underline">support@heyblu.ai</a></p>
           </div>
       </form>
             </div>
