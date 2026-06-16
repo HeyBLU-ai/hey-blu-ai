@@ -1,8 +1,5 @@
 /**
- * Smoke test: /api/admin/ingest must never return HTTP 200.
- *
- * Asserts that the endpoint responds with 404 or 410 (Gone), proving that
- * the legacy summarisation ingest pipeline cannot be reached in production.
+ * Smoke test: /api/admin/ingest requires auth and rejects empty POSTs.
  *
  * Usage:
  *   npm run smoke:legacy-ingest-disabled
@@ -14,30 +11,33 @@
 const BASE = (process.env.ASK_API_URL ?? 'https://heyblu.ai').replace(/\/$/, '');
 const TARGET = `${BASE}/api/admin/ingest`;
 
-console.log(`\nSmoke test: legacy ingest disabled`);
+console.log(`\nSmoke test: admin DOCX ingest auth gate`);
 console.log(`  Target : ${TARGET}`);
 
 let status;
+let body;
 try {
   const res = await fetch(TARGET, {
     method:  'POST',
     headers: { 'Content-Type': 'application/json' },
-    body:    JSON.stringify({ url: 'https://example.com', leagueSlug: 'bamsbl' }),
+    body:    JSON.stringify({ league_slug: 'test-league' }),
   });
   status = res.status;
+  body = await res.json().catch(() => ({}));
   console.log(`  HTTP   : ${status}`);
+  console.log(`  Body   :`, body);
 } catch (err) {
   console.error(`  FAIL — network error: ${err.message}`);
   process.exit(1);
 }
 
-if (status === 404 || status === 410) {
-  console.log(`  PASS   — ${status} confirms legacy ingest is disabled.\n`);
+if (status === 401 && body?.error === 'Unauthorized') {
+  console.log(`  PASS   — ${status} confirms ingest endpoint is live and password-gated.\n`);
   process.exit(0);
-} else {
-  console.error(
-    `  FAIL   — expected 404 or 410, got ${status}.\n` +
-    `           The legacy ingest endpoint may still be active.\n`,
-  );
-  process.exit(1);
 }
+
+console.error(
+  `  FAIL   — expected 401 Unauthorized, got ${status}.\n` +
+  `           Response: ${JSON.stringify(body)}\n`,
+);
+process.exit(1);

@@ -675,6 +675,63 @@
       color: #64748b;
     }
 
+    #docx-ingest-panel {
+      display: none;
+      max-width: 1100px;
+      margin: 28px auto 24px;
+      padding: 0 20px;
+    }
+    #docx-ingest-panel.visible { display: block; }
+
+    .ingest-hint {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 16px;
+      line-height: 1.55;
+    }
+    .ingest-hint a { color: #93c5fd; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (max-width: 640px) {
+      .field-row { grid-template-columns: 1fr; }
+    }
+
+    #docx-file-zone {
+      border: 2px dashed #334155;
+      border-radius: 8px;
+      padding: 28px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .15s;
+    }
+    #docx-file-zone.drag-over { border-color: #22c55e; background: rgba(34,197,94,.05); }
+    #docx-file-zone strong { display: block; color: #94a3b8; margin-bottom: 4px; }
+    #docx-file-zone p { font-size: 13px; color: #64748b; }
+    #docx-file-zone input { display: none; }
+
+    #docx-submit-btn {
+      width: 100%;
+      background: #22c55e;
+      color: #052e16;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .15s;
+      margin-top: 4px;
+    }
+    #docx-submit-btn:hover:not(:disabled) { background: #16a34a; color: #fff; }
+    #docx-submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .docx-steps .step.running { border-bottom-color: #22c55e; }
+    .docx-steps .step.running .step-label { color: #22c55e; }
+
     #ingest-panel {
       display: none;
       max-width: 1100px;
@@ -691,7 +748,7 @@
     <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
       <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
     </svg>
-    <h1>HeyBLU Admin <span>/ QA &amp; Ingest</span></h1>
+    <h1>HeyBLU Admin <span>/ League Onboarding</span></h1>
   </div>
   <button id="logout-btn" style="display:none" onclick="logout()">Sign out</button>
 </header>
@@ -707,6 +764,70 @@
     </div>
     <button class="tab active" style="width:100%;padding:11px" onclick="login()">Sign in →</button>
     <div id="auth-error" class="auth-error"></div>
+  </div>
+</div>
+
+<!-- DOCX League Onboarding (primary) -->
+<div id="docx-ingest-panel">
+  <div class="panel">
+    <div class="panel-header">📄 Ingest DOCX Rulebook (Recommended)</div>
+    <div class="panel-body">
+      <p class="ingest-hint">
+        Upload a <strong>.docx</strong> local rulebook, create or update a league, and activate it in one step.
+        Use a unique slug per division (e.g. <code>nsll-minors-aaa</code>, <code>nsll-minors-aa</code>).
+        Set a <strong>fallback</strong> to a foundation rulebook (Little League, MLB) when local rules reference it.
+        Also see <a href="/admin/review">Review Cockpit</a> after ingest.
+      </p>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="docx-league-name">League Name</label>
+          <input type="text" id="docx-league-name" placeholder="NSLL Minors AAA" maxlength="120"
+                 oninput="maybeAutoSlug()">
+        </div>
+        <div class="field">
+          <label for="docx-league-slug">League Slug</label>
+          <input type="text" id="docx-league-slug" placeholder="nsll-minors-aaa" maxlength="80"
+                 pattern="[a-z0-9]+(-[a-z0-9]+)*">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="docx-season">Season</label>
+          <input type="text" id="docx-season" value="2026" placeholder="2026" maxlength="8">
+        </div>
+        <div class="field">
+          <label for="docx-fallback-select">Fallback League</label>
+          <select id="docx-fallback-select">
+            <option value="">— none —</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>DOCX Rulebook</label>
+        <div id="docx-file-zone" onclick="document.getElementById('docx-file-picker').click()"
+             ondragover="handleDocxDragOver(event)" ondrop="handleDocxDrop(event)" ondragleave="handleDocxDragLeave(event)">
+          <strong id="docx-file-zone-label">Drop .docx here or click to browse</strong>
+          <p>DOCX only · Max 15 MB · Runs parse → chunk → embed → activate (up to 5 min)</p>
+          <input type="file" id="docx-file-picker" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                 onchange="handleDocxFilePick(event)">
+        </div>
+      </div>
+
+      <div class="steps docx-steps" id="docx-ingest-steps" style="display:none">
+        <div class="step" id="docx-step-league"><span class="step-icon">1</span><span class="step-label">League</span></div>
+        <div class="step" id="docx-step-parse"><span class="step-icon">2</span><span class="step-label">Parse</span></div>
+        <div class="step" id="docx-step-embed"><span class="step-icon">3</span><span class="step-label">Embed</span></div>
+        <div class="step" id="docx-step-activate"><span class="step-icon">4</span><span class="step-label">Activate</span></div>
+      </div>
+
+      <div id="docx-log" style="display:none"></div>
+      <div id="docx-ingest-results" style="display:none"></div>
+
+      <button id="docx-submit-btn" onclick="startDocxIngest()">⚡ Ingest DOCX Rulebook</button>
+    </div>
   </div>
 </div>
 
@@ -848,7 +969,10 @@
 let password    = sessionStorage.getItem('admin_pw') ?? '';
 let leagues     = [];
 let ingestFile  = null;
+let docxFile    = null;
 let ingestRunning = false;
+let docxIngestRunning = false;
+let slugTouched = false;
 
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
@@ -904,6 +1028,7 @@ document.getElementById('password-input').addEventListener('keydown', e => {
 
 function showApp() {
   document.getElementById('auth-gate').style.display = 'none';
+  document.getElementById('docx-ingest-panel').classList.add('visible');
   document.getElementById('ingest-panel').classList.add('visible');
   document.getElementById('edit-panel').classList.add('visible');
   document.getElementById('warnings-panel').classList.add('visible');
@@ -913,8 +1038,38 @@ function showApp() {
   populateBrowserDropdown();
   populateEditLeagueDropdown();
   populateIngestLeagueDropdown();
+  populateDocxFallbackDropdown();
   loadWarnings();
   loadFeedback();
+}
+
+function slugifyName(name) {
+  return String(name ?? '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+}
+
+function maybeAutoSlug() {
+  if (slugTouched) return;
+  const name = document.getElementById('docx-league-name')?.value ?? '';
+  const slugInput = document.getElementById('docx-league-slug');
+  if (slugInput) slugInput.value = slugifyName(name);
+}
+
+document.getElementById('docx-league-slug')?.addEventListener('input', () => {
+  slugTouched = true;
+});
+
+function populateDocxFallbackDropdown() {
+  const sel = document.getElementById('docx-fallback-select');
+  if (!sel) return;
+  const opts = ['<option value="">— none —</option>'];
+  for (const l of leagues) {
+    opts.push(`<option value="${esc(l.slug)}">${esc(l.name)} (${esc(l.slug)})</option>`);
+  }
+  sel.innerHTML = opts.join('');
 }
 
 function populateEditLeagueDropdown() {
@@ -1405,6 +1560,165 @@ async function resolveWarning(warningId) {
 
   qaWarnings = qaWarnings.filter(w => w.id !== warningId);
   renderWarnings();
+}
+
+// ── DOCX Ingest ──────────────────────────────────────────────────────────────
+
+function handleDocxDragOver(e) {
+  e.preventDefault();
+  document.getElementById('docx-file-zone')?.classList.add('drag-over');
+}
+function handleDocxDragLeave() {
+  document.getElementById('docx-file-zone')?.classList.remove('drag-over');
+}
+function handleDocxDrop(e) {
+  e.preventDefault();
+  document.getElementById('docx-file-zone')?.classList.remove('drag-over');
+  const file = e.dataTransfer?.files?.[0];
+  if (file) loadDocxFile(file);
+}
+function handleDocxFilePick(e) {
+  const file = e.target?.files?.[0];
+  if (file) loadDocxFile(file);
+}
+
+function loadDocxFile(file) {
+  const name = file.name.toLowerCase();
+  if (!name.endsWith('.docx')) {
+    alert('Please select a .docx file.');
+    return;
+  }
+  if (file.size > 15 * 1024 * 1024) {
+    alert('DOCX must be 15 MB or smaller.');
+    return;
+  }
+  docxFile = file;
+  const mb = (file.size / (1024 * 1024)).toFixed(2);
+  document.getElementById('docx-file-zone-label').textContent = `${file.name} (${mb} MB)`;
+}
+
+function setDocxStep(stepId, state) {
+  const el = document.getElementById(stepId);
+  if (!el) return;
+  el.classList.remove('running', 'done', 'error');
+  if (state) el.classList.add(state);
+}
+
+function appendDocxLogLine(text, cls = '') {
+  const log = document.getElementById('docx-log');
+  const line = document.createElement('div');
+  line.className = `log-line ${cls}`.trim();
+  line.textContent = text;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+}
+
+function mapDocxStepToUi(step) {
+  if (step === 'league' || step === 'hash' || step === 'cleanup' || step === 'version' || step === 'fallback') {
+    return 'docx-step-league';
+  }
+  if (step === 'parse' || step === 'extract' || step === 'persist') return 'docx-step-parse';
+  if (step === 'embed') return 'docx-step-embed';
+  if (step === 'activate') return 'docx-step-activate';
+  return null;
+}
+
+async function startDocxIngest() {
+  if (docxIngestRunning) return;
+
+  const leagueName = document.getElementById('docx-league-name')?.value?.trim() ?? '';
+  const leagueSlug = document.getElementById('docx-league-slug')?.value?.trim().toLowerCase() ?? '';
+  const season     = document.getElementById('docx-season')?.value?.trim() || '2026';
+  const fallback   = document.getElementById('docx-fallback-select')?.value?.trim() ?? '';
+
+  if (!leagueSlug) { alert('League slug is required (e.g. nsll-minors-aaa).'); return; }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(leagueSlug)) {
+    alert('League slug must be lowercase kebab-case.');
+    return;
+  }
+  if (!docxFile) { alert('Choose a .docx rulebook file.'); return; }
+
+  docxIngestRunning = true;
+  const btn = document.getElementById('docx-submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Ingesting… (may take several minutes)';
+
+  document.getElementById('docx-ingest-steps').style.display = '';
+  document.getElementById('docx-log').style.display = '';
+  document.getElementById('docx-log').innerHTML = '';
+  document.getElementById('docx-ingest-results').style.display = 'none';
+
+  ['docx-step-league', 'docx-step-parse', 'docx-step-embed', 'docx-step-activate'].forEach(id => setDocxStep(id, ''));
+
+  try {
+    appendDocxLogLine('Uploading DOCX and starting pipeline…', 'running');
+    setDocxStep('docx-step-league', 'running');
+
+    const form = new FormData();
+    form.append('league_name', leagueName);
+    form.append('league_slug', leagueSlug);
+    form.append('season', season);
+    if (fallback) form.append('fallback_league_slug', fallback);
+    form.append('file', docxFile, docxFile.name);
+
+    const res = await fetch('/api/admin/ingest', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${password}` },
+      body: form,
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    for (const s of data.steps ?? []) {
+      const ui = mapDocxStepToUi(s.step);
+      if (ui) setDocxStep(ui, 'done');
+      appendDocxLogLine(`[${s.step}] ${s.message}`, 'done');
+    }
+
+    if (!res.ok) {
+      throw new Error(data.message ?? data.error ?? `HTTP ${res.status}`);
+    }
+
+    setDocxStep('docx-step-activate', 'done');
+    appendDocxLogLine('DOCX ingest complete.', 'done');
+
+    const results = document.getElementById('docx-ingest-results');
+    results.style.display = 'block';
+    results.innerHTML = `
+      <h3>✅ Ingest Complete — ${esc(data.league_name ?? leagueName ?? leagueSlug)}</h3>
+      <div class="result-stat"><span>Slug</span> <strong>${esc(data.league_slug ?? leagueSlug)}</strong></div>
+      <div class="result-stat"><span>Version</span> <strong>${esc((data.version_id ?? '').slice(0, 8))}…</strong></div>
+      <div class="result-stat"><span>Nodes</span> <strong>${data.node_count ?? 0}</strong></div>
+      <div class="result-stat"><span>Chunks</span> <strong>${data.chunk_count ?? 0}</strong></div>
+      <div class="result-stat"><span>Embedded</span> <strong>${data.embedded_count ?? 0}</strong></div>
+      ${data.fallback_league_slug ? `<div class="result-stat"><span>Fallback</span> <strong>${esc(data.fallback_league_slug)}</strong></div>` : ''}
+      <a class="test-link" href="/rulebook" target="_blank" rel="noopener">Test in Rulebook →</a>
+      <a class="test-link" href="/admin/review" style="margin-left:8px">Review atoms →</a>
+    `;
+
+    const refresh = await fetch('/api/admin/leagues', {
+      headers: { 'Authorization': `Bearer ${password}` },
+    });
+    if (refresh.ok) {
+      const refreshed = await refresh.json();
+      leagues = refreshed.leagues ?? leagues;
+      populateBrowserDropdown();
+      populateEditLeagueDropdown();
+      populateIngestLeagueDropdown();
+      populateDocxFallbackDropdown();
+    }
+  } catch (err) {
+    appendDocxLogLine(err.message ?? 'Ingest failed', 'error');
+    ['docx-step-league', 'docx-step-parse', 'docx-step-embed', 'docx-step-activate'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el && !el.classList.contains('done')) el.classList.add('error');
+    });
+    alert(`DOCX ingest failed: ${err.message ?? err}`);
+  } finally {
+    docxIngestRunning = false;
+    btn.disabled = false;
+    btn.textContent = '⚡ Ingest DOCX Rulebook';
+  }
 }
 
 // ── Canonical Ingest ─────────────────────────────────────────────────────────

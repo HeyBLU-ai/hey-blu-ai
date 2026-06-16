@@ -86,6 +86,14 @@
       }
     },
     {
+      "src": "api/admin/ingest.js",
+      "use": "@vercel/node",
+      "config": {
+        "maxDuration": 300,
+        "includeFiles": ["lib/**"]
+      }
+    },
+    {
       "src": "api/submit-feedback.js",
       "use": "@vercel/node"
     },
@@ -176,6 +184,7 @@
     { "src": "/api/admin/warnings",   "dest": "api/admin/warnings.js"   },
     { "src": "/api/admin/rule-nodes", "dest": "api/admin/rule-nodes.js" },
     { "src": "/api/admin/ingest-canonical", "dest": "api/admin/ingest-canonical.js" },
+    { "src": "/api/admin/ingest",           "dest": "api/admin/ingest.js"           },
     { "src": "/api/submit-feedback",      "dest": "api/submit-feedback.js"      },
     { "src": "/api/admin/feedback",       "dest": "api/admin/feedback.js"       },
     { "src": "/api/feedback",             "dest": "api/feedback.js"             },
