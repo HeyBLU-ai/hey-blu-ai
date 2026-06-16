@@ -78,6 +78,23 @@ try {
   `);
   console.log('  ✓ idx_user_feedback_answer_event_id index ensured');
 
+  // Deduplicate any legacy rows before adding the uniqueness guarantee.
+  await client.query(`
+    DELETE FROM user_feedback older
+    USING user_feedback newer
+    WHERE older.answer_event_id IS NOT NULL
+      AND older.answer_event_id = newer.answer_event_id
+      AND older.id < newer.id
+  `);
+  console.log('  ✓ duplicate answer_event_id rows removed (if any)');
+
+  await client.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS uq_user_feedback_answer_event_id
+    ON user_feedback (answer_event_id)
+    WHERE answer_event_id IS NOT NULL
+  `);
+  console.log('  ✓ UNIQUE index on user_feedback.answer_event_id ensured');
+
   await client.query('COMMIT');
   console.log('\n  Migration complete.');
 } catch (err) {

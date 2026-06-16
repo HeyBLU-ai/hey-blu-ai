@@ -1,20 +1,21 @@
 /**
  * POST /api/submit-feedback
  *
- * Persists rulebook answer ratings from the public rulebook UI.
+ * Persists rulebook answer ratings anchored to a server-issued answer_event_id.
+ * Question, answer text, league, and rule codes are sourced from answer_events —
+ * never trusted from the client payload.
  *
  * Body:
- *   league_slug  {string}   — league slug (required)
- *   question     {string}   — user question (required)
- *   ai_response  {string}   — AI answer text (required)
- *   is_positive           {boolean}  — true = thumbs up, false = thumbs down
- *   comments              {string?}  — optional free-text feedback
- *   retrieved_rule_codes  {string[]} — rule numbers the RAG retrieved (optional)
+ *   answer_event_id  {string}   — UUID from /api/ask-v2 (required)
+ *   is_positive      {boolean}  — true = thumbs up, false = thumbs down (required)
+ *   comments         {string?} — optional free-text feedback (sanitized)
  */
 
 import pg from 'pg';
 
 const { Client } = pg;
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const withCors = (handler) => async (req, res) => {
   const origin = req.headers.origin || '';
@@ -35,6 +36,7 @@ const withCors = (handler) => async (req, res) => {
 function sanitizeText(value, maxLen) {
   if (typeof value !== 'string') return '';
   return value
+    .replace(/\u0000/g, '')
     .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '')
     .trim()
     .slice(0, maxLen);
@@ -50,70 +52,35 @@ function normalizeQuestion(q) {
     .trim();
 }
 
-function resolveLeagueSlug(league) {
-  const value = (league || '').toLowerCase().trim();
-  if (value === 'bamsbl') return 'bamsbl';
-  if (value === 'little league' || value === 'little league international') return 'little-league';
-  if (value === 'mill valley aaa' || value === 'mill valley') return 'mill-valley-aaa';
-  if (value === 'usssa' || value === 'usssa baseball') return 'usssa';
-  if (value === 'mlb' || value === 'mlb official rules of baseball') return 'mlb';
-  return value;
-}
-
-function normalizeRuleCodes(value) {
-  if (!Array.isArray(value)) return [];
-  return [...new Set(
-    value
-      .map((code) => String(code ?? '').trim())
-      .filter(Boolean)
-      .slice(0, 20),
-  )];
-}
-
 const handler = async (req, res) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   const {
-    league_slug: rawLeagueSlug,
-    league,
-    question: rawQuestion,
-    ai_response: rawAiResponse,
     is_positive: rawIsPositive,
     comments: rawComments,
-    retrieved_rule_codes: rawRetrievedRuleCodes,
     answer_event_id: rawAnswerEventId,
   } = req.body ?? {};
 
-  const leagueSlug = resolveLeagueSlug(rawLeagueSlug || league);
-  const question   = sanitizeText(rawQuestion, 1000);
-  const aiResponse = sanitizeText(rawAiResponse, 8000);
-  const comments   = rawComments == null || rawComments === ''
-    ? null
-    : sanitizeText(rawComments, 2000);
-  const isPositive = rawIsPositive === true;
-  const retrievedRuleCodes = normalizeRuleCodes(rawRetrievedRuleCodes);
-  const answerEventId = typeof rawAnswerEventId === 'string' && rawAnswerEventId.trim()
-    ? rawAnswerEventId.trim()
-    : null;
+  const answerEventId = typeof rawAnswerEventId === 'string'
+    ? sanitizeText(rawAnswerEventId, 36)
+    : '';
 
-  if (answerEventId && !/^[0-9a-f-]{36}$/i.test(answerEventId)) {
-    return res.status(400).json({ error: 'answer_event_id must be a UUID' });
+  if (!answerEventId) {
+    return res.status(400).json({ error: 'answer_event_id is required' });
   }
-
-  if (!leagueSlug) {
-    return res.status(400).json({ error: 'league_slug is required' });
-  }
-  if (question.length < 3) {
-    return res.status(400).json({ error: 'question must be at least 3 characters' });
-  }
-  if (!aiResponse) {
-    return res.status(400).json({ error: 'ai_response is required' });
+  if (!UUID_RE.test(answerEventId)) {
+    return res.status(400).json({ error: 'answer_event_id must be a valid UUID' });
   }
   if (typeof rawIsPositive !== 'boolean') {
     return res.status(400).json({ error: 'is_positive must be a boolean' });
   }
+
+  const isPositive = rawIsPositive === true;
+  const comments = rawComments == null || rawComments === ''
+    ? null
+    : sanitizeText(rawComments, 2000);
 
   if (!process.env.DATABASE_URL) {
     return res.status(500).json({ error: 'Missing database connection' });
@@ -126,17 +93,38 @@ const handler = async (req, res) => {
 
   try {
     await client.connect();
+    await client.query('BEGIN');
 
-    const { rows } = await client.query(
+    const { rows, rowCount } = await client.query(
       `INSERT INTO user_feedback (
-         league_slug, question, ai_response, retrieved_rule_codes, is_positive, comments, answer_event_id
-       ) VALUES ($1, $2, $3, $4::text[], $5, $6, $7)
-       RETURNING id, created_at`,
-      [leagueSlug, question, aiResponse, retrievedRuleCodes, isPositive, comments, answerEventId],
+         league_slug, question, ai_response, retrieved_rule_codes,
+         is_positive, comments, answer_event_id
+       )
+       SELECT
+         ae.league_slug,
+         ae.question,
+         ae.answer,
+         ae.cited_rule_numbers,
+         $2::boolean,
+         $3::text,
+         ae.id
+       FROM answer_events ae
+       WHERE ae.id = $1::uuid
+       ON CONFLICT (answer_event_id) WHERE answer_event_id IS NOT NULL DO UPDATE SET
+         is_positive = EXCLUDED.is_positive,
+         comments    = EXCLUDED.comments
+       RETURNING id, created_at, league_slug, question`,
+      [answerEventId, isPositive, comments],
     );
+
+    if (!rowCount) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({ error: 'answer_event_id not found' });
+    }
 
     let cacheDeleted = 0;
     if (!isPositive) {
+      const { league_slug: leagueSlug, question } = rows[0];
       const normalizedQuestion = normalizeQuestion(question);
       const deleted = await client.query(`
         DELETE FROM verified_answer_cache vac
@@ -151,13 +139,17 @@ const handler = async (req, res) => {
       cacheDeleted = deleted.rowCount;
     }
 
+    await client.query('COMMIT');
+
     return res.status(200).json({
       ok: true,
       id: rows[0]?.id,
+      answer_event_id: answerEventId,
       created_at: rows[0]?.created_at,
       cacheDeleted,
     });
   } catch (err) {
+    try { await client.query('ROLLBACK'); } catch { /* ignore */ }
     console.error('[submit-feedback] ERROR:', err.message);
     return res.status(500).json({ error: 'Failed to save feedback' });
   } finally {

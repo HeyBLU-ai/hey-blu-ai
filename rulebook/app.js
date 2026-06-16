@@ -894,6 +894,10 @@ function showActionToast(message) {
 
     function submitFeedbackToApi(turn, isPositive, comments = '') {
       if (!turn) return;
+      if (!turn.answerEventId) {
+        console.warn('Feedback skipped: missing answer_event_id from server response.');
+        return;
+      }
       const commentText = (comments ?? '').trim();
       if (commentText) {
         if (turn.feedbackCommentSubmitted) return;
@@ -907,11 +911,7 @@ function showActionToast(message) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          league_slug: turn.league,
-          question: turn.user,
-          ai_response: plainAiResponse(turn.ai),
-          retrieved_rule_codes: turn.retrievedRuleCodes ?? [],
-          answer_event_id: turn.answerEventId ?? null,
+          answer_event_id: turn.answerEventId,
           is_positive: isPositive,
           comments: commentText || null,
         }),

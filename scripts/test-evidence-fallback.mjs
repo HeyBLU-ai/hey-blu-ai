@@ -53,14 +53,27 @@ check('custom threshold respected', shouldUseFallbackRulebook([
 console.log('\nRule-number boost tests\n');
 
 check('10U does not boost rule 10', !questionReferencesRuleNumber('10U division rules', '10'));
+check('10-run does not boost rule 10', !questionReferencesRuleNumber('10-run rule applies', '10'));
+check('10-year-old does not boost rule 10', !questionReferencesRuleNumber('player is 10-year-old', '10'));
 check('3 outs does not boost rule 3', !questionReferencesRuleNumber('with 3 outs remaining', '3'));
 check('rule 3 boosts rule 3', questionReferencesRuleNumber('what does rule 3 say', '3'));
+check('section 430 boosts rule 430', questionReferencesRuleNumber('see section 430 for courtesy runner', '430'));
 check('rule 430 boosts rule 430', questionReferencesRuleNumber('courtesy runner rule 430', '430'));
+check('bare 430 does not boost', !questionReferencesRuleNumber('courtesy runner 430 details', '430'));
 check('1.10 anchored boost', questionReferencesRuleNumber('explain rule 1.10 bat rules', '1.10'));
 check('PR-5 local rule boost', questionReferencesRuleNumber('what is PR-5 about', 'PR-5'));
 check('no boost for substring 430 in 1430', !questionReferencesRuleNumber('section 1430 details', '430'));
 check('computeHybridScore skips false 10U boost',
   computeHybridScore(0.5, 0.1, 0.1, '10U baseball', '10') === 0.5 * 0.75 + 0.1 * 0.25);
+
+console.log('\nSingle-token fallback tests\n');
+
+check('obstruction single-word triggers fallback', shouldUseFallbackRulebook(
+  [{ hybrid_score: 0.45, title: 'Local', matched_chunk_text: 'unrelated text' }],
+  0.30,
+  'Obstruction?',
+));
+check('extractQueryPhrases empty for single token', extractQueryPhrases('Obstruction?').length === 0);
 
 console.log('\nPhrase-gating tests (top bundle only)\n');
 
