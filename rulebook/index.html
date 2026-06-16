@@ -645,7 +645,7 @@
          <div class="max-w-2xl mx-auto">
             <div class="text-center mb-10">
                 <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">Get Your League's Rules Live</h2>
-                <p class="text-lg text-gray-600 mt-3">Submit one division at a time. We typically turn around pilot access within a few business days after we receive a clean Word document.</p>
+                <p class="text-lg text-gray-600 mt-3">Tell us how many divisions you're submitting, then add a name and rules link for each. We typically turn around pilot access within a few business days after we receive clean Word documents.</p>
             </div>
             <div class="w-full bg-gray-50 rounded-xl shadow-lg p-8 border">
                 <form action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
@@ -686,11 +686,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label for="division" class="block text-sm font-medium text-gray-700 mb-1">Division</label>
-                        <input type="text" name="division" id="division" placeholder="e.g. Minors AAA, Majors, 13U" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                      </div>
-                      <div>
+                      <div class="sm:col-span-2">
                         <label for="season" class="block text-sm font-medium text-gray-700 mb-1">Season</label>
                         <input type="text" name="season" id="season" value="2026" placeholder="2026" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
                       </div>
@@ -732,11 +728,8 @@
                       </ul>
                     </div>
 
-                    <div>
-                        <label for="rules_link" class="block text-sm font-medium text-gray-700 mb-1">Link to this division's local rules document</label>
-                        <input type="url" name="rules_link" id="rules_link" placeholder="https://drive.google.com/.../NSLL-Minors-AAA-2026.docx" required class="form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out">
-                        <p class="text-xs text-gray-500 mt-2">Use a share link that anyone with the link can view. One division per submission — submit again for each additional division.</p>
-                    </div>
+                    <div id="division-rules-list" class="space-y-4"></div>
+                    <p id="division-rules-hint" class="text-xs text-gray-500"></p>
 
                     <details id="pdf-format-note" class="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-gray-700">
                       <summary class="font-semibold text-amber-900 cursor-pointer">PDF only? Read this first</summary>
@@ -762,6 +755,82 @@
   </main>
 
   <script src="/rulebook/app.js" defer></script>
+  <script>
+    (function () {
+      const countSelect = document.getElementById('division_count');
+      const container = document.getElementById('division-rules-list');
+      const hint = document.getElementById('division-rules-hint');
+      if (!countSelect || !container) return;
+
+      const inputClass = 'form-input block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out';
+
+      function parseCount(value) {
+        if (value === '6+') return 6;
+        const n = parseInt(value, 10);
+        return Number.isFinite(n) && n > 0 ? n : 1;
+      }
+
+      function renderDivisionFields() {
+        const total = parseCount(countSelect.value);
+        const multi = total > 1;
+        const previous = new Map();
+        container.querySelectorAll('[data-division-row]').forEach((row) => {
+          const i = row.dataset.divisionRow;
+          const nameEl = row.querySelector(`[name="division_name_${i}"]`);
+          const linkEl = row.querySelector(`[name="rules_link_${i}"]`);
+          if (nameEl) previous.set(`name_${i}`, nameEl.value);
+          if (linkEl) previous.set(`link_${i}`, linkEl.value);
+        });
+
+        container.innerHTML = '';
+
+        for (let i = 1; i <= total; i += 1) {
+          const block = document.createElement('div');
+          block.className = 'rounded-lg border border-gray-200 bg-white p-4 space-y-3';
+          block.dataset.divisionRow = String(i);
+
+          const heading = document.createElement('p');
+          heading.className = 'text-sm font-semibold text-gray-800';
+          heading.textContent = multi ? `Division ${i}` : 'Your division';
+          block.appendChild(heading);
+
+          const nameWrap = document.createElement('div');
+          nameWrap.innerHTML = `
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="division_name_${i}">Division name</label>
+            <input type="text" name="division_name_${i}" id="division_name_${i}" required
+              placeholder="e.g. Minors AAA, Majors, 13U" class="${inputClass}">
+          `;
+          block.appendChild(nameWrap);
+
+          const linkWrap = document.createElement('div');
+          linkWrap.innerHTML = `
+            <label class="block text-sm font-medium text-gray-700 mb-1" for="rules_link_${i}">Rules document link</label>
+            <input type="url" name="rules_link_${i}" id="rules_link_${i}" required
+              placeholder="https://drive.google.com/.../NSLL-Minors-AAA-2026.docx" class="${inputClass}">
+          `;
+          block.appendChild(linkWrap);
+
+          container.appendChild(block);
+
+          const nameInput = block.querySelector(`#division_name_${i}`);
+          const linkInput = block.querySelector(`#rules_link_${i}`);
+          if (previous.has(`name_${i}`)) nameInput.value = previous.get(`name_${i}`);
+          if (previous.has(`link_${i}`)) linkInput.value = previous.get(`link_${i}`);
+        }
+
+        if (countSelect.value === '6+') {
+          hint.textContent = 'Need more than 6? Add extra division names and links in the notes field below.';
+        } else if (multi) {
+          hint.textContent = 'Add one division name and rules link per row. Use a share link anyone can view.';
+        } else {
+          hint.textContent = 'Use a share link that anyone with the link can view.';
+        }
+      }
+
+      countSelect.addEventListener('change', renderDivisionFields);
+      renderDivisionFields();
+    })();
+  </script>
 
   <!-- Footer -->
   <footer style="
