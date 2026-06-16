@@ -98,12 +98,50 @@ function showActionToast(message) {
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     const speechSupported = !!SpeechRecognition;
+    const PREFERRED_LEAGUE_KEY = 'heyblu_preferred_league';
 
-    if (!questionInput || !submitButton || !clearButton || !micButton) {
+    if (!questionInput || !submitButton || !clearButton || !micButton || !leagueSelect) {
       console.error('[rulebook] Missing core controls — buttons will not work.');
       showActionToast('Page failed to load. Please refresh.');
       return;
     }
+
+    async function loadLeagueOptions() {
+      try {
+        const response = await fetch('/api/get-leagues');
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const leagues = Array.isArray(data.leagues) ? data.leagues : [];
+        if (!leagues.length) throw new Error('No active leagues returned');
+
+        leagueSelect.innerHTML = '';
+        for (const league of leagues) {
+          const option = document.createElement('option');
+          option.value = league.slug;
+          option.textContent = league.name;
+          leagueSelect.appendChild(option);
+        }
+
+        const savedSlug = localStorage.getItem(PREFERRED_LEAGUE_KEY);
+        if (savedSlug && leagues.some((l) => l.slug === savedSlug)) {
+          leagueSelect.value = savedSlug;
+        }
+
+        leagueSelect.disabled = false;
+      } catch (err) {
+        console.error('[rulebook] Failed to load leagues:', err);
+        leagueSelect.innerHTML = '<option value="">Unable to load leagues</option>';
+        leagueSelect.disabled = true;
+        showActionToast('Could not load leagues. Please refresh.');
+      }
+    }
+
+    leagueSelect.addEventListener('change', () => {
+      const slug = leagueSelect.value;
+      if (slug) localStorage.setItem(PREFERRED_LEAGUE_KEY, slug);
+    });
+
+    loadLeagueOptions();
 
     // Restore controls when iOS/Android returns this page from back-forward cache
     window.addEventListener('pageshow', (event) => {
@@ -374,6 +412,9 @@ function showActionToast(message) {
 
     function applyRetrievalMeta(turn, data) {
       if (!turn || !data) return;
+      if (data.answer_event_id) {
+        turn.answerEventId = data.answer_event_id;
+      }
       if (Array.isArray(data.cited_rule_numbers) && data.cited_rule_numbers.length) {
         turn.retrievedRuleCodes = data.cited_rule_numbers.map(String).filter(Boolean);
       }
@@ -870,6 +911,7 @@ function showActionToast(message) {
           question: turn.user,
           ai_response: plainAiResponse(turn.ai),
           retrieved_rule_codes: turn.retrievedRuleCodes ?? [],
+          answer_event_id: turn.answerEventId ?? null,
           is_positive: isPositive,
           comments: commentText || null,
         }),

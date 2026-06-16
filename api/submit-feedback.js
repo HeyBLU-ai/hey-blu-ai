@@ -83,6 +83,7 @@ const handler = async (req, res) => {
     is_positive: rawIsPositive,
     comments: rawComments,
     retrieved_rule_codes: rawRetrievedRuleCodes,
+    answer_event_id: rawAnswerEventId,
   } = req.body ?? {};
 
   const leagueSlug = resolveLeagueSlug(rawLeagueSlug || league);
@@ -93,6 +94,13 @@ const handler = async (req, res) => {
     : sanitizeText(rawComments, 2000);
   const isPositive = rawIsPositive === true;
   const retrievedRuleCodes = normalizeRuleCodes(rawRetrievedRuleCodes);
+  const answerEventId = typeof rawAnswerEventId === 'string' && rawAnswerEventId.trim()
+    ? rawAnswerEventId.trim()
+    : null;
+
+  if (answerEventId && !/^[0-9a-f-]{36}$/i.test(answerEventId)) {
+    return res.status(400).json({ error: 'answer_event_id must be a UUID' });
+  }
 
   if (!leagueSlug) {
     return res.status(400).json({ error: 'league_slug is required' });
@@ -121,10 +129,10 @@ const handler = async (req, res) => {
 
     const { rows } = await client.query(
       `INSERT INTO user_feedback (
-         league_slug, question, ai_response, retrieved_rule_codes, is_positive, comments
-       ) VALUES ($1, $2, $3, $4::text[], $5, $6)
+         league_slug, question, ai_response, retrieved_rule_codes, is_positive, comments, answer_event_id
+       ) VALUES ($1, $2, $3, $4::text[], $5, $6, $7)
        RETURNING id, created_at`,
-      [leagueSlug, question, aiResponse, retrievedRuleCodes, isPositive, comments],
+      [leagueSlug, question, aiResponse, retrievedRuleCodes, isPositive, comments, answerEventId],
     );
 
     let cacheDeleted = 0;

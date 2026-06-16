@@ -792,6 +792,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     // V3 retrieval metadata
     league_slug:           leagueSlug,
     active_version_id:     activeVersionId,
+    fallbackLeagueSlug,
     retrieved_source_ids:  retrievedSourceIds,
     cited_rule_numbers:    citedRuleNumbers,
     ...buildDisclaimerMeta({
@@ -805,27 +806,73 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   };
 }
 
-// ── DB Logging ───────────────────────────────────────────────────────────────
+// ── DB Logging & Answer Events ───────────────────────────────────────────────
 
-function logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague }) {
-  if (!pool) return;
-  (async () => {
-    try {
-      const ruleRef  = extractRuleRef(reply);
-      const rulebook = usedFallback ? fallbackLeague : leagueName;
-      await pool.query(
-        'INSERT INTO question_logs (question, answer, rule_ref, rulebook, created_at) VALUES ($1, $2, $3, $4, NOW())',
-        [
-          sanitizedQuestion,
-          sanitizeInput(reply,    5000),
-          sanitizeInput(ruleRef,  50),
-          sanitizeInput(rulebook, 100),
-        ],
-      );
-    } catch (err) {
-      console.error('[ask-v2] Failed to log question/answer:', err.message);
-    }
-  })();
+/**
+ * Persist an immutable answer event before returning to the client.
+ * Transaction must commit before the HTTP response is sent.
+ *
+ * @returns {Promise<string|null>} answer_event_id
+ */
+async function persistAnswerEvent({
+  league_slug,
+  fallback_league_slug,
+  sanitizedQuestion,
+  reply,
+  state,
+  usedFallback,
+  active_version_id,
+  fallback_version_id,
+  retrieved_source_ids,
+  cited_rule_numbers,
+  matrix_id,
+  cached,
+}) {
+  if (!pool) return null;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+
+    const sourceIds = Array.isArray(retrieved_source_ids)
+      ? retrieved_source_ids.filter(Boolean)
+      : [];
+    const ruleNumbers = Array.isArray(cited_rule_numbers)
+      ? cited_rule_numbers.map(String).filter(Boolean).slice(0, 20)
+      : [];
+
+    const { rows: [row] } = await client.query(
+      `INSERT INTO answer_events (
+         league_slug, fallback_league_slug, question, answer, state,
+         used_fallback, active_version_id, fallback_version_id,
+         retrieved_source_ids, cited_rule_numbers, matrix_id, cached
+       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9::uuid[], $10::text[], $11, $12)
+       RETURNING id`,
+      [
+        league_slug,
+        fallback_league_slug ?? null,
+        sanitizedQuestion,
+        sanitizeInput(reply, 8000),
+        state,
+        Boolean(usedFallback),
+        active_version_id ?? null,
+        fallback_version_id ?? null,
+        sourceIds,
+        ruleNumbers,
+        matrix_id ?? null,
+        Boolean(cached),
+      ],
+    );
+
+    await client.query('COMMIT');
+    return row?.id ?? null;
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error('[ask-v2] Failed to persist answer_event:', err.message);
+    throw err;
+  } finally {
+    client.release();
+  }
 }
 
 // ── Main Handler ─────────────────────────────────────────────────────────────
@@ -911,7 +958,7 @@ const handler = async (req, res) => {
         });
         const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
                 league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
-                cited_rule_numbers, _debug,
+                cited_rule_numbers, _debug, fallbackLeagueSlug,
                 league_display_name, league_website_url, league_link_text,
                 fallback_league_display_name, fallback_league_website_url, fallback_league_link_text } = ragResult;
 
@@ -927,7 +974,20 @@ const handler = async (req, res) => {
           });
         }
 
-        logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
+        const answer_event_id = await persistAnswerEvent({
+          league_slug,
+          fallback_league_slug: usedFallback ? fallbackLeagueSlug : null,
+          sanitizedQuestion,
+          reply,
+          state: 'ruling',
+          usedFallback,
+          active_version_id,
+          fallback_version_id,
+          retrieved_source_ids,
+          cited_rule_numbers,
+          matrix_id: matrix.id,
+          cached,
+        });
 
         return res.status(200).json({
           state:                'ruling',
@@ -938,6 +998,7 @@ const handler = async (req, res) => {
           usedFallback,
           fallbackLeague,
           originalLeague:       leagueName,
+          answer_event_id,
           // V3 retrieval metadata
           league_slug,
           active_version_id,
@@ -1031,7 +1092,7 @@ const handler = async (req, res) => {
     });
     const { reply, cached, blocked, verifierAudit, usedFallback, fallbackLeague, leagueName,
             league_slug, active_version_id, fallback_version_id, retrieved_source_ids,
-            cited_rule_numbers, _debug,
+            cited_rule_numbers, _debug, fallbackLeagueSlug,
             league_display_name, league_website_url, league_link_text,
             fallback_league_display_name, fallback_league_website_url, fallback_league_link_text } = ragResult;
 
@@ -1047,7 +1108,20 @@ const handler = async (req, res) => {
       });
     }
 
-    logToDb({ sanitizedQuestion, reply, leagueName, usedFallback, fallbackLeague });
+    const answer_event_id = await persistAnswerEvent({
+      league_slug,
+      fallback_league_slug: usedFallback ? fallbackLeagueSlug : null,
+      sanitizedQuestion,
+      reply,
+      state: 'answered',
+      usedFallback,
+      active_version_id,
+      fallback_version_id,
+      retrieved_source_ids,
+      cited_rule_numbers,
+      matrix_id: null,
+      cached,
+    });
 
     return res.status(200).json({
       state:                'answered',
@@ -1056,6 +1130,7 @@ const handler = async (req, res) => {
       usedFallback,
       fallbackLeague,
       originalLeague:       leagueName,
+      answer_event_id,
       // V3 retrieval metadata
       league_slug,
       active_version_id,

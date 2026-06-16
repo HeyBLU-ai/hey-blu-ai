@@ -7,6 +7,10 @@ import {
   shouldUseFallbackRulebook,
   computeHybridScore,
   mergeDualPathChunkHits,
+  questionReferencesRuleNumber,
+  topScoringBundle,
+  bundleHasPhraseCoverage,
+  extractQueryPhrases,
   DEFAULT_EVIDENCE_FALLBACK_SCORE_THRESHOLD,
 } from '../lib/ingest/evidence-bundle.js';
 
@@ -45,6 +49,28 @@ check('threshold boundary is exclusive at default', !shouldUseFallbackRulebook([
 check('custom threshold respected', shouldUseFallbackRulebook([
   { hybrid_score: 0.40 },
 ], 0.50));
+
+console.log('\nRule-number boost tests\n');
+
+check('10U does not boost rule 10', !questionReferencesRuleNumber('10U division rules', '10'));
+check('3 outs does not boost rule 3', !questionReferencesRuleNumber('with 3 outs remaining', '3'));
+check('rule 3 boosts rule 3', questionReferencesRuleNumber('what does rule 3 say', '3'));
+check('rule 430 boosts rule 430', questionReferencesRuleNumber('courtesy runner rule 430', '430'));
+check('1.10 anchored boost', questionReferencesRuleNumber('explain rule 1.10 bat rules', '1.10'));
+check('PR-5 local rule boost', questionReferencesRuleNumber('what is PR-5 about', 'PR-5'));
+check('no boost for substring 430 in 1430', !questionReferencesRuleNumber('section 1430 details', '430'));
+check('computeHybridScore skips false 10U boost',
+  computeHybridScore(0.5, 0.1, 0.1, '10U baseball', '10') === 0.5 * 0.75 + 0.1 * 0.25);
+
+console.log('\nPhrase-gating tests (top bundle only)\n');
+
+const localBundles = [
+  { hybrid_score: 0.45, title: 'After Every Game', matched_chunk_text: 'drag the infield dirt' },
+  { hybrid_score: 0.30, title: 'PR-5', matched_chunk_text: 'there is no infield fly rule in aaa' },
+];
+check('fallback when top bundle lacks phrase', shouldUseFallbackRulebook(localBundles, 0.30, 'infield fly'));
+check('top bundle identified correctly', topScoringBundle(localBundles).title === 'After Every Game');
+check('secondary bundle phrase ignored', !bundleHasPhraseCoverage(topScoringBundle(localBundles), extractQueryPhrases('infield fly')));
 
 console.log('\nDual-path merge tests\n');
 
