@@ -60,11 +60,11 @@ const client = await pool.connect();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 try {
-  await client.query('BEGIN');
   const result = await runDocxIngest({
     dbClient: client,
+    connectionString: process.env.DATABASE_URL,
     leagueSlug,
-    leagueName: leagueName ?? 'NSLL Minors AAA',
+    leagueName: leagueName ?? undefined,
     season,
     docxBuffer,
     filename: path.basename(docxPath),
@@ -74,11 +74,9 @@ try {
       console.log(`  [${step}] ${message}`);
     },
   });
-  await client.query('COMMIT');
   console.log('\n✓ DOCX ingest succeeded');
   console.log(JSON.stringify(result, null, 2));
 } catch (err) {
-  await client.query('ROLLBACK');
   console.error('\n✗ DOCX ingest failed:', err.message);
   process.exit(1);
 } finally {

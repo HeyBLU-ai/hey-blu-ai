@@ -41,9 +41,24 @@ const badJson = await call(ingest, {
   body: { league_slug: 'bad slug', file_base64: '' },
 });
 
+const badFallback = await call(ingest, {
+  method: 'POST',
+  headers: { authorization: `Bearer ${process.env.ADMIN_PASSWORD}` },
+  body: {
+    league_slug: 'test-league',
+    fallback_league_slug: 'no-such-foundation-league-xyz',
+    filename: 'rules.docx',
+    file_base64: Buffer.from('PK').toString('base64'),
+  },
+});
+
 console.log('no auth:', noAuth.status, noAuth.body);
 console.log('bad slug:', badJson.status, badJson.body);
+console.log('bad fallback:', badFallback.status, badFallback.body);
 
-const ok = noAuth.status === 401 && badJson.status === 400;
+const ok = noAuth.status === 401
+  && badJson.status === 400
+  && badFallback.status === 400
+  && String(badFallback.body.error).includes('no-such-foundation-league-xyz');
 if (!ok) process.exit(1);
 console.log('\n✓ Admin ingest auth/validation smoke test passed');

@@ -810,7 +810,7 @@
         <div id="docx-file-zone" onclick="document.getElementById('docx-file-picker').click()"
              ondragover="handleDocxDragOver(event)" ondrop="handleDocxDrop(event)" ondragleave="handleDocxDragLeave(event)">
           <strong id="docx-file-zone-label">Drop .docx here or click to browse</strong>
-          <p>DOCX only · Max 15 MB · Runs parse → chunk → embed → activate (up to 5 min)</p>
+          <p>DOCX only · Max 4.5 MB · Runs parse → chunk → embed → activate (up to 5 min)</p>
           <input type="file" id="docx-file-picker" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                  onchange="handleDocxFilePick(event)">
         </div>
@@ -1588,8 +1588,8 @@ function loadDocxFile(file) {
     alert('Please select a .docx file.');
     return;
   }
-  if (file.size > 15 * 1024 * 1024) {
-    alert('DOCX must be 15 MB or smaller.');
+  if (file.size > 4.5 * 1024 * 1024) {
+    alert('DOCX must be 4.5 MB or smaller (Vercel upload limit).');
     return;
   }
   docxFile = file;

@@ -21,12 +21,14 @@ import pg from 'pg';
 import OpenAI from 'openai';
 import { runDocxIngest } from '../../lib/ingest/docx-pipeline.mjs';
 import { resolveLeagueBySlug } from '../../lib/ingest/canonical-pipeline.mjs';
+import { safeCompareSecret } from '../../lib/auth-safe-compare.mjs';
 
 const { Client } = pg;
 
 export const maxDuration = 300;
 
-const MAX_DOCX_BYTES = 15 * 1024 * 1024;
+/** Vercel request payload cap is ~4.5 MB — stay under it. */
+const MAX_DOCX_BYTES = Math.floor(4.5 * 1024 * 1024);
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 function adminPassword() {
@@ -42,7 +44,7 @@ const withAdminAuth = (handler) => async (req, res) => {
 
   const expected = adminPassword();
   const password = (req.headers.authorization ?? '').replace(/^Bearer\s+/i, '').trim();
-  if (!expected || password !== expected) {
+  if (!expected || !safeCompareSecret(password, expected)) {
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
@@ -58,6 +60,31 @@ function sanitizeText(value, maxLen) {
     .slice(0, maxLen);
 }
 
+function normalizeMetadata(fields) {
+  return {
+    leagueName: sanitizeText(fields.league_name ?? fields.leagueName ?? '', 120),
+    leagueSlug: sanitizeText(fields.league_slug ?? fields.leagueSlug ?? '', 80).toLowerCase(),
+    season: sanitizeText(fields.season ?? String(new Date().getFullYear()), 8),
+    fallbackLeagueSlug: sanitizeText(
+      fields.fallback_league_slug ?? fields.fallbackLeagueSlug ?? '',
+      80,
+    ).toLowerCase(),
+  };
+}
+
+function validateMetadata(meta) {
+  if (!meta.leagueSlug) {
+    return 'league_slug is required';
+  }
+  if (!SLUG_RE.test(meta.leagueSlug)) {
+    return 'league_slug must be lowercase kebab-case (e.g. nsll-minors-aaa)';
+  }
+  if (meta.fallbackLeagueSlug && meta.fallbackLeagueSlug === meta.leagueSlug) {
+    return 'fallback_league_slug cannot be the same as league_slug';
+  }
+  return null;
+}
+
 async function readRequestBody(req) {
   if (req.body != null) {
     if (Buffer.isBuffer(req.body)) return req.body;
@@ -69,48 +96,56 @@ async function readRequestBody(req) {
   return Buffer.concat(chunks);
 }
 
-function parseMultipart(buffer, headers) {
-  return new Promise((resolve, reject) => {
-    const fields = {};
-    let fileBuffer = null;
-    let filename = '';
-
-    const busboy = Busboy({ headers });
-    busboy.on('file', (_name, stream, info) => {
-      const chunks = [];
-      stream.on('data', (c) => chunks.push(c));
-      stream.on('end', () => {
-        fileBuffer = Buffer.concat(chunks);
-        filename = info.filename ?? '';
-      });
-    });
-    busboy.on('field', (name, value) => {
-      fields[name] = String(value ?? '');
-    });
-    busboy.on('finish', () => resolve({ fields, fileBuffer, filename }));
-    busboy.on('error', reject);
-    busboy.end(buffer);
-  });
-}
-
-async function parsePayload(req) {
+/**
+ * Fail-fast: extract league metadata without decoding file payloads.
+ */
+async function extractRequestMetadata(req) {
   const contentType = String(req.headers['content-type'] ?? '');
 
   if (contentType.includes('multipart/form-data')) {
     const raw = await readRequestBody(req);
     if (!raw?.length) throw new Error('Empty multipart body');
-    const { fields, fileBuffer, filename } = await parseMultipart(raw, req.headers);
-    return {
-      leagueName: sanitizeText(fields.league_name ?? fields.leagueName ?? '', 120),
-      leagueSlug: sanitizeText(fields.league_slug ?? fields.leagueSlug ?? '', 80).toLowerCase(),
-      season: sanitizeText(fields.season ?? String(new Date().getFullYear()), 8),
-      fallbackLeagueSlug: sanitizeText(
-        fields.fallback_league_slug ?? fields.fallbackLeagueSlug ?? '',
-        80,
-      ).toLowerCase(),
-      filename: sanitizeText(filename || fields.filename || 'upload.docx', 255),
-      fileBuffer,
-    };
+
+    return new Promise((resolve, reject) => {
+      const fields = {};
+      let fileBuffer = null;
+      let filename = '';
+      let fileRejected = false;
+
+      const busboy = Busboy({ headers: req.headers });
+      busboy.on('field', (name, value) => {
+        fields[name] = String(value ?? '');
+      });
+      busboy.on('file', (_name, stream, info) => {
+        const chunks = [];
+        let size = 0;
+        stream.on('data', (c) => {
+          if (fileRejected) return;
+          size += c.length;
+          if (size > MAX_DOCX_BYTES) {
+            fileRejected = true;
+            reject(new Error(`DOCX exceeds ${MAX_DOCX_BYTES / (1024 * 1024)} MB limit.`));
+            return;
+          }
+          chunks.push(c);
+        });
+        stream.on('end', () => {
+          if (fileRejected) return;
+          fileBuffer = Buffer.concat(chunks);
+          filename = info.filename ?? '';
+        });
+      });
+      busboy.on('finish', () => {
+        if (fileRejected) return;
+        resolve({
+          ...normalizeMetadata(fields),
+          filename: sanitizeText(filename || fields.filename || 'upload.docx', 255),
+          fileBuffer,
+        });
+      });
+      busboy.on('error', reject);
+      busboy.end(raw);
+    });
   }
 
   let body = req.body;
@@ -121,31 +156,53 @@ async function parsePayload(req) {
     throw new Error('Invalid JSON body');
   }
 
+  const meta = normalizeMetadata(body);
   const fileBase64 = String(body.file_base64 ?? '').trim();
-  let fileBuffer = null;
-  if (fileBase64) {
-    try {
-      fileBuffer = Buffer.from(fileBase64, 'base64');
-    } catch {
-      throw new Error('file_base64 is not valid base64');
-    }
-  }
 
   return {
-    leagueName: sanitizeText(body.league_name ?? body.leagueName ?? '', 120),
-    leagueSlug: sanitizeText(body.league_slug ?? body.leagueSlug ?? '', 80).toLowerCase(),
-    season: sanitizeText(body.season ?? String(new Date().getFullYear()), 8),
-    fallbackLeagueSlug: sanitizeText(
-      body.fallback_league_slug ?? body.fallbackLeagueSlug ?? '',
-      80,
-    ).toLowerCase(),
+    ...meta,
     filename: sanitizeText(body.filename ?? 'upload.docx', 255),
-    fileBuffer,
+    fileBase64: fileBase64 || null,
   };
 }
 
+function decodeRequestFile(payload) {
+  if (payload.fileBuffer != null) {
+    return payload.fileBuffer;
+  }
+  if (!payload.fileBase64) return null;
+
+  const estimatedBytes = Math.floor((payload.fileBase64.length * 3) / 4);
+  if (estimatedBytes > MAX_DOCX_BYTES) {
+    throw new Error(`DOCX exceeds ${MAX_DOCX_BYTES / (1024 * 1024)} MB limit.`);
+  }
+  let fileBuffer;
+  try {
+    fileBuffer = Buffer.from(payload.fileBase64, 'base64');
+  } catch {
+    throw new Error('file_base64 is not valid base64');
+  }
+  if (fileBuffer.length > MAX_DOCX_BYTES) {
+    throw new Error(`DOCX exceeds ${MAX_DOCX_BYTES / (1024 * 1024)} MB limit.`);
+  }
+  return fileBuffer;
+}
+
+/**
+ * @param {import('pg').Client} client
+ * @param {string} fallbackSlug
+ */
+async function verifyFallbackLeagueExists(client, fallbackSlug) {
+  const { rows } = await client.query(
+    `SELECT id FROM leagues WHERE slug = $1`,
+    [fallbackSlug],
+  );
+  if (!rows.length) {
+    throw new Error(`fallback_league_slug "${fallbackSlug}" does not exist`);
+  }
+}
+
 async function applyFallbackLeague(client, leagueId, fallbackSlug) {
-  if (!fallbackSlug) return null;
   const fallback = await resolveLeagueBySlug(client, fallbackSlug);
   if (fallback.id === leagueId) {
     throw new Error('fallback_league_slug cannot be the same as league_slug');
@@ -168,9 +225,11 @@ const handler = async (req, res) => {
 
   let payload;
   try {
-    payload = await parsePayload(req);
+    payload = await extractRequestMetadata(req);
   } catch (err) {
-    return res.status(400).json({ error: err.message ?? 'Invalid request body' });
+    const message = err.message ?? 'Invalid request body';
+    const status = message.includes('exceeds') ? 413 : 400;
+    return res.status(status).json({ error: message });
   }
 
   const {
@@ -179,17 +238,38 @@ const handler = async (req, res) => {
     season,
     fallbackLeagueSlug,
     filename,
-    fileBuffer,
   } = payload;
 
-  if (!leagueSlug) {
-    return res.status(400).json({ error: 'league_slug is required' });
+  const metaError = validateMetadata({ leagueSlug, fallbackLeagueSlug });
+  if (metaError) {
+    return res.status(400).json({ error: metaError });
   }
-  if (!SLUG_RE.test(leagueSlug)) {
-    return res.status(400).json({
-      error: 'league_slug must be lowercase kebab-case (e.g. nsll-minors-aaa)',
+
+  // Fail-fast: verify fallback exists before decoding files or running ingest.
+  if (fallbackLeagueSlug) {
+    const precheck = new Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
     });
+    try {
+      await precheck.connect();
+      await verifyFallbackLeagueExists(precheck, fallbackLeagueSlug);
+    } catch (err) {
+      return res.status(400).json({ error: err.message ?? 'Invalid fallback_league_slug' });
+    } finally {
+      try { await precheck.end(); } catch { /* ignore */ }
+    }
   }
+
+  let fileBuffer;
+  try {
+    fileBuffer = decodeRequestFile(payload);
+  } catch (err) {
+    const message = err.message ?? 'Invalid file payload';
+    const status = message.includes('exceeds') ? 413 : 400;
+    return res.status(status).json({ error: message });
+  }
+
   if (!fileBuffer?.length) {
     return res.status(400).json({ error: 'DOCX file is required' });
   }
@@ -212,10 +292,10 @@ const handler = async (req, res) => {
 
   try {
     await client.connect();
-    await client.query('BEGIN');
 
     const result = await runDocxIngest({
       dbClient: client,
+      connectionString: process.env.DATABASE_URL,
       leagueSlug,
       leagueName: leagueName || undefined,
       season,
@@ -227,25 +307,23 @@ const handler = async (req, res) => {
       },
     });
 
-    const league = await resolveLeagueBySlug(client, leagueSlug);
-    if (leagueName) {
-      await client.query(`
-        UPDATE leagues SET name = $1, updated_at = now() WHERE id = $2
-      `, [leagueName, league.id]);
-      result.league_name = leagueName;
-    }
-
     let fallbackApplied = null;
     if (fallbackLeagueSlug) {
-      fallbackApplied = await applyFallbackLeague(client, league.id, fallbackLeagueSlug);
-      steps.push({
-        step: 'fallback',
-        message: `Linked fallback rulebook → ${fallbackApplied}`,
-        at: new Date().toISOString(),
-      });
+      await client.query('BEGIN');
+      try {
+        const league = await resolveLeagueBySlug(client, leagueSlug);
+        fallbackApplied = await applyFallbackLeague(client, league.id, fallbackLeagueSlug);
+        await client.query('COMMIT');
+        steps.push({
+          step: 'fallback',
+          message: `Linked fallback rulebook → ${fallbackApplied}`,
+          at: new Date().toISOString(),
+        });
+      } catch (err) {
+        try { await client.query('ROLLBACK'); } catch { /* ignore */ }
+        throw err;
+      }
     }
-
-    await client.query('COMMIT');
 
     return res.status(200).json({
       ...result,
@@ -253,7 +331,6 @@ const handler = async (req, res) => {
       steps,
     });
   } catch (err) {
-    try { await client.query('ROLLBACK'); } catch { /* ignore */ }
     console.error('[admin/ingest]', err);
     return res.status(500).json({
       error: 'ingest_failed',
