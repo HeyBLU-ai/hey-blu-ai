@@ -75,7 +75,7 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 **Ops hygiene (FAQ)**
 
-- **iPhone prep:** Auto-Lock **Never**, Low Power Mode off, Do Not Disturb, volume/Bluetooth audio, **Local Network** on for HeyBLU when using a second device; charge above ~30%. **Single phone:** tracking works offline—airplane mode optional. **Two devices:** Wi‑Fi on, same network (not tracking phone as sole hotspot). Notifications/calls in foreground can disrupt AR.
+- **iPhone prep:** Clean lens, volume/Bluetooth audio, **Local Network** on for HeyBLU when using a second device; charge before you go. App keeps screen awake while open (no Auto-Lock change required). Low Power Mode and Do Not Disturb optional. **Single phone:** tracking works offline—airplane mode optional. **Two devices:** Wi‑Fi on, same network (not tracking phone as sole hotspot). Calls/alerts can interrupt audio, not tracking.
 
 ---
 
