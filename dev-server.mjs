@@ -81,7 +81,7 @@ function resolveStaticPath(pathname) {
   // Known directory routes → index.html
   const dirRoutes = [
     '/rulebook', '/betablu', '/faq', '/compare', '/pricing', '/support',
-    '/about', '/zone', '/own', '/survey', '/field-guide', '/privacy',
+    '/about', '/zone', '/own', '/survey', '/coaches', '/coaching', '/smart-field', '/field-guide', '/privacy',
     '/terms', '/market', '/revenuesprint', '/use-of-funds', '/vision', '/admin',
   ];
 

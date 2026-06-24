@@ -10,6 +10,8 @@
   <url><loc>https://heyblu.ai/compare/games-and-umpires</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heyblu.ai/compare/baseball-umpire-apps</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
   <url><loc>https://heyblu.ai/pricing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://heyblu.ai/coaches</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://heyblu.ai/smart-field</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
   <url><loc>https://heyblu.ai/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/support</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
