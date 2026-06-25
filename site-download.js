@@ -33,4 +33,9 @@
             note.classList.remove('hidden');
         }
     }
+
+    var tfInvite = document.getElementById('testflight-invite-link');
+    if (tfInvite && cfg.DOWNLOAD_URL_BETA && /^https?:\/\//i.test(cfg.DOWNLOAD_URL_BETA)) {
+        tfInvite.href = appendUtm(cfg.DOWNLOAD_URL_BETA);
+    }
 })();
