@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="The AI bullpen tool that shows where pitches actually crossed the zone. One iPhone and a tripod—real-time ball/strike feedback for outdoor practice and bullpen sessions.">
-    <title>HeyBLU | AI Bullpen Strike Zone Tracker for iPhone</title>
+    <meta name="description" content="The app that calls balls and strikes out loud in real time. One iPhone and a tripod—turn your phone into the ultimate practice umpire for bullpens and outdoor practice.">
+    <title>HeyBLU | Real-Time Ball &amp; Strike Calls for Bullpen Practice</title>
     <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
     <link rel="preload" href="/images/HeyBLU vector logo.svg" as="image" type="image/svg+xml" fetchpriority="high">
@@ -46,51 +46,36 @@
         .animate-float {
             animation: float 3s ease-in-out infinite;
         }
-        .use-case-marquee-outer {
-            overflow: hidden;
+        .use-case-chips-outer {
             background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
         }
-        .use-case-marquee-track {
+        .use-case-chips {
             display: flex;
-            width: max-content;
-            animation: use-case-marquee 55s linear infinite;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 1rem;
         }
-        .use-case-marquee-track:hover {
-            animation-play-state: paused;
-        }
-        @keyframes use-case-marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .use-case-marquee-outer { overflow: visible; }
-            .use-case-marquee-track {
-                animation: none;
-                flex-wrap: wrap;
-                justify-content: center;
-                width: 100%;
-                max-width: 72rem;
-                margin: 0 auto;
-                gap: 0.5rem 1rem;
-                padding: 0.75rem 1rem;
-            }
-            .use-case-marquee-item::after { content: none !important; }
-        }
-        .use-case-marquee-item {
-            white-space: nowrap;
+        .use-case-chip {
+            display: inline-block;
             font-size: 0.875rem;
-            font-weight: 600;
+            font-weight: 700;
             letter-spacing: 0.02em;
-            color: #e2e8f0;
-            padding: 0 0.25rem;
+            color: #f8fafc;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 9999px;
+            padding: 0.5rem 1rem;
+            transition: background 0.15s ease, border-color 0.15s ease;
         }
-        .use-case-marquee-item::after {
-            content: ' \2022 ';
-            color: #f97316;
-            padding: 0 0.35rem;
+        .use-case-chip:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(249, 115, 22, 0.6);
         }
-        .use-case-marquee-item:last-child::after {
-            content: ' \2022 ';
+        #beta {
+            scroll-margin-top: 5rem;
         }
         .playbook-button[aria-expanded="true"] {
             color: #2563eb;
@@ -126,7 +111,7 @@
                     <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
                     <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">FAQ</a>
                     <a href="#field-notes" class="text-gray-700 hover:text-blue-600 font-medium transition">Field Notes</a>
-                    <a href="#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Beta</a>
+                    <a href="#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Waitlist</a>
                 </nav>
                 <button id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,7 +126,7 @@
                 <a href="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">About</a>
                 <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">FAQ</a>
                 <a href="#field-notes" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Field Notes</a>
-                <a href="#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Beta</a>
+                <a href="#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Waitlist</a>
             </div>
         </div>
     </header>
@@ -154,19 +139,25 @@
                     <div>
                         <p class="text-sm font-semibold text-blue-600 uppercase tracking-wide mb-3"><span class="text-gray-900">Hey</span><span class="text-blue-600">BLU</span></p>
                         <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-5">
-                            The Automated Strike Zone in Your Pocket.
+                            Every bullpen deserves a Big League Umpire.
                         </h1>
-                        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
-                            The AI bullpen tool that shows pitchers, parents, and coaches where pitches actually crossed the zone. One iPhone, one tripod—real-time ball/strike feedback for outdoor practice and bullpen sessions.
+                        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-4">
+                            Fully adjustable strike zone. Real-time calls with just an iPhone and a tripod.
+                        </p>
+                        <p class="text-sm text-gray-600 mb-6">
+                            <a href="#playbook-backyard-solo-bullpens" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Parents</a>
+                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
+                            <a href="#playbook-track-bullpen-accuracy" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Pitchers</a>
+                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
+                            <a href="/coaches" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Coaches</a>
+                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
+                            <a href="/smart-field" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Leagues</a>
                         </p>
                         <div class="flex flex-col items-start gap-3">
-                            <a id="app-store-download-link" href="#beta" class="inline-block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded-lg" aria-label="Download HeyBLU on the App Store">
-                                <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1276560000" alt="Download on the App Store" width="250" height="83" class="h-[3.25rem] w-auto md:h-[3.75rem]" loading="eager">
+                            <a href="#beta" class="inline-block bg-blue-600 text-white font-bold text-lg py-4 px-8 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
+                                Join the Launch Waitlist
                             </a>
-                            <p id="app-download-beta-note" class="text-[10px] italic text-gray-500 max-w-xs leading-snug"></p>
                             <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                                <a href="#beta" class="text-blue-600 font-semibold hover:text-blue-800 underline">Request TestFlight access</a>
-                                <span class="text-gray-300 hidden sm:inline" aria-hidden="true">|</span>
                                 <a href="#how-it-works" class="text-gray-700 font-semibold hover:text-blue-600">How it works</a>
                                 <span class="text-gray-300 hidden sm:inline" aria-hidden="true">|</span>
                                 <a href="#playbook" class="text-gray-700 font-semibold hover:text-blue-600">Use cases</a>
@@ -182,23 +173,12 @@
                 </div>
 
                 <div class="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mt-10 mb-2">
-                    <div class="use-case-marquee-outer py-3" aria-label="HeyBLU use cases">
-                        <div class="use-case-marquee-track" id="use-case-marquee-track">
-                            <span class="use-case-marquee-item">Track Bullpen Accuracy</span>
-                            <span class="use-case-marquee-item">Backyard Solo Bullpens</span>
-                            <span class="use-case-marquee-item">Intent vs. Actual Drills</span>
-                            <span class="use-case-marquee-item">Build Plate Discipline</span>
-                            <span class="use-case-marquee-item">Review Session Heatmaps</span>
-                            <span class="use-case-marquee-item">Monitor Relief Warmups</span>
-                            <span class="use-case-marquee-item">Share Reps with Coaches</span>
-                            <span class="use-case-marquee-item">Knockout &amp; Bullpen Games</span>
-                            <span class="use-case-marquee-item">Review Catcher Framing</span>
-                            <span class="use-case-marquee-item">Track Pitch Counts Across Sessions</span>
-                            <span class="use-case-marquee-item">Unbiased Tryout Scoring</span>
-                            <span class="use-case-marquee-item">Session Reports &amp; Exports</span>
-                            <span class="use-case-marquee-item">Practice Game Calls</span>
-                            <span class="use-case-marquee-item">Game Day Pitch Counting</span>
-                            <span class="use-case-marquee-item">Train Local Umpires</span>
+                    <div class="use-case-chips-outer py-3" aria-label="HeyBLU use cases">
+                        <div class="use-case-chips">
+                            <a href="#playbook-backyard-solo-bullpens" class="use-case-chip">Backyard Solo Bullpens</a>
+                            <a href="#playbook-track-bullpen-accuracy" class="use-case-chip">Track Bullpen Accuracy</a>
+                            <a href="#playbook-share-reps-with-coaches" class="use-case-chip">Share Reps with Coaches</a>
+                            <a href="#playbook-build-plate-discipline" class="use-case-chip">Build Plate Discipline</a>
                         </div>
                     </div>
                     <p class="text-center text-sm text-gray-500 mt-3 px-4">
@@ -264,7 +244,7 @@
                             <div class="flex-shrink-0 w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">2</div>
                             <div>
                                 <h3 class="text-xl font-bold text-gray-900 mb-2">Live Strike Zone Tracking</h3>
-                                <p class="text-gray-600">Advanced monocular depth technology maps every pitch's exact location in and around the zone.</p>
+                                <p class="text-gray-600">Shows exactly where the ball crossed the plate—in and around the zone—on every pitch.</p>
                             </div>
                         </div>
                         <div class="flex items-start space-x-4">
@@ -359,12 +339,26 @@
                     <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">The HeyBLU Playbook</h2>
                 </div>
                 <div class="bg-white rounded-2xl border-2 border-gray-200 shadow-sm overflow-hidden divide-y divide-gray-200">
+                    <div id="playbook-backyard-solo-bullpens" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="true">
+                            <span class="font-semibold text-gray-900">Backyard Solo Bullpens</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="px-6 pb-4 text-gray-600 text-sm leading-relaxed">Kids want to practice at home, but throwing into a pop-up net does not tell them if they actually threw a strike. HeyBLU acts as a virtual umpire for solo net sessions. Pitchers get instant audio feedback to build muscle memory without needing a parent to catch.</div>
+                    </div>
                     <div id="playbook-track-bullpen-accuracy" class="playbook-entry">
-                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="true">
                             <span class="font-semibold text-gray-900">Track Bullpen Accuracy</span>
                             <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
-                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers throw bullpens to dial in their mechanics, but without an umpire, it is hard to know if they are truly hitting the zone. HeyBLU provides instant, objective audio feedback on every pitch. This allows pitchers to build real command and trust their stuff before game day.</div>
+                        <div class="px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers throw bullpens to dial in their mechanics, but without an umpire, it is hard to know if they are truly hitting the zone. HeyBLU provides instant, objective audio feedback on every pitch. This allows pitchers to build real command and trust their stuff before game day.</div>
+                    </div>
+                    <div id="playbook-share-reps-with-coaches" class="playbook-entry">
+                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="true">
+                            <span class="font-semibold text-gray-900">Share Reps with Coaches</span>
+                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </button>
+                        <div class="px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers take private lessons, but instructors rarely get to see how they perform during the week. HeyBLU's exportable Session Reports and Baseball Cards make it easy to text objective results. Instructors get real data between lessons to keep a player's development on track.</div>
                     </div>
                     <div id="playbook-game-day-pitch-counting" class="playbook-entry">
                         <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
@@ -387,13 +381,6 @@
                         </button>
                         <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Coaches in the dugout need to know if the relief pitcher warming up in the bullpen is actually finding the zone. By syncing an iPad or second iPhone at the bullpen, coaches can monitor pitch locations remotely in real-time. You will know exactly when your reliever is dialed in and ready for the mound.</div>
                     </div>
-                    <div id="playbook-share-reps-with-coaches" class="playbook-entry">
-                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
-                            <span class="font-semibold text-gray-900">Share Reps with Coaches</span>
-                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Pitchers take private lessons, but instructors rarely get to see how they perform during the week. HeyBLU's exportable Session Reports and Baseball Cards make it easy to text objective results. Instructors get real data between lessons to keep a player's development on track.</div>
-                    </div>
                     <div id="playbook-knockout-bullpen-games" class="playbook-entry">
                         <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
                             <span class="font-semibold text-gray-900">Knockout &amp; Bullpen Games</span>
@@ -407,13 +394,6 @@
                             <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                         </button>
                         <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Teams already run scrimmages with a coach calling balls and strikes from the field. Mount HeyBLU at the backstop for consistent zone feedback while you coach bases and defense. Leagues scaling automated balls and strikes for multiple fields can <a href="mailto:info@heyblu.ai?subject=League%20or%20tournament%20ABS" class="text-blue-600 font-semibold hover:text-blue-800 underline">talk to us about ABS for your organization</a>—the same app families use in the bullpen.</div>
-                    </div>
-                    <div id="playbook-backyard-solo-bullpens" class="playbook-entry">
-                        <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
-                            <span class="font-semibold text-gray-900">Backyard Solo Bullpens</span>
-                            <svg class="playbook-icon w-5 h-5 text-gray-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </button>
-                        <div class="hidden px-6 pb-4 text-gray-600 text-sm leading-relaxed">Kids want to practice at home, but throwing into a pop-up net does not tell them if they actually threw a strike. HeyBLU acts as a virtual umpire for solo net sessions. Pitchers get instant audio feedback to build muscle memory without needing a parent to catch.</div>
                     </div>
                     <div id="playbook-unbiased-tryout-scoring" class="playbook-entry">
                         <button type="button" class="playbook-button w-full text-left px-6 py-4 flex justify-between items-center gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" onclick="togglePlaybook(this)" aria-expanded="false">
@@ -588,16 +568,16 @@
             </div>
         </section>
 
-        <!-- Beta Signup -->
+        <!-- Launch Waitlist -->
         <section id="beta" class="py-20 px-4 bg-slate-50">
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-10">
-                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Apply for Beta / Request TestFlight Access</h2>
-                    <p class="text-lg text-gray-600">HeyBLU is in active beta on iPhone. Submit with a valid email—we’ll send your TestFlight invitation to that address when you’re approved.</p>
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Join the Launch Waitlist</h2>
+                    <p class="text-lg text-gray-600">Be first to know when HeyBLU hits the App Store. Drop your name and email—we'll keep you posted.</p>
                 </div>
                 <div class="bg-gray-50 rounded-2xl shadow-xl p-8 border-2 border-gray-200">
                     <form id="beta-signup-form" action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
-                        <input type="hidden" name="_subject" value="Beta / TestFlight application">
+                        <input type="hidden" name="_subject" value="Launch waitlist">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div>
                                 <label for="first_name" class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
@@ -612,136 +592,16 @@
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
                             <input type="email" name="email" id="email" required autocomplete="email" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="city" class="block text-sm font-medium text-gray-700 mb-2">City</label>
-                                <input type="text" name="city" id="city" required autocomplete="address-level2" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                            </div>
-                            <div>
-                                <label for="state" class="block text-sm font-medium text-gray-700 mb-2">State</label>
-                                <select name="state" id="state" required autocomplete="address-level1" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
-                                    <option value="" disabled selected>Select state</option>
-                                    <option value="AL">Alabama</option>
-                                    <option value="AK">Alaska</option>
-                                    <option value="AZ">Arizona</option>
-                                    <option value="AR">Arkansas</option>
-                                    <option value="CA">California</option>
-                                    <option value="CO">Colorado</option>
-                                    <option value="CT">Connecticut</option>
-                                    <option value="DE">Delaware</option>
-                                    <option value="DC">District of Columbia</option>
-                                    <option value="FL">Florida</option>
-                                    <option value="GA">Georgia</option>
-                                    <option value="HI">Hawaii</option>
-                                    <option value="ID">Idaho</option>
-                                    <option value="IL">Illinois</option>
-                                    <option value="IN">Indiana</option>
-                                    <option value="IA">Iowa</option>
-                                    <option value="KS">Kansas</option>
-                                    <option value="KY">Kentucky</option>
-                                    <option value="LA">Louisiana</option>
-                                    <option value="ME">Maine</option>
-                                    <option value="MD">Maryland</option>
-                                    <option value="MA">Massachusetts</option>
-                                    <option value="MI">Michigan</option>
-                                    <option value="MN">Minnesota</option>
-                                    <option value="MS">Mississippi</option>
-                                    <option value="MO">Missouri</option>
-                                    <option value="MT">Montana</option>
-                                    <option value="NE">Nebraska</option>
-                                    <option value="NV">Nevada</option>
-                                    <option value="NH">New Hampshire</option>
-                                    <option value="NJ">New Jersey</option>
-                                    <option value="NM">New Mexico</option>
-                                    <option value="NY">New York</option>
-                                    <option value="NC">North Carolina</option>
-                                    <option value="ND">North Dakota</option>
-                                    <option value="OH">Ohio</option>
-                                    <option value="OK">Oklahoma</option>
-                                    <option value="OR">Oregon</option>
-                                    <option value="PA">Pennsylvania</option>
-                                    <option value="RI">Rhode Island</option>
-                                    <option value="SC">South Carolina</option>
-                                    <option value="SD">South Dakota</option>
-                                    <option value="TN">Tennessee</option>
-                                    <option value="TX">Texas</option>
-                                    <option value="UT">Utah</option>
-                                    <option value="VT">Vermont</option>
-                                    <option value="VA">Virginia</option>
-                                    <option value="WA">Washington</option>
-                                    <option value="WV">West Virginia</option>
-                                    <option value="WI">Wisconsin</option>
-                                    <option value="WY">Wyoming</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="league_or_team" class="block text-sm font-medium text-gray-700 mb-2">League or Team Name <span class="text-gray-500 font-normal">(Optional)</span></label>
-                            <input type="text" name="league_or_team" id="league_or_team" placeholder="e.g., Mill Valley Little League 13U" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
-                        </div>
-                        <div>
-                            <span class="block text-sm font-medium text-gray-700 mb-2">Your roles <span class="text-gray-500 font-normal">(select up to 3)</span></span>
-                            <p id="beta-role-hint" class="text-sm text-gray-500 mb-3" aria-live="polite">Choose the roles that best describe you.</p>
-                            <div class="grid grid-cols-2 gap-3">
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Umpire" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                    <span class="ml-2 text-gray-800">Umpire</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Coach" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                    <span class="ml-2 text-gray-800">Coach</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Player" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                    <span class="ml-2 text-gray-800">Player</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="Parent" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                    <span class="ml-2 text-gray-800">Parent</span>
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" name="role" value="League Admin" class="beta-role-cb h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                    <span class="ml-2 text-gray-800">League Admin</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="age_group" class="block text-sm font-medium text-gray-700 mb-2">Age group you work in</label>
-                            <select name="age_group" id="age_group" required class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-white">
-                                <option value="" disabled selected>Select one</option>
-                                <option value="8U to 13U">8U to 13U</option>
-                                <option value="High School">High School</option>
-                                <option value="College">College</option>
-                                <option value="Pro">Pro</option>
-                                <option value="Adult Amateur">Adult Amateur</option>
-                            </select>
-                        </div>
-                        <div id="beta-field-description-block" class="hidden">
-                            <label for="field_description" class="block text-sm font-medium text-gray-700 mb-2">Describe your field <span class="text-red-600">*</span></label>
-                            <p class="text-xs text-gray-500 mb-2">Backstop distance, typical pitch speed, and anything else that helps us understand your setup.</p>
-                            <textarea name="field_description" id="field_description" rows="4" disabled
-                                class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                placeholder="e.g., Backstop ~25 ft from plate; mid-80s velo from mound…"></textarea>
-                        </div>
-                        <div class="space-y-3 pt-2 border-t border-gray-200">
-                            <p class="text-sm font-medium text-gray-800">Please confirm:</p>
-                            <label class="flex items-start gap-3 cursor-pointer">
-                                <input type="checkbox" name="ack_iphone_ios" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
-                                <span class="text-sm text-gray-700">I understand this is an iPhone app (iOS only).</span>
-                            </label>
-                            <label class="flex items-start gap-3 cursor-pointer">
-                                <input type="checkbox" name="ack_tripod" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
-                                <span class="text-sm text-gray-700">I understand this requires a tripod. <a href="https://www.amazon.com/s?k=phone+tripod+5+ft" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium underline">See a tripod recommendation</a>.</span>
-                            </label>
-                            <label class="flex items-start gap-3 cursor-pointer">
-                                <input type="checkbox" name="ack_outdoor" value="yes" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 shrink-0">
-                                <span class="text-sm text-gray-700">I understand HeyBLU is for OUTDOOR use only.</span>
-                            </label>
-                        </div>
-                        <button type="submit" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg">
-                            Apply for Beta Access
+                        <p id="beta-form-error" class="hidden text-sm text-red-600" role="alert"></p>
+                        <button type="submit" id="beta-submit-btn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                            Join the Waitlist
                         </button>
                     </form>
+                    <div id="beta-success-message" class="hidden text-center space-y-4" role="status" aria-live="polite">
+                        <p class="text-lg text-gray-800 leading-relaxed">
+                            You're on the list for launch! Want to skip the line and test it today? You must have an iPhone and a tripod. If you have the gear, <a id="testflight-invite-link" href="https://testflight.apple.com/join/PLACEHOLDER" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-semibold hover:text-blue-800 underline">click here</a> to get your TestFlight invite.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -785,7 +645,7 @@
                         <a href="/field-guide" class="block text-gray-400 hover:text-white transition">Field Guide</a>
                         <a href="#playbook" class="block text-gray-400 hover:text-white transition">Playbook</a>
                         <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
-                        <a href="#beta" class="block text-gray-400 hover:text-white transition">Join Beta</a>
+                        <a href="#beta" class="block text-gray-400 hover:text-white transition">Join Waitlist</a>
                         <a href="#field-notes" class="block text-gray-400 hover:text-white transition">Field Notes (Substack)</a>
                         <a href="https://heyblu.substack.com" target="_blank" rel="noopener noreferrer" class="block text-gray-400 hover:text-white transition">Substack archive</a>
                     </div>
@@ -805,14 +665,6 @@
             button.setAttribute('aria-expanded', expanded ? 'false' : 'true');
             panel.classList.toggle('hidden', expanded);
         }
-
-        (function () {
-            var track = document.getElementById('use-case-marquee-track');
-            if (!track) return;
-            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                track.innerHTML = track.innerHTML + track.innerHTML;
-            }
-        })();
 
         (function () {
             var hash = window.location.hash;
@@ -868,81 +720,47 @@
             var form = document.getElementById('beta-signup-form');
             if (!form) return;
 
-            var MAX_ROLES = 3;
-            var AGE_REQUIRES_FIELD = ['High School', 'College', 'Pro', 'Adult Amateur'];
-
-            var roleHint = document.getElementById('beta-role-hint');
-            var roleInputs = form.querySelectorAll('.beta-role-cb');
-            var ageSelect = document.getElementById('age_group');
-            var fieldBlock = document.getElementById('beta-field-description-block');
-            var fieldTextarea = document.getElementById('field_description');
-
-            function countCheckedRoles() {
-                var n = 0;
-                roleInputs.forEach(function (cb) { if (cb.checked) n++; });
-                return n;
-            }
-
-            function updateRoleHint() {
-                if (!roleHint) return;
-                var c = countCheckedRoles();
-                if (c >= MAX_ROLES) {
-                    roleHint.textContent = 'Maximum ' + MAX_ROLES + ' roles selected. Uncheck one to choose another.';
-                    roleHint.classList.add('text-amber-700');
-                } else {
-                    roleHint.textContent = 'Choose the roles that best describe you. (' + c + '/' + MAX_ROLES + ' selected)';
-                    roleHint.classList.remove('text-amber-700');
-                }
-            }
-
-            roleInputs.forEach(function (cb) {
-                cb.addEventListener('change', function () {
-                    if (countCheckedRoles() > MAX_ROLES) {
-                        cb.checked = false;
-                    }
-                    updateRoleHint();
-                });
-            });
-
-            function syncFieldDescriptionBlock() {
-                if (!ageSelect || !fieldBlock || !fieldTextarea) return;
-                var v = ageSelect.value;
-                var needs = AGE_REQUIRES_FIELD.indexOf(v) !== -1;
-                if (needs) {
-                    fieldBlock.classList.remove('hidden');
-                    fieldTextarea.disabled = false;
-                    fieldTextarea.setAttribute('required', 'required');
-                } else {
-                    fieldBlock.classList.add('hidden');
-                    fieldTextarea.disabled = true;
-                    fieldTextarea.removeAttribute('required');
-                    fieldTextarea.value = '';
-                }
-            }
-
-            if (ageSelect) {
-                ageSelect.addEventListener('change', syncFieldDescriptionBlock);
-                syncFieldDescriptionBlock();
-            }
+            var submitBtn = document.getElementById('beta-submit-btn');
+            var successMessage = document.getElementById('beta-success-message');
+            var errorMessage = document.getElementById('beta-form-error');
 
             form.addEventListener('submit', function (e) {
-                if (countCheckedRoles() > MAX_ROLES) {
-                    e.preventDefault();
-                    updateRoleHint();
-                    return;
+                e.preventDefault();
+                if (errorMessage) {
+                    errorMessage.classList.add('hidden');
+                    errorMessage.textContent = '';
                 }
-                syncFieldDescriptionBlock();
-                if (ageSelect && AGE_REQUIRES_FIELD.indexOf(ageSelect.value) !== -1) {
-                    if (!fieldTextarea.value || !fieldTextarea.value.trim()) {
-                        e.preventDefault();
-                        fieldTextarea.focus();
-                        fieldTextarea.classList.add('ring-2', 'ring-red-500');
-                        setTimeout(function () { fieldTextarea.classList.remove('ring-2', 'ring-red-500'); }, 2000);
-                    }
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Joining…';
                 }
-            });
 
-            updateRoleHint();
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { Accept: 'application/json' }
+                })
+                    .then(function (response) {
+                        if (response.ok) {
+                            form.classList.add('hidden');
+                            if (successMessage) successMessage.classList.remove('hidden');
+                            return;
+                        }
+                        return response.json().then(function (data) {
+                            throw new Error((data && data.error) || 'Something went wrong. Please try again.');
+                        });
+                    })
+                    .catch(function (err) {
+                        if (errorMessage) {
+                            errorMessage.textContent = err.message || 'Something went wrong. Please try again.';
+                            errorMessage.classList.remove('hidden');
+                        }
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = 'Join the Waitlist';
+                        }
+                    });
+            });
         })();
     </script>
 
