@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HeyBLU FAQ — Quick start, Command Center, setup, troubleshooting, and beta feedback. Outdoor daylight, tripod tips, Slack community.">
-    <title>HeyBLU | FAQ — Quick Start &amp; Beta</title>
+    <meta name="description" content="HeyBLU FAQ — Quick start, Command Center, setup, troubleshooting, and support. Outdoor daylight and tripod tips for bullpen practice.">
+    <title>HeyBLU | FAQ — Quick Start &amp; Support</title>
     <link rel="canonical" href="https://heyblu.ai/faq">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://heyblu.ai/faq">
-    <meta property="og:title" content="HeyBLU | FAQ — Quick Start &amp; Beta">
-    <meta property="og:description" content="Quick start, Command Center, setup, troubleshooting, and beta feedback for HeyBLU.">
+    <meta property="og:title" content="HeyBLU | FAQ — Quick Start &amp; Support">
+    <meta property="og:description" content="Quick start, Command Center, setup, troubleshooting, and support for HeyBLU.">
     <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -47,17 +47,6 @@
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col pt-16">
-
-    <!-- Slack invite bubble (first-visit callout) -->
-    <div id="slack-invite-bubble" class="fixed bottom-4 right-4 z-40 max-w-sm hidden" role="dialog" aria-label="Beta tester invite" aria-live="polite">
-        <div class="bg-white rounded-xl shadow-lg border border-slate-200 p-4">
-            <p class="text-sm text-slate-700 mb-3"><strong class="text-slate-900">You're invited!</strong> Join our beta Slack channel for support and discussion with the team.</p>
-            <div class="flex flex-wrap gap-2">
-                <a href="https://join.slack.com/t/heyblubetatesting/shared_invite/zt-3rf357c06-AbpNi3XGnco7TMQpJ_87nw" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition">Join Slack</a>
-                <button type="button" id="slack-bubble-dismiss" class="inline-flex items-center justify-center px-3 py-1.5 text-slate-500 text-sm hover:text-slate-700 transition" aria-label="Dismiss">Dismiss</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Global site nav -->
     <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
@@ -110,9 +99,9 @@
                 <a href="#quick-start" class="block py-2 text-slate-700 hover:text-blue-600 font-semibold">Quick Start</a>
                 <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
                 <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices &amp; Environment</a>
-                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup &amp; Installation</a>
+                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup</a>
                 <a href="#troubleshooting" class="block py-2 text-slate-700 hover:text-blue-600">Troubleshooting</a>
-                <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Beta Feedback</a>
+                <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Feedback</a>
             </div>
         </div>
     </nav>
@@ -125,7 +114,7 @@
             <h1 class="text-2xl font-bold text-slate-900 mb-1">
                 <span class="text-blue-600">Hey</span>BLU — Quick Start &amp; FAQ
             </h1>
-            <p class="text-sm text-slate-600 mb-3">Thanks for testing—early beta, your feedback helps us improve.</p>
+            <p class="text-sm text-slate-600 mb-3">Setup tips, troubleshooting, and how to reach support.</p>
             <div class="bg-slate-800 text-white rounded-lg px-4 py-3 max-w-2xl">
                 <p class="font-semibold text-2xl mb-2">Key to success</p>
                 <ul class="text-sm space-y-2 list-disc list-inside text-slate-200">
@@ -147,23 +136,13 @@
         <section id="quick-start" class="mb-12">
             <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-lg border-2 border-blue-200 p-8">
                 <div class="bg-white rounded-lg p-6 mb-6">
-                    <p class="font-semibold text-slate-900">You need: an <strong class="text-blue-600">iPhone</strong> (11 or later), an <strong>outdoor bullpen or practice mound</strong>, and a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">tripod</a> placed <strong>inside the fence</strong>. Printable steps: <a href="/field-guide" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide</a>.</p>
+                    <p class="font-semibold text-slate-900">You need: an <strong class="text-blue-600">iPhone</strong> (12 or later), an <strong>outdoor bullpen or practice mound</strong>, and a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">tripod</a> placed <strong>inside the fence</strong>. Printable steps: <a href="/field-guide" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide</a>.</p>
                 </div>
 
                 <div class="space-y-4">
-                    <div class="bg-white rounded-lg p-6 border-l-4 border-blue-500">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
-                            <div class="flex-grow">
-                                <h3 class="font-semibold text-lg text-slate-900 mb-2">Install the Beta</h3>
-                                <p class="text-slate-600 mb-0"><a href="https://apps.apple.com/us/app/testflight/id899247664" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Download TestFlight</a> from the App Store if you need it, then <a href="https://testflight.apple.com/join/1kC7Ur8G" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">join the HeyBLU beta</a> on your iPhone.</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="bg-white rounded-lg p-6 border-l-4 border-amber-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold mr-4">1</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Set Up Tripod</h3>
                                 <p class="text-slate-600 mb-0">For bullpen practice, place the tripod <strong>10–15 feet from the plate, inside the fence</strong>, offset to the side (from just past the catcher toward either foul line). Set height to the <strong>center of the strike zone</strong>—lower than most people expect.</p>
@@ -173,7 +152,7 @@
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-green-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-4">2</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Scan the Area</h3>
                                 <p class="text-slate-600 mb-2">When prompted to scan, keep home plate in the center of the screen, but be sure to move in and around the plate in a 5 to 10 foot half circle. You are training the "umpire" to understand the home plate area.</p>
@@ -184,7 +163,7 @@
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-purple-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4">4</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-purple-600 text-white rounded-full flex items-center justify-center font-bold mr-4">3</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Place the Strike Zone</h3>
                                 <p class="text-slate-600 mb-0">Line up the virtual strike zone to exactly match the real home plate. Use the on-screen buttons to get them to match. Then walk to your tripod to mount the phone.</p>
@@ -194,7 +173,7 @@
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-teal-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold mr-4">5</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-teal-600 text-white rounded-full flex items-center justify-center font-bold mr-4">4</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Mount the Phone</h3>
                                 <p class="text-slate-600 mb-0">Walk backward to your tripod. <strong>Expect the zone to shift.</strong> Once mounted, use the on-screen tools to fix it: slide the zone back over the plate, use the Distance/Height inputs or Up/Down buttons to fix the size, and use <strong>Adjust Plate</strong> for the final overhead alignment. <strong>Pro iPhone:</strong> bring a measuring tape and enter camera-to-plate distance and lens height from the ground. Center the <strong>pitch path</strong> between the thick <strong>red lines</strong> (zone on one line, mound on the other). <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">See wrong and correct placements →</a></p>
@@ -204,7 +183,7 @@
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-indigo-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-4">6</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-4">5</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">Calibrate</h3>
                                 <p class="text-slate-600 mb-0">Tap <strong>Play Ball</strong> and throw a test pitch. If the call is wrong, tap the <strong>Calibrate</strong> button on screen. Tap exactly where the pitch crossed on the 9-zone grid. This manual correction locks in the system for accurate calls.</p>
@@ -214,7 +193,7 @@
 
                     <div class="bg-white rounded-lg p-6 border-l-4 border-orange-500">
                         <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-4">7</div>
+                            <div class="flex-shrink-0 w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center font-bold mr-4">6</div>
                             <div class="flex-grow">
                                 <h3 class="font-semibold text-lg text-slate-900 mb-2">In-Game Tools</h3>
                                 <p class="text-slate-600 mb-0">During play, use <strong>Pause, Warm Up</strong> when you don't want pitches tracked. Use the red <strong>Delete</strong> button to remove a pitch you didn't want counted. Use <strong>Resize Zone</strong> when you need a different strike zone size for your session.</p>
@@ -225,7 +204,7 @@
 
                 <div class="mt-6 pt-6 border-t border-blue-200">
                     <p class="text-sm text-slate-600 text-center">
-                        <strong>Need more help?</strong> Join our <a href="https://join.slack.com/t/heyblubetatesting/shared_invite/zt-3rf357c06-AbpNi3XGnco7TMQpJ_87nw" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Slack channel</a>, scroll down for the FAQ, or <a href="#feedback" class="text-blue-600 hover:text-blue-800 font-medium">learn how to report issues</a>.
+                        <strong>Need more help?</strong> Scroll down for the FAQ, <a href="#feedback" class="text-blue-600 hover:text-blue-800 font-medium">report an issue</a>, or visit <a href="/support" class="text-blue-600 hover:text-blue-800 font-medium">Support</a>.
                     </p>
                 </div>
             </div>
@@ -247,7 +226,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p>HeyBLU is an iPhone app for <strong>outdoor bullpens and practice</strong>. It runs real-time 3D ball tracking from a mount by the backstop, anchors a fixed strike zone to home plate, and speaks <strong>Ball</strong> or <strong>Strike</strong> out loud on every pitch. Saved pitch data supports heatmaps, Command Training, and session analysis. See <a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">pricing</a> or our <a href="/compare" class="text-blue-600 font-medium underline hover:text-blue-800">strike zone tech guide</a>.</p>
+                        <p>HeyBLU is an iPhone app that turns a mounted phone into a practice umpire. It tracks where each pitch crosses the plate, compares that spot to your strike zone, and calls <strong>Ball</strong> or <strong>Strike</strong> out loud—with live location on screen. Use it in outdoor bullpens and practice; HeyBLU Pro saves sessions with heatmaps and reports. See <a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">pricing</a> or our <a href="/compare" class="text-blue-600 font-medium underline hover:text-blue-800">strike zone tech guide</a>.</p>
                     </div>
                 </div>
 
@@ -259,7 +238,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p>No. HeyBLU only evaluates pitches that are not swung at. If the batter swings, the human umpire (or coach) makes the call. The app does not attempt to decide whether a batter checked their swing or made contact.</p>
+                        <p class="mb-3">HeyBLU's job is to provide pitch location vs. the strike zone. It does not judge whether a batter swung or checked their swing.</p>
+                        <p class="mb-3">When a batter swings at a ball, HeyBLU still reports it as a <strong>ball</strong> based on where the pitch crossed the plate—not whether the batter offered.</p>
+                        <p class="mb-0">With live batters, the default audio setting is silence on ball calls, so you don't hear "Ball" on swings. Strikes are still announced.</p>
                     </div>
                 </div>
 
@@ -271,8 +252,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">When setting up the app, you will choose an age group (e.g., Pro, 14U, 12U, 10U) and a mound distance (e.g., 45 ft for youth leagues or 60.5 ft for regulation). Those pick the starting zone size and location.</p>
-                        <p class="mb-0">During a session you can <strong>Resize Zone</strong> to any size that fits your practice or batter. Set age group and mound distance to match what you're running, and mention them in feedback when you report issues.</p>
+                        <p class="mb-3">The strike zone is fully adjustable. Select from <strong>four sizes</strong> based on age level, then customize from there. Adjust during a session until you find the zone that fits your league or drill.</p>
+                        <p class="mb-0">With a second device (Command Center), use <strong>Short</strong>, <strong>Default</strong>, and <strong>Tall</strong> zone presets to quickly toggle between shorter, taller, and the most common player height when working with live batters.</p>
                     </div>
                 </div>
 
@@ -284,8 +265,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">You be the judge—and let us know what you see. We use your feedback to improve. With good outdoor bullpen setup, most ball/strike calls are within about <strong>one ball width</strong> of where the pitch actually crossed the plate.</p>
-                        <p class="mb-0">Displayed <strong>MPH is an estimate only</strong>—not a radar-gun replacement. Expect readings to be off by about <strong>±5&nbsp;MPH</strong> compared to a gun.</p>
+                        <p class="mb-3">Our goal was error rates no larger than a ball's width. In pristine conditions we are seeing an average <strong>1.5&nbsp;inch</strong> miss. In the wild—on your field, while you get used to proper scans and setup—anything over a <strong>3&nbsp;inch</strong> miss is either an occasional error, or it means you need to re-adjust or re-scan.</p>
+                        <p class="mb-3">HeyBLU's accuracy depends a lot on setup and calibration. Take your time, get to know the app, and your accuracy will become consistent.</p>
+                        <p class="mb-0">The same technology that powers ball/strike calls is sub-optimal for MPH, so expect velocity readings to be about <strong>±5&nbsp;MPH</strong>—not a radar-gun replacement.</p>
                     </div>
                 </div>
 
@@ -333,8 +315,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3"><strong>Non-Pro iPhones are ideal</strong> for bullpen setup (for example a refurbished <strong>iPhone&nbsp;13</strong>). An <strong>iPhone 11</strong> or newer should work. <strong>Pro</strong> models (Pro, Pro Max, etc.) work too—bring a <strong>measuring tape</strong> and enter camera-to-plate distance and lens height after you mount.</p>
-                        <p class="text-sm text-slate-500 italic">Note: Please tell us your exact iPhone model when you apply or provide feedback so we can track device-specific performance.</p>
+                        <p class="mb-3"><strong>Non-Pro iPhones are ideal</strong> for bullpen setup (for example a <a href="https://a.co/d/0d4wB1XD" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">refurbished iPhone&nbsp;13</a>). An <strong>iPhone 12</strong> or newer should work. <strong>Pro</strong> models (Pro, Pro Max, etc.) work too—bring a <strong>measuring tape</strong> and enter camera-to-plate distance and lens height after you mount.</p>
+                        <p class="text-sm text-slate-500 italic">Note: Please include your exact iPhone model when you report an issue so we can track device-specific performance.</p>
                     </div>
                 </div>
 
@@ -346,9 +328,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">Best today: <strong>outdoor bullpen or practice</strong> in daylight, tripod <strong>10–15 feet inside the fence</strong>, pitch speeds <strong>~60&nbsp;MPH or less</strong> (tested), and slightly used white baseballs. See <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">Quick Start</a> and the <a href="/field-guide" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide</a>.</p>
+                        <p class="mb-2">Best today: <strong>outdoor bullpen or practice</strong> in daylight, tripod <strong>10–15 feet inside the fence</strong>, pitch speeds <strong>~60&nbsp;MPH or less</strong> (tested), and regulation baseballs or yellow softballs. See <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">Quick Start</a> and the <a href="/field-guide" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide</a>.</p>
                         <p class="mb-2">Avoid pointing the camera into the setting sun or bright white backgrounds in the pitch path—move to the other side of the plate if you have glare.</p>
-                        <p class="text-sm text-slate-500">Regulation baseballs only for now (softballs planned). Brand-new pearl-white balls may glare in bright sun.</p>
+                        <p class="text-sm text-slate-500">Brand-new pearl-white baseballs may glare in bright sun.</p>
                     </div>
                 </div>
 
@@ -360,7 +342,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">Indoor or artificial lighting, dusk, hand-held use, tripod farther than ~15 feet from the plate, pitch speeds regularly above ~65–70&nbsp;MPH (untested), hard breaking balls (still testing), and phone below ~30% battery. Non-regulation balls (softballs, wiffles) may not track correctly.</p>
+                        <p class="mb-2">Indoor or artificial lighting, dusk, hand-held use, tripod past ~15&nbsp;ft from the plate (~20&nbsp;ft can work—closer is better), pitch speeds regularly above ~65–70&nbsp;MPH (untested; often works, less consistent than ≤60), hard breaking balls (still testing), and phone below ~30% battery. Non-regulation balls (wiffles, etc.) may not track correctly.</p>
                     </div>
                 </div>
 
@@ -435,31 +417,15 @@
             </div>
         </section>
 
-        <!-- Setup & Installation -->
+        <!-- Setup -->
         <section id="setup" class="faq-section mb-12">
             <div class="flex items-center mb-6">
                 <span class="text-3xl mr-3">⚙️</span>
-                <h2 class="text-3xl font-bold text-slate-900">Setup & Installation</h2>
+                <h2 class="text-3xl font-bold text-slate-900">Setup</h2>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="faq-item">
-                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">How do I install the beta?</span>
-                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="hidden px-6 pb-4 text-slate-600">
-                        <ol class="list-decimal list-inside space-y-2 ml-2">
-                            <li>On your iPhone, install the <a href="https://apps.apple.com/us/app/testflight/id899247664" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">TestFlight app</a> from the App Store (if you don't already have it).</li>
-                            <li>Open our <a href="https://testflight.apple.com/join/1kC7Ur8G" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">public TestFlight link</a> on your iPhone, tap Accept, then Install.</li>
-                        </ol>
-                        <p class="mt-3 text-sm text-slate-500 italic">You won't find the beta by searching the App Store. If the link doesn't work, email <a href="mailto:support@heyblu.ai" class="text-blue-600 hover:text-blue-800 font-medium">support@heyblu.ai</a> with your iPhone model and iOS version.</p>
-                    </div>
-                </div>
-
-                <div class="border-t border-slate-200 faq-item">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">What do I need to do before I can get a call?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -469,10 +435,10 @@
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-3 font-semibold text-orange-600">Do not skip these steps:</p>
                         <ol class="list-decimal list-inside space-y-3 ml-2">
-                            <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 3 →</a></li>
+                            <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 2 →</a></li>
                             <li><strong>Place the zone:</strong> This is <strong>initial placement only</strong>: line up the virtual strike zone with the <strong>real home plate</strong> (on or just above the dish), matching position and angle as closely as you can. Try not to bump the phone or plate while the zone is set—you will mount next, then adjust the <strong>camera view</strong> on Mount &amp; Verify.</li>
                             <li><strong>Mount and realign:</strong> Mount on the tripod—<strong>expect the zone to shift</strong>. Slide the zone onto the plate, use Distance/Height or Up/Down for size, use <strong>Adjust Plate</strong> for overhead alignment; on <strong>Pro iPhones</strong> enter measured distance and lens height. Keep the full pitch path between the <strong>red lines</strong> (see <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">wrong and correct placements</a>). If you see drift or unstable tracking, check that the mount is tight and nothing moved.</li>
-                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then use <strong>Calibrate</strong> and tap the <strong>9-zone grid</strong> where the pitch crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start steps 6–7 →</a></li>
+                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then use <strong>Calibrate</strong> and tap the <strong>9-zone grid</strong> where the pitch crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start steps 5–6 →</a></li>
                             <li><strong>Tap "Play Ball":</strong> HeyBLU calls pitches once you're tracking live (use <strong>Pause, Warm Up</strong> anytime you need to stop).</li>
                         </ol>
                         <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
@@ -539,7 +505,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 3</a> for scan tips and step 5 for post-mount realignment.</p>
+                        <p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">See Quick Start step 2</a> for scan tips and step 4 for post-mount realignment.</p>
                         <p class="mb-3">After placing the zone, minimize movement; mount without bumping the tripod. If calls look consistently biased after a stable mount, use <strong>Calibrate</strong> on the primary device.</p>
                         <p class="font-semibold text-green-600">Fix: Check that the mount is tight and nothing moved. Tighten the mount, avoid bumping the tripod, and on windy days consider weighing it down or moving to a sheltered spot.</p>
                     </div>
@@ -560,11 +526,11 @@
             </div>
         </section>
 
-        <!-- Beta Feedback -->
+        <!-- Feedback -->
         <section id="feedback" class="faq-section mb-12">
             <div class="flex items-center mb-6">
                 <span class="text-3xl mr-3">🐛</span>
-                <h2 class="text-3xl font-bold text-slate-900">Beta Feedback</h2>
+                <h2 class="text-3xl font-bold text-slate-900">Feedback</h2>
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -588,11 +554,11 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-4">Your feedback is the reason we are doing this beta! To report an issue:</p>
+                        <p class="mb-4">We read every report. To reach us:</p>
                         <ul class="list-disc list-inside space-y-2 ml-2 mb-4">
-                            <li>Join our <a href="https://join.slack.com/t/heyblubetatesting/shared_invite/zt-3rf357c06-AbpNi3XGnco7TMQpJ_87nw" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">Slack channel</a> for real-time discussion and support.</li>
-                            <li>Reply directly to the email we sent you when you joined.</li>
-                            <li>Want to refer a coach or league? Use the form on our <a href="/#beta" class="text-blue-600 hover:text-blue-800 font-medium">front page</a> (Join Beta section).</li>
+                            <li>Email <a href="mailto:support@heyblu.ai" class="text-blue-600 hover:text-blue-800 font-medium">support@heyblu.ai</a> with the details below.</li>
+                            <li>Use our <a href="/support" class="text-blue-600 hover:text-blue-800 font-medium">support form</a>.</li>
+                            <li>Want to refer a coach or league? <a href="/#beta" class="text-blue-600 hover:text-blue-800 font-medium">Join the waitlist</a> on the homepage.</li>
                         </ul>
                         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
                             <p class="font-semibold text-blue-900 mb-2">When reporting an issue, please include:</p>
@@ -617,8 +583,8 @@
         <div class="max-w-4xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div>
-                    <h3 class="font-bold mb-4 text-white">Beta FAQ</h3>
-                    <p class="text-sm">Comprehensive guide for HeyBLU beta testers. Help us build the future of pitch calling.</p>
+                    <h3 class="font-bold mb-4 text-white">FAQ</h3>
+                    <p class="text-sm">Quick start, setup, and troubleshooting for HeyBLU in the bullpen.</p>
                 </div>
                 <div>
                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
@@ -723,31 +689,6 @@
             openFaqFromHash();
         }
         window.addEventListener('hashchange', openFaqFromHash);
-
-        // Slack invite bubble: show once per session after a short delay
-        (function() {
-            var BUBBLE_KEY = 'betablu-slack-bubble-dismissed';
-            var bubble = document.getElementById('slack-invite-bubble');
-            var dismissBtn = document.getElementById('slack-bubble-dismiss');
-            if (!bubble || !dismissBtn) return;
-
-            function hideBubble() {
-                bubble.classList.add('hidden');
-                try { sessionStorage.setItem(BUBBLE_KEY, '1'); } catch (e) {}
-            }
-
-            function showBubble() {
-                try { if (sessionStorage.getItem(BUBBLE_KEY)) return; } catch (e) {}
-                bubble.classList.remove('hidden');
-            }
-
-            dismissBtn.addEventListener('click', hideBubble);
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && !bubble.classList.contains('hidden')) hideBubble();
-            });
-
-            setTimeout(showBubble, 1500);
-        })();
     </script>
 
 </body>
