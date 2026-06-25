@@ -21,10 +21,10 @@
             color: #1e293b;
         }
         .faq-section {
-            scroll-margin-top: 80px;
+            scroll-margin-top: 120px;
         }
         #quick-start {
-            scroll-margin-top: 80px;
+            scroll-margin-top: 120px;
         }
         .faq-item {
             transition: all 0.2s ease;
@@ -46,7 +46,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col">
+<body class="bg-slate-50 min-h-screen flex flex-col pt-16">
 
     <!-- Slack invite bubble (first-visit callout) -->
     <div id="slack-invite-bubble" class="fixed bottom-4 right-4 z-40 max-w-sm hidden" role="dialog" aria-label="Beta tester invite" aria-live="polite">
@@ -59,44 +59,41 @@
         </div>
     </div>
 
-    <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <!-- Global site nav -->
+    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm"></header>
+    <script src="/site-nav.js"></script>
+
+    <!-- FAQ section nav -->
+    <nav class="bg-white border-b border-slate-200 sticky top-16 z-40" aria-label="FAQ sections">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="/" class="flex items-center" aria-label="HeyBLU Home">
-                    <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
-                </a>
-                <!-- Quick Nav -->
-                <nav class="hidden md:flex space-x-4 text-sm">
-                    <a href="/#playbook" class="text-slate-600 hover:text-blue-600 transition">Playbook</a>
+            <div class="flex justify-end items-center h-12">
+                <div class="hidden md:flex space-x-4 text-sm">
                     <a href="#quick-start" class="text-slate-600 hover:text-blue-600 transition">Quick Start</a>
                     <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
                     <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
                     <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
                     <a href="#troubleshooting" class="text-slate-600 hover:text-blue-600 transition">Troubleshooting</a>
                     <a href="#feedback" class="text-slate-600 hover:text-blue-600 transition">Feedback</a>
-                </nav>
-                <button id="mobile-menu-btn" class="md:hidden text-slate-500 hover:text-slate-700">
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-slate-500 hover:text-slate-700" aria-expanded="false" aria-controls="faq-mobile-menu" aria-label="Open FAQ menu">
                     <span class="text-2xl">☰</span>
                 </button>
             </div>
         </div>
-        <!-- Mobile Nav -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200">
+        <div id="faq-mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
             <div class="px-4 py-3 space-y-2">
-                <a href="/#playbook" class="block py-2 text-slate-700 hover:text-blue-600">Playbook</a>
                 <a href="#quick-start" class="block py-2 text-slate-700 hover:text-blue-600 font-semibold">Quick Start</a>
                 <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
-                <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices & Environment</a>
-                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup & Installation</a>
+                <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices &amp; Environment</a>
+                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup &amp; Installation</a>
                 <a href="#troubleshooting" class="block py-2 text-slate-700 hover:text-blue-600">Troubleshooting</a>
                 <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Beta Feedback</a>
             </div>
         </div>
-    </header>
+    </nav>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full">
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-5 w-full pt-6">
         
         <!-- Welcome Section -->
         <div class="mb-6">
@@ -640,9 +637,9 @@
             content.classList.toggle('hidden');
         }
 
-        // Mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+        // FAQ mobile menu toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', function () {
+            document.getElementById('faq-mobile-menu').classList.toggle('hidden');
         });
 
         // Smooth scroll for anchor links; open FAQ row when target is an faq-item
@@ -660,8 +657,10 @@
                         }
                     }
                     target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    // Close mobile menu if open
-                    document.getElementById('mobile-menu').classList.add('hidden');
+                    var faqMenu = document.getElementById('faq-mobile-menu');
+                    if (faqMenu) faqMenu.classList.add('hidden');
+                    var siteMenu = document.getElementById('mobile-menu');
+                    if (siteMenu) siteMenu.classList.add('hidden');
                 }
             });
         });
