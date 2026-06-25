@@ -21,7 +21,40 @@
 <body class="bg-gray-50 text-gray-900">
 
     <!-- Header -->
-    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm"></header>
+    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3">
+                    <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
+                </a>
+                <nav class="hidden md:flex items-center space-x-6" aria-label="Main">
+                    <a href="/#features" class="text-gray-700 hover:text-blue-600 font-medium transition">Features</a>
+                    <a href="/#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
+                    <a href="/#playbook" class="text-gray-700 hover:text-blue-600 font-medium transition">Use Cases</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition">Pricing</a>
+                    <a href="/about" class="text-gray-700 hover:text-blue-600 font-medium transition">About</a>
+                    <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">FAQ</a>
+                    <a href="/field-guide" class="text-gray-700 hover:text-blue-600 font-medium transition">Field Guide</a>
+                    <a href="/#field-notes" class="text-gray-700 hover:text-blue-600 font-medium transition">Field Notes</a>
+                    <a href="/#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Waitlist</a>
+                </nav>
+                <button type="button" id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="/#features" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Features</a>
+                <a href="/#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
+                <a href="/#playbook" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Use Cases</a>
+                <a href="/pricing" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Pricing</a>
+                <a href="/about" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">About</a>
+                <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">FAQ</a>
+                <a href="/field-guide" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Field Guide</a>
+                <a href="/#field-notes" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Field Notes</a>
+                <a href="/#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
     <script src="/site-nav.js"></script>
 
     <main class="pt-16">
