@@ -50,7 +50,7 @@ _Note on StoreKit 2: This is Apple's modern billing framework for subscriptions 
 | Tier | What You Get | Price |
 | :--- | :--- | :--- |
 | **Free — forever** | Live ball/strike audio calls, on-screen pitch location, pitch count, Pause/Warm-Up, Delete last pitch | $0 |
-| **HeyBLU Pro** | Session reports, heatmaps, Baseball Card graphics, CSV/JSON export, Command Training | $10.99/month or $99/year |
+| **HeyBLU Pro** | Session reports, heatmaps, Baseball Card graphics, CSV/JSON export, Command Training | $14.99/month or $99.99/year |
 
 **Open items for team discussion:**
 - **Follow Game (second-device live mirror):** Not yet finalized — discuss whether this is Free or Pro. Argument for Free: it extends the product's reach to parents and bench coaches at zero cost to you and makes the primary operator look like a hero. Argument for Pro: it is a clear "professional workflow" feature. Decide before submission.
@@ -373,7 +373,7 @@ Apple allows "Special Event" promotions in App Store Connect that surface apps i
 Copy this to your project management tool. Check every item before submitting to App Store Connect.
 
 ### ⚙️ Technical / Product
-- [ ] StoreKit 2 IAP implemented and sandbox-tested ($10.99/mo and $99/yr)
+- [ ] StoreKit 2 IAP implemented and sandbox-tested ($14.99/mo and $99.99/yr)
 - [ ] Pro feature gates confirmed working: session reports, CSV/JSON export, heatmaps, Baseball Card, Command Training
 - [ ] "Zone will shift after mounting" warning added in app before walk phase (all users)
 - [ ] "LiDAR/Pro iPhone detected" banner added in mount phase with Physical Measurements prompt
@@ -417,7 +417,7 @@ Copy this to your project management tool. Check every item before submitting to
 - [ ] Product Hunt post scheduled for 12:01am PT on launch day
 
 ### 📋 Business & Strategy
-- [ ] Pricing finalized ($10.99/mo or $99/yr) — team sign-off
+- [ ] Pricing finalized ($14.99/mo or $99.99/yr) — team sign-off
 - [ ] Follow Game tier finalized — team sign-off
 - [ ] ICP confirmed with CRO — team sign-off
 - [ ] Launch date selected (Tuesday or Wednesday, ideally February for spring ball season)
@@ -451,7 +451,7 @@ Copy this to your project management tool. Check every item before submitting to
 
 When coaches or league admins ask "What's free and what costs money?":
 
-> "Hearing ball or strike on every pitch is free forever — we never charge for that. If you want the full picture after a session — a report showing where every pitch went, heatmaps, a shareable Baseball Card graphic for the pitcher — that's HeyBLU Pro at $10.99/month or $99 for the whole year. A lot of coaches use the free version for games and upgrade when they want the coaching data."
+> "Hearing ball or strike on every pitch is free forever — we never charge for that. If you want the full picture after a session — a report showing where every pitch went, heatmaps, a shareable Baseball Card graphic for the pitcher — that's HeyBLU Pro at $14.99/month or $99.99 for the whole year. A lot of coaches use the free version for games and upgrade when they want the coaching data."
 
 This positions the paywall correctly: you are charging for the artifact (the report), not the experience (the call).
 

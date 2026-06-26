@@ -40,7 +40,7 @@ Recommended model (Pending final review):
 | Tier | What You Get | Price |
 | :--- | :--- | :--- |
 | **Free — forever** | Live ball/strike audio calls, on-screen pitch location, pitch count, Pause/Warm-Up, Delete last pitch | $0 |
-| **HeyBLU Pro** | Session reports, heatmaps, Baseball Card graphics, CSV/JSON export, Command Training | $10.99/month or $99/year |
+| **HeyBLU Pro** | Session reports, heatmaps, Baseball Card graphics, CSV/JSON export, Command Training | $14.99/month or $99.99/year |
 *(Note: "Follow Game" has not been finalized as free. Discuss with team whether this goes to Pro).*
 
 ### Decision 2: The Target ICP for Launch Day (For CRO Discussion)
@@ -130,7 +130,7 @@ Your goal is 25+ reviews in the first 2 weeks.
 ## Part 8 — Pre-Launch Checklist
 
 **Product / Technical**
-- [ ] Implement StoreKit 2 IAP ($10.99/mo or $99/yr)
+- [ ] Implement StoreKit 2 IAP ($14.99/mo or $99.99/yr)
 - [ ] Move "Email HeyBLU" support link to Session Ended / Play Ball view
 - [ ] Add LiDAR walk-phase drift warning in onboarding
 - [ ] Finalize "Follow Game" tier placement (Free vs Pro)

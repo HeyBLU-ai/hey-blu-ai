@@ -333,7 +333,7 @@ Per SEO plan (hub + spokes); optimized for **App Store-discovered keywords** on 
 3. **Pocket Radar PLUS price:** Not captured in this pass — verify for cost table.
 4. **Driveline Intended Zones availability:** Pro PLUS + TrackMan — consumer vs facility-only?
 5. **Zone Traxx Bullpen mode:** Live in app vs website-only?
-6. **HeyBLU Pro pricing:** Still TBD — omit price advantage tables until finalized.
+6. **HeyBLU Pro pricing:** **$14.99/mo** or **$99.99/yr** (App Store Connect + heyblu.ai/pricing, 2026-06).
 7. **“Only phone app with live B/S” claim:** Team confirms PitchLab and Ember lack B/S calls; legal review before publishing absolutes.
 
 **Resolved (team input, 2026-05-24):**
