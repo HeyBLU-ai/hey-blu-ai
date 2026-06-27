@@ -80,8 +80,11 @@
         #playbook {
             scroll-margin-top: 5rem;
         }
-        .use-case-card {
+        #pricing {
             scroll-margin-top: 5rem;
+        }
+        .pricing-check {
+            flex-shrink: 0;
         }
     </style>
     <script src="/site-config.js"></script>
@@ -293,35 +296,129 @@
                     <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Pricing</h2>
                     <p class="text-lg text-gray-600 mt-3 max-w-xl mx-auto">Live ball/strike calls are free—Pro saves sessions and reports.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto">
+
+                <!-- Monthly / Annual toggle -->
+                <div class="flex flex-wrap items-center justify-center gap-3 mb-10" role="group" aria-label="Billing period">
+                    <span id="pricing-label-monthly" class="text-sm font-semibold text-gray-900">Monthly</span>
+                    <button type="button" id="pricing-billing-toggle" role="switch" aria-checked="false" aria-labelledby="pricing-label-monthly pricing-label-annual" class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
+                        <span class="pointer-events-none absolute left-0.5 top-0.5 inline-block h-7 w-7 rounded-full bg-white shadow transition-transform duration-200 ease-in-out" id="pricing-toggle-knob"></span>
+                    </button>
+                    <span class="inline-flex items-center gap-2">
+                        <span id="pricing-label-annual" class="text-sm font-semibold text-gray-500">Annual</span>
+                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-800">Save 44%</span>
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
+                    <!-- Free -->
                     <div class="bg-gray-50 rounded-2xl border-2 border-gray-200 p-6 flex flex-col">
                         <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Free</p>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">HeyBLU</h3>
-                        <p class="text-2xl font-extrabold text-gray-900 mb-1">$0</p>
-                        <p class="text-xs text-gray-500 mb-4">Always free</p>
-                        <ul class="text-gray-600 text-sm space-y-2 flex-grow">
-                            <li>Unlimited live ball/strike audio during sessions</li>
-                            <li>On-screen pitch tracking and strike-zone view</li>
-                            <li>Follow Game live viewing on a second device</li>
-                            <li>Current session summary while the session is active</li>
+                        <p class="text-3xl font-extrabold text-gray-900 mb-1">$0</p>
+                        <p class="text-xs text-gray-500 mb-5">Always free</p>
+                        <ul class="text-gray-600 text-sm space-y-3 flex-grow">
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Live ball/strike audio &amp; on-screen tracking</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Follow Game on a second device</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Command Center &amp; active-session summary</span>
+                            </li>
                         </ul>
-                        <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-gray-200">Live feedback is included on every session. Saving and revisiting sessions requires Pro.</p>
                     </div>
-                    <div class="bg-blue-50 rounded-2xl border-2 border-blue-200 p-6 flex flex-col">
+
+                    <!-- Pro -->
+                    <div class="bg-blue-50 rounded-2xl border-2 border-blue-200 p-6 flex flex-col relative">
                         <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Pro</p>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">HeyBLU Pro</h3>
-                        <p class="text-2xl font-extrabold text-gray-900 mb-1">$14.99<span class="text-base font-semibold text-gray-600">/mo</span></p>
-                        <p class="text-sm font-semibold text-blue-700 mb-4">or $99.99/year</p>
-                        <ul class="text-gray-600 text-sm space-y-2 flex-grow">
-                            <li>Everything in Free</li>
-                            <li>Session History (saved sessions)</li>
-                            <li>Session reports and shareable graphics</li>
-                            <li>Heatmaps, pitch logs, and CSV export</li>
-                            <li>Multi-pitcher filtering and coaching tools</li>
+                        <p class="text-3xl font-extrabold text-gray-900 mb-0" id="pro-price-display">$14.99<span class="text-lg font-semibold text-gray-600">/mo</span></p>
+                        <p class="text-sm text-blue-700 mt-1 mb-5 min-h-[1.25rem]" id="pro-price-note" aria-live="polite"></p>
+                        <p class="text-sm font-bold text-gray-900 mb-2">Everything in Free, plus:</p>
+                        <hr class="border-blue-200 mb-4">
+                        <ul class="text-gray-600 text-sm space-y-3 flex-grow">
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Session History</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>Unlimited rosters &amp; heatmap shares</span>
+                            </li>
+                            <li class="flex items-start gap-2.5">
+                                <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                                <span>CSV exports</span>
+                            </li>
                         </ul>
-                        <p class="text-xs text-gray-500 mt-4 pt-4 border-t border-blue-200">Available via in-app subscription through the App Store.</p>
+                        <p class="text-xs text-gray-500 mt-5 pt-4 border-t border-blue-200">Subscribe in the App Store.</p>
                     </div>
                 </div>
+
+                <!-- Feature matrix -->
+                <div class="max-w-4xl mx-auto mb-12">
+                    <h3 class="text-lg font-bold text-gray-900 text-center mb-6">Compare plans</h3>
+                    <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm">
+                        <table class="w-full min-w-[480px] text-sm text-left">
+                            <thead>
+                                <tr class="bg-gray-50 border-b border-gray-200">
+                                    <th scope="col" class="py-3 px-4 font-semibold text-gray-900">Feature</th>
+                                    <th scope="col" class="py-3 px-4 font-semibold text-gray-900 text-center w-28">Free</th>
+                                    <th scope="col" class="py-3 px-4 font-semibold text-blue-700 text-center w-28">Pro</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100 bg-white">
+                                <tr>
+                                    <td class="py-3 px-4 text-gray-700">Live Tracking</td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                </tr>
+                                <tr class="bg-gray-50/50">
+                                    <td class="py-3 px-4 text-gray-700">Follow Game</td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-gray-700">Roster Limits</td>
+                                    <td class="py-3 px-4 text-center font-medium text-gray-900">1</td>
+                                    <td class="py-3 px-4 text-center font-medium text-blue-700">Unlimited</td>
+                                </tr>
+                                <tr class="bg-gray-50/50">
+                                    <td class="py-3 px-4 text-gray-700">Heatmap Shares</td>
+                                    <td class="py-3 px-4 text-center font-medium text-gray-900">1</td>
+                                    <td class="py-3 px-4 text-center font-medium text-blue-700">Unlimited</td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-gray-700">Command Center</td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                </tr>
+                                <tr class="bg-gray-50/50">
+                                    <td class="py-3 px-4 text-gray-700">Session History</td>
+                                    <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="py-3 px-4 text-gray-700">CSV Exports</td>
+                                    <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
+                                    <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Coach tier -->
+                <div class="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-6 max-w-4xl mx-auto mb-8">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Coming soon</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">HeyBLU Coach</h3>
+                    <p class="text-gray-600 text-sm leading-relaxed mb-3">Roster libraries across sessions, bullpen comparisons over time, and team-level exports for pitching coaches and academies. Pricing will appear here when the tier ships in the App Store.</p>
+                    <p class="text-sm"><a href="/coaches" class="text-blue-600 font-semibold underline hover:text-blue-800">Coach guide &amp; waitlist →</a> · League / smart-field workflows: <a href="/smart-field" class="text-blue-600 font-semibold underline hover:text-blue-800">Smart Field</a></p>
+                </div>
+
                 <p class="text-center text-gray-600"><a href="/pricing" class="text-blue-600 font-semibold hover:text-blue-800 underline">Full pricing page</a> · Questions? <a href="/faq" class="text-blue-600 font-semibold hover:text-blue-800 underline">FAQ</a> · League pilots: <a href="mailto:info@heyblu.ai" class="text-blue-600 font-semibold hover:text-blue-800 underline">info@heyblu.ai</a></p>
             </div>
         </section>
@@ -487,6 +584,51 @@
                         }
                     });
             });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('pricing-billing-toggle');
+            var knob = document.getElementById('pricing-toggle-knob');
+            var labelMonthly = document.getElementById('pricing-label-monthly');
+            var labelAnnual = document.getElementById('pricing-label-annual');
+            var priceDisplay = document.getElementById('pro-price-display');
+            var priceNote = document.getElementById('pro-price-note');
+            if (!toggle || !priceDisplay) return;
+
+            var isAnnual = false;
+
+            function setBilling(annual) {
+                isAnnual = annual;
+                toggle.setAttribute('aria-checked', annual ? 'true' : 'false');
+                toggle.classList.toggle('bg-blue-600', annual);
+                toggle.classList.toggle('bg-gray-200', !annual);
+                if (knob) {
+                    knob.style.transform = annual ? 'translateX(1.5rem)' : 'translateX(0)';
+                }
+                if (labelMonthly) {
+                    labelMonthly.classList.toggle('text-gray-900', !annual);
+                    labelMonthly.classList.toggle('text-gray-500', annual);
+                }
+                if (labelAnnual) {
+                    labelAnnual.classList.toggle('text-gray-900', annual);
+                    labelAnnual.classList.toggle('text-gray-500', !annual);
+                }
+                if (annual) {
+                    priceDisplay.innerHTML = '$8.33<span class="text-lg font-semibold text-gray-600">/mo</span>';
+                    if (priceNote) priceNote.textContent = 'Billed annually at $99.99';
+                } else {
+                    priceDisplay.innerHTML = '$14.99<span class="text-lg font-semibold text-gray-600">/mo</span>';
+                    if (priceNote) priceNote.textContent = '';
+                }
+            }
+
+            toggle.addEventListener('click', function () {
+                setBilling(!isAnnual);
+            });
+
+            setBilling(false);
         })();
     </script>
 
