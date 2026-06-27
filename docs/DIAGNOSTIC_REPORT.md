@@ -26,7 +26,7 @@ The product goal is a **zero-hallucination, always-cited answer**. Every answer 
 | **Database** | PostgreSQL (Vercel Postgres / Neon) via `pg` pool |
 | **LLM — Draft answer** | Anthropic Claude Sonnet (`claude-sonnet-4-6`) |
 | **LLM — Routing classifier** | Anthropic Claude Haiku (`claude-haiku-4-5`) |
-| **LLM — Verifier** | Anthropic Claude Opus (`claude-opus-4-8`) |
+| **LLM — Verifier** | Anthropic Claude Sonnet (`claude-sonnet-4-6`) |
 | **Frontend** | Static HTML + vanilla JS (no framework) |
 | **Rulebook ingestion** | Local CLI Node scripts under `scripts/` and `lib/ingest/` |
 | **PDF parsing** | `pdfjs-dist` (via `lib/ingest/parse-source.mjs`) |
@@ -381,10 +381,12 @@ scripts/trace-retrieval.mjs — Diagnostic tool. Use to debug any retrieval fail
 
 ```
 DATABASE_URL              — Postgres connection string
-ANTHROPIC_API_KEY         — Claude API key (Sonnet + Opus + Haiku)
+ANTHROPIC_API_KEY         — Claude API key (Haiku + Sonnet; Opus optional for escalation)
 ADMIN_PASSWORD            — Bearer token for /api/admin/* routes
-ANTHROPIC_ANSWER_MODEL    — defaults to claude-sonnet-4-6
-ANTHROPIC_VERIFY_MODEL    — defaults to claude-opus-4-8
+ANTHROPIC_FAST_MODEL      — defaults to claude-haiku-4-5 (routing classifier, ingest)
+ANTHROPIC_ANSWER_MODEL    — defaults to claude-sonnet-4-6 (RAG draft answers)
+ANTHROPIC_VERIFY_MODEL    — defaults to claude-sonnet-4-6 (verifier gate)
+ANTHROPIC_ESCALATION_MODEL — defaults to claude-opus-4-8 (reserved; not used on happy path)
 RULEBOOK_DEBUG            — set to '1' to include _debug in responses
 ```
 

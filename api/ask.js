@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import pg from 'pg';
 import Anthropic from '@anthropic-ai/sdk';
+import { LLM_ANSWER_MODEL } from '../lib/llm-models.js';
 const { Client, Pool } = pg;
 const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
@@ -176,7 +177,7 @@ Instructions:
 Answer:`;
 
     const message = await anthropic.messages.create({
-      model:      'claude-sonnet-4-6',
+      model:      LLM_ANSWER_MODEL,
       max_tokens: 1024,
       messages:   [{ role: 'user', content: prompt }],
     });

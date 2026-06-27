@@ -321,8 +321,13 @@ When adding a new page/directory:
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `OPENAI_API_KEY` | OpenAI API key for GPT-4 and embeddings | Yes |
-| `DATABASE_URL` | PostgreSQL connection string | No |
+| `ANTHROPIC_API_KEY` | Claude API key for rulebook Q&A | Yes |
+| `OPENAI_API_KEY` | OpenAI API key for embeddings (and ingest tooling) | Yes |
+| `DATABASE_URL` | PostgreSQL connection string | Yes (production) |
+| `ANTHROPIC_FAST_MODEL` | Routing classifier + ingest helpers (default: `claude-haiku-4-5`) | No |
+| `ANTHROPIC_ANSWER_MODEL` | RAG answer drafting (default: `claude-sonnet-4-6`) | No |
+| `ANTHROPIC_VERIFY_MODEL` | Verifier gate (default: `claude-sonnet-4-6`) | No |
+| `ANTHROPIC_ESCALATION_MODEL` | Reserved for future Opus retry path (default: `claude-opus-4-8`) | No |
 | `NODE_ENV` | Environment (production/development) | Optional |
 
 ### Environment-Specific Settings

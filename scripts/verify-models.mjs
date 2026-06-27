@@ -26,14 +26,21 @@ for (const line of envRaw.split('\n')) {
   if (!process.env[key]) process.env[key] = val;
 }
 
+const {
+  LLM_FAST_MODEL,
+  LLM_ANSWER_MODEL,
+  LLM_VERIFY_MODEL,
+  LLM_ESCALATION_MODEL,
+} = await import('../lib/llm-models.js');
+
 const ANTHROPIC_KEY = process.env.ANTHROPIC_API_KEY;
 const OPENAI_KEY    = process.env.OPENAI_API_KEY;
 
 const ANTHROPIC_MODELS = {
-  ANTHROPIC_FAST_MODEL:   process.env.ANTHROPIC_FAST_MODEL,
-  ANTHROPIC_ANSWER_MODEL: process.env.ANTHROPIC_ANSWER_MODEL,
-  ANTHROPIC_VERIFY_MODEL: process.env.ANTHROPIC_VERIFY_MODEL,
-  ANTHROPIC_HEAVY_MODEL:  process.env.ANTHROPIC_HEAVY_MODEL,
+  ANTHROPIC_FAST_MODEL:       process.env.ANTHROPIC_FAST_MODEL       ?? LLM_FAST_MODEL,
+  ANTHROPIC_ANSWER_MODEL:     process.env.ANTHROPIC_ANSWER_MODEL     ?? LLM_ANSWER_MODEL,
+  ANTHROPIC_VERIFY_MODEL:     process.env.ANTHROPIC_VERIFY_MODEL     ?? LLM_VERIFY_MODEL,
+  ANTHROPIC_ESCALATION_MODEL: process.env.ANTHROPIC_ESCALATION_MODEL ?? LLM_ESCALATION_MODEL,
 };
 
 const OPENAI_MODELS = {

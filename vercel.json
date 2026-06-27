@@ -22,6 +22,7 @@
       "src": "api/ask-v2.js",
       "use": "@vercel/node",
       "config": {
+        "maxDuration": 60,
         "includeFiles": ["api/data/**", "api/judgment-matrices.js"]
       }
     },

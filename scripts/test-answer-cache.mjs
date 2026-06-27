@@ -24,6 +24,7 @@ import {
   ANSWER_PROMPT_VERSION,
   canWriteToAnswerCache,
 } from '../api/ask-v2.js';
+import { LLM_ANSWER_MODEL, LLM_VERIFY_MODEL } from '../lib/llm-models.js';
 
 // ── Re-implement the internal helpers locally for isolated DB-mock tests ──────
 // (They mirror the code in api/ask-v2.js exactly so regressions are caught.)
@@ -62,8 +63,8 @@ function writeAnswerCache(dbPool, {
 }) {
   if (!canWriteToAnswerCache({ verifierStatus, extraContext })) return;
 
-  const draftModel  = process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6';
-  const verifyModel = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
+  const draftModel  = LLM_ANSWER_MODEL;
+  const verifyModel = LLM_VERIFY_MODEL;
 
   dbPool.query(`
     INSERT INTO verified_answer_cache

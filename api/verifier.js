@@ -29,6 +29,7 @@
 // ── System prompt ─────────────────────────────────────────────────────────────
 
 import { formatEvidenceBundlesForVerifier } from '../lib/ingest/evidence-bundle.js';
+import { LLM_VERIFY_MODEL } from '../lib/llm-models.js';
 
 export const VERIFIER_SYSTEM_PROMPT = `\
 You are a strict fact-checking verifier for a baseball rules Q&A system.
@@ -137,14 +138,14 @@ export function isVerifierBlocked(audit) {
  * @returns {Promise<Object>}  Verifier audit (may be a synthetic error sentinel).
  */
 export async function runVerifier({ anthropicClient, draftAnswer, bundles }) {
-  const model = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
+  const model = LLM_VERIFY_MODEL;
 
   // ── 1. Call the verifier LLM ───────────────────────────────────────────────
   let raw = '';
   try {
     const msg = await anthropicClient.messages.create({
       model,
-      max_tokens: 4096,
+      max_tokens: 2048,
       system:     VERIFIER_SYSTEM_PROMPT,
       messages:   [{ role: 'user', content: buildVerifierPrompt(draftAnswer, bundles) }],
     });

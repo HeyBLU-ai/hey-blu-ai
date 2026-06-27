@@ -54,7 +54,9 @@ function showActionToast(message) {
     let conversation = []; // Holds the entire chat history: [{ user, ai, league, shortUrl, feedbackStatus }]
     let lastUserQuestion = '';
     const CONVERSATION_LIMIT = 4;
+    const ASK_FETCH_TIMEOUT_MS = 45000;
     const INTERVIEW_ESCAPE_LABEL = 'None of these / Ask standard question';
+    let interviewBusy = false;
     let isAsking = false;
     let isListening = false;
     let voiceSafetyTimer = null;
@@ -310,6 +312,28 @@ function showActionToast(message) {
 
     // --- CORE FUNCTIONS ---
 
+    async function fetchAskV2(body) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), ASK_FETCH_TIMEOUT_MS);
+      try {
+        const response = await fetch('/api/ask-v2', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(body),
+          signal:  controller.signal,
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+      } catch (err) {
+        if (err.name === 'AbortError') {
+          throw new Error('Request timed out. The rule lookup took too long — please try again.');
+        }
+        throw err;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
     const LEAGUE_DISCLAIMER_META = {
       bamsbl: {
         name: "Bay Area Men's Senior Baseball League",
@@ -533,14 +557,7 @@ function showActionToast(message) {
           body.matrix_state = { matrix_id: interviewState.matrix_id, answers: { ...interviewState.answers } };
         }
 
-        const response = await fetch('/api/ask-v2', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
+        const data = await fetchAskV2(body);
 
         // ── State B: judgment call — start the interview ──────────────────
         if (data.state === 'needs_clarification') {
@@ -597,6 +614,7 @@ function showActionToast(message) {
 
     function exitInterviewMode() {
       interviewState.active = false;
+      interviewBusy = false;
 
       mainContainer.classList.remove('interview-active');
       interviewPanel.style.display = 'none';
@@ -650,6 +668,36 @@ function showActionToast(message) {
         .map(t => ({ user: t.user, ai: t.ai, league: t.league }));
     }
 
+    function applyInterviewRuling(data, idx) {
+      const reply = stripEmbeddedDisclaimer(data.reply || data.message || 'No answer returned.');
+      conversation[idx].ai     = reply;
+      conversation[idx].league = interviewState.originalLeague;
+      if (data.state === 'unverifiable') {
+        conversation[idx].unverifiable = true;
+      }
+      if (data.usedFallback) {
+        conversation[idx].usedFallback   = data.usedFallback;
+        conversation[idx].fallbackLeague = data.fallbackLeague;
+        conversation[idx].originalLeague = data.originalLeague;
+      }
+      applyDisclaimerMeta(conversation[idx], data);
+      applyRetrievalMeta(conversation[idx], data);
+
+      exitInterviewMode();
+      renderConversation();
+      conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+
+      getShortUrl(interviewState.originalQuestion || conversation[idx].user, reply, conversation[idx].league, '')
+        .then(url => {
+          if (url) {
+            conversation[idx].shortUrl = url;
+            renderConversation();
+          }
+        });
+
+      speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+    }
+
     async function escapeInterviewToStandardRag() {
       const question = interviewState.originalQuestion;
       const league   = interviewState.originalLeague;
@@ -665,51 +713,18 @@ function showActionToast(message) {
       setAskingState(true);
 
       try {
-        const response = await fetch('/api/ask-v2', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({
-            question,
-            league,
-            conversation: buildConversationContext(idx),
-            force_rag:    true,
-          }),
+        const data = await fetchAskV2({
+          question,
+          league,
+          conversation: buildConversationContext(idx),
+          force_rag:    true,
         });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
 
         if (data.state === 'needs_clarification') {
           throw new Error('Standard lookup was routed to the decision tree again.');
         }
 
-        const reply = stripEmbeddedDisclaimer(data.reply || data.message || 'No answer returned.');
-        conversation[idx].ai     = reply;
-        conversation[idx].league = league;
-        if (data.state === 'unverifiable') {
-          conversation[idx].unverifiable = true;
-        }
-        if (data.usedFallback) {
-          conversation[idx].usedFallback   = true;
-          conversation[idx].fallbackLeague = data.fallbackLeague;
-          conversation[idx].originalLeague = data.originalLeague;
-        }
-        applyDisclaimerMeta(conversation[idx], data);
-        applyRetrievalMeta(conversation[idx], data);
-
-        exitInterviewMode();
-        renderConversation();
-        conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
-
-        getShortUrl(question, reply, league, '')
-          .then(url => {
-            if (url) {
-              conversation[idx].shortUrl = url;
-              renderConversation();
-            }
-          });
-
-        speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+        applyInterviewRuling(data, idx);
       } catch (err) {
         console.error('Interview escape error:', err);
         interviewOptionsEl.innerHTML = `
@@ -727,6 +742,9 @@ function showActionToast(message) {
     }
 
     async function submitInterviewAnswer(questionId, answer) {
+      if (interviewBusy) return;
+      interviewBusy = true;
+
       // Store answer (normalise to lowercase to match context_template keys)
       interviewState.answers[questionId] = answer.toLowerCase();
 
@@ -737,59 +755,32 @@ function showActionToast(message) {
           <span>${interviewState.pendingTurnIndex !== null ? 'Looking up the rule\u2026' : 'One moment\u2026'}</span>
         </div>`;
       interviewCancelBtn.style.display = 'none';
+      setAskingState(true);
 
       try {
-        const response = await fetch('/api/ask-v2', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({
-            question:     interviewState.originalQuestion,
-            league:       interviewState.originalLeague,
-            conversation: [],
-            matrix_state: {
-              matrix_id: interviewState.matrix_id,
-              answers:   { ...interviewState.answers },
-            },
-          }),
+        const data = await fetchAskV2({
+          question:     interviewState.originalQuestion,
+          league:       interviewState.originalLeague,
+          conversation: [],
+          matrix_state: {
+            matrix_id: interviewState.matrix_id,
+            answers:   { ...interviewState.answers },
+          },
         });
-
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const data = await response.json();
 
         if (data.state === 'needs_clarification') {
           // More questions — stay in interview mode
           renderInterviewPanel(data);
 
-        } else if (data.state === 'ruling' || data.state === 'answered') {
-          // Interview complete — populate the pending conversation turn
-          const idx = interviewState.pendingTurnIndex;
-          const reply = stripEmbeddedDisclaimer(data.reply || data.message || 'No answer returned.');
+        } else if (
+          data.state === 'ruling' ||
+          data.state === 'answered' ||
+          data.state === 'unverifiable'
+        ) {
+          applyInterviewRuling(data, interviewState.pendingTurnIndex);
 
-          conversation[idx].ai     = reply;
-          conversation[idx].league = interviewState.originalLeague;
-          if (data.usedFallback) {
-            conversation[idx].usedFallback   = data.usedFallback;
-            conversation[idx].fallbackLeague = data.fallbackLeague;
-            conversation[idx].originalLeague = data.originalLeague;
-          }
-          applyDisclaimerMeta(conversation[idx], data);
-          applyRetrievalMeta(conversation[idx], data);
-
-          exitInterviewMode();
-          renderConversation();
-          conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
-
-          // Short URL async — don't block the ruling display
-          getShortUrl(interviewState.originalQuestion || conversation[idx].user, reply, conversation[idx].league, '')
-            .then(url => {
-              if (url) {
-                conversation[idx].shortUrl = url;
-                renderConversation();
-              }
-            });
-
-          // Speak the first sentence of the ruling
-          speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+        } else {
+          throw new Error(`Unexpected response state: ${data.state ?? 'unknown'}`);
         }
 
       } catch (err) {
@@ -807,6 +798,11 @@ function showActionToast(message) {
         interviewOptionsEl.appendChild(retryBtn);
         appendInterviewEscapeHatch();
         interviewCancelBtn.style.display = 'inline-block';
+      } finally {
+        interviewBusy = false;
+        if (!interviewState.active) {
+          unlockInputControls();
+        }
       }
     }
 

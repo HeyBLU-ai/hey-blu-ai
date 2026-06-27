@@ -19,6 +19,7 @@ import {
   buildOrFallbackQuery,
   vectorLiteral,
 } from '../lib/ingest/evidence-bundle.js';
+import { LLM_ANSWER_MODEL, LLM_VERIFY_MODEL } from '../lib/llm-models.js';
 import { VERIFIER_SYSTEM_PROMPT } from '../api/verifier.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -154,7 +155,7 @@ Answer:`;
 
     console.log(`\n[STEP 6] Calling draft model`);
     const draft = await anthropic.messages.create({
-      model: process.env.ANTHROPIC_ANSWER_MODEL || 'claude-sonnet-4-6',
+      model: LLM_ANSWER_MODEL,
       max_tokens: 1024,
       messages: [{ role: 'user', content: fullPrompt }],
     });
@@ -180,7 +181,7 @@ Return JSON only.`;
 
     console.log(`\n[STEP 8] Calling verifier`);
     const verifier = await anthropic.messages.create({
-      model: process.env.ANTHROPIC_VERIFY_MODEL || 'claude-opus-4-8',
+      model: LLM_VERIFY_MODEL,
       max_tokens: 4096,
       system: VERIFIER_SYSTEM_PROMPT,
       messages: [{ role: 'user', content: verifierPrompt }],

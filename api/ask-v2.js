@@ -176,10 +176,23 @@ import {
   vectorLiteral,
   DEFAULT_EVIDENCE_FALLBACK_SCORE_THRESHOLD,
 } from '../lib/ingest/evidence-bundle.js';
+import { LLM_ANSWER_MODEL, LLM_FAST_MODEL, LLM_VERIFY_MODEL } from '../lib/llm-models.js';
 
 const anthropic = process.env.ANTHROPIC_API_KEY
   ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
   : null;
+
+const ANSWER_TIMEOUT_MS = Number(process.env.ANTHROPIC_ANSWER_TIMEOUT_MS ?? 22000);
+const VERIFY_TIMEOUT_MS = Number(process.env.ANTHROPIC_VERIFY_TIMEOUT_MS ?? 12000);
+
+function withTimeout(promise, ms, label = 'Operation') {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms),
+    ),
+  ]);
+}
 
 const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
@@ -220,7 +233,7 @@ async function classifyQuestion(question) {
   if (!anthropic) return null;
   try {
     const msg = await anthropic.messages.create({
-      model:      'claude-haiku-4-5',
+      model:      LLM_FAST_MODEL,
       max_tokens: 150,
       system:     CLASSIFIER_SYSTEM_PROMPT,
       messages:   [{
@@ -596,8 +609,8 @@ function writeAnswerCache(dbPool, {
 }) {
   if (!canWriteToAnswerCache({ verifierStatus, extraContext })) return;
 
-  const draftModel  = process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6';
-  const verifyModel = process.env.ANTHROPIC_VERIFY_MODEL ?? 'claude-opus-4-8';
+  const draftModel  = LLM_ANSWER_MODEL;
+  const verifyModel = LLM_VERIFY_MODEL;
 
   dbPool.query(`
     INSERT INTO verified_answer_cache
@@ -721,11 +734,15 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     fallbackLeagueSlug,
   });
 
-  const message = await anthropic.messages.create({
-    model:      process.env.ANTHROPIC_ANSWER_MODEL ?? 'claude-sonnet-4-6',
-    max_tokens: 1024,
-    messages:   [{ role: 'user', content: prompt }],
-  });
+  const message = await withTimeout(
+    anthropic.messages.create({
+      model:      LLM_ANSWER_MODEL,
+      max_tokens: 1024,
+      messages:   [{ role: 'user', content: prompt }],
+    }),
+    ANSWER_TIMEOUT_MS,
+    'Answer generation',
+  );
 
   const reply = message.content[0]?.text?.trim() || 'No answer received.';
 
@@ -734,8 +751,24 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   // Every factual claim in the draft is checked against the retrieved source
   // spans.  The verifier is fail-closed — any error or ambiguity blocks the
   // draft from reaching the user.
-  const verifierAudit = await runVerifier({ anthropicClient: anthropic, draftAnswer: reply, bundles });
-  const blocked       = isVerifierBlocked(verifierAudit);
+  let verifierAudit;
+  try {
+    verifierAudit = await withTimeout(
+      runVerifier({ anthropicClient: anthropic, draftAnswer: reply, bundles }),
+      VERIFY_TIMEOUT_MS,
+      'Answer verification',
+    );
+  } catch (err) {
+    console.warn('[ask-v2] Verifier timed out (fail-closed):', err.message);
+    verifierAudit = {
+      status:             'unsupported',
+      claims:             [],
+      unsupported_claims: ['verifier_timeout: ' + err.message.slice(0, 120)],
+      confidence:         'low',
+      _error:             'timeout',
+    };
+  }
+  const blocked = isVerifierBlocked(verifierAudit);
 
   // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
   //   Only write if the verifier explicitly approved the answer AND this is not
@@ -875,6 +908,15 @@ async function persistAnswerEvent({
   }
 }
 
+async function persistAnswerEventSafe(args) {
+  try {
+    return await persistAnswerEvent(args);
+  } catch (err) {
+    console.error('[ask-v2] answer_event persist failed (non-fatal):', err.message);
+    return null;
+  }
+}
+
 // ── Main Handler ─────────────────────────────────────────────────────────────
 
 const handler = async (req, res) => {
@@ -974,7 +1016,7 @@ const handler = async (req, res) => {
           });
         }
 
-        const answer_event_id = await persistAnswerEvent({
+        const answer_event_id = await persistAnswerEventSafe({
           league_slug,
           fallback_league_slug: usedFallback ? fallbackLeagueSlug : null,
           sanitizedQuestion,
@@ -1108,7 +1150,7 @@ const handler = async (req, res) => {
       });
     }
 
-    const answer_event_id = await persistAnswerEvent({
+    const answer_event_id = await persistAnswerEventSafe({
       league_slug,
       fallback_league_slug: usedFallback ? fallbackLeagueSlug : null,
       sanitizedQuestion,
