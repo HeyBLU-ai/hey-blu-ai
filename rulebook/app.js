@@ -709,6 +709,10 @@ function showActionToast(message) {
           <div class="spinner"></div>
           <span>Looking up the rule directly\u2026</span>
         </div>`;
+      const labelEl = document.getElementById('interview-label');
+      const progressEl = document.getElementById('interview-progress');
+      if (labelEl) labelEl.textContent = 'Standard rule lookup';
+      if (progressEl) progressEl.textContent = 'Using your original question';
       interviewCancelBtn.style.display = 'none';
       setAskingState(true);
 

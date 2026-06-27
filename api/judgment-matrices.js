@@ -306,7 +306,66 @@ export const JUDGMENT_MATRICES = [
       'A ball touched by a fielder while in foul territory (in front of or beyond the bag) is foul.',
   },
 
-  // ── 6. Appeal Play ────────────────────────────────────────────────────────
+  // ── 6. Tag / Secure Possession (ball dislodged during tag) ─────────────────
+  {
+    id:       'tag_secure_possession',
+    label:    'Tag Play — Secure Possession / Dislodged Ball',
+    triggers: [
+      'dislodged', 'ball gets dislodged', 'ball was dislodged', 'pop out of',
+      'popped out of', 'pop out of the glove', 'popped out of the glove',
+      'pop out of mitt', 'popped out of mitt', 'bobble', 'juggle', 'juggled',
+      're-catch', 're-caught', 'recatch', 'recaught', 're catches',
+      'ball stays in the air', 'stays in the air', 'lose possession',
+      'loses possession', 'lost possession', 'dropped after the tag',
+      'dropped after tag', 'secure possession', 'voluntary release',
+      'loose ball after tag', 'ball comes loose', 'comes out of the glove',
+      'comes out of the mitt', 'comes out of glove',
+    ],
+    questions: [
+      {
+        id:       'play_type_force_or_tag',
+        text:     'Was this a tag play on a non-forced runner, or a force play at a base?',
+        type:     'select',
+        options:  ['Tag play — runner was not forced', 'Force play — runner was forced to that base'],
+        depends_on: null,
+        context_template: {
+          'tag play — runner was not forced':              'This was a TAG play on a non-forced runner (tag required, not just touching the base).',
+          'force play — runner was forced to that base':   'This was a FORCE play — the runner was forced to advance to that base.',
+        },
+      },
+      {
+        id:       'tag_before_dislodged',
+        text:     'Before the ball was dislodged, had the fielder already touched the runner with the ball (or with the gloved hand holding the ball)?',
+        type:     'binary',
+        options:  ['Yes', 'No', 'Unclear'],
+        depends_on: { play_type_force_or_tag: 'tag play — runner was not forced' },
+        context_template: {
+          yes:     'The fielder HAD already touched the runner with the ball (or gloved hand holding the ball) BEFORE the ball was dislodged.',
+          no:      'The fielder had NOT yet touched the runner before the ball was dislodged.',
+          unclear: 'It is unclear whether the tag contact occurred before the ball was dislodged.',
+        },
+      },
+      {
+        id:       'runner_on_base_before_recatch',
+        text:     'When the fielder re-caught the ball, had the runner already touched the base?',
+        type:     'binary',
+        options:  ['Yes — runner reached the base first', 'No — fielder had the ball again first'],
+        depends_on: { play_type_force_or_tag: 'tag play — runner was not forced' },
+        context_template: {
+          'yes — runner reached the base first':     'When the fielder re-caught the ball, the runner had ALREADY touched the base.',
+          'no — fielder had the ball again first':   'When the fielder re-caught the ball, the runner had NOT yet touched the base.',
+        },
+      },
+    ],
+    ruling_hint:
+      'A tag out requires the fielder to touch the runner with the ball or with the gloved hand holding the ball. ' +
+      'If the ball is dislodged from the glove AFTER secure possession is established and the tag is applied, the runner is generally OUT. ' +
+      'If possession was NOT secure at the moment of contact (ball already loose, bobble, or juggling), the tag may NOT be valid — runner may be SAFE. ' +
+      'A voluntary release to transfer the ball is not a loss of possession; an involuntary dislodgement before the tag is complete may invalidate the out. ' +
+      'If the runner reached the base before the fielder regained possession and completed a valid tag, the runner is SAFE.',
+  },
+
+  // ── 7. Appeal Play ────────────────────────────────────────────────────────
   {
     id:       'appeal_play',
     label:    'Appeal Play Procedure',
@@ -366,7 +425,7 @@ export const JUDGMENT_MATRICES = [
       'Batting out of turn appeals must be made before the next pitch to the following batter.',
   },
 
-  // ── 7. Force Play vs. Tag Required ───────────────────────────────────────
+  // ── 8. Force Play vs. Tag Required ───────────────────────────────────────
   {
     id:       'force_vs_tag',
     label:    'Force Play vs. Tag Required',
@@ -499,10 +558,41 @@ export function prescreenForMatrix(question) {
   // Definitional questions are always factual — skip trigger matching entirely.
   if (DEFINITIONAL_PREFIXES.some(p => q.startsWith(p))) return null;
 
+  // Prefer the longest matching trigger across all matrices (most specific wins).
+  let best = null;
   for (const matrix of JUDGMENT_MATRICES) {
-    if (matrix.triggers.some(trigger => q.includes(trigger.toLowerCase()))) {
-      return matrix;
+    for (const trigger of matrix.triggers) {
+      const t = trigger.toLowerCase();
+      if (q.includes(t) && (!best || t.length > best.trigger.length)) {
+        best = { matrix, trigger: t };
+      }
     }
   }
-  return null;
+  return best?.matrix ?? null;
+}
+
+/**
+ * Returns true when the umpire already described a specific play sequence in
+ * enough detail that an interview would ask redundant questions — route
+ * directly to RAG instead.
+ *
+ * Example: "ball gets dislodged, stays in the air, fielder re-catches, runner
+ * reaches the base — safe or out?"
+ */
+export function questionHasDetailedPlayContext(question) {
+  const q = (question ?? '').trim();
+  if (q.length < 70) return false;
+
+  const signals = [
+    /\bsafe or out\b/i,
+    /\bout or safe\b/i,
+    /ball gets dislodged|ball was dislodged|dislodged|pop(ped)? out of (the )?(glove|mitt)/i,
+    /re-?catch|re-?caught|stays in the air|bobble|juggle/i,
+    /\bthen\b.{0,40}\brunner\b/i,
+    /by then the runner|runner (is|was|reached|on) (the |)base/i,
+    /fielder tags|tagged the runner|applied the tag/i,
+  ];
+
+  const hits = signals.filter(re => re.test(q)).length;
+  return hits >= 2;
 }

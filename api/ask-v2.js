@@ -37,6 +37,7 @@ import {
   getNextQuestion,
   buildRulingContext,
   prescreenForMatrix,
+  questionHasDetailedPlayContext,
 } from './judgment-matrices.js';
 import { citationLabelFor, getLeagueMetadata } from '../lib/league-metadata.js';
 
@@ -209,8 +210,14 @@ JUDGMENT CALL CATEGORIES (require extra context to rule correctly):
 - dropped_third_strike     : Whether a batter-runner may advance on a dropped/uncaught third strike
 - check_swing_hbp          : Check-swing ruling, or hit-by-pitch award determination
 - fair_foul_ball           : Fair/foul call for a ball hit near the base lines
-- appeal_play              : Whether an appeal play was valid or properly executed
+- tag_secure_possession    : Tag play where the ball is dislodged, bobbled, or re-caught — was possession secure when the tag was applied?
+- appeal_play              : Post-play APPEAL procedure only (missed base, left early, failed tag-up, batting out of turn) — NOT live tag bobbles
 - force_vs_tag             : Whether a force play or a tag is required on a specific play
+
+IMPORTANT DISTINCTIONS:
+- tag_secure_possession vs appeal_play: A fielder tagging a runner and losing the ball mid-play is tag_secure_possession, NOT appeal_play.
+- appeal_play is ONLY when the defense appeals an infraction after the play (missed base, tag-up, etc.).
+- If the question already describes the full sequence of events (who had the ball, when it was dislodged, who reached the base first), classify as FACTUAL so the rulebook can answer directly.
 
 FACTUAL (no extra context needed — answer directly from the rulebook):
 - Distances, field dimensions, measurements
@@ -1059,7 +1066,7 @@ const handler = async (req, res) => {
       }
     }
 
-    if (!skipMatrixRouter) {
+    if (!skipMatrixRouter && !questionHasDetailedPlayContext(sanitizedQuestion)) {
     // ── 4. New question: route via pre-screen + classifier ─────────────────
     //
     //   Step 1: Keyword pre-screen (zero latency, no API call).

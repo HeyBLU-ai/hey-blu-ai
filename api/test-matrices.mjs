@@ -16,6 +16,7 @@ import {
   prescreenForMatrix,
   getNextQuestion,
   buildRulingContext,
+  questionHasDetailedPlayContext,
 } from './judgment-matrices.js';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -90,6 +91,10 @@ const judgmentQuestions = [
   {
     question: 'Can the defense still appeal that the runner missed second base?',
     expected: 'appeal_play',
+  },
+  {
+    question: 'Fielder tags runner but ball gets dislodged and pops out of the glove — is the runner out?',
+    expected: 'tag_secure_possession',
   },
   {
     question: 'Does the first baseman need to tag the runner or just touch the bag?',
@@ -242,9 +247,26 @@ assert(
   `got: ${ifQ2_2outs?.id}`,
 );
 
-// ── Test 6: Matrix coverage — all 7 matrices present ────────────────────────
+// ── Test 6: Detailed play context skips interview routing ───────────────────
 
-section('TEST 6 · Matrix registry completeness');
+section('TEST 6 · Detailed play context (expect: skip interview → RAG)');
+
+const detailedPlayQuestion =
+  'Fielder tags runner but ball gets dislodged. The ball stays in the air and the fielder re-catches it. By then the runner is on the base. Safe or out?';
+
+assert(
+  'Detailed tag/bobble question has enough play context to skip interview',
+  questionHasDetailedPlayContext(detailedPlayQuestion) === true,
+);
+
+assert(
+  'Detailed play question still prescreens to tag_secure_possession when needed',
+  prescreenForMatrix('ball gets dislodged during a tag play')?.id === 'tag_secure_possession',
+);
+
+// ── Test 7: Matrix registry completeness ────────────────────────────────────
+
+section('TEST 7 · Matrix registry completeness');
 
 const expectedMatrices = [
   'runner_fielder_collision',
@@ -252,6 +274,7 @@ const expectedMatrices = [
   'dropped_third_strike',
   'check_swing_hbp',
   'fair_foul_ball',
+  'tag_secure_possession',
   'appeal_play',
   'force_vs_tag',
 ];
