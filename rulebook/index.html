@@ -307,6 +307,33 @@
     .refine-btn:hover {
       background: #1e40af;
     }
+    .refine-hint {
+      color: #64748b;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      margin: 0 0 0.65rem 0;
+    }
+    .recovery-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 0.65rem;
+    }
+    .recovery-chip {
+      background: #fff;
+      border: 1px solid #cbd5e1;
+      border-radius: 999px;
+      color: #334155;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.35rem 0.75rem;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .recovery-chip:hover {
+      background: #eff6ff;
+      border-color: #93c5fd;
+    }
 
     /* Modal styles (from previous version, kept for consistency) */
     .modal {
@@ -584,12 +611,14 @@
         <!-- Conversation turns will be rendered here -->
       </div>
 
-      <!-- Refine Section (appears only after thumbs down) -->
+      <!-- Recovery / refine (unverifiable, errors, or thumbs down) -->
       <div class="refine-section" id="refine-section">
-        <div class="refine-title">Didn't get what you expected?</div>
+        <div class="refine-title" id="refine-title">Didn't get what you expected?</div>
+        <p class="refine-hint" id="refine-hint" hidden></p>
+        <div class="recovery-chips" id="recovery-chips" hidden></div>
         <div class="refine-input-row">
           <input class="refine-input" type="text" id="refine-input" placeholder="Add context or clarify (e.g., 'runner on third')">
-          <button class="refine-btn" type="button" id="refine-btn">Refine Question</button>
+          <button class="refine-btn" type="button" id="refine-btn">Try again</button>
         </div>
       </div>
 

@@ -86,8 +86,21 @@ function showActionToast(message) {
     const interviewCancelBtn           = document.getElementById("interview-cancel");
     const mainContainer                = document.querySelector(".container");
     const refineSection = document.getElementById("refine-section");
+    const refineTitleEl = document.getElementById("refine-title");
+    const refineHintEl = document.getElementById("refine-hint");
+    const recoveryChipsEl = document.getElementById("recovery-chips");
     const refineInput = document.getElementById("refine-input");
     const refineBtn = document.getElementById("refine-btn");
+    let recoverySourceQuestion = '';
+    let recoveryForceRag = false;
+
+    const RECOVERY_CHIPS = [
+      { label: 'Tag / possession', context: 'Play type: tag play — secure possession of the ball during the tag (e.g., ball dislodged from glove, re-catch).' },
+      { label: 'Force play', context: 'Play type: force play — runner was forced to advance to the base.' },
+      { label: 'Obstruction / interference', context: 'Play type: runner–fielder contact — obstruction or interference between runner and fielder.' },
+      { label: 'Appeal play', context: 'Play type: appeal — defense appealing a missed base, tag-up, or similar infraction.' },
+      { label: 'Coach / protest', context: 'Topic: coach or manager protest — what calls may be argued or questioned.' },
+    ];
     const feedbackSection = document.getElementById("feedback-section");
     const feedbackTextarea = document.getElementById("feedback-textarea");
     const submitFeedbackBtn = document.getElementById("submit-feedback-btn");
@@ -239,17 +252,14 @@ function showActionToast(message) {
       }
     });
 
-    // Refine button click
     if (refineBtn) refineBtn.addEventListener('click', () => {
-      const context = refineInput.value.trim();
-      if (!context) return; // No context to add
+      submitRecoveryRetry(refineInput.value.trim());
+    });
 
-      // Combine last user question and new context
-      const refinedQ = `${lastUserQuestion}. ${context}`;
-      handleNewQuestion(refinedQ); // Submit as a new question
-      refineInput.value = ''; // Clear refine input
-      refineSection.style.display = 'none'; // Hide refine section after submission
-      feedbackSection.style.display = 'none'; // Hide feedback section after submission
+    if (recoveryChipsEl) recoveryChipsEl.addEventListener('click', (event) => {
+      const chip = event.target.closest('.recovery-chip');
+      if (!chip?.dataset.context) return;
+      submitRecoveryRetry(chip.dataset.context);
     });
 
     // Feedback button clicks
@@ -503,6 +513,76 @@ function showActionToast(message) {
         `;
     }
 
+    function hideRecoveryPanel() {
+      if (refineSection) refineSection.style.display = 'none';
+      if (refineInput) refineInput.value = '';
+      if (refineHintEl) refineHintEl.hidden = true;
+      if (recoveryChipsEl) {
+        recoveryChipsEl.hidden = true;
+        recoveryChipsEl.innerHTML = '';
+      }
+      recoverySourceQuestion = '';
+      recoveryForceRag = false;
+    }
+
+    function showRecoveryPanel(mode, sourceQuestion) {
+      if (!refineSection) return;
+      recoverySourceQuestion = sourceQuestion || lastUserQuestion;
+      recoveryForceRag = mode === 'unverifiable' || mode === 'error';
+
+      if (refineTitleEl) {
+        refineTitleEl.textContent = mode === 'feedback'
+          ? "Didn't get what you expected?"
+          : "We couldn't confirm this from your rulebook";
+      }
+      if (refineHintEl) {
+        if (mode === 'feedback') {
+          refineHintEl.hidden = true;
+        } else {
+          refineHintEl.hidden = false;
+          refineHintEl.textContent = mode === 'error'
+            ? 'Add what happened step by step, or pick a play type below, then try again.'
+            : 'Describe the sequence (what happened first, second, third) or pick the closest play type.';
+        }
+      }
+      if (recoveryChipsEl) {
+        recoveryChipsEl.hidden = false;
+        recoveryChipsEl.innerHTML = '';
+        RECOVERY_CHIPS.forEach((c) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'recovery-chip';
+          btn.textContent = c.label;
+          btn.dataset.context = c.context;
+          recoveryChipsEl.appendChild(btn);
+        });
+      }
+      if (refineInput) {
+        refineInput.placeholder = mode === 'feedback'
+          ? "Add context or clarify (e.g., 'runner on third')"
+          : "e.g., tag applied, ball dislodged, fielder re-caught, runner reached base";
+        refineInput.value = '';
+      }
+      if (refineBtn) {
+        refineBtn.textContent = mode === 'feedback' ? 'Refine question' : 'Try again';
+      }
+
+      refineSection.style.display = 'block';
+      refineSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function submitRecoveryRetry(additionalContext) {
+      const context = (additionalContext ?? '').trim();
+      const base = recoverySourceQuestion || lastUserQuestion;
+      if (!base) return;
+      if (!context && !recoveryForceRag) return;
+
+      const refinedQ = context ? `${base}. ${context}` : base;
+      hideRecoveryPanel();
+      feedbackSection.style.display = 'none';
+      handleNewQuestion(refinedQ, { forceRag: recoveryForceRag });
+    }
+
     function resetConversation() {
       if (interviewState.active) exitInterviewMode();
       interviewState = { active: false, matrix_id: null, matrix_label: null, originalQuestion: null, originalLeague: null, answers: {}, pendingTurnIndex: null };
@@ -510,7 +590,7 @@ function showActionToast(message) {
       conversationHistoryContainer.innerHTML = '';
       questionInput.value = '';
       lastUserQuestion = '';
-      refineSection.style.display = 'none';
+      hideRecoveryPanel();
       feedbackSection.style.display = 'none';
       isAsking = false;
       isListening = false;
@@ -519,21 +599,21 @@ function showActionToast(message) {
       unlockInputControls();
     }
 
-    function handleNewQuestion(questionText) {
+    function handleNewQuestion(questionText, options = {}) {
+      const { forceRag = false } = options;
       const question = questionText.trim();
       if (!question) return;
 
-      lastUserQuestion = question; // Store the current question for potential refinement
+      lastUserQuestion = question;
 
       const selectedLeague = leagueSelect.value;
       const userTurn = { user: question, league: selectedLeague, ai: null, shortUrl: null, feedbackStatus: null, refined: false };
       conversation.push(userTurn);
 
-      renderConversation(); // Show the user's question immediately with a loading state
-      // Don't clear the input field immediately - let the user see what was transcribed
-      // questionInput.value = ''; // Clear main input field
+      hideRecoveryPanel();
+      renderConversation();
 
-      askApi(question, selectedLeague);
+      askApi(question, selectedLeague, { forceRag });
     }
 
     async function askApi(question, league, options = {}) {
@@ -570,6 +650,9 @@ function showActionToast(message) {
         const reply = stripEmbeddedDisclaimer(data?.reply || data?.message || 'No answer returned.');
         conversation[currentTurnIndex].ai     = reply;
         conversation[currentTurnIndex].league = league;
+        if (data.state === 'unverifiable') {
+          conversation[currentTurnIndex].unverifiable = true;
+        }
         if (data.usedFallback) {
           conversation[currentTurnIndex].usedFallback   = true;
           conversation[currentTurnIndex].fallbackLeague = data.fallbackLeague;
@@ -578,18 +661,33 @@ function showActionToast(message) {
         applyDisclaimerMeta(conversation[currentTurnIndex], data);
         applyRetrievalMeta(conversation[currentTurnIndex], data);
 
-        const shortUrl = await getShortUrl(question, reply, league, '');
-        conversation[currentTurnIndex].shortUrl = shortUrl;
+        if (data.state !== 'unverifiable') {
+          const shortUrl = await getShortUrl(question, reply, league, '');
+          conversation[currentTurnIndex].shortUrl = shortUrl;
+        }
 
       } catch (err) {
         console.error('API Error:', err);
-        conversation[currentTurnIndex].ai = `<p style="color:red;">Something went wrong. Please try again.</p>`;
+        const isTimeout = /timed out/i.test(err.message ?? '');
+        conversation[currentTurnIndex].ai = `<p style="color:#dc2626;">${
+          isTimeout
+            ? 'The lookup took too long. Add a few play details below and try again.'
+            : 'Something went wrong. Add play details below and try again.'
+        }</p>`;
+        conversation[currentTurnIndex].recoveryEligible = true;
       } finally {
         if (!wentToInterview) {
           if (interviewState.active) exitInterviewMode();
           renderConversation();
           unlockInputControls();
           conversationHistoryContainer.scrollTop = conversationHistoryContainer.scrollHeight;
+
+          const turn = conversation[currentTurnIndex];
+          if (turn?.unverifiable) {
+            showRecoveryPanel('unverifiable', turn.user);
+          } else if (turn?.recoveryEligible) {
+            showRecoveryPanel('error', turn.user);
+          }
         }
       }
     }
@@ -696,6 +794,10 @@ function showActionToast(message) {
         });
 
       speakFirstSentence(reply.replace(/<[^>]*>/g, ''));
+
+      if (data.state === 'unverifiable') {
+        showRecoveryPanel('unverifiable', conversation[idx].user);
+      }
     }
 
     async function escapeInterviewToStandardRag() {
@@ -940,7 +1042,7 @@ function showActionToast(message) {
       disableFeedbackButtons(button?.closest('.conversation-turn'));
       if (button) button.classList.add('active');
 
-      refineSection.style.display = 'none';
+      hideRecoveryPanel();
       feedbackSection.style.display = 'none';
 
       submitFeedbackToApi(turn, true);
@@ -954,13 +1056,12 @@ function showActionToast(message) {
       if (button) button.classList.add('active');
 
       if (!turn.refined) {
-        refineSection.style.display = 'block';
-        refineInput.value = '';
+        showRecoveryPanel('feedback', turn.user);
         feedbackSection.style.display = 'block';
         feedbackTextarea.value = '';
         turn.refined = true;
       } else {
-        refineSection.style.display = 'none';
+        hideRecoveryPanel();
         feedbackSection.style.display = 'block';
         feedbackTextarea.value = '';
       }
