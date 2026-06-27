@@ -274,6 +274,7 @@
     { "src": "/site-config.js", "dest": "/site-config.js" },
     { "src": "/site-nav.js", "dest": "/site-nav.js" },
     { "src": "/site-download.js", "dest": "/site-download.js" },
+    { "src": "/site-analytics.js", "dest": "/site-analytics.js" },
     { "src": "/docs/setup/(.*)", "dest": "/docs/setup/$1" },
     { "src": "/pitchdeck/(.*)", "dest": "/pitchdeck/$1" },
     { "src": "/pitchdeck2/(.*)", "dest": "/pitchdeck2/$1" },

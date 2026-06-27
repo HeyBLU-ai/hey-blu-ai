@@ -88,6 +88,8 @@
         }
     </style>
     <script src="/site-config.js"></script>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/site-analytics.js"></script>
 </head>
 <body class="bg-gray-50 text-gray-900">
 
@@ -571,6 +573,7 @@
                         if (response.ok) {
                             form.classList.add('hidden');
                             if (successMessage) successMessage.classList.remove('hidden');
+                            document.dispatchEvent(new CustomEvent('heyblu:waitlist-success'));
                             return;
                         }
                         return response.json().then(function (data) {
