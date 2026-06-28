@@ -87,6 +87,7 @@
                     <a href="#quick-start" class="text-slate-600 hover:text-blue-600 transition">Quick Start</a>
                     <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
                     <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
+                    <a href="#connecting-devices" class="text-slate-600 hover:text-blue-600 transition">Two Devices</a>
                     <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
                     <a href="#troubleshooting" class="text-slate-600 hover:text-blue-600 transition">Troubleshooting</a>
                     <a href="#feedback" class="text-slate-600 hover:text-blue-600 transition">Feedback</a>
@@ -101,6 +102,7 @@
                 <a href="#quick-start" class="block py-2 text-slate-700 hover:text-blue-600 font-semibold">Quick Start</a>
                 <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
                 <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices &amp; Environment</a>
+                <a href="#connecting-devices" class="block py-2 text-slate-700 hover:text-blue-600">Connect two devices</a>
                 <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup</a>
                 <a href="#troubleshooting" class="block py-2 text-slate-700 hover:text-blue-600">Troubleshooting</a>
                 <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Feedback</a>
@@ -127,7 +129,7 @@
                         </ul>
                     </li>
                     <li><strong class="text-white">Before you leave:</strong> Clean the lens and turn up the volume.</li>
-                    <li>To <strong class="text-white">Follow Game</strong> or use <strong class="text-white">Command Center</strong>, a shared Wi‑Fi connection is recommended—a 3rd-device hotspot, or a travel router (no cell required, just an open Wi‑Fi channel).</li>
+                    <li>For <strong class="text-white">Follow Game</strong> or <strong class="text-white">Command Center</strong>, use an <strong class="text-white">Android hotspot</strong> or <strong class="text-white">travel router</strong>—not just any Wi‑Fi. <a href="#connecting-devices" class="text-blue-300 underline hover:text-blue-200">What works and what doesn’t →</a></li>
                     <li><strong class="text-white">After mount:</strong> Realign on screen; use <strong class="text-white">Calibrate</strong> on a test pitch if calls are systematically off. Pro iPhones need distance + lens height entered.</li>
                     <li>More tips under <a href="#devices" class="text-blue-400 underline">Devices &amp; Environment</a>.</li>
                 </ul>
@@ -356,8 +358,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">Android is not currently supported.</p>
-                        <p class="mb-0">Use a secondary iPhone or iPad to open the Command Center. From there, you can track intent, resize the zone for different batters, and log pitch locations. The main tracking session runs on iPhone.</p>
+                        <p class="mb-2">Android is not supported as a <strong>tracking</strong> phone—HeyBLU runs on iPhone only.</p>
+                        <p class="mb-2">However, an <strong>Android phone makes an excellent Wi‑Fi hotspot</strong> when you need Follow Game or Command Center. Any cheap Android will do; it does not need a SIM or data plan—just turn on hotspot and have both iPhones join it. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
+                        <p class="mb-0">Use a secondary <strong>iPhone or iPad</strong> to open Command Center or Follow Game. The main tracking session always runs on iPhone.</p>
                     </div>
                 </div>
 
@@ -401,7 +404,7 @@
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-2"><strong>One iPhone (bullpen only):</strong> HeyBLU does not need cell service or internet to call pitches. Airplane mode is optional. Phone calls and alerts do not stop tracking, but they can interrupt ball/strike audio—Do Not Disturb is optional if you want fewer interruptions.</p>
-                        <p class="mb-0"><strong>Two devices</strong> (Command Training, Follow Game, or Calibrate from another phone): keep <strong>Wi‑Fi on</strong> on every device and join the <strong>same network</strong> (travel router, Android hotspot, or facility Wi‑Fi). Do <strong>not</strong> use Airplane Mode with Wi‑Fi off. Do <strong>not</strong> make the tracking iPhone the only Personal Hotspot for the group—use a separate hotspot or router when you can.</p>
+                        <p class="mb-0"><strong>Two devices</strong> (Follow Game, Command Center, or Calibrate from another phone): use an <strong>Android hotspot</strong> or <strong>travel router</strong> when you can. If you must use someone else’s iPhone hotspot, the <strong>Umpire (tracking) iPhone</strong> must turn on <strong>Airplane Mode</strong>, then turn <strong>Wi‑Fi back on</strong>, and join that hotspot before connecting. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
                     </div>
                 </div>
 
@@ -414,6 +417,49 @@
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-0">iOS <strong>Screen Recording</strong> is supported, but it puts extra strain on your iPhone while the camera and tracking are already working hard. You should expect <strong>lower accuracy</strong> and <strong>more missed pitches</strong> than with recording off. For the most reliable calls, <strong>do not screen-record</strong> during a HeyBLU session; if you need video, use a second phone or camera on the side when possible.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connecting two devices -->
+        <section id="connecting-devices" class="faq-section mb-12">
+            <div class="flex items-center mb-6">
+                <span class="text-3xl mr-3">📶</span>
+                <h2 class="text-3xl font-bold text-slate-900">Connect two devices</h2>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect — what works at the field?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3"><strong>Single-phone bullpen tracking does not need Wi‑Fi.</strong> Follow Game and Command Center need your Umpire (tracking) iPhone and your second device to find each other. <strong>Standard iOS Personal Hotspot blocks device-to-device communication by default</strong>—simply joining the same Wi‑Fi or hotspot is not always enough.</p>
+
+                        <p class="mb-2 font-semibold text-slate-900">What works (easiest first)</p>
+                        <ol class="list-decimal list-inside space-y-2 ml-1 mb-4">
+                            <li><strong>Android phone hotspot</strong> — no SIM or data plan required; both iPhones join it. <strong>Our recommended field setup.</strong></li>
+                            <li><strong>Battery travel router</strong> (~$20, e.g. TP-Link TL-WR802N) — plug in, both devices join it; no internet required.</li>
+                            <li><strong>3rd-party iPhone hotspot</strong> (someone else’s phone) — works <strong>only if</strong> the <strong>Umpire iPhone</strong> (primary) first turns on <strong>Airplane Mode</strong>, then turns <strong>Wi‑Fi back on</strong>, and joins that hotspot before opening Follow Game or Command Center.</li>
+                        </ol>
+
+                        <p class="mb-2 font-semibold text-red-700">What does <em>not</em> work</p>
+                        <ul class="list-disc list-inside space-y-2 ml-1 mb-4">
+                            <li><strong>Umpire iPhone acting as its own hotspot</strong> — the tracking phone cannot host the connection for the second device.</li>
+                            <li><strong>Two iPhones on the same iOS Personal Hotspot</strong> without the Airplane Mode + Wi‑Fi step above on the Umpire phone.</li>
+                        </ul>
+
+                        <p class="mb-2 font-semibold text-slate-900">Before you try again</p>
+                        <ul class="list-disc list-inside space-y-2 ml-1 mb-3">
+                            <li><strong>Settings → HeyBLU → Local Network On</strong> on each iPhone.</li>
+                            <li>Both devices on a <strong>working</strong> network—Android hotspot or travel router is most reliable.</li>
+                            <li>Open Follow Game or Command Center <strong>after</strong> both phones are connected.</li>
+                        </ul>
+                        <p class="mb-0 text-sm text-slate-500">Printable summary: <a href="/field-guide#connect-two-devices" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide → Connect two devices</a>.</p>
                     </div>
                 </div>
             </div>
@@ -487,6 +533,20 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">iOS Personal Hotspot often blocks iPhones from seeing each other—even when both are “on Wi‑Fi.” The <strong>Umpire phone cannot host its own hotspot</strong> for the second device.</p>
+                        <p class="mb-3"><strong>Fast fix:</strong> Android phone hotspot (no SIM needed) or a small travel router—both iPhones join it.</p>
+                        <p class="mb-0">Full guide: <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">I didn't get a call on a pitch. Why?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

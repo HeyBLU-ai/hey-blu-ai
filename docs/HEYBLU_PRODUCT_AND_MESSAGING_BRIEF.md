@@ -75,7 +75,7 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 **Ops hygiene (FAQ)**
 
-- **iPhone prep:** Clean lens, volume/Bluetooth audio, **Local Network** on for HeyBLU when using a second device; charge before you go. App keeps screen awake while open (no Auto-Lock change required). Low Power Mode and Do Not Disturb optional. **Single phone:** tracking works offline—airplane mode optional. **Two devices:** Wi‑Fi on, same network (not tracking phone as sole hotspot). Calls/alerts can interrupt audio, not tracking.
+- **iPhone prep:** Clean lens, volume/Bluetooth audio, **Local Network** on for HeyBLU when using a second device; charge before you go. App keeps screen awake while open (no Auto-Lock change required). Low Power Mode and Do Not Disturb optional. **Single phone:** tracking works offline—airplane mode optional. **Two devices:** use Android hotspot or travel router (recommended); iPhone hotspot requires Airplane Mode + Wi‑Fi on Umpire phone first. Umpire phone cannot host its own hotspot. Calls/alerts can interrupt audio, not tracking.
 
 ---
 
