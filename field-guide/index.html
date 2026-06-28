@@ -4,345 +4,412 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#1d4ed8">
-    <meta name="description" content="HeyBLU bullpen field guide: outdoor practice setup for Diamond Dads—tripod inside the fence, red ROI lines, Pro phone distance, and when to restart.">
+    <meta name="description" content="HeyBLU Field Guide: outdoor setup for accurate ball and strike calls—tripod mount, red-line framing, calibration, and troubleshooting.">
     <title>HeyBLU Field Guide</title>
     <link rel="canonical" href="https://heyblu.ai/field-guide">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
     <style>
+        :root {
+            --text: #1e293b;
+            --muted: #475569;
+            --border: #cbd5e1;
+            --blue: #1d4ed8;
+            --blue-light: #eff6ff;
+            --body-size: 1.0625rem; /* 17px */
+        }
+
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background-color: #f3f4f6;
+            font-size: var(--body-size);
+            line-height: 1.55;
+            color: var(--text);
+            background: #f1f5f9;
+            margin: 0;
+            padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
-            padding-left: max(0.5rem, env(safe-area-inset-left));
-            padding-right: max(0.5rem, env(safe-area-inset-right));
-            padding-bottom: max(1rem, env(safe-area-inset-bottom));
         }
 
-        @page {
-            size: letter;
-            margin: 0.3in;
+        a { color: var(--blue); }
+
+        .page {
+            max-width: 42rem;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
         }
+
+        .header {
+            background: #1d4ed8;
+            color: #fff;
+            padding: 1.25rem 1.25rem 1.1rem;
+            border-bottom: 4px solid #f97316;
+        }
+
+        .wordmark {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin: 0 0 0.35rem;
+            line-height: 1.1;
+        }
+
+        .thesis {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+        }
+
+        .scope {
+            font-size: var(--body-size);
+            opacity: 0.92;
+            margin: 0;
+        }
+
+        .jump-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.85rem 1.25rem;
+            background: var(--blue-light);
+            border-bottom: 1px solid #bfdbfe;
+        }
+
+        .jump-nav a {
+            display: inline-block;
+            padding: 0.45rem 0.85rem;
+            min-height: 44px;
+            line-height: 1.35;
+            background: #fff;
+            border: 1px solid #93c5fd;
+            border-radius: 999px;
+            color: #1e40af;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: var(--body-size);
+        }
+
+        .jump-nav a:hover { background: #dbeafe; }
+
+        .content { padding: 1.25rem; }
+
+        section + section {
+            margin-top: 1.75rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.85rem;
+            color: #0f172a;
+        }
+
+        ul, ol {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        li + li { margin-top: 0.55rem; }
+
+        li { color: var(--text); }
+
+        .setup-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .setup-list li {
+            position: relative;
+            padding-left: 1.35rem;
+        }
+
+        .setup-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55em;
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--body-size);
+        }
+
+        th, td {
+            text-align: left;
+            vertical-align: top;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        .table-note {
+            margin: 0.65rem 0 0;
+            color: var(--muted);
+            font-size: var(--body-size);
+        }
+
+        .limits-good, .limits-hassle {
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            margin: 0;
+        }
+
+        .limits-good {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .limits-hassle {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            margin-top: 0.75rem;
+        }
+
+        details.prep {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        details.prep summary {
+            cursor: pointer;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            list-style: none;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        details.prep summary::-webkit-details-marker { display: none; }
+
+        details.prep summary::after {
+            content: '+';
+            margin-left: auto;
+            font-size: 1.25rem;
+            color: var(--muted);
+        }
+
+        details.prep[open] summary::after { content: '−'; }
+
+        details.prep .prep-body {
+            padding: 0 1rem 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (min-width: 640px) {
+            details.prep { border: none; border-radius: 0; }
+            details.prep summary { display: none; }
+            details.prep .prep-body {
+                padding: 0;
+                border-top: none;
+            }
+            .prep-desktop-heading { display: block; }
+        }
+
+        .prep-desktop-heading {
+            display: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.85rem;
+            color: #0f172a;
+        }
+
+        .page-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .page-footer a, .page-footer button {
+            font-size: var(--body-size);
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .print-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.55rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .print-btn:hover { background: #1d4ed8; }
+
+        .no-print { }
+
+        @page { size: letter; margin: 0.35in; }
 
         @media print {
-            body {
-                background-color: white;
-                padding-left: 0;
-                padding-right: 0;
-                padding-bottom: 0;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .page-container {
-                box-shadow: none !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                max-width: 100% !important;
-            }
-            .card {
-                break-inside: avoid;
-            }
-        }
-
-        .card {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            body { background: #fff; padding: 0; }
+            .no-print { display: none !important; }
+            .page { box-shadow: none; border-radius: 0; max-width: 100%; }
+            details.prep summary { display: none; }
+            details.prep .prep-body { padding: 0; border: none; }
+            section { break-inside: avoid; }
         }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/site-analytics.js"></script>
 </head>
-<body class="py-6 sm:py-8">
+<body>
 
-    <div class="max-w-[8.5in] mx-auto flex justify-end mb-4 no-print px-2 sm:px-4">
-        <button type="button" onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold py-3 px-4 min-h-[44px] rounded-lg shadow flex items-center justify-center gap-2 transition touch-manipulation">
-            <i class="ph ph-printer text-xl" aria-hidden="true"></i>
-            <span>Print / Save as PDF</span>
-        </button>
-    </div>
-
-    <div class="page-container max-w-[8.5in] mx-auto bg-white shadow-xl rounded-xl overflow-hidden print:rounded-none text-gray-800">
-
-        <header class="bg-blue-700 text-white p-4 sm:p-6 pb-4 sm:pb-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 border-b-[6px] border-orange-400">
-            <div class="bg-white p-3 rounded-full text-blue-700 shrink-0">
-                <i class="ph-fill ph-baseball text-3xl sm:text-4xl" aria-hidden="true"></i>
-            </div>
-            <div class="min-w-0">
-                <h1 class="text-2xl sm:text-3xl font-black tracking-tight uppercase">HeyBLU</h1>
-                <h2 class="text-lg sm:text-xl font-medium text-blue-100">Bullpen &amp; Practice Field Guide</h2>
-            </div>
+    <div class="page">
+        <header class="header">
+            <h1 class="wordmark">HeyBLU Field Guide</h1>
+            <p class="thesis">Accurate calls start with setup.</p>
+            <p class="scope">Outdoor fields · tripod mount · tested to ~60&nbsp;MPH.</p>
         </header>
 
-        <div class="bg-blue-50 border-b border-blue-100 p-4 px-4 sm:px-6 flex items-start gap-3">
-            <i class="ph-fill ph-warning-circle text-2xl text-blue-600 mt-0.5 shrink-0" aria-hidden="true"></i>
-            <p class="text-sm font-medium leading-relaxed text-blue-900">
-                Built for <strong>outdoor bullpen and practice</strong>—coach, pitcher, catcher, tripod <strong>inside the fence</strong>, daylight, and youth velocities up to ~60&nbsp;MPH tested. Best results come from a stable mount, a clear pitch path, and a full environmental scan before you throw. <span class="bg-red-100 text-red-800 px-1 rounded font-bold">Bad setup = bad calls.</span> More detail: <a href="/faq" class="text-blue-700 underline font-semibold">FAQ</a> · <a href="/compare" class="text-blue-700 underline font-semibold">Strike Zone Tech</a>
-            </p>
-        </div>
+        <nav class="jump-nav no-print" aria-label="Jump to section">
+            <a href="#setup-now">Setup now</a>
+            <a href="#fix-a-problem">Fix a problem</a>
+            <a href="#before-the-field">Before the field</a>
+        </nav>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 sm:p-5">
+        <div class="content">
 
-            <div class="col-span-1 md:col-span-2 card bg-slate-800 text-white rounded-lg overflow-hidden">
-                <div class="p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider border-b border-slate-600">
-                    <i class="ph ph-gear text-lg text-orange-400" aria-hidden="true"></i> Before you leave (quick checks)
-                </div>
-                <ul class="p-3 sm:p-4 pb-2 text-sm grid sm:grid-cols-2 gap-x-6 gap-y-2 list-disc list-inside text-slate-200">
-                    <li><strong class="text-white">Clean the camera lens</strong> before you mount.</li>
-                    <li><strong class="text-white">Volume up</strong>, or connect a <strong>Bluetooth speaker / earbuds</strong> so the pitcher hears calls.</li>
-                    <li><strong class="text-white">HeyBLU → Local Network On</strong> if you use Command Training, Follow Game, or a second device.</li>
+            <section id="setup-now" aria-labelledby="setup-now-heading">
+                <h2 id="setup-now-heading">Setup now</h2>
+                <ul class="setup-list">
+                    <li>Tripod <strong>10–15&nbsp;ft from the plate</strong>, inside the fence, offset to one side.</li>
+                    <li>Ball path between the two <strong>red lines</strong>—zone on one line, mound on the other (don’t center the zone between them).</li>
+                    <li>Virtual plate on the real plate before <strong>Play Ball</strong>; fix shift after mount (slide zone, distance/height, <strong>Adjust Plate</strong>).</li>
+                    <li>Every call wrong? <strong>Calibrate</strong> on a test pitch without a swing.</li>
                 </ul>
-                <p class="px-3 sm:px-4 pb-3 text-xs text-slate-400">Charge your phone before you go; Low Power Mode and Do Not Disturb are optional.</p>
-            </div>
+            </section>
 
-            <div class="flex flex-col gap-4">
+            <section id="fix-a-problem" aria-labelledby="fix-heading">
+                <h2 id="fix-heading">Fix a problem</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">If this happens</th>
+                                <th scope="col">Do this</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>No calls / ball not tracked</td>
+                                <td>Check red-line framing—full flight between both lines</td>
+                            </tr>
+                            <tr>
+                                <td>Zone shifted after mount</td>
+                                <td>Slide zone · Distance/Height · Adjust Plate (Pro: measured distance + lens height)</td>
+                            </tr>
+                            <tr>
+                                <td>Every pitch inside or outside</td>
+                                <td>Calibrate (9-zone grid) on a pitch without contact</td>
+                            </tr>
+                            <tr>
+                                <td>Tripod bumped or long idle</td>
+                                <td>Restart session; rescan if people walked through the scene</td>
+                            </tr>
+                            <tr>
+                                <td>Phone hot in sun</td>
+                                <td>Cool it; thermal throttle hurts AR</td>
+                            </tr>
+                            <tr>
+                                <td>Calibrate after a swing</td>
+                                <td>Use a pitch not swung at (Live at bats when hitters are in the box)</td>
+                            </tr>
+                            <tr>
+                                <td>Still broken after Calibrate</td>
+                                <td>End session and run setup again</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">MPH is approximate (±5). Strike zone ~within one ball width when setup is good.</p>
+            </section>
 
-                <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-backpack text-lg text-orange-400" aria-hidden="true"></i> 1. What to Bring
-                    </div>
-                    <div class="p-3">
-                        <ul class="space-y-3 text-sm">
-                            <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-camera text-blue-600 text-lg" aria-hidden="true"></i></div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900 block"><a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline hover:text-blue-900">Tripod</a> (inside the fence)</strong>
-                                    <span class="text-gray-600 leading-tight block">Hand-holding ruins calls. A <a href="https://a.co/d/0d4wB1XD" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold hover:text-blue-900">refurbished iPhone&nbsp;13 (non-Pro)</a> without cell service is an ideal dedicated device.</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-ruler text-blue-600 text-lg" aria-hidden="true"></i></div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Measuring tape (Pro iPhones)</strong>
-                                    <span class="text-gray-600 leading-tight block">Enter <strong>camera-to-plate distance</strong> and <strong>lens height from the ground</strong> after you mount.</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-baseball text-blue-600 text-lg" aria-hidden="true"></i></div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Game balls</strong>
-                                    <span class="text-gray-600 leading-tight block">Regulation baseballs or yellow softballs—slightly scuffed white baseballs track best; avoid brand-new pearl-white if you can.</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-battery-charging text-blue-600 text-lg" aria-hidden="true"></i></div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Fully charged phone</strong>
-                                    <span class="text-gray-600 leading-tight block">Start with a full charge; a battery pack helps on long sessions.</span>
-                                </div>
-                            </li>
-                            <li class="flex gap-3">
-                                <div class="bg-gray-100 p-1.5 rounded h-min shrink-0"><i class="ph ph-wifi-high text-blue-600 text-lg" aria-hidden="true"></i></div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900 block">Wi-Fi for a second device (optional)</strong>
-                                    <span class="text-gray-600 leading-tight block">Put every device on the <strong>same Wi‑Fi</strong> (travel router, Android hotspot, or facility Wi‑Fi). Do not use the tracking iPhone as the only hotspot host.</span>
-                                </div>
-                            </li>
+            <section id="follow-the-app" aria-labelledby="follow-heading">
+                <h2 id="follow-heading">Follow the app</h2>
+                <ol>
+                    <li><strong>Session setup:</strong> Bullpen (full ball/strike audio) or Live at bats (ball audio can be muted; calls still run).</li>
+                    <li><strong>Scan at the plate</strong>—~30 seconds, slow, plate in view, clear the area.</li>
+                    <li><strong>Place strike zone</strong> on real plate → Lock.</li>
+                    <li><strong>Walk to tripod</strong> (lens clear, smooth movement).</li>
+                    <li><strong>Mount &amp; frame</strong>—red lines, distance/height, Adjust Plate if needed.</li>
+                    <li><strong>Play Ball</strong> when still, path framed, plate aligned.</li>
+                    <li><strong>Calibrate</strong> only if calls are systematically off.</li>
+                </ol>
+                <p style="margin: 0.85rem 0 0;"><strong>Two devices (optional):</strong> Same Wi‑Fi for Follow Game / Command Center; don’t use the tracking phone as the only hotspot.</p>
+            </section>
+
+            <section id="before-the-field" aria-labelledby="prep-heading">
+                <h2 class="prep-desktop-heading" id="prep-heading-desktop">Before the field</h2>
+                <details class="prep" id="prep-details">
+                    <summary id="prep-heading">Before the field</summary>
+                    <div class="prep-body">
+                        <ul>
+                            <li>Volume up or Bluetooth speaker / earbuds</li>
+                            <li>HeyBLU → Local Network On (second device)</li>
+                            <li>Clean camera lens</li>
+                            <li>Tripod (inside fence); measuring tape on Pro phones</li>
+                            <li>Charge phone; battery pack for long sessions</li>
+                            <li>Game balls—slightly scuffed white tracks best</li>
                         </ul>
                     </div>
-                </div>
+                </details>
+            </section>
 
-                <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden">
-                    <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-scan text-lg text-orange-400" aria-hidden="true"></i> 2. Scan (at the Plate)
-                    </div>
-                    <div class="p-4 text-sm">
-                        <ul class="space-y-2">
-                            <li class="flex items-start gap-2">
-                                <i class="ph-fill ph-check-circle text-green-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Move slowly:</strong> ~20–30 seconds—closer, farther, a bit left and right.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <i class="ph-fill ph-check-circle text-green-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Keep plate in view</strong> in a 5–10&nbsp;ft half circle around home plate.</span>
-                            </li>
-                            <li class="flex items-start gap-2">
-                                <i class="ph-fill ph-warning-circle text-orange-500 text-lg mt-0.5 shrink-0" aria-hidden="true"></i>
-                                <span><strong>Clear the area:</strong> Walking bodies during the scan confuse the map.</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="card bg-white border border-blue-200 rounded-lg overflow-hidden bg-blue-50/50">
-                    <div class="bg-blue-600 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-crosshair text-lg text-white" aria-hidden="true"></i> 3. Place Strike Zone
-                    </div>
-                    <div class="p-3 text-sm flex items-start gap-3">
-                        <i class="ph-fill ph-info text-blue-500 text-3xl shrink-0" aria-hidden="true"></i>
-                        <p class="text-gray-700 leading-snug min-w-0">Match the virtual zone to the <strong>real home plate</strong> using on-screen controls, then walk to the tripod. If you use a <strong>temporary plate</strong>, point it straight at the mound.</p>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="flex flex-col gap-4">
-
-                <div class="card bg-white border border-gray-200 rounded-lg overflow-hidden h-full flex flex-col">
-                    <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                        <i class="ph ph-tripod text-lg text-orange-400" aria-hidden="true"></i> 4. Mount &amp; Frame (Red Lines)
-                    </div>
-                    <div class="p-3 text-sm flex-grow min-h-0">
-                        <div class="bg-red-50 text-red-800 text-center p-1.5 rounded font-bold mb-3 border border-red-200">
-                            Expect the zone to shift when you mount. Fix it on screen before Play Ball.
-                        </div>
-
-                        <div class="space-y-4">
-                            <div class="flex gap-3">
-                                <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">1</div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900">Position &amp; height</strong>
-                                    <p class="text-gray-600 mt-0.5"><a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline font-semibold hover:text-blue-900">Tripod</a> <strong>10–15&nbsp;ft from the plate, inside the fence</strong>, offset to the side (from a few feet past the catcher toward either foul line). Set height to the <strong>center of the strike zone</strong>—lower than most people expect. Don't block the lens with fingers or gear.</p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <div class="bg-red-100 text-red-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">2</div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900">Center the <em>pitch path</em> (red ROI)</strong>
-                                    <p class="text-gray-600 mt-0.5">Two <strong>thick red vertical lines</strong> are the detection window. The <strong>full ball flight</strong> must stay between them—not the plate alone in the middle.</p>
-                                    <ul class="mt-2 space-y-1 text-gray-600 list-disc list-inside">
-                                        <li>Align the blue strike zone with the <strong>red line on one side</strong> (plate edge).</li>
-                                        <li>Keep the <strong>mound visible beside the red line on the other side</strong>.</li>
-                                        <li>Do <strong>not</strong> center the zone between the red lines.</li>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">3</div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900">Realign after mount</strong>
-                                    <p class="text-gray-600 mt-0.5">Slide zone onto the plate; use Distance/Height or Up/Down; use <strong>Adjust Plate</strong> for overhead fit. <strong>Pro phone:</strong> enter measured distance and lens height. Tap <strong>Calibrate</strong> on a test pitch if inside/outside is consistently wrong (9-zone grid, <strong>non-contact</strong> pitches only).</p>
-                                </div>
-                            </div>
-
-                            <div class="flex gap-3">
-                                <div class="bg-blue-100 text-blue-800 font-black rounded-full w-6 h-6 flex items-center justify-center shrink-0">4</div>
-                                <div class="min-w-0">
-                                    <strong class="text-gray-900">Play Ball</strong>
-                                    <p class="text-gray-600 mt-0.5">Only when the phone is still, the path is inside both red lines, and the virtual plate matches reality.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="col-span-1 md:col-span-2 card bg-white border border-gray-200 rounded-lg overflow-hidden">
-                <div class="bg-gray-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                    <i class="ph ph-wrench text-lg text-orange-400" aria-hidden="true"></i> Quick Troubleshooting
-                </div>
-                <div class="p-0">
-                    <p class="text-xs text-gray-500 p-2 px-4 bg-gray-50 border-b border-gray-200">Trust your eyes. MPH is an estimate (±5&nbsp;MPH). Ball/strike is roughly within one ball width when setup is good.</p>
-                    <div class="overflow-x-auto -webkit-overflow-scrolling-touch">
-                        <table class="w-full min-w-[20rem] text-left border-collapse text-sm">
-                            <thead>
-                                <tr class="bg-gray-100 text-gray-700">
-                                    <th class="p-2 px-4 border-b border-gray-200 font-semibold w-1/2">If this happens...</th>
-                                    <th class="p-2 px-4 border-b border-gray-200 font-semibold w-1/2">Do this...</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-200 text-gray-700">
-                                <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Zone shifted after mount</td>
-                                    <td class="p-2 px-4 align-top">Slide zone, Distance/Height, <strong>Adjust Plate</strong>; on Pro phones enter <strong>distance + lens height</strong>. Then <strong>Calibrate</strong> with a test pitch.</td>
-                                </tr>
-                                <tr class="bg-gray-50">
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Every call inside or outside</td>
-                                    <td class="p-2 px-4 align-top"><strong>Calibrate</strong> on screen (9-zone grid). Settings <strong>Adjust HeyBLU</strong> is backup only.</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Missing calls / wrong path</td>
-                                    <td class="p-2 px-4 align-top">Check <strong>red-line framing</strong>—full pitch path between lines, not zone centered. <a href="/faq#red-lines-strike-zone" class="text-blue-600 font-medium">FAQ diagram →</a></td>
-                                </tr>
-                                <tr class="bg-gray-50">
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Tripod bumped or idle &gt;10&nbsp;min</td>
-                                    <td class="p-2 px-4 align-top"><strong>Restart the session</strong>—especially if people walked through the scene while idle.</td>
-                                </tr>
-                                <tr>
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Calls stopped; Calibrate didn't fix</td>
-                                    <td class="p-2 px-4 align-top">End session and <strong>redo setup</strong>. Phone hot from sun? Cool it—thermal throttle kills AR.</td>
-                                </tr>
-                                <tr class="bg-gray-50">
-                                    <td class="p-2 px-4 font-medium text-red-600 align-top">Calibrated after contact</td>
-                                    <td class="p-2 px-4 align-top">Batted ball can poison the read. Calibrate on <strong>pitches not swung at</strong> (use Live Batter mode when applicable).</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-span-1 md:col-span-2 card bg-amber-50 border border-amber-200 rounded-lg overflow-hidden">
-                <div class="bg-amber-800 text-white p-2 px-3 flex items-center gap-2 font-bold uppercase text-sm tracking-wider">
-                    <i class="ph ph-warning text-lg text-amber-200" aria-hidden="true"></i> Less Reliable When...
-                </div>
-                <p class="px-3 sm:px-4 pt-3 pb-1 text-sm text-amber-950">HeyBLU may still run in these cases—just expect more dropped reads or setup fuss.</p>
-                <ul class="p-3 sm:p-4 pt-1 text-sm text-amber-950 grid sm:grid-cols-2 gap-x-6 gap-y-2 list-disc list-inside">
-                    <li>Pitch speeds regularly <strong>above ~65–70&nbsp;MPH</strong> (untested; often works, less consistent than ≤60)</li>
-                    <li>Tripod <strong>past ~15&nbsp;ft</strong> from the plate (~20&nbsp;ft can work—closer is better)</li>
-                    <li><strong>Indoor</strong> or artificial lighting only</li>
-                    <li>Phone below <strong>~30%</strong> battery</li>
-                    <li>Hard breaking balls at any speed (still testing)</li>
-                </ul>
-            </div>
+            <section id="limits" aria-labelledby="limits-heading">
+                <h2 id="limits-heading">Limits</h2>
+                <p class="limits-good"><strong>Works best:</strong> outdoor · 10–15&nbsp;ft · daylight · ~60&nbsp;MPH and under.</p>
+                <p class="limits-hassle"><strong>Expect more hassle:</strong> indoor only · much past ~15&nbsp;ft · 65+&nbsp;MPH untested · battery under ~30% · heavy breaking stuff still in testing.</p>
+            </section>
 
         </div>
 
-        <div class="bg-gray-900 text-white p-4 px-4 sm:px-6 text-center text-sm">
-            <span class="text-orange-400 font-black tracking-widest uppercase mr-2 text-base">Remember:</span>
-            Best within <strong>10 to 15 feet</strong> from home plate. Pitch path between the <strong>red lines</strong>; i.e., zone on one line / mound on the other.
-            <span class="block mt-1 font-bold text-blue-300">If you don't get calls at all, or they are consistently wrong, try set up or another scan again.</span>
-        </div>
+        <footer class="page-footer">
+            <button type="button" class="print-btn no-print" onclick="window.print()">Print / Save PDF</button>
+            <a href="/faq">FAQ</a>
+            <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>
+        </footer>
     </div>
 
-    <footer class="bg-gray-800 text-white py-12 px-4">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
-                <div class="sm:col-span-2 lg:col-span-2">
-                    <div class="flex items-center mb-4">
-                        <img src="/images/HeyBLU_transparent_logo_for_drak_background.svg" alt="HeyBLU" class="h-16 md:h-20 w-auto max-w-[300px]" loading="lazy">
-                    </div>
-                    <p class="text-gray-400 mb-3">Big League Umpire in your pocket.</p>
-                    <p class="text-gray-400"><a href="mailto:info@heyblu.ai" class="hover:text-white transition">info@heyblu.ai</a></p>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">Product</h3>
-                    <div class="space-y-2">
-                        <a href="/#playbook" class="block text-gray-400 hover:text-white transition">Use Cases</a>
-                        <a href="/pricing" class="block text-gray-400 hover:text-white transition">Pricing</a>
-                        <a href="/field-guide" class="block text-gray-400 hover:text-white transition">Field Guide</a>
-                        <a href="/compare" class="block text-gray-400 hover:text-white transition">Strike Zone Tech</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">Company</h3>
-                    <div class="space-y-2">
-                        <a href="/about" class="block text-gray-400 hover:text-white transition">About Us</a>
-                        <a href="/faq" class="block text-gray-400 hover:text-white transition">FAQ</a>
-                        <a href="/support" class="block text-gray-400 hover:text-white transition">Support</a>
-                        <a href="/#beta" class="block text-gray-400 hover:text-white transition">Join Waitlist</a>
-                    </div>
-                </div>
-                <div>
-                    <h3 class="font-bold mb-4">Legal</h3>
-                    <div class="space-y-2">
-                        <a href="/privacy" class="block text-gray-400 hover:text-white transition">Privacy Policy</a>
-                        <a href="/terms" class="block text-gray-400 hover:text-white transition">Terms of Service</a>
-                        <a href="https://heyblu.substack.com" target="_blank" rel="noopener noreferrer" class="block text-gray-400 hover:text-white transition">Field Notes</a>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-700 pt-8 text-center">
-                <p class="text-gray-400 text-sm">&copy; 2026 HeyBLU.AI. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
+    <script>
+      (function () {
+        var prep = document.getElementById('prep-details');
+        if (!prep) return;
+        function syncPrep() {
+          prep.open = window.matchMedia('(min-width: 640px)').matches;
+        }
+        syncPrep();
+        window.addEventListener('resize', syncPrep);
+      })();
+    </script>
 </body>
 </html>

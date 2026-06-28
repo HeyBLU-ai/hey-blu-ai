@@ -2,13 +2,414 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HeyBLU Field Guide — moved</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="description" content="HeyBLU Field Guide: outdoor setup for accurate ball and strike calls—tripod mount, red-line framing, calibration, and troubleshooting.">
+    <title>HeyBLU Field Guide</title>
     <link rel="canonical" href="https://heyblu.ai/field-guide">
-    <meta http-equiv="refresh" content="0;url=/field-guide">
-    <script>location.replace('/field-guide');</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --text: #1e293b;
+            --muted: #475569;
+            --border: #cbd5e1;
+            --blue: #1d4ed8;
+            --blue-light: #eff6ff;
+            --body-size: 1.0625rem; /* 17px */
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: var(--body-size);
+            line-height: 1.55;
+            color: var(--text);
+            background: #f1f5f9;
+            margin: 0;
+            padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right)) max(1.5rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        a { color: var(--blue); }
+
+        .page {
+            max-width: 42rem;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #1d4ed8;
+            color: #fff;
+            padding: 1.25rem 1.25rem 1.1rem;
+            border-bottom: 4px solid #f97316;
+        }
+
+        .wordmark {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            margin: 0 0 0.35rem;
+            line-height: 1.1;
+        }
+
+        .thesis {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 0 0 0.5rem;
+        }
+
+        .scope {
+            font-size: var(--body-size);
+            opacity: 0.92;
+            margin: 0;
+        }
+
+        .jump-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 0.85rem 1.25rem;
+            background: var(--blue-light);
+            border-bottom: 1px solid #bfdbfe;
+        }
+
+        .jump-nav a {
+            display: inline-block;
+            padding: 0.45rem 0.85rem;
+            min-height: 44px;
+            line-height: 1.35;
+            background: #fff;
+            border: 1px solid #93c5fd;
+            border-radius: 999px;
+            color: #1e40af;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: var(--body-size);
+        }
+
+        .jump-nav a:hover { background: #dbeafe; }
+
+        .content { padding: 1.25rem; }
+
+        section + section {
+            margin-top: 1.75rem;
+            padding-top: 1.75rem;
+            border-top: 1px solid var(--border);
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.85rem;
+            color: #0f172a;
+        }
+
+        ul, ol {
+            margin: 0;
+            padding-left: 1.25rem;
+        }
+
+        li + li { margin-top: 0.55rem; }
+
+        li { color: var(--text); }
+
+        .setup-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .setup-list li {
+            position: relative;
+            padding-left: 1.35rem;
+        }
+
+        .setup-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.55em;
+            width: 0.45rem;
+            height: 0.45rem;
+            border-radius: 50%;
+            background: #2563eb;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: var(--body-size);
+        }
+
+        th, td {
+            text-align: left;
+            vertical-align: top;
+            padding: 0.65rem 0.75rem;
+            border: 1px solid var(--border);
+        }
+
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+        }
+
+        .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+        .table-note {
+            margin: 0.65rem 0 0;
+            color: var(--muted);
+            font-size: var(--body-size);
+        }
+
+        .limits-good, .limits-hassle {
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            margin: 0;
+        }
+
+        .limits-good {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+        }
+
+        .limits-hassle {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            margin-top: 0.75rem;
+        }
+
+        details.prep {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0;
+        }
+
+        details.prep summary {
+            cursor: pointer;
+            font-weight: 600;
+            padding: 0.85rem 1rem;
+            list-style: none;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+        }
+
+        details.prep summary::-webkit-details-marker { display: none; }
+
+        details.prep summary::after {
+            content: '+';
+            margin-left: auto;
+            font-size: 1.25rem;
+            color: var(--muted);
+        }
+
+        details.prep[open] summary::after { content: '−'; }
+
+        details.prep .prep-body {
+            padding: 0 1rem 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        @media (min-width: 640px) {
+            details.prep { border: none; border-radius: 0; }
+            details.prep summary { display: none; }
+            details.prep .prep-body {
+                padding: 0;
+                border-top: none;
+            }
+            .prep-desktop-heading { display: block; }
+        }
+
+        .prep-desktop-heading {
+            display: none;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 0.85rem;
+            color: #0f172a;
+        }
+
+        .page-footer {
+            padding: 1.25rem;
+            border-top: 1px solid var(--border);
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-start;
+        }
+
+        .page-footer a, .page-footer button {
+            font-size: var(--body-size);
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .print-btn {
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.55rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        .print-btn:hover { background: #1d4ed8; }
+
+        .no-print { }
+
+        @page { size: letter; margin: 0.35in; }
+
+        @media print {
+            body { background: #fff; padding: 0; }
+            .no-print { display: none !important; }
+            .page { box-shadow: none; border-radius: 0; max-width: 100%; }
+            details.prep summary { display: none; }
+            details.prep .prep-body { padding: 0; border: none; }
+            section { break-inside: avoid; }
+        }
+    </style>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/site-analytics.js"></script>
 </head>
 <body>
-    <p>The field guide has moved to <a href="/field-guide">heyblu.ai/field-guide</a>.</p>
+
+    <div class="page">
+        <header class="header">
+            <h1 class="wordmark">HeyBLU Field Guide</h1>
+            <p class="thesis">Accurate calls start with setup.</p>
+            <p class="scope">Outdoor fields · tripod mount · tested to ~60&nbsp;MPH.</p>
+        </header>
+
+        <nav class="jump-nav no-print" aria-label="Jump to section">
+            <a href="#setup-now">Setup now</a>
+            <a href="#fix-a-problem">Fix a problem</a>
+            <a href="#before-the-field">Before the field</a>
+        </nav>
+
+        <div class="content">
+
+            <section id="setup-now" aria-labelledby="setup-now-heading">
+                <h2 id="setup-now-heading">Setup now</h2>
+                <ul class="setup-list">
+                    <li>Tripod <strong>10–15&nbsp;ft from the plate</strong>, inside the fence, offset to one side.</li>
+                    <li>Ball path between the two <strong>red lines</strong>—zone on one line, mound on the other (don’t center the zone between them).</li>
+                    <li>Virtual plate on the real plate before <strong>Play Ball</strong>; fix shift after mount (slide zone, distance/height, <strong>Adjust Plate</strong>).</li>
+                    <li>Every call wrong? <strong>Calibrate</strong> on a test pitch without a swing.</li>
+                </ul>
+            </section>
+
+            <section id="fix-a-problem" aria-labelledby="fix-heading">
+                <h2 id="fix-heading">Fix a problem</h2>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">If this happens</th>
+                                <th scope="col">Do this</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>No calls / ball not tracked</td>
+                                <td>Check red-line framing—full flight between both lines</td>
+                            </tr>
+                            <tr>
+                                <td>Zone shifted after mount</td>
+                                <td>Slide zone · Distance/Height · Adjust Plate (Pro: measured distance + lens height)</td>
+                            </tr>
+                            <tr>
+                                <td>Every pitch inside or outside</td>
+                                <td>Calibrate (9-zone grid) on a pitch without contact</td>
+                            </tr>
+                            <tr>
+                                <td>Tripod bumped or long idle</td>
+                                <td>Restart session; rescan if people walked through the scene</td>
+                            </tr>
+                            <tr>
+                                <td>Phone hot in sun</td>
+                                <td>Cool it; thermal throttle hurts AR</td>
+                            </tr>
+                            <tr>
+                                <td>Calibrate after a swing</td>
+                                <td>Use a pitch not swung at (Live at bats when hitters are in the box)</td>
+                            </tr>
+                            <tr>
+                                <td>Still broken after Calibrate</td>
+                                <td>End session and run setup again</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="table-note">MPH is approximate (±5). Strike zone ~within one ball width when setup is good.</p>
+            </section>
+
+            <section id="follow-the-app" aria-labelledby="follow-heading">
+                <h2 id="follow-heading">Follow the app</h2>
+                <ol>
+                    <li><strong>Session setup:</strong> Bullpen (full ball/strike audio) or Live at bats (ball audio can be muted; calls still run).</li>
+                    <li><strong>Scan at the plate</strong>—~30 seconds, slow, plate in view, clear the area.</li>
+                    <li><strong>Place strike zone</strong> on real plate → Lock.</li>
+                    <li><strong>Walk to tripod</strong> (lens clear, smooth movement).</li>
+                    <li><strong>Mount &amp; frame</strong>—red lines, distance/height, Adjust Plate if needed.</li>
+                    <li><strong>Play Ball</strong> when still, path framed, plate aligned.</li>
+                    <li><strong>Calibrate</strong> only if calls are systematically off.</li>
+                </ol>
+                <p style="margin: 0.85rem 0 0;"><strong>Two devices (optional):</strong> Same Wi‑Fi for Follow Game / Command Center; don’t use the tracking phone as the only hotspot.</p>
+            </section>
+
+            <section id="before-the-field" aria-labelledby="prep-heading">
+                <h2 class="prep-desktop-heading" id="prep-heading-desktop">Before the field</h2>
+                <details class="prep" id="prep-details">
+                    <summary id="prep-heading">Before the field</summary>
+                    <div class="prep-body">
+                        <ul>
+                            <li>Volume up or Bluetooth speaker / earbuds</li>
+                            <li>HeyBLU → Local Network On (second device)</li>
+                            <li>Clean camera lens</li>
+                            <li>Tripod (inside fence); measuring tape on Pro phones</li>
+                            <li>Charge phone; battery pack for long sessions</li>
+                            <li>Game balls—slightly scuffed white tracks best</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <section id="limits" aria-labelledby="limits-heading">
+                <h2 id="limits-heading">Limits</h2>
+                <p class="limits-good"><strong>Works best:</strong> outdoor · 10–15&nbsp;ft · daylight · ~60&nbsp;MPH and under.</p>
+                <p class="limits-hassle"><strong>Expect more hassle:</strong> indoor only · much past ~15&nbsp;ft · 65+&nbsp;MPH untested · battery under ~30% · heavy breaking stuff still in testing.</p>
+            </section>
+
+        </div>
+
+        <footer class="page-footer">
+            <button type="button" class="print-btn no-print" onclick="window.print()">Print / Save PDF</button>
+            <a href="/faq">FAQ</a>
+            <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>
+        </footer>
+    </div>
+
+    <script>
+      (function () {
+        var prep = document.getElementById('prep-details');
+        if (!prep) return;
+        function syncPrep() {
+          prep.open = window.matchMedia('(min-width: 640px)').matches;
+        }
+        syncPrep();
+        window.addEventListener('resize', syncPrep);
+      })();
+    </script>
 </body>
 </html>
