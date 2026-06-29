@@ -168,6 +168,13 @@ Do **not** invent feature parity. In general:
 - That every pitch always gets a call.  
 - That video of players is saved for replay (contradicts FAQ).
 
+**Web page copy — do not repeat positioning on every page**
+
+- **Homepage / compare / coaches / smart-field:** OK to explain what HeyBLU is and who it is for.
+- **Transactional pages (`/pricing`, `/terms`, `/privacy`, `/support`):** Title matches the page (`Pricing`, `Terms`, etc.). No eyebrow labels (“Bullpen & practice”, “For coaches…”) above the H1. The visitor already knows the product; these pages answer one question only (how much, legal, help).
+- **Do not** prepend category tags or use-case reminders on pricing. The plan cards carry the detail.
+- Audience eyebrows belong only on **dedicated audience landings** (`/coaches`, `/smart-field`), not on pricing, FAQ, or field guide.
+
 ---
 
 ## 11. Beta & community (for “join us” CTAs)

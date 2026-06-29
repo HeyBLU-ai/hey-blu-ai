@@ -1,0 +1,28 @@
+---
+description: HeyBLU product, UX, and copy standards — read before user-facing changes
+alwaysApply: true
+---
+
+# HeyBLU standards
+
+Read `docs/HEYBLU_BEST_PRACTICES.md` before editing marketing HTML, FAQ, pricing, or docs.
+
+## Copy priority (sports-tech norm)
+
+Lead like **PitchLab / SwingVision / Pocket Radar / GameChanger**: **features and benefits first**. Users know camera tools need a mount — do not beat them with tripod/setup warnings on homepage, pricing, terms, or coach pages.
+
+Setup detail: **only** `/field-guide`, support troubleshooting, in-app setup flow, and FAQ items that are explicitly about setup.
+
+## Non-negotiables
+
+1. **Transactional pages** (`pricing/`, `terms/`, `privacy/`): H1 = page topic. No eyebrow kickers. No setup essays.
+2. **Tier truth** from iOS paywall: heatmap share free; History, Command Center, multi-pitcher reports, PDF/CSV Pro.
+3. **Never invent** features or tell users how to market the app.
+4. **Wi‑Fi two-device quirks:** FAQ/support/field-guide only — not hero or pricing.
+5. **Minimal diff** — don't add positioning or warning layers the owner didn't ask for.
+
+## Repo split
+
+- Web: marketing site. iOS (`BLU/BLU2`): canonical capabilities.
+
+When unsure, ask — don't pad with generic sports-app filler or liability-style warnings.
