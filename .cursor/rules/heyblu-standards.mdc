@@ -7,11 +7,14 @@ alwaysApply: true
 
 Read `docs/HEYBLU_BEST_PRACTICES.md` before editing marketing HTML, FAQ, pricing, or docs.
 
-## Copy priority (sports-tech norm)
+## Copy edits
 
-Lead like **PitchLab / SwingVision / Pocket Radar / GameChanger**: **features and benefits first**. Users know camera tools need a mount — do not beat them with tripod/setup warnings on homepage, pricing, terms, or coach pages.
+- **Trim duplication** across pages — do not **rewrite** working hero/subhead copy into wordier “benefits” lists.
+- **Hero subhead:** say **iPhone** (iPhone-only). One tripod mention in hero is OK. Do not repeat what H1 already says (umpire/calls).
+- **No synonymous stacking** in one sentence (hear + audio, live + real-time).
+- **Short beats thorough.** Minimal diff — fix only what the user asked for.
 
-Setup detail: **only** `/field-guide`, support troubleshooting, in-app setup flow, and FAQ items that are explicitly about setup.
+Do not beat users with tripod/setup on **pricing, terms, or every card**. Setup detail: `/field-guide`, support, setup FAQ only.
 
 ## Non-negotiables
 

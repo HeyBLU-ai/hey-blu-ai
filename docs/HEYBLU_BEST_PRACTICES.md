@@ -15,9 +15,19 @@
 HeyBLU sits next to **PitchLab**, **SwingVision**, **Pocket Radar**, and **GameChanger** streaming. Users in this category **already understand** that camera-based tools need a **stable mount** — tripod, fence clip, or stand. Those products lead with **what you get**, not lectures about hardware.
 
 **User-facing copy must follow the same norm:**
-- **Lead with outcomes:** ball/strike calls, pitch location, heatmaps, Command Center, session reports, speed readout.
-- **Assume the user gets it.** One casual mention of mount/tripod on discovery pages is enough (e.g. in a “How it works” step). Do not repeat it on pricing, terms, FAQ pricing sections, or hero subheads.
-- **Setup detail lives in one place:** `/field-guide`, in-app setup flow, and support troubleshooting — not sprinkled across the site.
+- **Lead with outcomes** — not hardware lectures on every page.
+- **Assume the user gets it.** Do not repeat tripod/setup warnings on pricing, terms, or every feature card. **Homepage hero:** one line with **iPhone** (+ tripod link) is fine—that is product truth, not fear-mongering.
+- **Setup detail lives in one place:** `/field-guide`, in-app setup flow, and support troubleshooting — not sprinkled site-wide.
+
+### Copy edits — do not “improve” working sentences
+
+When trimming duplication, **delete** repeated warnings elsewhere; **do not rewrite** the hero or subhead into a longer AI sentence.
+
+- **Subhead carries what H1 does not.** If H1 says umpire/calls, subhead adds **iPhone**, mount, zone/sport—not another list of the same benefits.
+- **Never drop “iPhone.”** Product is iPhone-only.
+- **No synonymous stacking** in one line (e.g. hear + audio, live + real-time, calls + umpire).
+- **Short beats thorough.** If the old line was “pretty good,” leave it or shorten—never expand.
+- **Minimal diff.** User asked to remove X on page Y → change page Y only unless they ask for a sweep.
 
 **Internal context (for founders and support — NOT for marketing copy):**
 - Failed setup drives bad reviews. Mitigate with **in-app calibration UX** and a **short App Store preview** that *shows* a working session (mount visible in the shot, no narration about tripods). That is ops, not copy to paste everywhere.
