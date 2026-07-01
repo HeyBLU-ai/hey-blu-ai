@@ -11,7 +11,7 @@
 
     if (line) {
         line.textContent =
-            'HeyBLU Pro — ' + cfg.trialDays + '-day free trial, then ' +
+            'HeyBLU — ' + cfg.trialDays + '-day free trial, then ' +
             cfg.formatUSD(cfg.monthlyUSD) + '/mo or ' + cfg.formatUSD(cfg.annualUSD) + '/yr.';
     }
     if (badge && cfg.launchRateLabel) {

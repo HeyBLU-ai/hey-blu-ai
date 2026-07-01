@@ -35,15 +35,18 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 ---
 
-## 2A. Pricing & tiers (launch — sync with `/pricing` and `pricing-config.js`)
+## 2A. Pricing (launch — sync with `/pricing` and `pricing-config.js`)
 
-| Tier | Price | Includes |
-|------|-------|----------|
-| **Free** | $0 | **Follow Game** on a second device (watch only); heatmap share from Follow Game report. **No** Track Pitches on primary phone. |
-| **HeyBLU Pro** | **14-day free trial**, then **$4.99/mo** or **$49.99/yr** (launch / introductory rate) | Track Pitches (live B/S audio, speed, location), Session History, Command Center, unlimited pitchers, Every Pitch PDF, Command Report, CSV. |
+| | |
+|--|--|
+| **HeyBLU subscription** | **14-day free trial**, then **$4.99/mo** or **$49.99/yr** (launch / introductory rate) |
+| **Includes** | Live ball/strike calls, saved sessions, Command Center, unlimited pitchers, session reports, CSV |
+| **Follow Game** | If a subscriber shares their live pitch location feed, non-subscribers with the same HeyBLU app can “Follow Game” with their own iPhones |
 
-- **Track Pitches requires Pro** — paywall before setup (not mid-pitch).
+- **Track Pitches requires an active subscription** on the primary phone — paywall before setup (not mid-pitch).
+- **Marketing copy:** baseball language, not app enums (say “live ball/strike calls,” not “Track Pitches”; say “saved sessions,” not “Session History” on public pages unless the UI label is essential).
 - App paywall shows **live App Store prices** via RevenueCat; website uses `pricing-config.js` — update both when App Store Connect changes.
+- **Do not** use "HeyBLU Pro" or a separate "Free tier" on marketing pages. The product is **HeyBLU**; Follow Game is the only no-subscription mode.
 - **Do not** publish planned post-launch price increases or subscriber caps on marketing pages.
 
 ---

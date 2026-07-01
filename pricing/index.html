@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HeyBLU pricing — Follow Game free on a second device. HeyBLU Pro from $4.99/mo or $49.99/yr with a 14-day free trial: Track Pitches, Session History, Command Center, reports, and CSV export.">
+    <meta name="description" content="HeyBLU — 14-day free trial, then $4.99/mo or $49.99/yr. Live ball/strike calls, saved sessions, Command Center, and bullpen reports. Follow Game lets others watch on their own iPhone.">
     <title>Pricing — HeyBLU</title>
     <link rel="canonical" href="https://heyblu.ai/pricing">
     <meta property="og:url" content="https://heyblu.ai/pricing">
     <meta property="og:title" content="HeyBLU Pricing">
-    <meta property="og:description" content="Follow Game free. HeyBLU Pro launch pricing: 14-day trial, then $4.99/mo or $49.99/yr for full bullpen tracking, History, Command Center, and exports.">
+    <meta property="og:description" content="HeyBLU subscription with 14-day free trial. Share your live feed—others can Follow Game on their own iPhone with no subscription.">
     <link rel="icon" href="/images/heyblu-favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -63,159 +63,60 @@
             </span>
         </div>
 
+        <div class="bg-blue-50 rounded-2xl border-2 border-blue-200 p-6 md:p-8 shadow-sm max-w-xl mx-auto mb-12 relative">
+            <span class="absolute top-4 right-4 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold text-white">Launch pricing</span>
+            <h2 class="text-2xl font-extrabold text-gray-900 mb-1">HeyBLU</h2>
+            <p class="text-3xl font-extrabold text-gray-900 mb-0" id="pro-price-display">$4.99<span class="text-lg font-semibold text-gray-600">/mo</span></p>
+            <p class="text-sm text-blue-700 mt-1 mb-1 min-h-[1.25rem]" id="pro-price-note" aria-live="polite"></p>
+            <p class="text-sm font-semibold text-blue-800 mb-4">14-day free trial</p>
+            <ul class="text-gray-700 text-sm space-y-3">
+                <li class="flex items-start gap-2.5">
+                    <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Live ball/strike calls and estimated pitch speed</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Saved bullpen sessions you can revisit</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Command Center on a second iPhone—coach from the dugout or bullpen</span>
+                </li>
+                <li class="flex items-start gap-2.5">
+                    <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    <span>Unlimited pitchers, session reports, and CSV export</span>
+                </li>
+            </ul>
+            <p class="text-xs text-gray-500 mt-6 pt-4 border-t border-blue-200">Subscribe in the App Store. Price shown at purchase applies. Introductory rate may change for new subscribers.</p>
+        </div>
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12 max-w-4xl mx-auto">
-            <!-- Free -->
-            <div class="bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm flex flex-col">
-                <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Free</p>
-                <h2 class="text-lg font-bold text-gray-900 mb-2">HeyBLU</h2>
-                <p class="text-3xl font-extrabold text-gray-900 mb-1">$0</p>
-                <p class="text-xs text-gray-500 mb-5">No subscription required</p>
-                <ul class="text-gray-600 text-sm space-y-3 flex-grow">
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span><strong>Follow Game</strong> on a second device — watch live calls and zone (read-only)</span>
-                    </li>
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-green-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span>Share a heatmap from the Follow Game session report</span>
-                    </li>
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-gray-300 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        <span class="text-gray-500">Track Pitches on the primary phone requires HeyBLU Pro</span>
-                    </li>
-                </ul>
+            <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <h2 class="text-lg font-bold text-gray-900 mb-2">Follow Game</h2>
+                <p class="text-gray-600 text-sm leading-relaxed">If a subscriber shares their live pitch location feed, non-subscribers with the same HeyBLU app can “Follow Game” with their own iPhones.</p>
             </div>
-
-            <!-- Pro -->
-            <div class="bg-blue-50 rounded-2xl border-2 border-blue-200 p-6 shadow-sm flex flex-col relative">
-                <span class="absolute top-4 right-4 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold text-white">Launch pricing</span>
-                <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mb-2">Pro</p>
-                <h2 class="text-lg font-bold text-gray-900 mb-2">HeyBLU Pro</h2>
-                <p class="text-3xl font-extrabold text-gray-900 mb-0" id="pro-price-display">$4.99<span class="text-lg font-semibold text-gray-600">/mo</span></p>
-                <p class="text-sm text-blue-700 mt-1 mb-1 min-h-[1.25rem]" id="pro-price-note" aria-live="polite"></p>
-                <p class="text-sm font-semibold text-blue-800 mb-4">14-day free trial</p>
-                <p class="text-sm font-bold text-gray-900 mb-2">Full bullpen umpire + coaching tools:</p>
-                <hr class="border-blue-200 mb-4">
-                <ul class="text-gray-600 text-sm space-y-3 flex-grow">
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span><strong>Track Pitches</strong> — live ball/strike audio, estimated pitch speed, on-screen location</span>
-                    </li>
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span><strong>Session History</strong> — save and revisit every session</span>
-                    </li>
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span><strong>Command Center</strong> — Command Training, Calibrate, zone resize, and remote session control from a second device</span>
-                    </li>
-                    <li class="flex items-start gap-2.5">
-                        <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-                        <span><strong>Unlimited pitchers</strong> — per-player filters, Every Pitch PDF, Command Reports, and CSV export</span>
-                    </li>
-                </ul>
-                <p class="text-xs text-gray-500 mt-5 pt-4 border-t border-blue-200">Subscribe in the App Store. Price shown at purchase applies. Introductory rate may change for new subscribers.</p>
+            <div class="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-6">
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Coming soon</p>
+                <h2 class="text-lg font-bold text-gray-900 mb-2">HeyBLU Coach</h2>
+                <p class="text-gray-600 text-sm leading-relaxed mb-3">Roster libraries across sessions, bullpen comparisons over time, and team-level exports for pitching coaches and academies.</p>
+                <p class="text-sm"><a href="/coaches" class="text-blue-600 font-semibold underline">Coach guide &amp; waitlist →</a></p>
             </div>
         </div>
 
-        <!-- Feature matrix -->
-        <div class="max-w-4xl mx-auto mb-12">
-            <h2 class="text-lg font-bold text-gray-900 text-center mb-6">Compare plans</h2>
-            <div class="overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
-                <table class="w-full min-w-[520px] text-sm text-left">
-                    <thead>
-                        <tr class="bg-gray-50 border-b border-gray-200">
-                            <th scope="col" class="py-3 px-4 font-semibold text-gray-900">Feature</th>
-                            <th scope="col" class="py-3 px-4 font-semibold text-gray-900 text-center w-28">Free</th>
-                            <th scope="col" class="py-3 px-4 font-semibold text-blue-700 text-center w-28">Pro</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">Track Pitches (primary device)</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr class="bg-gray-50/50">
-                            <td class="py-3 px-4 text-gray-700">Live ball/strike calls &amp; pitch speed</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">Live pitch location on screen</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr class="bg-gray-50/50">
-                            <td class="py-3 px-4 text-gray-700">Follow Game (watch only)</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">Pitchers per session</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center font-medium text-blue-700">Unlimited</td>
-                        </tr>
-                        <tr class="bg-gray-50/50">
-                            <td class="py-3 px-4 text-gray-700">Shareable heatmap image</td>
-                            <td class="py-3 px-4 text-center text-sm text-gray-600">Follow Game</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">Session History</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr class="bg-gray-50/50">
-                            <td class="py-3 px-4 text-gray-700">Command Center</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">Every Pitch report (PDF)</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr class="bg-gray-50/50">
-                            <td class="py-3 px-4 text-gray-700">Command Report</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                        <tr>
-                            <td class="py-3 px-4 text-gray-700">CSV export</td>
-                            <td class="py-3 px-4 text-center text-gray-300" aria-hidden="true">—</td>
-                            <td class="py-3 px-4 text-center"><svg class="w-5 h-5 text-green-600 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg><span class="sr-only">Included</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-2xl border-2 border-dashed border-slate-300 p-6 mb-12 max-w-4xl mx-auto">
-            <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Coming soon</p>
-            <h2 class="text-xl font-bold text-gray-900 mb-2">HeyBLU Coach</h2>
-            <p class="text-gray-600 text-sm leading-relaxed mb-3">Roster libraries across sessions, bullpen comparisons over time, and team-level exports for pitching coaches and academies. Pricing will appear here when the tier ships in the App Store.</p>
-            <p class="text-sm"><a href="/coaches" class="text-blue-600 font-semibold underline">Coach guide &amp; waitlist →</a> · League / smart-field workflows: <a href="/smart-field" class="text-blue-600 font-semibold underline">Smart Field</a></p>
-        </div>
-
-        <div class="bg-slate-100 border border-slate-200 rounded-xl p-6 mb-10">
+        <div class="bg-slate-100 border border-slate-200 rounded-xl p-6 mb-10 max-w-4xl mx-auto">
             <h2 class="font-bold text-gray-900 mb-4">Common questions</h2>
             <dl class="text-gray-700 text-sm space-y-4">
                 <div>
                     <dt class="font-semibold text-gray-900 mb-1">Is there a free trial?</dt>
-                    <dd>Yes. HeyBLU Pro includes a <strong>14-day free trial</strong> on monthly and annual plans. Cancel at least 24 hours before the trial ends in <strong>Settings → [your name] → Subscriptions</strong> to avoid being charged.</dd>
+                    <dd>Yes. HeyBLU includes a <strong>14-day free trial</strong> on monthly and annual plans. Cancel at least 24 hours before the trial ends in <strong>Settings → [your name] → Subscriptions</strong> to avoid being charged.</dd>
                 </div>
                 <div>
-                    <dt class="font-semibold text-gray-900 mb-1">Do I need HeyBLU Pro for live ball/strike calls?</dt>
-                    <dd><strong>Yes, on the tracking phone.</strong> Track Pitches — live audio, pitch location, and estimated speed — requires an active HeyBLU Pro subscription (trial counts). <strong>Follow Game</strong> on a second device is free to watch when someone with Pro is running the session.</dd>
+                    <dt class="font-semibold text-gray-900 mb-1">Does Follow Game need a subscription?</dt>
+                    <dd>No. If a subscriber shares their live pitch location feed, anyone with HeyBLU on their own iPhone can Follow Game—watch only, no subscription on that phone.</dd>
                 </div>
                 <div>
                     <dt class="font-semibold text-gray-900 mb-1">What is launch pricing?</dt>
-                    <dd>HeyBLU Pro is available at an introductory rate of <strong>$4.99/month</strong> or <strong>$49.99/year</strong> after the free trial. Standard pricing may apply to new subscribers later; the App Store always shows the price that applies at purchase.</dd>
-                </div>
-                <div>
-                    <dt class="font-semibold text-gray-900 mb-1">Can I share a heatmap without Pro?</dt>
-                    <dd>On <strong>Follow Game</strong>, you can share a heatmap from the session report at no charge. Full tracking sessions, unlimited exports, and Session History require HeyBLU Pro.</dd>
+                    <dd><strong>$4.99/month</strong> or <strong>$49.99/year</strong> after the 14-day trial. The App Store shows the price that applies when you subscribe.</dd>
                 </div>
                 <div>
                     <dt class="font-semibold text-gray-900 mb-1">How do I subscribe or cancel?</dt>
@@ -223,12 +124,12 @@
                 </div>
                 <div>
                     <dt class="font-semibold text-gray-900 mb-1">League or tournament use?</dt>
-                    <dd>HeyBLU is optimized for bullpens and practice. League pilots are invite-only—<a href="mailto:info@heyblu.ai" class="text-blue-600 font-semibold underline">info@heyblu.ai</a>.</dd>
+                    <dd>HeyBLU is built for bullpens and practice. League pilots are invite-only—<a href="mailto:info@heyblu.ai" class="text-blue-600 font-semibold underline">info@heyblu.ai</a>.</dd>
                 </div>
             </dl>
         </div>
 
-        <section class="bg-slate-900 text-white rounded-2xl p-8 text-center">
+        <section class="bg-slate-900 text-white rounded-2xl p-8 text-center max-w-4xl mx-auto">
             <a id="app-store-download-link" href="/#beta" class="inline-block rounded-lg" aria-label="Download HeyBLU on the App Store">
                 <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/white/en-us?size=250x83" alt="Download on the App Store" class="h-14 w-auto mx-auto">
             </a>

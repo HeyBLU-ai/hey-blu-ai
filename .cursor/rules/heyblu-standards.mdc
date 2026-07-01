@@ -19,10 +19,11 @@ Do not beat users with tripod/setup on **pricing, terms, or every card**. Setup 
 ## Non-negotiables
 
 1. **Transactional pages** (`pricing/`, `terms/`, `privacy/`): H1 = page topic. No eyebrow kickers. No setup essays.
-2. **Tier truth** from iOS paywall: heatmap share free; History, Command Center, multi-pitcher reports, PDF/CSV Pro.
+2. **Tier truth** from iOS paywall: HeyBLU subscription for bullpen tracking and exports; Follow Game when subscriber shares live feed.
 3. **Never invent** features or tell users how to market the app.
 4. **Wi‑Fi two-device quirks:** FAQ/support/field-guide only — not hero or pricing.
 5. **Minimal diff** — don't add positioning or warning layers the owner didn't ask for.
+6. **No app-speak** on marketing pages — enum/feature names (Track Pitches, Session History) stay in app/FAQ; public copy uses baseball language.
 
 ## Repo split
 

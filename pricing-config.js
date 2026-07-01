@@ -1,5 +1,5 @@
 /**
- * HeyBLU Pro — single source for public website pricing copy.
+ * HeyBLU subscription — single source for public website pricing copy.
  * Keep in sync with App Store Connect / RevenueCat. App paywall shows live store prices.
  */
 window.HEYBLU_PRICING = {

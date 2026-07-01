@@ -37,7 +37,7 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 ## 1. iOS app UX (baseball)
 
 ### The product moment
-- Audible **ball/strike** on a taken pitch + dot on the zone — requires **HeyBLU Pro** on the tracking phone (14-day trial available).
+- Audible **ball/strike** on a taken pitch — requires **HeyBLU subscription** on the tracking phone (14-day trial available).
 - **Never interrupt live tracking** with paywalls, surveys, or account prompts mid-pitch. Pro gate is before Track Pitches setup.
 
 ### Two-device workflows
@@ -50,10 +50,11 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 - **Gear / session controls:** Pause, End Session, brightness, zone size, Adjust BLU. No debug grids or duplicate Share/Download in production.
 
 ### Monetization
-- **Free:** Follow Game (watch only on second device), heatmap share from Follow Game session report.
-- **Pro (launch pricing):** 14-day trial, then $4.99/mo or $49.99/yr — Track Pitches, Session History, Command Center, unlimited pitchers, Every Pitch PDF, Command Report, CSV.
-- **Paywall before Track Pitches** — hard gate at welcome; trial starts at subscribe.
-- App Store listing = paywall = website `/pricing` (canonical). Homepage `#pricing` is a teaser + link only — do not duplicate full plan cards.
+- **HeyBLU subscription** (14-day trial): live ball/strike calls, saved sessions, Command Center, unlimited pitchers, session reports, CSV.
+- **Follow Game:** subscriber shares live feed; others use HeyBLU on their own iPhone—no subscription on that phone.
+- **Marketing copy:** baseball people, not app enums (no “Track Pitches,” “Session History” on public pages unless quoting UI).
+- **Paywall before Track Pitches** on primary phone — never mid-pitch.
+- App Store listing = paywall = website `/pricing`. Homepage `#pricing` is a teaser + link only.
 
 ### Trust (youth baseball)
 - No stored video of kids unless true in code.
@@ -74,7 +75,7 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 - Tripod mandates, ROI red lines, scan duration, hotspot workarounds, “#1 cause of bad calls” — those belong in **field-guide / support**, not pricing, homepage hero, or plan cards.
 
 ### Page-type discipline
-- **Pricing:** H1 = `Pricing`. Plans + matrix + FAQ. No eyebrow kickers. No setup essays.
+- **Pricing:** H1 = `Pricing`. One subscription card + included list + FAQ. No Free vs Pro comparison table. No eyebrow kickers.
 - **Audience pages:** one audience, benefits first; setup only if that page is explicitly about setup.
 - **Don't tell users to market for you** in product docs.
 
