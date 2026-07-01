@@ -37,8 +37,8 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 ## 1. iOS app UX (baseball)
 
 ### The product moment
-- Audible **ball/strike** on a taken pitch + dot on the zone. Free tier must deliver this.
-- **Never interrupt live tracking** with paywalls, surveys, or account prompts.
+- Audible **ball/strike** on a taken pitch + dot on the zone — requires **HeyBLU Pro** on the tracking phone (14-day trial available).
+- **Never interrupt live tracking** with paywalls, surveys, or account prompts mid-pitch. Pro gate is before Track Pitches setup.
 
 ### Two-device workflows
 - **Primary iPhone:** Umpire / tracking only (not iPad as tracker).
@@ -50,10 +50,10 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 - **Gear / session controls:** Pause, End Session, brightness, zone size, Adjust BLU. No debug grids or duplicate Share/Download in production.
 
 ### Monetization
-- **Free:** live B/S calls, pitch speed (directional), on-screen location, shareable session heatmap, one pitcher, Follow Game.
-- **Pro:** Session History, Command Center, unlimited pitchers, Every Pitch PDF, Command Report, CSV.
-- **Paywall after value** — post-session or feature tap, never mid-pitch.
-- App Store listing = paywall = website `/pricing`.
+- **Free:** Follow Game (watch only on second device), heatmap share from Follow Game session report.
+- **Pro (launch pricing):** 14-day trial, then $4.99/mo or $49.99/yr — Track Pitches, Session History, Command Center, unlimited pitchers, Every Pitch PDF, Command Report, CSV.
+- **Paywall before Track Pitches** — hard gate at welcome; trial starts at subscribe.
+- App Store listing = paywall = website `/pricing` (canonical). Homepage `#pricing` is a teaser + link only — do not duplicate full plan cards.
 
 ### Trust (youth baseball)
 - No stored video of kids unless true in code.
@@ -107,7 +107,7 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 **Do not strip benefits** to make room for warnings. Features first; caveats only where the user asked for help.
 
 **Before editing pricing or FAQ tiers:**
-- Match paywall: heatmap share free; PDF/CSV/Command Report/History/Command Center Pro.
+- Match paywall: Track Pitches Pro-only; Follow Game free; trial + launch prices in `pricing-config.js`.
 
 ---
 

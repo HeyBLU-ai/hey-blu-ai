@@ -35,6 +35,19 @@ It is positioned as **assistive** (training, bullpens, scrimmages, leagues that 
 
 ---
 
+## 2A. Pricing & tiers (launch — sync with `/pricing` and `pricing-config.js`)
+
+| Tier | Price | Includes |
+|------|-------|----------|
+| **Free** | $0 | **Follow Game** on a second device (watch only); heatmap share from Follow Game report. **No** Track Pitches on primary phone. |
+| **HeyBLU Pro** | **14-day free trial**, then **$4.99/mo** or **$49.99/yr** (launch / introductory rate) | Track Pitches (live B/S audio, speed, location), Session History, Command Center, unlimited pitchers, Every Pitch PDF, Command Report, CSV. |
+
+- **Track Pitches requires Pro** — paywall before setup (not mid-pitch).
+- App paywall shows **live App Store prices** via RevenueCat; website uses `pricing-config.js` — update both when App Store Connect changes.
+- **Do not** publish planned post-launch price increases or subscriber caps on marketing pages.
+
+---
+
 ## 3. What the app does not do (hard limits & beta honesty)
 
 | Topic | Fact |
