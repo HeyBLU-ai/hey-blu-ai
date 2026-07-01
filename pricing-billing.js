@@ -2,9 +2,27 @@
  * Monthly / annual billing toggle for /pricing — reads HEYBLU_PRICING from pricing-config.js.
  */
 (function () {
+    var DEFAULT_PRICING = {
+        trialDays: 14,
+        monthlyUSD: 4.99,
+        annualUSD: 49.99,
+        launchRateLabel: 'Launch pricing',
+        currencySymbol: '$',
+        annualSavingsPercent: function () {
+            var monthly = this.monthlyUSD * 12;
+            if (monthly <= 0) return 0;
+            return Math.round((1 - this.annualUSD / monthly) * 100);
+        },
+        formatUSD: function (amount) {
+            return this.currencySymbol + amount.toFixed(2);
+        },
+        annualPerMonthUSD: function () {
+            return this.annualUSD / 12;
+        }
+    };
+
     function init() {
-        var cfg = window.HEYBLU_PRICING;
-        if (!cfg) return;
+        var cfg = window.HEYBLU_PRICING || DEFAULT_PRICING;
 
         var toggle = document.getElementById('pricing-billing-toggle');
         var knob = document.getElementById('pricing-toggle-knob');
@@ -54,7 +72,8 @@
             }
         }
 
-        toggle.addEventListener('click', function () {
+        toggle.addEventListener('click', function (event) {
+            event.preventDefault();
             setBilling(!isAnnual);
         });
 
