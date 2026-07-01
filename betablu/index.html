@@ -35,6 +35,9 @@
         .faq-button {
             transition: all 0.2s ease;
         }
+        .faq-item {
+            scroll-margin-top: 120px;
+        }
         .faq-button[aria-expanded="true"] {
             color: #2563eb;
         }
@@ -227,7 +230,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item">
+                <div class="border-t border-slate-200 faq-item" data-keywords="price pricing cost subscription trial 4.99 49.99 monthly annual follow game">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">How much does HeyBLU cost?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,7 +385,7 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="faq-item">
+                <div id="connect-two-devices-faq" class="faq-item" data-keywords="wifi wi-fi hotspot android router travel router follow game command center second device local network airplane mode won't connect">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect — what works at the field?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -425,7 +428,7 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="faq-item">
+                <div class="faq-item" data-keywords="setup scan mount tripod play ball first time calibrate red lines">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">What do I need to do before I can get a call?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -445,7 +448,7 @@
                     </div>
                 </div>
 
-                <div id="red-lines-strike-zone" class="border-t border-slate-200 faq-item">
+                <div id="red-lines-strike-zone" class="border-t border-slate-200 faq-item" data-keywords="red lines framing frame pitch path mount verify roi detection window">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">What are the red lines, and where should the strike zone sit?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -462,7 +465,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item">
+                <div class="faq-item" data-keywords="summary spreadsheet export session report image share download end session">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">How do I share or review my session after a game?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -484,7 +487,7 @@
             </div>
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="faq-item">
+                <div class="faq-item" data-keywords="wifi hotspot android router won't connect follow game command center">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -497,7 +500,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item">
+                <div class="border-t border-slate-200 faq-item" data-keywords="no call silent missed pitch not tracking blocked catcher net">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">I didn't get a call on a pitch. Why?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -510,7 +513,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item">
+                <div class="border-t border-slate-200 faq-item" data-keywords="tracking unstable check camera drift mount tripod bump scan">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Why does it say "Tracking unstable" or "Check camera"?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -524,7 +527,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item">
+                <div class="border-t border-slate-200 faq-item" data-keywords="calibrate calibration outside inside wrong call strike ball 9 zone grid adjust heyblu">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Why is every call "outside" (or "inside") when it looks like a strike?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
