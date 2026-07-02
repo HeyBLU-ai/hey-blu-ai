@@ -75,9 +75,21 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 - Tripod mandates, ROI red lines, scan duration, hotspot workarounds, “#1 cause of bad calls” — those belong in **field-guide / support**, not pricing, homepage hero, or plan cards.
 
 ### Page-type discipline
-- **Pricing:** H1 = `Pricing`. One subscription card + included list + FAQ. No Free vs Pro comparison table. No eyebrow kickers.
+- **Pricing:** H1 = `Pricing`. One subscription card + included list. No FAQ block unless several non-duplicative questions. No Free vs Pro comparison table. No eyebrow kickers.
 - **Audience pages:** one audience, benefits first; setup only if that page is explicitly about setup.
 - **Don't tell users to market for you** in product docs.
+
+### Live games (marketing copy)
+
+**Primary positioning:** bullpens, practice, coaching, development.
+
+**Never write** that HeyBLU is “not for live games,” “not for league ABS,” or “not a replacement for…” on pricing, homepage, or conversion pages. Users may use HeyBLU in scrimmages and games; we do not gate them with negative copy.
+
+**When games or leagues are relevant** (FAQ, field-guide, support — not pricing cards):
+- Encourage **practice first**, then games when setup is dialed in.
+- Invite questions: **info@heyblu.ai** for leagues, tournaments, or game-day setup.
+- OK: “Built to start in the bullpen” / “Most coaches validate in practice before game day.”
+- Not OK: “Not for live games,” “Not league ABS,” “Do not use in games.”
 
 ---
 
@@ -96,6 +108,7 @@ When trimming duplication, **delete** repeated warnings elsewhere; **do not rewr
 - Re-explaining mount/tripod on every page edit
 - Warning blocks on pricing or plan comparison
 - “Forever” in pricing unless legal approved
+- **Negative live-game framing** (“not for live games,” “not league ABS,” “don’t use in games”)
 
 ---
 
