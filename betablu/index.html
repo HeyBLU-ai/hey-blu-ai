@@ -238,7 +238,20 @@
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-3">Our goal was error rates no larger than a ball's width. In pristine conditions we are seeing an average <strong>1.5&nbsp;inch</strong> miss. In the wild—on your field, while you get used to proper scans and setup—anything over a <strong>3&nbsp;inch</strong> miss is either an occasional error, or it means you need to re-adjust or re-scan.</p>
                         <p class="mb-3">Accuracy depends a lot on setup. Take your time, get to know the app, and calls become consistent. When you're seeing consistently bad calls, the <a href="#troubleshooting" class="text-blue-600 hover:text-blue-800 font-medium">Troubleshooting section</a> covers the most common causes.</p>
-                        <p class="mb-0">Velocity readings are approximate (±5&nbsp;MPH)—not a radar-gun replacement.</p>
+                        <p class="mb-0">For velocity accuracy, see <a href="#mph-accuracy" class="text-blue-600 hover:text-blue-800 font-medium">How accurate is the MPH reading?</a></p>
+                    </div>
+                </div>
+
+                <div id="mph-accuracy" class="border-t border-slate-200 faq-item" data-keywords="MPH velocity speed accuracy radar gun pitch speed readings +/- 5 mph approximate">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How accurate is the MPH reading?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">Every single-camera system has to make a trade-off: you can optimize for precise pitch <em>location</em> or for precise pitch <em>speed</em>—not both at the same time. HeyBLU is built around plate location, so velocity is a secondary read from the same camera.</p>
+                        <p class="mb-0">In practice, expect MPH readings to be within <strong>±5&nbsp;MPH</strong> of actual velocity. Good for a quick gut-check on effort or comparing one outing to another—not a replacement for a dedicated radar gun.</p>
                     </div>
                 </div>
 
