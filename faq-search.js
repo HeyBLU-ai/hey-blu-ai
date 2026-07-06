@@ -32,6 +32,12 @@
         lines: ['lines', 'red', 'framing', 'frame'],
         track: ['track', 'tracked', 'tracking', 'calls', 'call'],
         pitch: ['pitch', 'pitches', 'bullpen'],
+        left: ['left', 'lefty', 'left-handed', 'lhb', 'batter obstruction'],
+        drift: ['drift', 'drifted', 'arkit', 'position', 'sensor'],
+        phantom: ['phantom', 'throwback', 'fake', 'false', 'counted', 'trash', 'delete pitch'],
+        detection: ['detection', 'detections', 'no call', 'silent', 'missed'],
+        contact: ['contact', 'batted', 'grounder', 'hit', 'contamination', 'live at bats'],
+        bullpen: ['bullpen', 'live at bats', 'mode', 'audio', 'muted'],
         battery: ['battery', 'charge', 'charged', 'power'],
         pro: ['pro', 'pro max', 'measuring tape', 'distance', 'lens height']
     };

@@ -197,9 +197,21 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">HeyBLU's job is to provide pitch location vs. the strike zone. It does not judge whether a batter swung or checked their swing.</p>
-                        <p class="mb-3">When a batter swings at a ball, HeyBLU still reports it as a <strong>ball</strong> based on where the pitch crossed the plate—not whether the batter offered.</p>
-                        <p class="mb-0">With live batters, the default audio setting is silence on ball calls, so you don't hear "Ball" on swings. Strikes are still announced.</p>
+                        <p class="mb-3">No. HeyBLU tracks where the ball crossed the plate, not whether the batter swung. A batter swinging at a pitch that crosses outside the zone is still a ball to HeyBLU—the game outcome (strike by swing) is separate.</p>
+                        <p class="mb-0">Use <strong>Live At Bats</strong> mode when hitters are in the box. See below.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="live at bats bullpen mode audio ball muted strike silence hitters batter box difference">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What's the difference between Bullpen and Live At Bats mode?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">In <strong>Live At Bats</strong> mode, ball-call audio is <strong>muted by default</strong>. A pitch crossing outside the zone is still a ball to the app—but saying "Ball!" when a batter swings at it would confuse the field. Strike audio plays normally. Silence on a tracked pitch means ball. The Command Center still shows the full pitch dot and count regardless.</p>
+                        <p class="mb-0">In <strong>Bullpen</strong> mode, full audio plays on every tracked pitch. Select the mode on the session setup screen before you tap Play Ball.</p>
                     </div>
                 </div>
 
@@ -519,7 +531,7 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item" data-keywords="no call silent missed pitch not tracking blocked catcher net">
+                <div class="border-t border-slate-200 faq-item" data-keywords="no call silent missed pitch not tracking blocked catcher net detections">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">I didn't get a call on a pitch. Why?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -527,8 +539,9 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">HeyBLU is designed to stay silent rather than guess. It only announces a call when it is highly confident in the ball's trajectory. If the ball is blocked from the camera's view (by the catcher, umpire, or a net) for too much of its flight, or if the tracking quality was poor, it may stay silent or show a warning.</p>
-                        <p class="mb-0">If calls are missing even with a clear view, check <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">red-line framing</a>: the full pitch path must stay between the red guides—not the zone centered in the middle.</p>
+                        <p class="mb-3">HeyBLU stays silent rather than guess. It needs at least <strong>5 clean ball detections</strong> to calculate where the pitch crossed the plate. Fewer than 5 = no call.</p>
+                        <p class="mb-3">Most common causes: camera too far from the plate (beyond ~15 ft), ball blocked mid-flight (catcher, batter, net), or pitch path outside the <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">red-line framing window</a>.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Move camera to 10–12 ft. Check red-line framing. See also: <a href="#left-handed-batter" class="text-blue-600 hover:text-blue-800 font-medium">left-handed batters</a>.</p>
                     </div>
                 </div>
 
@@ -554,8 +567,87 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">If HeyBLU keeps calling pitches consistently <strong>outside</strong> or <strong>inside</strong> when they look like strikes, use the on-screen <strong>Calibrate</strong> button after a test pitch and tap where the ball actually crossed on the <strong>9-zone grid</strong>. That is now the main way to lock in accurate inside/outside alignment after mounting.</p>
-                        <p class="mb-0"><strong>Adjust HeyBLU</strong> (Inside/Outside) still exists under <strong>Settings</strong> (gear icon) if you need a settings-level nudge, but start with <strong>Calibrate</strong> on the primary device for consistent misses.</p>
+                        <p class="mb-3">Use the on-screen <strong>Calibrate</strong> button after a test pitch and tap where the ball actually crossed on the <strong>9-zone grid</strong>. That corrects a mismatch between where the app thinks the plate is and where it physically is.</p>
+                        <p class="mb-0"><strong>Adjust HeyBLU</strong> (Inside/Outside) under <strong>Settings</strong> (gear icon) provides a settings-level nudge if needed, but Calibrate is the primary tool.</p>
+                    </div>
+                </div>
+
+                <div id="left-handed-batter" class="border-t border-slate-200 faq-item" data-keywords="left handed lefty batter no call distance camera 12 feet detections blocked obstruction LHB">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">No calls when a left-handed batter is up</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">A left-handed batter standing in the box blocks 1–2 frames of ball flight as the pitch approaches the plate. At <strong>15–21 feet</strong> the app may only get 5–8 detections total per pitch—losing 1–2 to obstruction drops below the 5-detection minimum and produces no call.</p>
+                        <p class="mb-0"><strong>Fix: move the camera to 10–12 feet.</strong> At that distance HeyBLU gets 10–20 detections per pitch—losing 1–2 to obstruction doesn't matter.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="2 feet outside wrong call batted ball contact grounder live at bats contamination swing hit">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Call was way off — "2 feet outside" on a pitch down the middle</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">Almost always a batted-ball contamination problem. When a batter makes contact—even a dribbler—the ball's new path produces detections that mix with the real pitch detections. The calculated plate-crossing shifts to wherever the batted ball appeared to be heading, not where the pitch actually crossed. The result is a call 1–2 feet off even though the pitch itself tracked correctly up to contact.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Use <strong>Live At Bats</strong> mode (session setup screen) when hitters are in the box.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="phantom pitch counted nothing thrown throwback catcher fake pitch false detection trash delete">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">A pitch was counted when nothing was thrown</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">The app tracks any fast-moving ball-shaped object in frame. A catcher's throwback can occasionally look enough like a pitch—especially at longer camera distances (18+ feet) where the ball is smaller and direction checks are less reliable.</p>
+                        <p class="mb-3"><strong>Prevention:</strong> Camera at 10–12 feet. At that distance the ball is large enough that direction is highly accurate and most throwbacks are filtered out.</p>
+                        <p class="mb-0"><strong>Fix after it happens:</strong> Tap the trash icon on the pitch card to delete it. This automatically updates the Command Center count.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="calibrating over over doesn't fix bad calls plate position distance batted ball wrong">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Calibrating over and over isn't fixing bad calls</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">Calibration moves the plate in the app to correct a position mismatch—that's all it does. Most bad calls are caused by something else: not enough detections, batted-ball contamination, or camera too far away. Calibrating to contaminated pitch data makes things worse—each calibration shifts the plate to the wrong spot.</p>
+                        <p class="mb-0">If you've calibrated <strong>3 or more times</strong> and calls are still inconsistent, plate position isn't the problem. Check camera distance first. Make sure <strong>Live At Bats</strong> is selected if batters are in the box.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="drifted drift ARKit position sensor arkit dirt field no features">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What does "DRIFTED" mean on a pitch?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">The app measured that the phone's reported position shifted more than ~2 inches during the ball's flight. The trajectory is flagged DRIFTED and should not be trusted. This is a sensor measurement—it has nothing to do with calibration.</p>
+                        <p class="mb-0">On bare dirt fields with few visual features for ARKit to anchor to, the position estimate can step in discrete jumps—especially after a long idle. A single <strong>Adjust Plate</strong> or <strong>9-Grid calibration</strong> after a DRIFTED pitch typically stabilizes future calls.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="speed shown no dot no location no call MPH but no zone speed without call detections">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Speed shows up but no zone location or ball/strike call</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">HeyBLU can compute speed from as few as 2 ball detections, but needs at least <strong>5</strong> to calculate a reliable plate-crossing location. Speed without a dot means the ball was detected but fewer than 5 qualifying frames were captured.</p>
+                        <p class="mb-0">Most common causes: camera beyond 12–15 ft, batter obstruction, or a steep pitch angle through the detection zone. Moving the camera to <strong>10–12 feet</strong> fixes most cases.</p>
                     </div>
                 </div>
             </div>
