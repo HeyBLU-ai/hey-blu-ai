@@ -160,7 +160,7 @@
         <!-- First-time setup (compact — full detail in Setup FAQ + Field Guide) -->
         <section id="quick-start" class="mb-12">
             <h2 class="text-2xl font-bold text-slate-900 mb-3">First-time setup</h2>
-            <p class="text-slate-600 text-sm mb-4">You need an <strong>iPhone 12 or later</strong>, a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-medium underline">tripod</a>, and any outdoor space with enough room. Requirements: <strong>outdoors, daylight</strong>, camera ~12 feet from home plate, and room to offset the tripod <strong>~45° from the pitch line</strong>. The angle matters — the closer the camera is to looking straight at the pitcher, the less inside/outside accuracy you get. Tight, narrow spaces that don't allow an offset angle are the most common setup blocker.</p>
+            <p class="text-slate-600 text-sm mb-4">You need an <strong>iPhone 12 or later</strong>, a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-medium underline">tripod</a>, and any outdoor space with enough room. Requirements: <strong>outdoors, daylight</strong>, camera ~12 feet from home plate, and room to offset the tripod <strong>~45° from the pitch line</strong>. The angle matters — the closer the camera is to looking straight at the pitcher, the less inside/outside accuracy you get. Tight, narrow spaces that can't allow an offset angle are a common setup blocker.</p>
             <ol class="list-decimal list-inside space-y-2 text-slate-700 text-sm mb-4 ml-1">
                 <li><strong>Tripod</strong> 10–15 ft from the plate, offset ~45° to one side of the pitch line (not aimed at the pitcher); camera about <a href="#tripod-height" class="text-blue-600 font-medium underline">mid-zone height</a>. <strong>Must be mounted</strong> — the phone locks to a fixed point in space; any movement after that shifts calls.</li>
                 <li><strong>Scan</strong> slowly around the plate (~30 seconds).</li>
@@ -168,7 +168,32 @@
                 <li><strong>Mount &amp; frame</strong>—expect shift; realign; pitch path between <a href="#red-lines-strike-zone" class="text-blue-600 font-medium underline">red lines</a>.</li>
                 <li><strong>Play Ball</strong> → test pitch → <strong>Calibrate</strong> if calls are systematically off.</li>
             </ol>
-            <p class="text-sm text-slate-500"><a href="#setup" class="text-blue-600 font-semibold underline">Setup FAQ with step detail →</a> · <a href="/field-guide" class="text-blue-600 font-semibold underline">Print Field Guide →</a></p>
+            <p class="text-sm text-slate-500 mb-4"><a href="#setup" class="text-blue-600 font-semibold underline">Setup FAQ with step detail →</a> · <a href="/field-guide" class="text-blue-600 font-semibold underline">Print Field Guide →</a></p>
+
+            <!-- Why can't I get it to work accordion -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="faq-item" data-keywords="not working no calls bad calls setup mistakes common problems troubleshoot why camera distance angle scan">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Did the setup steps but still not getting calls — what to check</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-5 text-slate-600">
+                        <p class="mb-3 text-sm">Any one of these is enough to cause bad calls or no calls at all:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>📍 <strong>Camera too close or too far</strong> — target is 10–15 ft from the plate. Under 10 ft or past 20 ft and detection breaks down.</li>
+                            <li>📐 <strong>Camera angle off</strong> — aim for ~45° offset from the pitch line, roughly in line with a foul line. Less than ~20° offset and inside/outside accuracy degrades. Too far offset (past ~70°) also causes problems.</li>
+                            <li>🏠 <strong>Home plate not visible in frame</strong> — the real plate must be in the camera view throughout the session.</li>
+                            <li>📏 <strong>Red guide lines not set correctly</strong> — during mount and verify, the pitch path should run between the two red lines, with the mound along one and the strike zone along the other. Don't center the zone between them.</li>
+                            <li>⬆️ <strong>Strike zone too high in frame</strong> — if the top of the zone is near the top of the screen, high pitches clip off. Lower the camera or adjust distance and reframe.</li>
+                            <li>🌀 <strong>Fast or shaky scan</strong> — a quick or jerky scan gives the app a poor 3D map. Move slowly and steadily for ~30 seconds.</li>
+                            <li>🧍 <strong>People near the plate during the scan</strong> — a batter, catcher, or coach walking through the scene during scanning is a common cause of bad calls throughout the session. Scan with no one present.</li>
+                            <li>📵 <strong>Indoor cage or nighttime</strong> — the app requires outdoor daylight. Indoor cages and nighttime are outside its current range.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- The Basics -->
