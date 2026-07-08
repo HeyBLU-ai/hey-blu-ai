@@ -300,7 +300,7 @@
 
         <nav class="jump-nav no-print" aria-label="Jump to section">
             <a href="#fix-a-problem">Fix a problem</a>
-            <a href="#setup-now">Setup now</a>
+            <a href="#setup-now">Setup checklist</a>
             <a href="#connect-two-devices">Two devices</a>
             <a href="#before-the-field">Before the field</a>
         </nav>
@@ -332,8 +332,12 @@
                         <p class="fix-fix">Confirm <strong>Live At Bats</strong> was selected on the setup screen—Bullpen mode can track the batted ball instead of the pitch. Still off after switching? <strong>Calibrate</strong> on a clean pitch, or rescan.</p>
                     </div>
                     <div class="fix-item">
-                        <p class="fix-symptom">Calls drifting on an all-dirt or low-contrast field</p>
-                        <p class="fix-fix"><strong>Calibrate</strong> on a clean pitch to stabilize. Persistent drift: end session, clear the plate area, fresh scan.</p>
+                        <p class="fix-symptom">Calls got worse partway through the session</p>
+                        <ul class="setup-list">
+                            <li>Tripod bumped, or a long idle between pitches? Restart the session; rescan if anyone walked through the scene.</li>
+                            <li>All-dirt or low-contrast field? Position tracking can drift more here—<strong>Calibrate</strong> on a clean pitch to stabilize, or rescan if it keeps happening.</li>
+                            <li>Phone got hot in the sun? Accuracy drops when it overheats—get it into shade or use a small fan.</li>
+                        </ul>
                     </div>
                     <div class="fix-item">
                         <p class="fix-symptom">Zone doesn't line up with the real plate after mounting</p>
@@ -348,33 +352,25 @@
                         </ul>
                     </div>
                     <div class="fix-item">
-                        <p class="fix-symptom">Tripod bumped or long idle</p>
-                        <p class="fix-fix">Restart session; rescan if people walked through the scene.</p>
-                    </div>
-                    <div class="fix-item">
-                        <p class="fix-symptom">Phone hot in sun</p>
-                        <p class="fix-fix">Cool it — accuracy drops when the phone overheats.</p>
-                    </div>
-                    <div class="fix-item">
                         <p class="fix-symptom">Second device won't connect</p>
-                        <p class="fix-fix">Use <strong>Android hotspot</strong> or <strong>travel router</strong>. iPhone hotspot only if Umpire phone: Airplane Mode → Wi‑Fi on → join. <a href="#connect-two-devices">Details below</a>.</p>
+                        <p class="fix-fix">Use an <strong>Android hotspot</strong> or <strong>travel router</strong>—not every Wi‑Fi works. Using someone's iPhone hotspot instead? The <strong>tracking phone</strong> needs Airplane Mode on, then Wi‑Fi back on, before it joins. <a href="#connect-two-devices">Details below</a>.</p>
                     </div>
                     <div class="fix-item">
-                        <p class="fix-symptom">Tracker antenna shows 7/7; another phone won't join</p>
-                        <p class="fix-fix">Session full—disconnect an unused second screen, or turn <strong>Share Game</strong> off and on. See <a href="#connect-two-devices">Multiple second screens</a>.</p>
+                        <p class="fix-symptom">Can't add another phone</p>
+                        <p class="fix-fix">Check the antenna icon (<strong>Share Game</strong>) on the tracking phone—<strong>7/7</strong> means you're already at the max of 7 connected devices. Disconnect one you're not using, or toggle the antenna off and back on. See <a href="#connect-two-devices">Multiple second screens</a>.</p>
                     </div>
                 </div>
                 <p class="table-note">MPH is approximate (±5). Strike zone ~within one ball width when setup is good. More detail: <a href="/faq#troubleshooting">Help &amp; FAQ → Troubleshooting</a>.</p>
             </section>
 
             <section id="setup-now" aria-labelledby="setup-now-heading">
-                <h2 id="setup-now-heading">Setup now</h2>
+                <h2 id="setup-now-heading">Setup checklist</h2>
                 <ul class="setup-list">
-                    <li>Tripod <strong>10–15&nbsp;ft from the plate</strong>, offset <strong>~45° from the pitch line</strong> (not aimed at the pitcher). <strong>Must be mounted</strong>—the zone locks to a fixed point; movement after that shifts calls. Narrow spaces that can't allow ~45° offset will limit inside/outside accuracy.</li>
-                    <li>Camera height about <strong>mid-zone</strong> (between bottom and top of zone)—lowest: bottom of zone; highest: top of zone. See real home plate and the highest expected pitch in frame.</li>
+                    <li>Tripod mounted, <strong>10–15&nbsp;ft from the plate</strong>, offset <strong>~45° from the pitch line</strong> (not aimed at the pitcher).</li>
+                    <li>Camera height about <strong>mid-zone</strong>—you should see the real home plate and the highest pitch you expect in frame.</li>
                     <li>Ball path between the two <strong>red lines</strong>—zone on one line, mound on the other (don’t center the zone between them).</li>
-                    <li>Virtual plate on the real plate before <strong>Play Ball</strong>; fix shift after mount (slide zone, distance/height, <strong>Adjust Plate</strong>).</li>
-                    <li>Every call wrong? <strong>Calibrate</strong> on a test pitch without a swing.</li>
+                    <li>Virtual plate lined up on the real plate before <strong>Play Ball</strong>. If it shifts after mounting, drag it back or use <strong>Adjust Plate</strong>.</li>
+                    <li>After <strong>Play Ball</strong>, throw a few test pitches and <strong>Calibrate</strong> as needed.</li>
                 </ul>
                 <p class="table-note">First time? <a href="/faq#quick-start">Help &amp; FAQ → First-time setup</a> · tripod height: <a href="/faq#tripod-height">FAQ</a> · red-line diagram: <a href="/faq#red-lines-strike-zone">FAQ</a>.</p>
             </section>
@@ -401,7 +397,7 @@
                                 <td>Best for <strong>3+ phones</strong>—all join; no internet required</td>
                             </tr>
                             <tr>
-                                <td><strong>3rd-party iPhone hotspot</strong> — Umpire phone: Airplane Mode → Wi‑Fi on → join first</td>
+                                <td><strong>3rd-party iPhone hotspot</strong> — tracking phone: Airplane Mode → Wi‑Fi on → join first</td>
                                 <td>Works only with that Airplane Mode step on the tracking iPhone</td>
                             </tr>
                         </tbody>
@@ -412,11 +408,11 @@
                     <table>
                         <tbody>
                             <tr>
-                                <td><strong>Umpire iPhone as its own hotspot</strong></td>
+                                <td><strong>Tracking iPhone as its own hotspot</strong></td>
                                 <td>Does not work</td>
                             </tr>
                             <tr>
-                                <td><strong>Two iPhones on same iOS hotspot</strong> without Airplane Mode + Wi‑Fi on Umpire phone</td>
+                                <td><strong>Two iPhones on same iOS hotspot</strong> without Airplane Mode + Wi‑Fi on the tracking phone</td>
                                 <td>Does not work</td>
                             </tr>
                         </tbody>
@@ -425,7 +421,7 @@
                 <p id="multiple-second-screens" style="margin: 1rem 0 0.5rem;"><strong>Multiple second screens (experimental)</strong></p>
                 <p style="margin: 0 0 0.75rem;">One tracking iPhone can share live data with <strong>up to 7 other devices</strong> at once (typical: <strong>1 Command Center</strong> + up to <strong>6 Follow Game</strong> phones for parents or dugout coaches). <strong>Follow Game and Command Center can connect at the same time</strong>—you do not need to disconnect one for the other.</p>
                 <ul class="setup-list" style="margin-bottom: 0.75rem;">
-                    <li>On the tracker: turn on <strong>Share Game</strong> (antenna) after every device joins Wi‑Fi. The badge shows <strong>connected/7</strong> (e.g. <strong>2/7</strong>).</li>
+                    <li>On the tracking phone: turn on <strong>Share Game</strong>—the antenna icon—after every device joins Wi‑Fi. The badge shows <strong>connected/7</strong> (e.g. <strong>2/7</strong>).</li>
                     <li><strong>1–2 second screens</strong> are field-tested. <strong>3 or more</strong> are supported in the app but <strong>experimental</strong>—use a <strong>travel router</strong> and report issues to <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>.</li>
                     <li>Use <strong>only one Command Center</strong> per session for remote control; extra slots are for Follow Game viewers.</li>
                 </ul>
@@ -440,7 +436,7 @@
                         <ul>
                             <li>Volume up or Bluetooth speaker / earbuds</li>
                             <li>HeyBLU → Local Network On (second device)</li>
-                            <li>Two devices? <strong>Android hotspot</strong> or <strong>travel router</strong> (recommended; travel router best for <strong>3+ phones</strong>). iPhone hotspot: Umpire phone needs Airplane Mode → Wi‑Fi on first</li>
+                            <li>Two devices? <strong>Android hotspot</strong> or <strong>travel router</strong> (recommended; travel router best for <strong>3+ phones</strong>). iPhone hotspot: tracking phone needs Airplane Mode → Wi‑Fi on first</li>
                             <li>Clean camera lens</li>
                             <li>Tripod (inside fence); measuring tape on Pro phones</li>
                             <li>Charge phone; battery pack for long sessions</li>
