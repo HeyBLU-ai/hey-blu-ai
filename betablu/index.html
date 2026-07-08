@@ -253,7 +253,7 @@
                             <li><strong>After a session ends</strong> — a "Resize Zone" button appears on the post-session screen so you can set the correct size before your next session.</li>
                         </ul>
                         <p class="mb-3">The app remembers the last size you used. With a Command Center device, <strong>Short</strong>, <strong>Default</strong>, and <strong>Tall</strong> presets let you toggle quickly between batter heights during live at-bats.</p>
-                        <p class="mb-0 font-medium text-amber-700">If calls seem consistently too high, too low, inside, or outside — check zone size first. A zone set for the wrong age group is one of the most common causes of systematic wrong calls.</p>
+                        <p class="mb-0 font-medium text-amber-700">If calls seem consistently too high, too low, inside, or outside — check zone size first. A zone that's too small will get more "Ball" calls; one too large will get too many "Strike" calls.</p>
                     </div>
                 </div>
 
@@ -510,7 +510,7 @@
                             <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <strong>Scan with no one near the plate</strong>—a batter, catcher, or umpire walking through the scene during the scan is a common cause of bad calls throughout the session. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
                             <li><strong>Place the zone:</strong> This is <strong>initial placement only</strong>: line up the virtual strike zone with the <strong>real home plate</strong> (on or just above the dish), matching position and angle as closely as you can. Try not to bump the phone or plate while the zone is set—you will mount next, then adjust the <strong>camera view</strong> on Mount &amp; Verify.</li>
                             <li><strong>Mount and realign:</strong> Mount on the tripod—<strong>expect the zone to shift</strong>. Set tripod height about <a href="#tripod-height" class="text-blue-600 hover:text-blue-800 font-medium">mid-zone</a> (see real plate and highest expected pitch in frame). Slide the zone onto the plate, use Distance/Height or Up/Down for size, use <strong>Adjust Plate</strong> for overhead alignment; on <strong>Pro iPhones</strong> enter measured distance and lens height. Keep the full pitch path between the <strong>red lines</strong> (see <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">wrong and correct placements</a>). If you see drift or unstable tracking, check that the mount is tight and nothing moved.</li>
-                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then use <strong>Calibrate</strong> and tap the <strong>9-zone grid</strong> where the pitch crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
+                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then tap <strong>Calibrate</strong> and move the yellow dot to where the pitch actually crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
                             <li><strong>Tap "Play Ball":</strong> HeyBLU calls pitches once you're tracking live (use <strong>Pause, Warm Up</strong> anytime you need to stop).</li>
                         </ol>
                         <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
@@ -651,7 +651,7 @@
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-3">They fix different problems:</p>
                         <p class="mb-2"><strong>Adjust Plate</strong> — the blue plate overlay has drifted off the real plate. Tap Adjust Plate for a bird's-eye overhead view and use the arrows to slide it back. This moves the plate and zone together. <em>Use this first whenever the zone looks out of position.</em></p>
-                        <p class="mb-3"><strong>9-Zone Calibrate</strong> — the blue plate looks correct visually, but calls land in the wrong spot (e.g., every pitch reads outside when it's down the middle). After a pitch, tap Calibrate and tap where the ball actually crossed. This fine-tunes the math without moving what you see on screen.</p>
+                        <p class="mb-3"><strong>9-Zone Calibrate</strong> — the blue plate looks correct visually, but calls land in the wrong spot (e.g., every pitch reads outside when it's down the middle). After a pitch, tap Calibrate and move the yellow dot to where the ball actually crossed. This fine-tunes the math without moving what you see on screen.</p>
                         <p class="mb-0 font-medium">Quick rule: blue box off the plate → Adjust Plate. Blue box looks right but calls are wrong → Calibrate.</p>
                     </div>
                 </div>
@@ -742,7 +742,7 @@
                             </div>
                             <div>
                                 <dt class="font-semibold text-slate-800">Calls seem consistently too high, low, inside, or outside — even after calibrating?</dt>
-                                <dd class="ml-4 mt-1">→ <strong>Check zone size</strong>: gear icon → zone size. A zone set for the wrong age group shifts every call.</dd>
+                                <dd class="ml-4 mt-1">→ A zone that's too small will get more "Ball" calls; one too large will get too many "Strike" calls. <strong>Check zone size</strong>: gear icon → zone size.</dd>
                             </div>
                             <div>
                                 <dt class="font-semibold text-slate-800">Only swung-at pitches are wrong; non-swings are accurate?</dt>
@@ -781,7 +781,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">HeyBLU stays silent rather than guess. It needs at least <strong>5 clean ball detections</strong> to calculate a plate-crossing location. Fewer than 5 = no dot and no ball/strike call. Speed can still appear with as few as 2 detections, which is why you may see MPH without a location or call.</p>
+                        <p class="mb-3">HeyBLU stays silent rather than guess—it needs a clean, unobstructed look at enough of the pitch to calculate exactly where it crossed the plate. Speed can be measured from less of the flight than location can, which is why you may see MPH show up without a location or a ball/strike call.</p>
                         <p class="mb-3">Most common causes: camera more than 12–15 ft from the plate, ball blocked mid-flight (catcher, batter, net), or pitch path outside the <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">red-line framing window</a>.</p>
                         <p class="mb-0"><strong>Fix:</strong> Move camera to 10–12 ft. Check red-line framing. See also: <a href="#left-handed-batter" class="text-blue-600 hover:text-blue-800 font-medium">left-handed batters</a>.</p>
                     </div>
@@ -809,7 +809,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">Use the on-screen <strong>Calibrate</strong> button after a test pitch and tap where the ball actually crossed on the <strong>9-zone grid</strong>. That corrects a mismatch between where the app thinks the plate is and where it physically is.</p>
+                        <p class="mb-3">Tap the on-screen <strong>Calibrate</strong> button after a test pitch, then move the yellow dot to where the ball actually crossed. That corrects a mismatch between where the app thinks the plate is and where it physically is.</p>
                         <p class="mb-0"><strong>Adjust HeyBLU</strong> (Inside/Outside) under <strong>Settings</strong> (gear icon) provides a settings-level nudge if needed, but Calibrate is the primary tool.</p>
                     </div>
                 </div>
@@ -822,8 +822,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">A left-handed batter standing in the box blocks 1–2 frames of ball flight as the pitch approaches the plate. At <strong>15–21 feet</strong> the app may only get 5–8 detections total per pitch—losing 1–2 to obstruction drops below the 5-detection minimum and produces no call.</p>
-                        <p class="mb-0"><strong>Fix: move the camera to 10–12 feet.</strong> At that distance HeyBLU gets 10–20 detections per pitch—losing 1–2 to obstruction doesn't matter.</p>
+                        <p class="mb-3">A left-handed batter standing in the box can block the camera's view of part of the pitch as it nears the plate—especially when the camera is shooting close to head-on.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Shoot from the recommended <strong>~45° offset</strong> from the pitch line, not head-on. That angle keeps most of the pitch path visible even with a batter blocking part of the view.</p>
                     </div>
                 </div>
 
@@ -835,8 +835,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">Almost always a batted-ball contamination problem. When a batter makes contact—even a dribbler—the ball's new path produces detections that mix with the real pitch detections. The calculated plate-crossing shifts to wherever the batted ball appeared to be heading, not where the pitch actually crossed. The result is a call 1–2 feet off even though the pitch itself tracked correctly up to contact.</p>
-                        <p class="mb-0"><strong>Fix:</strong> Use <strong>Live At Bats</strong> mode (session setup screen) when hitters are in the box.</p>
+                        <p class="mb-3">Usually a batted-ball contamination problem. When a batter makes contact—even a dribbler—the ball's new path gets mixed into the pitch's calculated path, shifting the call by a foot or two even though the pitch itself tracked correctly up to contact.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Confirm <strong>Live At Bats</strong> was selected on the session setup screen—Bullpen mode is more likely to track the contact instead of the pitch. Still consistently off after switching? <strong>Calibrate</strong> on a clean, non-contact pitch, or rescan.</p>
                     </div>
                 </div>
 
