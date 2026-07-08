@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HeyBLU how-to videos — step-by-step walkthroughs for setup, scanning, calibration, and getting the most out of your session.">
+    <title>How-To Videos — HeyBLU</title>
+    <link rel="canonical" href="https://heyblu.ai/how-to">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heyblu.ai/how-to">
+    <meta property="og:title" content="HeyBLU How-To Videos">
+    <meta property="og:description" content="Step-by-step walkthroughs for setup, scanning, calibration, and getting the most out of your session.">
+    <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .video-card { scroll-margin-top: 100px; }
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        /* Responsive 16:9 embed */
+        .video-wrap {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 0.75rem;
+            background: #0f172a;
+        }
+        .video-wrap iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
+            border-radius: 0.75rem;
+        }
+    </style>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/site-analytics.js"></script>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col pt-16 text-slate-800">
+
+    <!-- Global site nav -->
+    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3">
+                    <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
+                </a>
+                <nav class="hidden md:flex items-center space-x-6" aria-label="Main">
+                    <a href="/#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
+                    <a href="/#playbook" class="text-gray-700 hover:text-blue-600 font-medium transition">Use Cases</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition">Pricing</a>
+                    <a href="/faq" class="text-gray-700 hover:text-blue-600 font-medium transition">Help</a>
+                    <a href="/#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Waitlist</a>
+                </nav>
+                <button type="button" id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="/#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
+                <a href="/#playbook" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Use Cases</a>
+                <a href="/pricing" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Pricing</a>
+                <a href="/faq" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Help</a>
+                <a href="/#beta" class="block py-2 px-4 bg-blue-600 text-white rounded font-bold text-center mt-2">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+
+        <!-- Page header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-bold text-slate-900 mb-2"><span class="text-blue-600">Hey</span>BLU How-To Videos</h1>
+            <p class="text-slate-600">Short walkthroughs for every step of setup and use. For searchable text answers, see the <a href="/faq" class="text-blue-600 font-medium hover:text-blue-800 underline">Help &amp; FAQ</a>.</p>
+        </div>
+
+        <!-- ── SETUP ── -->
+        <section class="mb-14" aria-labelledby="setup-heading">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="section-label text-blue-600">Setup</span>
+                <div class="flex-1 h-px bg-slate-200"></div>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2">
+
+                <!-- Video 1 -->
+                <div id="tripod-placement" class="video-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 pb-4">
+                        <p class="section-label text-blue-500 mb-1">Setup · Part 1</p>
+                        <h2 class="text-lg font-bold text-slate-900 mb-1">Tripod placement &amp; scene alignment</h2>
+                        <p class="text-sm text-slate-600 mb-4">Where to position the tripod, the correct camera angle, and what the view should look like once mounted.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <div class="video-wrap">
+                            <iframe src="https://www.youtube.com/embed/Y_GBL1fp1SM?si=b0kzPOn4bIUueaGE" title="Tripod placement and scene alignment" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="/faq#quick-start" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Setup checklist in FAQ →</a>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div id="scan-phase" class="video-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div class="p-5 pb-4">
+                        <p class="section-label text-blue-500 mb-1">Setup · Part 2</p>
+                        <h2 class="text-lg font-bold text-slate-900 mb-1">The scan phase</h2>
+                        <p class="text-sm text-slate-600 mb-4">How to perform a slow, steady scan, and how to place the AR plate and strike zone correctly.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <div class="video-wrap">
+                            <iframe src="https://www.youtube.com/embed/8MJg-Z_Ozco?si=BssUfFyoEpGI4KJj" title="The scan phase" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="/faq#setup" class="text-sm text-blue-600 hover:text-blue-800 font-medium">Setup FAQ →</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ── COMING SOON placeholder ── -->
+        <section class="mb-14" aria-labelledby="in-session-heading">
+            <div class="flex items-center gap-3 mb-6">
+                <span class="section-label text-blue-600">In Session</span>
+                <div class="flex-1 h-px bg-slate-200"></div>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2">
+
+                <!-- Placeholder — calibration video coming soon -->
+                <div class="video-card bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden opacity-60">
+                    <div class="p-5 pb-4">
+                        <p class="section-label text-slate-400 mb-1">In Session · Part 1</p>
+                        <h2 class="text-lg font-bold text-slate-500 mb-1">How to calibrate after a pitch</h2>
+                        <p class="text-sm text-slate-400 mb-4">When and how to use the 9-zone calibrate tool to correct a consistent miss — coming soon.</p>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <div class="video-wrap flex items-center justify-center bg-slate-100">
+                            <span class="absolute text-slate-400 text-sm font-medium">Video coming soon</span>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <a href="/faq#using-the-app" class="text-sm text-blue-500 hover:text-blue-700 font-medium">Calibrate guide in FAQ →</a>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Back to FAQ -->
+        <div class="text-center py-4">
+            <a href="/faq" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                Back to Help &amp; FAQ
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-auto">
+        <div class="max-w-4xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold mb-4 text-white">How-To Videos</h3>
+                    <p class="text-sm">Step-by-step walkthroughs for setup, scanning, calibration, and in-session controls.</p>
+                </div>
+                <div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                        <div>
+                            <h3 class="font-bold mb-3 text-white">Product</h3>
+                            <div class="space-y-2 text-sm">
+                                <a href="/#playbook" class="block text-slate-400 hover:text-white transition">Use Cases</a>
+                                <a href="/pricing" class="block text-slate-400 hover:text-white transition">Pricing</a>
+                                <a href="/field-guide" class="block text-slate-400 hover:text-white transition">Field Guide</a>
+                                <a href="/compare" class="block text-slate-400 hover:text-white transition">Strike Zone Tech</a>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-bold mb-3 text-white">Company</h3>
+                            <div class="space-y-2 text-sm">
+                                <a href="/" class="block text-slate-400 hover:text-white transition">Home</a>
+                                <a href="/about" class="block text-slate-400 hover:text-white transition">About Us</a>
+                                <a href="/support" class="block text-slate-400 hover:text-white transition">Support</a>
+                                <a href="/#beta" class="block text-slate-400 hover:text-white transition">Join Waitlist</a>
+                            </div>
+                        </div>
+                        <div class="col-span-2 sm:col-span-1">
+                            <h3 class="font-bold mb-3 text-white">Legal</h3>
+                            <div class="space-y-2 text-sm">
+                                <a href="/privacy" class="block text-slate-400 hover:text-white transition">Privacy Policy</a>
+                                <a href="/terms" class="block text-slate-400 hover:text-white transition">Terms of Service</a>
+                                <a href="https://heyblu.substack.com" target="_blank" rel="noopener noreferrer" class="block text-slate-400 hover:text-white transition">Field Notes</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 pt-8 text-center">
+                <p>&copy; 2026 <strong>Hey</strong><span class="text-blue-400 font-bold">BLU</span>. Built for the field.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.toggle('hidden');
+                menuBtn.setAttribute('aria-expanded', String(!isOpen));
+            });
+        }
+    </script>
+
+</body>
+</html>
