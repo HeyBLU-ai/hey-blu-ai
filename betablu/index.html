@@ -87,34 +87,27 @@
 
     <!-- FAQ section nav -->
     <nav class="bg-white border-b border-slate-200 sticky top-16 z-40" aria-label="FAQ sections">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-end items-center h-12">
-                <div class="hidden md:flex space-x-4 text-sm">
-                    <a href="#quick-start" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
-                    <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
-                    <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
-                    <a href="#connecting-devices" class="text-slate-600 hover:text-blue-600 transition">Two Devices</a>
-                    <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup</a>
-                    <a href="#using-the-app" class="text-slate-600 hover:text-blue-600 transition">Using the App</a>
-                    <a href="#troubleshooting" class="text-slate-600 hover:text-blue-600 transition">Troubleshooting</a>
-                    <a href="#feedback" class="text-slate-600 hover:text-blue-600 transition">Feedback</a>
-                </div>
-                <button id="mobile-menu-btn" class="md:hidden text-slate-500 hover:text-slate-700" aria-expanded="false" aria-controls="faq-mobile-menu" aria-label="Open FAQ menu">
-                    <span class="text-2xl">☰</span>
-                </button>
-            </div>
+        <!-- Desktop: right-aligned text links -->
+        <div class="hidden md:flex justify-end items-center h-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-x-4 text-sm">
+            <a href="#quick-start" class="text-slate-600 hover:text-blue-600 transition">Quick Start</a>
+            <a href="#basics" class="text-slate-600 hover:text-blue-600 transition">Basics</a>
+            <a href="#devices" class="text-slate-600 hover:text-blue-600 transition">Devices</a>
+            <a href="#connecting-devices" class="text-slate-600 hover:text-blue-600 transition">Two Devices</a>
+            <a href="#setup" class="text-slate-600 hover:text-blue-600 transition">Setup Steps</a>
+            <a href="#using-the-app" class="text-slate-600 hover:text-blue-600 transition">Using the App</a>
+            <a href="#troubleshooting" class="text-slate-600 hover:text-blue-600 transition">Troubleshooting</a>
+            <a href="#feedback" class="text-slate-600 hover:text-blue-600 transition">Feedback</a>
         </div>
-        <div id="faq-mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
-            <div class="px-4 py-3 space-y-2">
-                <a href="#quick-start" class="block py-2 text-slate-700 hover:text-blue-600 font-semibold">First-time setup</a>
-                <a href="#basics" class="block py-2 text-slate-700 hover:text-blue-600">The Basics</a>
-                <a href="#devices" class="block py-2 text-slate-700 hover:text-blue-600">Devices &amp; Environment</a>
-                <a href="#connecting-devices" class="block py-2 text-slate-700 hover:text-blue-600">Connect two devices</a>
-                <a href="#setup" class="block py-2 text-slate-700 hover:text-blue-600">Setup</a>
-                <a href="#using-the-app" class="block py-2 text-slate-700 hover:text-blue-600">Using the App</a>
-                <a href="#troubleshooting" class="block py-2 text-slate-700 hover:text-blue-600">Troubleshooting</a>
-                <a href="#feedback" class="block py-2 text-slate-700 hover:text-blue-600">Feedback</a>
-            </div>
+        <!-- Mobile: always-visible horizontal scroll pills -->
+        <div class="md:hidden flex overflow-x-auto gap-2 px-4 py-2" style="scrollbar-width:none;-ms-overflow-style:none;">
+            <a href="#quick-start" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Quick Start</a>
+            <a href="#basics" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Basics</a>
+            <a href="#devices" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Devices</a>
+            <a href="#connecting-devices" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Two Devices</a>
+            <a href="#setup" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Setup Steps</a>
+            <a href="#using-the-app" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Using the App</a>
+            <a href="#troubleshooting" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Troubleshooting</a>
+            <a href="#feedback" class="shrink-0 text-sm py-1.5 px-3 rounded-full border border-slate-200 bg-white text-slate-600 font-medium hover:text-blue-600 hover:border-blue-300 transition whitespace-nowrap">Feedback</a>
         </div>
     </nav>
 
@@ -146,14 +139,14 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 <a href="/field-guide#fix-a-problem" class="flex flex-col rounded-xl border-2 border-amber-200 bg-amber-50 p-4 hover:border-amber-300 transition">
-                    <span class="text-xs font-bold uppercase tracking-wide text-amber-800 mb-1">At the field now</span>
+                    <span class="text-xs font-bold uppercase tracking-wide text-amber-800 mb-1">At the field with bad calls?</span>
                     <span class="font-semibold text-slate-900">Field Guide → Fix a problem</span>
-                    <span class="text-sm text-slate-600 mt-1">Printable symptom → fix table. Same link as in the app.</span>
+                    <span class="text-sm text-slate-600 mt-1">Quick fixes for bad or missing calls. Start here.</span>
                 </a>
                 <a href="/field-guide" class="flex flex-col rounded-xl border-2 border-blue-200 bg-blue-50 p-4 hover:border-blue-300 transition">
-                    <span class="text-xs font-bold uppercase tracking-wide text-blue-800 mb-1">Print or save</span>
-                    <span class="font-semibold text-slate-900">Field Guide — setup cheat sheet</span>
-                    <span class="text-sm text-slate-600 mt-1">Tripod, red lines, Wi‑Fi, and limits on one page.</span>
+                    <span class="text-xs font-bold uppercase tracking-wide text-blue-800 mb-1">Full field guide</span>
+                    <span class="font-semibold text-slate-900">Field Guide — setup &amp; troubleshooting</span>
+                    <span class="text-sm text-slate-600 mt-1">Tripod, red lines, Wi‑Fi, and limits — built for your phone.</span>
                 </a>
             </div>
 
@@ -219,18 +212,6 @@
 
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                 <div class="faq-item">
-                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">What is HeyBLU?</span>
-                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="hidden px-6 pb-4 text-slate-600">
-                        <p>HeyBLU is an iPhone app that turns a mounted phone into a practice umpire. It tracks where each pitch crosses the plate, compares that spot to your strike zone, and calls <strong>Ball</strong> or <strong>Strike</strong> out loud. A HeyBLU subscription saves sessions with heatmaps and reports. See <a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">pricing</a> or our <a href="/compare" class="text-blue-600 font-medium underline hover:text-blue-800">strike zone tech guide</a>.</p>
-                    </div>
-                </div>
-
-                <div class="border-t border-slate-200 faq-item">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Does HeyBLU call swings?</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -313,6 +294,18 @@
                         <p class="mb-3"><strong>HeyBLU</strong> — 14-day free trial, then $9.99/mo or $99.99/yr. <strong>Launch pricing</strong> of $4.99/mo or $49.99/yr may still be available—check the App Store for the current rate when you subscribe.</p>
                         <p class="mb-3"><strong>Follow Game</strong> — Non-subscribers can follow along on their own iPhone when a subscriber shares their live feed.</p>
                         <p class="mb-0"><a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">Full pricing →</a> · League pilots: <a href="mailto:info@heyblu.ai" class="text-blue-600 font-medium underline hover:text-blue-800">info@heyblu.ai</a>.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What is HeyBLU?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p>HeyBLU is an iPhone app that turns a mounted phone into a practice umpire. It tracks where each pitch crosses the plate, compares that spot to your strike zone, and calls <strong>Ball</strong> or <strong>Strike</strong> out loud. A HeyBLU subscription saves sessions with heatmaps and reports. See <a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">pricing</a> or our <a href="/compare" class="text-blue-600 font-medium underline hover:text-blue-800">strike zone tech guide</a>.</p>
                     </div>
                 </div>
 
@@ -727,8 +720,47 @@
                 <h2 class="text-3xl font-bold text-slate-900">Troubleshooting</h2>
             </div>
 
+            <p class="text-sm text-slate-500 mb-4">Setup looked right but calls are off from the start? <a href="#quick-start" class="text-blue-600 font-medium hover:text-blue-800">Common setup causes →</a></p>
+
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="faq-item" data-keywords="wifi hotspot android router won't connect follow game command center">
+                <div class="faq-item" data-keywords="wrong call decision tree fix bad call playbook all outside all inside all high all low zone size bullpen mode rescan random calls">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">A call was clearly wrong — decision guide</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <dl class="space-y-3">
+                            <div>
+                                <dt class="font-semibold text-slate-800">Every pitch in one direction (all inside, all outside, all high, all low)?</dt>
+                                <dd class="ml-4 mt-1">→ Use <strong>9-zone Calibrate</strong> after your next clean non-swing pitch.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Blue plate has drifted off the real plate?</dt>
+                                <dd class="ml-4 mt-1">→ Use <strong>Adjust Plate</strong> to slide it back, then test with a pitch before calibrating.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Calls seem consistently too high, low, inside, or outside — even after calibrating?</dt>
+                                <dd class="ml-4 mt-1">→ <strong>Check zone size</strong>: gear icon → zone size. A zone set for the wrong age group shifts every call.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Only swung-at pitches are wrong; non-swings are accurate?</dt>
+                                <dd class="ml-4 mt-1">→ You're in <strong>Bullpen mode</strong> during live at-bats. Switch to Live At Bats mode on the next session.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Calls were fine, then a few in a row went off, then fine again?</dt>
+                                <dd class="ml-4 mt-1">→ After a long idle, the phone's position sense can shift. One <strong>Adjust Plate</strong> or <strong>Calibrate</strong> correction usually stabilizes the session.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Nothing above applies and calls seem random?</dt>
+                                <dd class="ml-4 mt-1">→ <strong>Redo the scan.</strong> Close the app, clear the plate area, walk slowly around home plate for 20–30 seconds, re-place the zone, and start a new session.</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="wifi hotspot android router won't connect follow game command center">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
                         <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -849,42 +881,6 @@
                     </div>
                 </div>
 
-                <div class="border-t border-slate-200 faq-item" data-keywords="wrong call decision tree fix bad call playbook all outside all inside all high all low zone size bullpen mode rescan random calls">
-                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">A call was clearly wrong — decision guide</span>
-                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-                        </svg>
-                    </button>
-                    <div class="hidden px-6 pb-4 text-slate-600">
-                        <dl class="space-y-3">
-                            <div>
-                                <dt class="font-semibold text-slate-800">Every pitch in one direction (all inside, all outside, all high, all low)?</dt>
-                                <dd class="ml-4 mt-1">→ Use <strong>9-zone Calibrate</strong> after your next clean non-swing pitch.</dd>
-                            </div>
-                            <div>
-                                <dt class="font-semibold text-slate-800">Blue plate has drifted off the real plate?</dt>
-                                <dd class="ml-4 mt-1">→ Use <strong>Adjust Plate</strong> to slide it back, then test with a pitch before calibrating.</dd>
-                            </div>
-                            <div>
-                                <dt class="font-semibold text-slate-800">Calls seem consistently too high, low, inside, or outside — even after calibrating?</dt>
-                                <dd class="ml-4 mt-1">→ <strong>Check zone size</strong>: gear icon → zone size. A zone set for the wrong age group shifts every call.</dd>
-                            </div>
-                            <div>
-                                <dt class="font-semibold text-slate-800">Only swung-at pitches are wrong; non-swings are accurate?</dt>
-                                <dd class="ml-4 mt-1">→ You're in <strong>Bullpen mode</strong> during live at-bats. Switch to Live At Bats mode on the next session.</dd>
-                            </div>
-                            <div>
-                                <dt class="font-semibold text-slate-800">Calls were fine, then a few in a row went off, then fine again?</dt>
-                                <dd class="ml-4 mt-1">→ After a long idle, the phone's position sense can shift. One <strong>Adjust Plate</strong> or <strong>Calibrate</strong> correction usually stabilizes the session.</dd>
-                            </div>
-                            <div>
-                                <dt class="font-semibold text-slate-800">Nothing above applies and calls seem random?</dt>
-                                <dd class="ml-4 mt-1">→ <strong>Redo the scan.</strong> Close the app, clear the plate area, walk slowly around home plate for 20–30 seconds, re-place the zone, and start a new session.</dd>
-                            </div>
-                        </dl>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -997,11 +993,6 @@
             button.setAttribute('aria-expanded', !isExpanded);
             content.classList.toggle('hidden');
         }
-
-        // FAQ mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function () {
-            document.getElementById('faq-mobile-menu').classList.toggle('hidden');
-        });
 
         // Smooth scroll for anchor links; open FAQ row when target is an faq-item
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {

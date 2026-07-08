@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#1d4ed8">
-    <meta name="description" content="HeyBLU Field Guide — at-the-field setup and troubleshooting. Printable cheat sheet for tripod mount, red-line framing, calibration, and two-device Wi‑Fi.">
+    <meta name="description" content="HeyBLU Field Guide — fix bad or missing calls, tripod setup, and two-device Wi‑Fi right from your phone at the field.">
     <title>HeyBLU Field Guide</title>
     <link rel="canonical" href="https://heyblu.ai/field-guide">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -49,7 +49,6 @@
             background: #1d4ed8;
             color: #fff;
             padding: 1.25rem 1.25rem 1.1rem;
-            border-bottom: 4px solid #f97316;
         }
 
         .wordmark {
@@ -163,11 +162,43 @@
 
         .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
+        .fix-list { display: flex; flex-direction: column; }
+
+        .fix-item {
+            padding: 0.9rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .fix-item:first-child { padding-top: 0; }
+        .fix-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+        .fix-symptom {
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 0.3rem;
+        }
+
+        .fix-fix {
+            margin: 0;
+            color: var(--text);
+        }
+
         .table-note {
             margin: 0.65rem 0 0;
             color: var(--muted);
             font-size: var(--body-size);
         }
+
+        .field-callout {
+            background: var(--blue-light);
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+            margin: 0 0 1.25rem;
+            color: var(--text);
+        }
+
+        .field-callout strong { color: #1e40af; }
 
         .limits-good, .limits-hassle {
             padding: 0.85rem 1rem;
@@ -253,18 +284,18 @@
             align-items: center;
         }
 
-        .print-btn {
-            background: #2563eb;
-            color: #fff;
+        .print-link {
+            background: none;
             border: none;
-            border-radius: 8px;
-            padding: 0.55rem 1rem;
-            font-weight: 600;
+            color: var(--muted);
+            padding: 0;
+            font-weight: 500;
+            text-decoration: underline;
             cursor: pointer;
             font-family: inherit;
         }
 
-        .print-btn:hover { background: #1d4ed8; }
+        .print-link:hover { color: var(--blue); }
 
         .no-print { }
 
@@ -277,6 +308,7 @@
             details.prep summary { display: none; }
             details.prep .prep-body { padding: 0; border: none; }
             section { break-inside: avoid; }
+            .fix-item { break-inside: avoid; }
         }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
@@ -287,8 +319,8 @@
     <div class="page">
         <header class="header">
             <h1 class="wordmark">HeyBLU Field Guide</h1>
-            <p class="thesis">At-the-field cheat sheet.</p>
-            <p class="scope">Print or save · outdoor bullpen · tripod mount · tested to ~60&nbsp;MPH.</p>
+            <p class="thesis">Fix it now, on your phone.</p>
+            <p class="scope">Outdoor bullpen · tripod mount · tested to ~60&nbsp;MPH.</p>
         </header>
 
         <nav class="jump-nav no-print" aria-label="Jump to section">
@@ -300,81 +332,71 @@
 
         <div class="content">
 
-            <p class="no-print" style="margin: 0 0 1.25rem; color: var(--muted); font-size: var(--body-size);">Opened from the app? Start with <a href="#fix-a-problem"><strong>Fix a problem</strong></a>. First-time walkthrough with pictures: <a href="/faq#setup">Help &amp; FAQ → Setup</a>.</p>
+            <p class="field-callout no-print"><strong>On the field right now?</strong> Jump straight to <a href="#fix-a-problem">Fix a problem</a> below. New to setup? Full walkthrough with pictures: <a href="/faq#setup">Help &amp; FAQ → Setup</a>.</p>
 
             <section id="fix-a-problem" aria-labelledby="fix-heading">
                 <h2 id="fix-heading">Fix a problem</h2>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th scope="col">If this happens</th>
-                                <th scope="col">Do this</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Second device won’t connect</td>
-                                <td>Use <strong>Android hotspot</strong> or <strong>travel router</strong>. iPhone hotspot only if Umpire phone: Airplane Mode → Wi‑Fi on → join. <a href="#connect-two-devices">Details below</a></td>
-                            </tr>
-                            <tr>
-                                <td>Tracker antenna shows <strong>7/7</strong>; another phone won’t join</td>
-                                <td>Session full—disconnect an unused second screen, or turn <strong>Share Game</strong> off and on. See <a href="#connect-two-devices">Multiple second screens</a></td>
-                            </tr>
-                            <tr>
-                                <td>No calls / ball not tracked</td>
-                                <td>Check red-line framing—full flight between both lines. Camera beyond ~15 ft? Move to <strong>10–12 ft</strong></td>
-                            </tr>
-                            <tr>
-                                <td>Inside/outside calls consistently wrong; camera angle was less than ~20° from pitch line</td>
-                                <td>Reposition tripod to ~45° offset from the pitch line — the camera can't judge inside/outside when shooting nearly head-on</td>
-                            </tr>
-                            <tr>
-                                <td>Ball not detected; white fence or light wall behind pitcher</td>
-                                <td>White background makes a white ball invisible — move to the other side of the plate or find a darker backdrop</td>
-                            </tr>
-                            <tr>
-                                <td>No calls with a <strong>left-handed batter</strong> in the box</td>
-                                <td>Camera too far. Move to <strong>10–12 ft</strong>—batter obstruction won't drop below the 5-detection minimum</td>
-                            </tr>
-                            <tr>
-                                <td>Call was <strong>1–2 feet off</strong> on a pitch with contact</td>
-                                <td>Batted-ball contamination—use <strong>Live At Bats</strong> mode when hitters are in the box</td>
-                            </tr>
-                            <tr>
-                                <td>Calls drifting on an all-dirt or low-contrast field</td>
-                                <td><strong>Calibrate</strong> on a clean pitch to stabilize. Persistent drift: end session, clear the plate area, fresh scan</td>
-                            </tr>
-                            <tr>
-                                <td>Zone shifted after mount</td>
-                                <td>Slide zone · Distance/Height · Adjust Plate (Pro: measured distance + lens height)</td>
-                            </tr>
-                            <tr>
-                                <td>Every pitch inside or outside</td>
-                                <td>Calibrate (9-zone grid) on a pitch without contact</td>
-                            </tr>
-                            <tr>
-                                <td>Calls consistently too high, low, inside, or outside — even after calibrating</td>
-                                <td>Check <strong>zone size</strong>: gear icon during session, or Resize Zone after session. A zone set for the wrong age group shifts every call</td>
-                            </tr>
-                            <tr>
-                                <td>Tripod bumped or long idle</td>
-                                <td>Restart session; rescan if people walked through the scene</td>
-                            </tr>
-                            <tr>
-                                <td>Phone hot in sun</td>
-                                <td>Cool it; thermal throttle hurts AR</td>
-                            </tr>
-                            <tr>
-                                <td>Calibrate after a swing</td>
-                                <td>Use a pitch not swung at (Live at bats when hitters are in the box)</td>
-                            </tr>
-                            <tr>
-                                <td>Still broken after Calibrate</td>
-                                <td>End session and run setup again</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="fix-list">
+                    <div class="fix-item">
+                        <p class="fix-symptom">No calls / ball not tracked</p>
+                        <p class="fix-fix">Check red-line framing—full flight between both lines. Camera beyond ~15 ft? Move to <strong>10–12 ft</strong>.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Inside/outside calls consistently wrong; camera angle was less than ~20° from pitch line</p>
+                        <p class="fix-fix">Reposition tripod to ~45° offset from the pitch line — the camera can't judge inside/outside when shooting nearly head-on.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Ball not detected; white fence or light wall behind pitcher</p>
+                        <p class="fix-fix">White background makes a white ball invisible — move to the other side of the plate or find a darker backdrop.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">No calls with a left-handed batter in the box</p>
+                        <p class="fix-fix">Camera too far. Move to <strong>10–12 ft</strong>—batter obstruction won't drop below the 5-detection minimum.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Call was 1–2 feet off on a pitch with contact</p>
+                        <p class="fix-fix">Batted-ball contamination—use <strong>Live At Bats</strong> mode when hitters are in the box.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Calls drifting on an all-dirt or low-contrast field</p>
+                        <p class="fix-fix"><strong>Calibrate</strong> on a clean pitch to stabilize. Persistent drift: end session, clear the plate area, fresh scan.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Every pitch inside or outside</p>
+                        <p class="fix-fix">Calibrate (9-zone grid) on a pitch without contact.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Calls consistently too high, low, inside, or outside — even after calibrating</p>
+                        <p class="fix-fix">Check <strong>zone size</strong>: gear icon during session, or Resize Zone after session. A zone set for the wrong age group shifts every call.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Zone shifted after mount</p>
+                        <p class="fix-fix">Slide zone · Distance/Height · Adjust Plate (Pro: measured distance + lens height).</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Calibrate not improving calls — or Apply button grayed out</p>
+                        <p class="fix-fix">Only calibrate on a pitch with no contact. Apply is grayed if there wasn't enough data. Use <strong>Live At Bats</strong> mode when hitters are in the box.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Still broken after Calibrate</p>
+                        <p class="fix-fix">Close the app, clear the plate area, and start with a fresh scan.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Tripod bumped or long idle</p>
+                        <p class="fix-fix">Restart session; rescan if people walked through the scene.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Phone hot in sun</p>
+                        <p class="fix-fix">Cool it — accuracy drops when the phone overheats.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Second device won't connect</p>
+                        <p class="fix-fix">Use <strong>Android hotspot</strong> or <strong>travel router</strong>. iPhone hotspot only if Umpire phone: Airplane Mode → Wi‑Fi on → join. <a href="#connect-two-devices">Details below</a>.</p>
+                    </div>
+                    <div class="fix-item">
+                        <p class="fix-symptom">Tracker antenna shows 7/7; another phone won't join</p>
+                        <p class="fix-fix">Session full—disconnect an unused second screen, or turn <strong>Share Game</strong> off and on. See <a href="#connect-two-devices">Multiple second screens</a>.</p>
+                    </div>
                 </div>
                 <p class="table-note">MPH is approximate (±5). Strike zone ~within one ball width when setup is good. More detail: <a href="/faq#troubleshooting">Help &amp; FAQ → Troubleshooting</a>.</p>
             </section>
@@ -471,9 +493,9 @@
         </div>
 
         <footer class="page-footer">
-            <button type="button" class="print-btn no-print" onclick="window.print()">Print / Save PDF</button>
             <a href="/faq">Help &amp; FAQ</a>
             <a href="mailto:support@heyblu.ai">support@heyblu.ai</a>
+            <button type="button" class="print-link no-print" onclick="window.print()">Prepping at home? Save this as a PDF for your next trip →</button>
         </footer>
     </div>
 
