@@ -160,9 +160,9 @@
         <!-- First-time setup (compact — full detail in Setup FAQ + Field Guide) -->
         <section id="quick-start" class="mb-12">
             <h2 class="text-2xl font-bold text-slate-900 mb-3">First-time setup</h2>
-            <p class="text-slate-600 text-sm mb-4">You need an <strong>iPhone 12 or later</strong>, a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-medium underline">tripod</a>, and any outdoor space with enough room—a driveway, the outfield, a full field, or a bullpen all work. Requirements: <strong>outdoors, daylight</strong>, and space to position the camera ~12 feet from home plate at a 30–45° angle to the pitch path.</p>
+            <p class="text-slate-600 text-sm mb-4">You need an <strong>iPhone 12 or later</strong>, a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-medium underline">tripod</a>, and any outdoor space with enough room. Requirements: <strong>outdoors, daylight</strong>, camera ~12 feet from home plate, and room to offset the tripod <strong>~45° from the pitch line</strong>. The angle matters — the closer the camera is to looking straight at the pitcher, the less inside/outside accuracy you get. Tight, narrow spaces that don't allow an offset angle are the most common setup blocker.</p>
             <ol class="list-decimal list-inside space-y-2 text-slate-700 text-sm mb-4 ml-1">
-                <li><strong>Tripod</strong> 10–15 ft from the plate, offset to one side; camera about <a href="#tripod-height" class="text-blue-600 font-medium underline">mid-zone height</a>.</li>
+                <li><strong>Tripod</strong> 10–15 ft from the plate, offset ~45° to one side of the pitch line (not aimed at the pitcher); camera about <a href="#tripod-height" class="text-blue-600 font-medium underline">mid-zone height</a>. <strong>Must be mounted</strong> — the phone locks to a fixed point in space; any movement after that shifts calls.</li>
                 <li><strong>Scan</strong> slowly around the plate (~30 seconds).</li>
                 <li><strong>Place zone</strong> on the real plate, then walk to the tripod.</li>
                 <li><strong>Mount &amp; frame</strong>—expect shift; realign; pitch path between <a href="#red-lines-strike-zone" class="text-blue-600 font-medium underline">red lines</a>.</li>
@@ -320,8 +320,8 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">Best today: <strong>outdoor bullpen or practice</strong> in daylight, tripod <strong>10–15 feet inside the fence</strong>, pitch speeds <strong>~60&nbsp;MPH or less</strong> (tested), and regulation baseballs or yellow softballs. See <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup</a> or the <a href="/field-guide" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide</a>.</p>
-                        <p class="mb-2">Avoid pointing the camera into the setting sun or bright white backgrounds in the pitch path—move to the other side of the plate if you have glare.</p>
+                        <p class="mb-2">Outdoor, daylight, tripod <strong>10–15 feet from the plate</strong> offset ~45° from the pitch line, pitch speeds <strong>~60&nbsp;MPH or less</strong> (tested), regulation baseballs or yellow softballs.</p>
+                        <p class="mb-2">Background behind the pitcher matters: <strong>dark or natural backgrounds work best</strong>. A white fence, white wall, or light-colored surface behind the pitcher makes a white baseball hard to detect — if that's your only option, try shooting from the other side of the plate. Also avoid pointing the camera into direct sun.</p>
                         <p class="text-sm text-slate-500">Brand-new pearl-white baseballs may glare in bright sun.</p>
                     </div>
                 </div>
@@ -334,7 +334,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-2">Indoor or artificial lighting, dusk, hand-held use, tripod past ~15&nbsp;ft from the plate (~20&nbsp;ft can work—closer is better), pitch speeds regularly above ~65–70&nbsp;MPH (untested; often works, less consistent than ≤60), hard breaking balls (still testing), and phone below ~30% battery. Non-regulation balls (wiffles, etc.) may not track correctly.</p>
+                        <p class="mb-2">Indoor cages and nighttime are outside the app's current range. The dimmer the natural light, the more detection quality drops — deep shade can affect tracking even during the day. Camera angle less than ~20° from the direct pitch line causes inside/outside accuracy to degrade. Tripod past ~15&nbsp;ft from the plate (10–12 ft is ideal). Pitch speeds regularly above ~65–70&nbsp;MPH (untested). Hard breaking balls (still testing). Phone below ~30% battery. Non-regulation balls (wiffles, etc.) may not track correctly.</p>
                     </div>
                 </div>
 
@@ -482,6 +482,19 @@
                             <li><strong>Tap "Play Ball":</strong> HeyBLU calls pitches once you're tracking live (use <strong>Pause, Warm Up</strong> anytime you need to stop).</li>
                         </ol>
                         <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-slate-200 faq-item" data-keywords="mound distance pitching distance 38 feet 46 feet setting app detection window camera distance plate">
+                    <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Does the mound distance setting affect call accuracy?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-slate-600">
+                        <p class="mb-3">The mound distance setting adjusts an internal detection window — it tells the app roughly where to start looking for the ball in flight. It does <strong>not</strong> affect plate-crossing accuracy.</p>
+                        <p class="mb-0">What does affect call quality: <strong>camera-to-plate distance</strong> (target: 10–12 ft) and <strong>camera angle</strong> (target: ~45° from the pitch line). The pitcher can be at 38 ft or 60 ft — those don't change what the camera needs to do at the plate end.</p>
                     </div>
                 </div>
 
