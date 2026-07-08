@@ -116,36 +116,23 @@
         
         <!-- Welcome Section -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-slate-900 mb-4">
-                <span class="text-blue-600">Hey</span>BLU Help &amp; FAQ
-            </h1>
-
-            <!-- Video Tutorials — prominent top placement -->
-            <a href="/how-to" class="flex items-center gap-4 rounded-xl border-2 border-green-300 bg-green-50 px-5 py-4 hover:border-green-400 hover:bg-green-100 transition mb-4">
-                <span class="text-3xl">▶️</span>
-                <div>
-                    <p class="font-bold text-slate-900 text-base leading-tight">Video Tutorials</p>
-                    <p class="text-sm text-slate-600 mt-0.5">Prefer to watch? Step-by-step walkthroughs for tripod placement, scanning, calibration, and more.</p>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4 mb-4">
+                <h1 class="text-2xl font-bold text-slate-900 shrink-0">
+                    <span class="text-blue-600">Hey</span>BLU Help &amp; FAQ
+                </h1>
+                <div class="relative flex-1 mt-3 sm:mt-0">
+                    <label for="faq-search-input" class="sr-only">Search help</label>
+                    <input type="search" id="faq-search-input" placeholder="Search — e.g. hotspot, calibrate, red lines…" autocomplete="off" class="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                    <div id="faq-search-results" class="hidden absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-hidden="true" role="listbox"></div>
                 </div>
-                <svg class="w-5 h-5 text-green-600 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </a>
-
-            <div class="relative mb-5">
-                <label for="faq-search-input" class="sr-only">Search help</label>
-                <input type="search" id="faq-search-input" placeholder="Search help — e.g. hotspot, calibrate, red lines, pricing…" autocomplete="off" class="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
-                <div id="faq-search-results" class="hidden absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-hidden="true" role="listbox"></div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                <a href="/field-guide#fix-a-problem" class="flex flex-col rounded-xl border-2 border-amber-200 bg-amber-50 p-4 hover:border-amber-300 transition">
-                    <span class="text-xs font-bold uppercase tracking-wide text-amber-800 mb-1">At the field with bad calls?</span>
-                    <span class="font-semibold text-slate-900">Field Guide → Fix a problem</span>
-                    <span class="text-sm text-slate-600 mt-1">Quick fixes for bad or missing calls. Start here.</span>
+            <div class="flex flex-wrap gap-3 mb-6">
+                <a href="/field-guide#fix-a-problem" class="inline-flex items-center gap-2 rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-amber-100 hover:border-amber-400 transition text-sm">
+                    <span>⚡</span> Bad calls or no calls? Quick fixes
                 </a>
-                <a href="/field-guide" class="flex flex-col rounded-xl border-2 border-blue-200 bg-blue-50 p-4 hover:border-blue-300 transition">
-                    <span class="text-xs font-bold uppercase tracking-wide text-blue-800 mb-1">Full field guide</span>
-                    <span class="font-semibold text-slate-900">Field Guide — setup &amp; troubleshooting</span>
-                    <span class="text-sm text-slate-600 mt-1">Tripod, red lines, Wi‑Fi, and limits — built for your phone.</span>
+                <a href="/how-to" class="inline-flex items-center gap-2 rounded-lg border-2 border-green-300 bg-green-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-green-100 hover:border-green-400 transition text-sm">
+                    <span>▶</span> Video tutorials
                 </a>
             </div>
 
