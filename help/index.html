@@ -22,9 +22,6 @@
         .faq-button[aria-expanded="true"] .faq-icon { transform: rotate(180deg); }
         #faq-search-results:not(.hidden) { box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12); }
         .ab-banner { background: #fef3c7; border-bottom: 1px solid #f59e0b; }
-        #tripod-diagram:not([open]) { margin: 0; }
-        #tripod-diagram > summary { list-style: none; }
-        #tripod-diagram > summary::-webkit-details-marker { display: none; }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/site-analytics.js"></script>
@@ -96,10 +93,12 @@
                     <li><strong class="text-white">Full pitch path:</strong> plate and mound on or just inside the red lines. Plate near the bottom of the screen. Room above the strike zone for high pitches.</li>
                     <li><strong class="text-white">Test:</strong> throw 2–4 warm-up pitches; use <strong class="text-white">Calibrate</strong> if needed</li>
                 </ol>
-                <details id="tripod-diagram" class="mt-3 scroll-mt-28 group">
-                    <summary class="sr-only">Tripod placement diagram</summary>
+                <div id="tripod-diagram" class="hidden mt-3 scroll-mt-28" hidden>
+                    <div class="flex justify-end mb-2">
+                        <button type="button" class="diagram-close text-sm font-semibold text-blue-300 hover:text-white underline">Close diagram</button>
+                    </div>
                     <img src="/images/tripod-placement-offset.png" alt="Tripod placement: 3 to 5 long strides from home plate, in line with a foul line — avoid under 25° offset behind the plate" class="w-full max-w-xl mx-auto rounded-lg border border-slate-700 bg-white" width="1536" height="1024" loading="lazy">
-                </details>
+                </div>
             </div>
         </section>
 
@@ -798,29 +797,45 @@
                 menuBtn.setAttribute('aria-expanded', String(!open));
             });
         }
+        function openDiagram(panel) {
+            if (!panel) return;
+            panel.hidden = false;
+            panel.classList.remove('hidden');
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        function closeDiagram(panel) {
+            if (!panel) return;
+            panel.hidden = true;
+            panel.classList.add('hidden');
+            if (location.hash === '#tripod-diagram' && history.replaceState) {
+                history.replaceState(null, '', location.pathname + location.search);
+            }
+        }
         // Open hash target on load
         if (location.hash) {
             const el = document.querySelector(location.hash);
             if (el) {
-                if (el.tagName === 'DETAILS') {
-                    el.open = true;
-                    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if (el.id === 'tripod-diagram') {
+                    openDiagram(el);
                 } else {
                     const b = el.querySelector('.faq-button');
                     if (b) toggleFaq(b);
                 }
             }
         }
-        // Diagram links open the collapsed figure instead of showing it always
         document.querySelectorAll('a.diagram-link').forEach(function(link) {
             link.addEventListener('click', function(e) {
                 const id = (link.getAttribute('href') || '').replace('#', '');
-                const details = document.getElementById(id);
-                if (!details || details.tagName !== 'DETAILS') return;
+                const panel = document.getElementById(id);
+                if (!panel) return;
                 e.preventDefault();
-                details.open = true;
+                openDiagram(panel);
                 if (history.replaceState) history.replaceState(null, '', '#' + id);
-                details.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+        });
+        document.querySelectorAll('.diagram-close').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                closeDiagram(btn.closest('#tripod-diagram'));
             });
         });
     </script>
