@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HeyBLU Help &amp; FAQ — search answers on setup, two-device Wi‑Fi, troubleshooting, pricing, and support. Printable Field Guide for at-the-field use.">
+    <meta name="description" content="HeyBLU Help &amp; FAQ — search answers on setup, two-device Wi‑Fi, troubleshooting, pricing, and support.">
     <title>Help &amp; FAQ — HeyBLU</title>
     <link rel="canonical" href="https://heyblu.ai/faq">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://heyblu.ai/faq">
     <meta property="og:title" content="HeyBLU Help &amp; FAQ">
-    <meta property="og:description" content="Search setup, troubleshooting, and product answers. Field Guide linked for at-the-field help.">
+    <meta property="og:description" content="Search setup, troubleshooting, and product answers for HeyBLU.">
     <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
     <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -55,6 +55,10 @@
     <script defer src="/site-analytics.js"></script>
 </head>
 <body class="bg-slate-50 min-h-screen flex flex-col pt-16">
+
+    <div class="bg-amber-50 border-b border-amber-300 text-center text-sm text-amber-950 px-4 py-2">
+        Comparing help layouts: this is the current FAQ (A). Try the new draft at <a href="/help" class="font-semibold underline">/help</a>.
+    </div>
 
     <!-- Global site nav -->
     <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
@@ -132,13 +136,13 @@
                 <ul class="text-sm space-y-2 list-disc list-inside text-slate-200">
                     <li><strong class="text-white">Outdoor bullpen</strong> · <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-300 underline hover:text-blue-200">tripod</a> <strong class="text-white">10–15&nbsp;ft inside the fence</strong> · daylight.</li>
                     <li><strong class="text-white">Red lines:</strong> full pitch path between them—zone on one line, mound on the other. <a href="#red-lines-strike-zone" class="text-blue-300 underline hover:text-blue-200">See diagram →</a></li>
-                    <li><strong class="text-white">Two devices?</strong> Android hotspot or travel router—not every Wi‑Fi works. <a href="#connecting-devices" class="text-blue-300 underline hover:text-blue-200">What works →</a> · <a href="/field-guide#connect-two-devices" class="text-blue-300 underline hover:text-blue-200">Print version →</a></li>
+                    <li><strong class="text-white">Two devices?</strong> Android hotspot or travel router—not every Wi‑Fi works. <a href="#connecting-devices" class="text-blue-300 underline hover:text-blue-200">What works →</a></li>
                 </ul>
             </div>
 
             <div class="flex flex-wrap gap-3 mt-4">
-                <a href="/field-guide#fix-a-problem" class="inline-flex items-center gap-2 rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-amber-100 hover:border-amber-400 transition text-sm">
-                    <span>⚡</span> Still having trouble? Quick fixes
+                <a href="#quick-start" class="inline-flex items-center gap-2 rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-amber-100 hover:border-amber-400 transition text-sm">
+                    <span>⚡</span> Still having trouble? What to check
                 </a>
                 <a href="/how-to" class="inline-flex items-center gap-2 rounded-lg border-2 border-green-300 bg-green-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-green-100 hover:border-green-400 transition text-sm">
                     <span>▶</span> Video tutorials
@@ -146,7 +150,7 @@
             </div>
         </div>
 
-        <!-- First-time setup (compact — full detail in Setup FAQ + Field Guide) -->
+        <!-- First-time setup -->
         <section id="quick-start" class="mb-12">
             <h2 class="text-2xl font-bold text-slate-900 mb-3">First-time setup</h2>
             <p class="text-slate-600 text-sm mb-4">You need an <strong>iPhone 12 or later</strong>, a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 font-medium underline">tripod</a>, and any outdoor space with enough room. Requirements: <strong>outdoors, daylight</strong>, camera ~12 feet from home plate, and room to offset the tripod <strong>~45° from the pitch line</strong>. The angle matters — the closer the camera is to looking straight at the pitcher, the less inside/outside accuracy you get. Tight, narrow spaces that can't allow an offset angle are a common setup blocker.</p>
@@ -157,7 +161,7 @@
                 <li><strong>Mount &amp; frame</strong>—expect shift; realign; pitch path between <a href="#red-lines-strike-zone" class="text-blue-600 font-medium underline">red lines</a>.</li>
                 <li><strong>Play Ball</strong> → test pitch → <strong>Calibrate</strong> if calls are systematically off.</li>
             </ol>
-            <p class="text-sm text-slate-500 mb-4"><a href="#setup" class="text-blue-600 font-semibold underline">Setup FAQ with step detail →</a> · <a href="/field-guide" class="text-blue-600 font-semibold underline">Print Field Guide →</a></p>
+            <p class="text-sm text-slate-500 mb-4"><a href="#setup" class="text-blue-600 font-semibold underline">Setup FAQ with step detail →</a></p>
 
             <!-- Why can't I get it to work accordion -->
             <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
@@ -470,7 +474,7 @@
 
                         <p class="mb-2 font-semibold text-slate-900">Multiple second screens (experimental)</p>
                         <p class="mb-2">One tracking iPhone can share with <strong>up to 7 other devices</strong> (typical: <strong>1 Command Center</strong> + up to <strong>6 Follow Game</strong>). <strong>Follow Game and Command Center can connect at the same time.</strong> The tracker antenna shows <strong>connected/7</strong>. <strong>1–2 screens</strong> are field-tested; <strong>3+</strong> are supported but experimental—prefer a <strong>travel router</strong>. Use only <strong>one Command Center</strong> for remote control per session.</p>
-                        <p class="mb-0 text-sm text-slate-500">Printable summary: <a href="/field-guide#connect-two-devices" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide → Connect two devices</a>.</p>
+                        <p class="mb-0 text-sm text-slate-500">Need more detail? See the checklist under <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup → what to check</a>.</p>
                     </div>
                 </div>
             </div>
@@ -551,19 +555,21 @@
 
                 <div id="physical-measurements" class="border-t border-slate-200 faq-item" data-keywords="distance lens height measurement pro iphone enter measurements camera plate distance accurate plate moves shrinks walk tripod adjust plate">
                     <button class="faq-button w-full text-left px-6 py-4 flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">Pro iPhone: the blue plate moved and shrank when I walked to the tripod</span>
+                        <span class="font-semibold text-slate-900">Pro iPhone: the blue plate moved or shrank after I locked it</span>
                         <svg class="faq-icon w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">This is expected on Pro iPhones. After mounting, you'll be prompted to enter two measurements:</p>
+
+                        <p class="mb-3">Expected on Pro iPhones. After you lock the plate and walk to the tripod, the blue plate and zone can jump and shrink. Tap the pulsing distance number (or Confirm Distance), then enter the real measurements:</p>
                         <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
-                            <li><strong>Camera-to-plate distance</strong> — from the phone's camera lens straight to the center of home plate.</li>
-                            <li><strong>Lens height</strong> — from the ground up to the camera lens.</li>
+                            <li><strong>Camera-to-plate distance</strong> — lens straight to the center of home plate.</li>
+                            <li><strong>Lens height</strong> — ground up to the camera lens.</li>
                         </ul>
-                        <p class="mb-3">Enter exact numbers — a tape measure or yardstick works fine. After you enter them, the blue plate will shift to a position that may not sit on the real plate. <strong>That's normal.</strong> Use <strong>Adjust Plate</strong> to slide the blue plate back onto the real one, then verify the zone looks right. You're ready to go.</p>
-                        <p class="mb-0">Eyeballed measurements hurt accuracy more than you'd expect — if you're guessing, you're better off skipping this step and using Adjust Plate alone.</p>
+                        <p class="mb-3">Use a tape measure. After you enter the numbers, the blue plate may still sit feet away from the real plate. <strong>Use your finger to slide the strike zone and plate back on top of the real plate.</strong></p>
+                        <p class="mb-0">Only then use <strong>Adjust Plate</strong> if it is already very close (or sitting on the plate) but not flush. Check the view — you are ready to go.</p>
+
                     </div>
                 </div>
 
@@ -756,7 +762,7 @@
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
                         <p class="mb-3"><strong>Fast fix:</strong> Android phone hotspot (no SIM needed) or a small travel router—both iPhones join it.</p>
-                        <p class="mb-0">At the field: <a href="/field-guide#fix-a-problem" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide → Fix a problem</a> · Full walkthrough: <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
+                        <p class="mb-0">Full walkthrough: <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
                     </div>
                 </div>
 
@@ -782,7 +788,7 @@
                         </svg>
                     </button>
                     <div class="hidden px-6 pb-4 text-slate-600">
-                        <p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup</a> · <a href="/field-guide#fix-a-problem" class="text-blue-600 hover:text-blue-800 font-medium">Field Guide fixes</a>.</p>
+                        <p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></p>
                         <p class="mb-3">After placing the zone, minimize movement; mount without bumping the tripod. If calls look consistently biased after a stable mount, use <strong>Calibrate</strong> on the primary device.</p>
                         <p class="font-semibold text-green-600">Fix: Check that the mount is tight and nothing moved. Tighten the mount, avoid bumping the tripod, and on windy days consider weighing it down or moving to a sheltered spot.</p>
                     </div>
@@ -919,8 +925,8 @@
                     <h3 class="font-bold mb-3 text-white">Help</h3>
                     <div class="space-y-2 text-sm">
                         <a href="/faq" class="block text-slate-400 hover:text-white transition">Help &amp; FAQ</a>
+                        <a href="/help" class="block text-slate-400 hover:text-white transition">Help (new draft)</a>
                         <a href="/how-to" class="block text-slate-400 hover:text-white transition">Video Tutorials</a>
-                        <a href="/field-guide" class="block text-slate-400 hover:text-white transition">Field Guide</a>
                         <a href="/support" class="block text-slate-400 hover:text-white transition">Support</a>
                     </div>
                 </div>
@@ -931,7 +937,7 @@
                             <div class="space-y-2 text-sm">
                                 <a href="/#playbook" class="block text-slate-400 hover:text-white transition">Use Cases</a>
                                 <a href="/pricing" class="block text-slate-400 hover:text-white transition">Pricing</a>
-                                <a href="/field-guide" class="block text-slate-400 hover:text-white transition">Field Guide</a>
+                                <a href="/how-to" class="block text-slate-400 hover:text-white transition">Video Tutorials</a>
                                 <a href="/compare" class="block text-slate-400 hover:text-white transition">Strike Zone Tech</a>
                             </div>
                         </div>

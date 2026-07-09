@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="HeyBLU Help — keys to success, video tutorials, and searchable answers for setup and troubleshooting.">
+    <title>Help — HeyBLU</title>
+    <link rel="canonical" href="https://heyblu.ai/help">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://heyblu.ai/help">
+    <meta property="og:title" content="HeyBLU Help">
+    <meta property="og:description" content="One page for setup, Pro iPhone fixes, and troubleshooting. Video tutorials linked separately.">
+    <link rel="icon" type="image/x-icon" href="/images/heyblu-favicon.ico">
+    <link rel="icon" type="image/svg+xml" href="/images/HeyBLU vector logo.svg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+        .help-section, .faq-item { scroll-margin-top: 100px; }
+        .faq-button[aria-expanded="true"] { color: #2563eb; }
+        .faq-icon { transition: transform 0.2s ease; }
+        .faq-button[aria-expanded="true"] .faq-icon { transform: rotate(180deg); }
+        #faq-search-results:not(.hidden) { box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12); }
+        .ab-banner { background: #fef3c7; border-bottom: 1px solid #f59e0b; }
+    </style>
+    <script defer src="/_vercel/insights/script.js"></script>
+    <script defer src="/site-analytics.js"></script>
+</head>
+<body class="min-h-screen flex flex-col pt-16">
+
+    <div class="ab-banner no-print text-center text-sm text-amber-950 px-4 py-2">
+        Draft help layout (B). Compare with the current <a href="/faq" class="font-semibold underline">/faq</a>. Videos stay on <a href="/how-to" class="font-semibold underline">/how-to</a>.
+    </div>
+
+    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <a href="/" class="flex items-center space-x-3">
+                    <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
+                </a>
+                <nav class="hidden md:flex items-center space-x-6" aria-label="Main">
+                    <a href="/#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
+                    <a href="/#playbook" class="text-gray-700 hover:text-blue-600 font-medium transition">Use Cases</a>
+                    <a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition">Pricing</a>
+                    <a href="/help" class="text-blue-600 font-semibold transition" aria-current="page">Help</a>
+                    <a href="/#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Waitlist</a>
+                </nav>
+                <button type="button" id="menu-btn" class="md:hidden text-gray-900 hover:text-blue-600" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
+                <a href="/#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
+                <a href="/#playbook" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Use Cases</a>
+                <a href="/pricing" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Pricing</a>
+                <a href="/help" class="block py-2 px-4 text-blue-600 font-semibold bg-blue-50 rounded">Help</a>
+                <a href="/#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Waitlist</a>
+            </div>
+        </div>
+    </header>
+    <script src="/site-nav.js"></script>
+
+    <main class="flex-grow max-w-3xl mx-auto px-4 sm:px-6 py-6 w-full">
+
+        <h1 class="text-2xl font-bold text-slate-900 mb-1"><span class="text-blue-600">Hey</span>BLU Help</h1>
+        <p class="text-sm text-slate-600 mb-5">Scan for your problem. Open one answer. Prefer video? Use the tutorials link.</p>
+
+        <div class="bg-slate-900 text-white rounded-xl px-5 py-4 mb-4">
+            <p class="font-semibold mb-2">Keys to success</p>
+            <ul class="text-sm space-y-1.5 text-slate-200 list-disc list-inside">
+                <li><strong class="text-white">Outdoors, daylight</strong> · tripod <strong class="text-white">10–15 ft</strong> from the plate · ~<strong class="text-white">45° offset</strong> from the pitch line.</li>
+                <li><strong class="text-white">Mount the phone</strong> — lock, then keep it still.</li>
+                <li><strong class="text-white">Red lines:</strong> pitch path between them; zone on one line, mound on the other.</li>
+                <li><strong class="text-white">Slow scan</strong> with no one near the plate.</li>
+            </ul>
+        </div>
+
+        <a href="/how-to" class="flex items-center gap-3 rounded-xl border-2 border-green-300 bg-green-50 px-4 py-3 mb-4 hover:bg-green-100 transition">
+            <span class="text-xl">▶</span>
+            <div class="min-w-0">
+                <p class="font-bold text-slate-900 text-sm">Video Tutorials</p>
+                <p class="text-xs text-slate-600">Tripod placement, scan, and more — separate page.</p>
+            </div>
+            <svg class="w-5 h-5 text-green-700 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+
+        <a href="#pro-iphone" class="flex items-center gap-3 rounded-xl border-2 border-blue-300 bg-blue-50 px-4 py-3 mb-5 hover:bg-blue-100 transition" onclick="setTimeout(function(){var el=document.getElementById('pro-iphone'); if(!el) return; var b=el.querySelector('.faq-button'); if(b && b.getAttribute('aria-expanded')!=='true') toggleFaq(b);}, 50);">
+            <span class="text-xl">📱</span>
+            <div class="min-w-0">
+                <p class="font-bold text-slate-900 text-sm">Pro iPhone?</p>
+                <p class="text-xs text-slate-600">Blue plate moved or shrank after you locked it — open the fix.</p>
+            </div>
+            <svg class="w-5 h-5 text-blue-700 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
+
+        <div class="relative mb-8">
+            <label for="faq-search-input" class="sr-only">Search help</label>
+            <input type="search" id="faq-search-input" placeholder="Search — e.g. plate moved, hotspot, calibrate…" autocomplete="off" class="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+            <div id="faq-search-results" class="hidden absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-hidden="true" role="listbox"></div>
+        </div>
+
+        <section id="setup" class="mb-10">
+            <h2 class="text-lg font-bold text-slate-900 mb-3">First-time setup</h2>
+            <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 bg-white rounded-xl border border-slate-200 px-5 py-4 mb-3">
+                <li><strong>Tripod</strong> 10–15 ft from the plate, ~45° offset; mid-zone height; mounted. <a href="/how-to#tripod-placement" class="text-blue-600 underline">Watch →</a></li>
+                <li><strong>Scan</strong> slowly (~30 seconds), no one near the plate. <a href="/how-to#scan-phase" class="text-blue-600 underline">Watch →</a></li>
+                <li><strong>Place zone</strong> on the real plate, then walk to the tripod.</li>
+                <li><strong>Mount &amp; frame</strong> — pitch path between the red lines.</li>
+                <li><strong>Play Ball</strong> → test pitch → Calibrate only if calls are systematically off.</li>
+            </ol>
+            <p class="text-xs text-slate-500">Pro iPhone and the blue plate jumped? Use the Pro button above.</p>
+        </section>
+
+
+        <section id="problems" class="help-section mb-10">
+            <h2 class="text-lg font-bold text-slate-900 mb-3">Something went wrong</h2>
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="faq-item" data-keywords="not working no calls bad calls setup mistakes common problems troubleshoot why camera distance angle scan">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Did the setup steps but still not getting calls — what to check</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3 text-sm">Any one of these is enough to cause bad calls or no calls at all:</p>
+                        <ul class="space-y-2 text-sm">
+                            <li>📍 <strong>Camera too close or too far</strong> — target is 10–15 ft from the plate. Under 10 ft or past 20 ft and detection breaks down.</li>
+                            <li>📐 <strong>Camera angle off</strong> — aim for ~45° offset from the pitch line, roughly in line with a foul line. Less than ~20° offset and inside/outside accuracy degrades. Too far offset (past ~50° or beyond the foul line) and BLU won't see the entire pitch.</li>
+                            <li>🏠 <strong>Home plate not visible in frame</strong> — the real plate must be in the camera view throughout the session.</li>
+                            <li>📏 <strong>Proper use of the red line guides when placing the iPhone in the tripod mount</strong> — the pitch path should run between the two red lines, with the mound along one and the strike zone along the other. Don't put the strike zone in the exact middle of the screen — BLU won't see the entire pitch.</li>
+                            <li>⬆️ <strong>Strike zone too high in frame</strong> — if the top of the zone is near the top of the screen, high pitches clip off. Lower the camera or adjust distance and reframe so the camera can see home plate, and just high enough above the strike zone to see high pitches.</li>
+                            <li>🌀 <strong>Fast or shaky scan</strong> — a quick or jerky scan gives the app a poor 3D map. Move slowly and steadily for ~30 seconds. If you see the strike zone move or shake after setup, your scan was likely too fast or shaky and needs to be redone.</li>
+                            <li>🧍 <strong>People near the plate during the scan</strong> — a batter, catcher, or coach walking through the scene during scanning is a common cause of bad calls throughout the session. Scan with no one present.</li>
+                            <li>📵 <strong>Indoor cage or nighttime</strong> — the app requires outdoor daylight. Indoor cages and nighttime are outside its current range.</li>
+                            <li>🔢 <strong>Too many calibrations, or one bad one</strong> — each calibration invisibly moves the math used for calls. Use Calibrate selectively. If calls don't improve after one or two attempts, close the app and start fresh with a new scan.</li>
+                            <li>📱 <strong>Handheld or shaky mount</strong> — if the camera isn't stationary, calls will degrade over time. Avoid mounting on fences that shake, or using a flimsy tripod on a windy day. Handheld is fine to test a pitch or two, but small movements to you are big movements to the app.</li>
+                            <li>🚧 <strong>Fence or tripod in the camera view</strong> — part of the fence or mount crossing into frame can cause blur that throws BLU's tracking off.</li>
+                            <li>🌡️ <strong>Hot phone</strong> — BLU works the camera hard, and a hot phone makes its job much harder. Use shade, a small fan, or the same cooling methods GameChanger parents use to keep a streaming phone cool on hot days.</li>
+                        </ul>
+                    </div>
+                    </div>
+                </div>
+                <div id="pro-iphone" class="border-t border-slate-200 faq-item" data-keywords="pro iphone pro max lidar blue plate moved shrank lock walk tripod distance lens height confirm distance measurements slide adjust plate">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Pro iPhone: the blue plate moved and shrank when I walked to the tripod</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Expected on Pro iPhones. After you lock the plate and walk to the tripod, the blue plate and zone can jump and shrink. Tap the pulsing distance number (or Confirm Distance), then enter the real measurements:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li><strong>Camera-to-plate distance</strong> — lens straight to the center of home plate.</li>
+                            <li><strong>Lens height</strong> — ground up to the camera lens.</li>
+                        </ul>
+                        <p class="mb-3">Use a tape measure. After you enter the numbers, the blue plate may still sit feet away from the real plate. <strong>Use your finger to slide the strike zone and plate back on top of the real plate.</strong></p>
+                        <p class="mb-0">Only then use <strong>Adjust Plate</strong> if it is already very close (or sitting on the plate) but not flush. Check the view — you are ready to go.</p>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="wrong call decision tree fix bad call playbook all outside all inside all high all low zone size bullpen mode rescan random calls">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">A call was clearly wrong — decision guide</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<dl class="space-y-3">
+                            <div>
+                                <dt class="font-semibold text-slate-800">Every pitch in one direction (all inside, all outside, all high, all low)?</dt>
+                                <dd class="ml-4 mt-1">→ Use <strong>9-zone Calibrate</strong> after your next clean non-swing pitch.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Blue plate has drifted off the real plate?</dt>
+                                <dd class="ml-4 mt-1">→ Use <strong>Adjust Plate</strong> to slide it back, then test with a pitch before calibrating.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Calls seem consistently too high, low, inside, or outside — even after calibrating?</dt>
+                                <dd class="ml-4 mt-1">→ A zone that's too small will get more "Ball" calls; one too large will get too many "Strike" calls. <strong>Check zone size</strong>: gear icon → zone size.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Only swung-at pitches are wrong; non-swings are accurate?</dt>
+                                <dd class="ml-4 mt-1">→ You're in <strong>Bullpen mode</strong> during live at-bats. Switch to Live At Bats mode on the next session.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Calls were fine, then a few in a row went off, then fine again?</dt>
+                                <dd class="ml-4 mt-1">→ After a long idle, the phone's position sense can shift. One <strong>Adjust Plate</strong> or <strong>Calibrate</strong> correction usually stabilizes the session.</dd>
+                            </div>
+                            <div>
+                                <dt class="font-semibold text-slate-800">Nothing above applies and calls seem random?</dt>
+                                <dd class="ml-4 mt-1">→ <strong>Redo the scan.</strong> Close the app, clear the plate area, walk slowly around home plate for 20–30 seconds, re-place the zone, and start a new session.</dd>
+                            </div>
+                        </dl>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="no call silent missed pitch not tracking blocked catcher net detections MPH speed no dot no location">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">No call on a pitch — or MPH shows but no location dot</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">HeyBLU stays silent rather than guess—it needs a clean, unobstructed look at enough of the pitch to calculate exactly where it crossed the plate. Speed can be measured from less of the flight than location can, which is why you may see MPH show up without a location or a ball/strike call.</p>
+                        <p class="mb-3">Most common causes: camera more than 12–15 ft from the plate, ball blocked mid-flight (catcher, batter, net), or pitch path outside the <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">red-line framing window</a>.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Move camera to 10–12 ft. Check red-line framing. See also: <a href="#left-handed-batter" class="text-blue-600 hover:text-blue-800 font-medium">batter blocking the view</a>.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="tracking unstable check camera drift mount tripod bump scan">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Why does it say "Tracking unstable" or "Check camera"?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></p>
+                        <p class="mb-3">After placing the zone, minimize movement; mount without bumping the tripod. If calls look consistently biased after a stable mount, use <strong>Calibrate</strong> on the primary device.</p>
+                        <p class="font-semibold text-green-600">Fix: Check that the mount is tight and nothing moved. Tighten the mount, avoid bumping the tripod, and on windy days consider weighing it down or moving to a sheltered spot.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="calibrate calibration outside inside wrong call strike ball 9 zone grid adjust heyblu">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Why is every call "outside" (or "inside") when it looks like a strike?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Tap the on-screen <strong>Calibrate</strong> button after a test pitch, then move the yellow dot to where the ball actually crossed. That corrects a mismatch between where the app thinks the plate is and where it physically is.</p>
+                        <p class="mb-0"><strong>Adjust HeyBLU</strong> (Inside/Outside) under <strong>Settings</strong> (gear icon) provides a settings-level nudge if needed, but Calibrate is the primary tool.</p>
+                    </div>
+                    </div>
+                </div>
+                <div id="left-handed-batter" class="border-t border-slate-200 faq-item" data-keywords="left handed lefty batter no call same side first base third base camera blocked obstruction LHB">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">No calls when the batter is on the same side as the camera</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">A batter standing in the box on the same side of the plate as the camera can block the camera's view of part of the pitch as it nears the plate. HeyBLU's recommended camera position is the <strong>1st-base side</strong>, so this most often shows up with <strong>left-handed batters</strong> (only about 10% of batters)—but the real cause is which side the batter is standing on, not handedness.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Shoot from the recommended <strong>~45° offset</strong> from the pitch line, not head-on. That angle keeps most of the pitch path visible even with a batter blocking part of the view.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="2 feet outside wrong call batted ball contact grounder live at bats contamination swing hit">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Call was way off — "2 feet outside" on a pitch down the middle</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Usually a batted-ball contamination problem. When a batter makes contact—even a dribbler—the ball's new path gets mixed into the pitch's calculated path, shifting the call by a foot or two even though the pitch itself tracked correctly up to contact.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Confirm <strong>Live At Bats</strong> was selected on the session setup screen—Bullpen mode is more likely to track the contact instead of the pitch. Still consistently off after switching? <strong>Calibrate</strong> on a clean, non-contact pitch, or rescan.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="phantom pitch counted nothing thrown throwback catcher fake pitch false detection trash delete">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">A pitch was counted when nothing was thrown</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">The app tracks any fast-moving ball-shaped object in frame. A catcher's throwback can occasionally look enough like a pitch—especially at longer camera distances (18+ feet) where the ball is smaller and direction checks are less reliable.</p>
+                        <p class="mb-3"><strong>Prevention:</strong> Camera at 10–12 feet. At that distance the ball is large enough that direction is highly accurate and most throwbacks are filtered out.</p>
+                        <p class="mb-0"><strong>Fix after it happens:</strong> Tap the trash icon on the pitch card to delete it. This automatically updates the Command Center count.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="calibrating over over doesn't fix bad calls plate position distance batted ball wrong">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Calibrating over and over isn't fixing bad calls</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Calibration corrects a plate position mismatch—that's all it does. Most persistent bad calls come from something else: a bad scan (especially if people were near the plate during setup), camera too far away, batted-ball contamination, or the phone shifting after mounting.</p>
+                        <p class="mb-3">If you've calibrated <strong>3 or more times</strong> and calls are still off, stop calibrating. The best fix at that point is to <strong>close the app completely, move everyone away from the plate, and start with a fresh scan.</strong> Check camera distance. Make sure <strong>Live At Bats</strong> is selected if batters are in the box.</p>
+                        <p class="mb-0">Each calibration to a bad pitch shifts the plate further from the correct position—more calibrations make a bad scan worse, not better.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="dirt field bad calls rescan all-dirt infield low contrast unstable calls session scan">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Calls are inconsistent on an all-dirt or low-contrast field</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Fields with little visual contrast—like an all-dirt infield—give the app less to anchor to, so the phone's position sense can drift over time, especially during long idle periods between pitches. The result is calls that are off even with good framing and a solid initial scan.</p>
+                        <p class="mb-0"><strong>Fix:</strong> Re-scan more frequently than you would on a grass field. If calls start drifting mid-session, a quick <strong>Calibrate</strong> on a clean pitch often stabilizes things. For stubborn drift, end the session, move everyone away from the plate, and start fresh.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="wifi hotspot android router won't connect follow game command center">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3"><strong>Fast fix:</strong> Android phone hotspot (no SIM needed) or a small travel router—both iPhones join it.</p>
+                        <p class="mb-0">Full walkthrough: <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="setup-detail" class="help-section mb-10">
+            <h2 class="text-lg font-bold text-slate-900 mb-3">Setup details</h2>
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="faq-item" data-keywords="setup scan mount tripod play ball first time calibrate red lines">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What do I need to do before I can get a call?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3 font-semibold text-orange-600">Do not skip these steps:</p>
+                        <ol class="list-decimal list-inside space-y-3 ml-2">
+                            <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <strong>Scan with no one near the plate</strong>—a batter, catcher, or umpire walking through the scene during the scan is a common cause of bad calls throughout the session. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
+                            <li><strong>Place the zone:</strong> This is <strong>initial placement only</strong>: line up the virtual strike zone with the <strong>real home plate</strong> (on or just above the dish), matching position and angle as closely as you can. Try not to bump the phone or plate while the zone is set—you will mount next, then adjust the <strong>camera view</strong> on Mount &amp; Verify.</li>
+                            <li><strong>Mount and realign:</strong> Mount on the tripod—<strong>expect the zone to shift</strong>. Set tripod height about <a href="#tripod-height" class="text-blue-600 hover:text-blue-800 font-medium">mid-zone</a> (see real plate and highest expected pitch in frame). Slide the zone onto the plate, use Distance/Height or Up/Down for size, use <strong>Adjust Plate</strong> for overhead alignment; on <strong>Pro iPhones</strong> enter measured distance and lens height. Keep the full pitch path between the <strong>red lines</strong> (see <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">wrong and correct placements</a>). If you see drift or unstable tracking, check that the mount is tight and nothing moved.</li>
+                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then tap <strong>Calibrate</strong> and move the yellow dot to where the pitch actually crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
+                            <li><strong>Tap "Play Ball":</strong> HeyBLU calls pitches once you're tracking live (use <strong>Pause, Warm Up</strong> anytime you need to stop).</li>
+                        </ol>
+                        <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
+                    </div>
+                    </div>
+                </div>
+                <div id="red-lines-strike-zone" class="border-t border-slate-200 faq-item" data-keywords="red lines framing frame pitch path mount verify roi detection window">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What are the red lines, and where should the strike zone sit?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-4">On <strong>Mount &amp; Verify</strong>, the two thick vertical <strong>red</strong> lines mark the sideways detection window. Center the <strong>pitch path</strong> between them: put the blue strike zone on <strong>one red line</strong> (plate edge) and keep the <strong>mound visible beside the other</strong>. Do not center the zone between the red lines.</p>
+                        <figure class="mb-0">
+                            <p class="mb-2 text-sm text-slate-600 rounded-md bg-slate-50 border border-slate-200 px-3 py-2">The diagram below may still say <strong>cyan</strong> in a few labels from an older capture—read <strong>red</strong>; the wrong vs correct <em>placement</em> is what matters.</p>
+                            <img src="/images/framed-red-zone-faq.jpg" alt="Wrong: zone centered between red ROI lines. Correct: plate on one red line and mound on the other, full pitch path inside the window." class="rounded-lg border border-slate-200 w-full max-w-3xl h-auto" loading="lazy" decoding="async">
+                            <figcaption class="mt-2 text-sm text-slate-500">Wrong vs correct framing. Vertical guides in the app are <strong>red</strong>.</figcaption>
+                        </figure>
+                    </div>
+                    </div>
+                </div>
+                <div id="tripod-height" class="border-t border-slate-200 faq-item" data-keywords="tripod height mount camera lens mid zone mid-zone batter strike zone top bottom distance home plate high pitch framing lowest highest">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How high should the tripod be?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Set the iPhone on the tripod so the camera sits about <strong>mid-zone</strong>—roughly half the height of your typical batter’s strike zone. That usually means <strong>lower than most people expect</strong>.</p>
+                        <p class="mb-3">Stay within the zone vertically: <strong>minimum</strong> height is the bottom of the zone; <strong>maximum</strong> is the top of the zone. Mid-zone is the target.</p>
+                        <p class="mb-3">When you pick distance and height, check the live camera view before <strong>Play Ball</strong>. You need to see the <strong>real home plate</strong> and enough room above the plate for the <strong>highest pitch</strong> you expect that session. If high pitches clip off screen, lower the camera, adjust distance, and reframe the pitch path between the <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">red lines</a>.</p>
+                        <p class="mb-0"><strong>Pro iPhone:</strong> after you mount, enter measured camera-to-plate distance and lens height from the ground in the app.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="mound distance pitching distance 38 feet 46 feet setting app detection window camera distance plate">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Does the mound distance setting affect call accuracy?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">The mound distance setting adjusts an internal detection window — it tells the app roughly where to start looking for the ball in flight. It does <strong>not</strong> affect plate-crossing accuracy.</p>
+                        <p class="mb-0">What does affect call quality: <strong>camera-to-plate distance</strong> (target: 10–12 ft) and <strong>camera angle</strong> (target: ~45° from the pitch line). The pitcher can be at 38 ft or 60 ft — those don't change what the camera needs to do at the plate end.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="adjust plate vs calibrate 9 zone nine zone when to use overhead bird's eye slide plate position">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">When should I use Adjust Plate vs. the 9-zone Calibrate tool?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">They fix different problems:</p>
+                        <p class="mb-2"><strong>Adjust Plate</strong> — the blue plate overlay has drifted off the real plate. Tap Adjust Plate for a bird's-eye overhead view and use the arrows to slide it back. This moves the plate and zone together. <em>Use this first whenever the zone looks out of position.</em></p>
+                        <p class="mb-3"><strong>9-Zone Calibrate</strong> — the blue plate looks correct visually, but calls land in the wrong spot (e.g., every pitch reads outside when it's down the middle). After a pitch, tap Calibrate and move the yellow dot to where the ball actually crossed. This fine-tunes the math without moving what you see on screen.</p>
+                        <p class="mb-0 font-medium">Quick rule: blue box off the plate → Adjust Plate. Blue box looks right but calls are wrong → Calibrate.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="calibrate rules when not to calibrate grayed out apply contact swing batted ball poor data one calibration">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Rules for using the 9-zone Calibrate tool</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<ul class="list-disc list-inside space-y-3 ml-2 mb-3">
+                            <li><strong>Only calibrate after a non-swing pitch.</strong> If the batter made contact, the app may have tracked the batted ball rather than the pitch. Calibrating to that data moves the zone in the wrong direction.</li>
+                            <li><strong>One calibration after a clean pitch is usually enough.</strong> If you calibrate repeatedly and calls keep feeling wrong, calibration isn't solving the real problem — re-scan instead.</li>
+                            <li><strong>The Apply button is grayed out if there wasn't enough data from the last pitch.</strong> This is intentional — calibrating from a poor-quality trajectory makes calls less accurate, not more.</li>
+                        </ul>
+                        <p class="mb-0">See also: <a href="#using-the-app" class="text-blue-600 hover:text-blue-800 font-medium">Adjust Plate vs. Calibrate</a>.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="detection confidence gear menu setting default 75 phantom fewer calls more calls selective adjust sensitivity">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What is the "Detection Confidence" setting?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Found in the gear menu. Controls how certain the app needs to be before it counts a moving object as a baseball. <strong>Default is 75 — leave it there unless you have a specific problem.</strong></p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li><strong>Higher (80–85):</strong> more selective, fewer calls but less likely to count non-pitches. Try this if you're getting frequent phantom counts from reflections or background movement.</li>
+                            <li><strong>Lower (65–70):</strong> less selective, more calls but more false counts. Try this only if pitches are regularly going uncalled despite a good scan and correct camera placement.</li>
+                        </ul>
+                        <p class="mb-0">This setting does not reset automatically — if you experiment and calls get worse, go back to 75. Camera distance (10–12 ft) solves most detection problems more reliably than adjusting this setting.</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="using" class="help-section mb-10">
+            <h2 class="text-lg font-bold text-slate-900 mb-3">During a session</h2>
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="faq-item" data-keywords="live at bats bullpen mode audio ball muted strike silence hitters batter box difference detection">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What's the difference between Bullpen and Live At Bats mode?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Choose on the session setup screen before tapping Play Ball.</p>
+                        <p class="mb-3"><strong>Bullpen</strong> — No batter in the box. The app tracks every pitch and calls both balls and strikes out loud.</p>
+                        <p class="mb-3"><strong>Live At Bats</strong> — Batter is in the box. The app adjusts its detection logic to reduce false counts from swings and contact near the plate. Ball and strike calls still play out loud; toggle ball-call audio off if you'd prefer silence when a batter swings at a pitch outside the zone.</p>
+                        <p class="mb-0">If you run Bullpen mode during live at-bats, swings and contact can produce incorrect calls or phantom pitch counts. Always select Live At Bats when hitters are up.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="strike zone size age preset adjust resize short tall default zone size wrong calls high low inside outside">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What strike zone does HeyBLU use, and how do I adjust the size?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">The zone is fully adjustable. Start with one of the age-level presets, then fine-tune from there. Two ways to adjust during a session:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li><strong>Gear icon</strong> (top right of the live screen) — zone size controls with presets sized for different age groups, plus manual adjustment.</li>
+                            <li><strong>After a session ends</strong> — a "Resize Zone" button appears on the post-session screen so you can set the correct size before your next session.</li>
+                        </ul>
+                        <p class="mb-3">The app remembers the last size you used. With a Command Center device, <strong>Short</strong>, <strong>Default</strong>, and <strong>Tall</strong> presets let you toggle quickly between batter heights during live at-bats.</p>
+                        <p class="mb-3 font-medium text-amber-700">If calls seem consistently too high, too low, inside, or outside — check zone size first. A zone that's too small will get more "Ball" calls; one too large will get too many "Strike" calls.</p>
+                        <p class="mb-0"><a href="/how-to#strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">Watch: How to adjust the strike zone →</a></p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="pitcher name add roster switch pitcher chip mid-session delete pitcher long press gear remove">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I track which pitcher threw each pitch?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Add pitchers before or during a session:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li><strong>Before you start</strong> — on the session setup screen (before Track Pitches), tap <strong>+</strong> in the pitcher section to add names.</li>
+                            <li><strong>During a session</strong> — tap the pitcher chip bar at the top of the screen to switch pitchers or add a new name.</li>
+                            <li><strong>From the Command Center</strong> — the iPad or second iPhone shows the same pitcher list and lets you switch remotely.</li>
+                        </ul>
+                        <p class="mb-3">Every pitch in the session report and spreadsheet is tagged with the pitcher who threw it. Names are saved to the roster and available next session.</p>
+                        <p class="mb-0"><strong>To delete a pitcher:</strong> long-press the name on the main screen, or tap the gear icon and the <strong>–</strong> next to the name.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="delete pitch remove trash throwback phantom mistake counted trash icon undo">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I remove a pitch that was counted by mistake?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Tap the pitch card at the bottom of the screen after the unwanted pitch appears — a <strong>trash icon</strong> will appear. Tap it to delete. The count updates immediately, and if a Command Center is connected it syncs automatically.</p>
+                        <p class="mb-0">Useful when a catcher's throwback or equipment accidentally triggered a count.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="command center ipad second phone capabilities live dots count calibrate from ipad pitch history remote switch pitcher">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What can the Command Center iPad or iPhone do?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">When a second iOS device joins via Share Game, it becomes a Command Center showing:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li>Live pitch dots on the strike zone — color-coded by location</li>
+                            <li>Running pitch count, ball count, and strike count</li>
+                            <li>Pitcher name with the ability to switch pitchers remotely</li>
+                            <li>9-zone Calibrate tool — apply calibrations from the iPad without touching the primary phone</li>
+                            <li>Full pitch history for the session</li>
+                        </ul>
+                        <p class="mb-0">The Command Center is view-and-control — the iPad operator can do nearly everything the primary phone operator can, from wherever the coach is standing.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="summary spreadsheet export session report image share download end session history heatmap CSV">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I see the session report or export pitch data?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Tap <strong>End Session</strong> → <strong>Summary</strong>. From there:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
+                            <li><strong>Share as image</strong> — session heatmap and report, easy to text to a parent or coach.</li>
+                            <li><strong>Export to spreadsheet</strong> — one row per pitch: location, speed, pitcher name, timestamp. Pro feature.</li>
+                            <li><strong>Session history</strong> — all past sessions saved in the History tab on the main screen.</li>
+                        </ul>
+                        <p class="mb-0">The summary image and in-app history are available to all subscribers. The spreadsheet export requires a Pro subscription.</p>
+                    </div>
+                    </div>
+                </div>
+                <div id="connect-two-devices-faq" class="border-t border-slate-200 faq-item" data-keywords="wifi wi-fi hotspot android router travel router follow game command center second device local network airplane mode won't connect multiple devices 7/7 share game">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Follow Game or Command Center won’t connect — what works at the field?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3"><strong>Single-phone bullpen tracking does not need Wi‑Fi.</strong> Follow Game and Command Center need your Umpire (tracking) iPhone and your second device to find each other. <strong>Standard iOS Personal Hotspot blocks device-to-device communication by default</strong>—simply joining the same Wi‑Fi or hotspot is not always enough.</p>
+
+                        <p class="mb-2 font-semibold text-slate-900">What works (easiest first)</p>
+                        <ol class="list-decimal list-inside space-y-2 ml-1 mb-4">
+                            <li><strong>Android phone hotspot</strong> — no SIM or data plan required; both iPhones join it. <strong>Our recommended field setup.</strong></li>
+                            <li><strong>Battery travel router</strong> (~$20, e.g. TP-Link TL-WR802N or GL‑iNet pocket router) — best for <strong>3+ phones</strong>; all devices join; no internet required.</li>
+                            <li><strong>3rd-party iPhone hotspot</strong> (someone else’s phone) — works <strong>only if</strong> the <strong>Umpire iPhone</strong> (primary) first turns on <strong>Airplane Mode</strong>, then turns <strong>Wi‑Fi back on</strong>, and joins that hotspot before opening Follow Game or Command Center.</li>
+                        </ol>
+
+                        <p class="mb-2 font-semibold text-red-700">What does <em>not</em> work</p>
+                        <ul class="list-disc list-inside space-y-2 ml-1 mb-4">
+                            <li><strong>Umpire iPhone acting as its own hotspot</strong> — the tracking phone cannot host the connection for the second device.</li>
+                            <li><strong>Two iPhones on the same iOS Personal Hotspot</strong> without the Airplane Mode + Wi‑Fi step above on the Umpire phone.</li>
+                        </ul>
+
+                        <p class="mb-2 font-semibold text-slate-900">Before you try again</p>
+                        <ul class="list-disc list-inside space-y-2 ml-1 mb-3">
+                            <li><strong>Settings → HeyBLU → Local Network On</strong> on each iPhone.</li>
+                            <li>Both devices on a <strong>working</strong> network—Android hotspot or travel router is most reliable.</li>
+                            <li>On the tracker: turn on <strong>Share Game</strong> (antenna) <strong>after</strong> all phones are on Wi‑Fi.</li>
+                            <li>Open Follow Game or Command Center <strong>after</strong> everyone is connected.</li>
+                        </ul>
+
+                        <p class="mb-2 font-semibold text-slate-900">Multiple second screens (experimental)</p>
+                        <p class="mb-2">One tracking iPhone can share with <strong>up to 7 other devices</strong> (typical: <strong>1 Command Center</strong> + up to <strong>6 Follow Game</strong>). <strong>Follow Game and Command Center can connect at the same time.</strong> The tracker antenna shows <strong>connected/7</strong>. <strong>1–2 screens</strong> are field-tested; <strong>3+</strong> are supported but experimental—prefer a <strong>travel router</strong>. Use only <strong>one Command Center</strong> for remote control per session.</p>
+                        <p class="mb-0 text-sm text-slate-500">Need more detail? See the checklist under <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup → what to check</a>.</p>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="basics" class="help-section mb-10">
+            <h2 class="text-lg font-bold text-slate-900 mb-3">Basics & product</h2>
+            <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What is HeyBLU?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p>HeyBLU is an iPhone app that turns a mounted phone into a practice umpire. It tracks where each pitch crosses the plate, compares that spot to your strike zone, and calls <strong>Ball</strong> or <strong>Strike</strong> out loud. A HeyBLU subscription saves sessions with heatmaps and reports. See <a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">pricing</a> or our <a href="/compare" class="text-blue-600 font-medium underline hover:text-blue-800">strike zone tech guide</a>.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Does HeyBLU call swings?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">No. HeyBLU tracks where the ball crossed the plate, not whether the batter swung. A batter swinging at a pitch that crosses outside the zone is still a ball to HeyBLU—the game outcome (strike by swing) is separate.</p>
+                        <p class="mb-0">Use <strong>Live At Bats</strong> mode when hitters are in the box. See below.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How accurate is HeyBLU?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">Our goal was error rates no larger than a ball's width. In pristine conditions we are seeing an average <strong>1.5&nbsp;inch</strong> miss. In the wild—on your field, while you get used to proper scans and setup—anything over a <strong>3&nbsp;inch</strong> miss is either an occasional error, or it means you need to re-adjust or re-scan.</p>
+                        <p class="mb-3">Accuracy depends a lot on setup. Take your time, get to know the app, and calls become consistent. When you're seeing consistently bad calls, the <a href="#troubleshooting" class="text-blue-600 hover:text-blue-800 font-medium">Troubleshooting section</a> covers the most common causes.</p>
+                        <p class="mb-0">For velocity accuracy, see <a href="#mph-accuracy" class="text-blue-600 hover:text-blue-800 font-medium">How accurate is the MPH reading?</a></p>
+                    </div>
+                    </div>
+                </div>
+                <div id="mph-accuracy" class="border-t border-slate-200 faq-item" data-keywords="MPH velocity speed accuracy radar gun pitch speed readings +/- 5 mph approximate">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How accurate is the MPH reading?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-0">HeyBLU is optimized for pitch location. Speed comes from the same camera, so expect <strong>±5&nbsp;MPH</strong>—useful for tracking effort and trends, not a radar-gun substitute.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item" data-keywords="price pricing cost subscription trial 4.99 49.99 monthly annual follow game">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How much does HeyBLU cost?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3"><strong>HeyBLU</strong> — 14-day free trial, then $9.99/mo or $99.99/yr. <strong>Launch pricing</strong> of $4.99/mo or $49.99/yr may still be available—check the App Store for the current rate when you subscribe.</p>
+                        <p class="mb-3"><strong>Follow Game</strong> — Non-subscribers can follow along on their own iPhone when a subscriber shares their live feed.</p>
+                        <p class="mb-0"><a href="/pricing" class="text-blue-600 font-medium underline hover:text-blue-800">Full pricing →</a> · League pilots: <a href="mailto:info@heyblu.ai" class="text-blue-600 font-medium underline hover:text-blue-800">info@heyblu.ai</a>.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What data is recorded? Are kids filmed?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-0">We don't record or store video, and we don't capture or store images. Only data (calls, pitch info, session stats) is used to improve the app. Your kids are not being filmed or photographed.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What phones are supported?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3"><strong>Non-Pro iPhones are ideal</strong> for bullpen setup (for example a <a href="https://a.co/d/0d4wB1XD" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">refurbished iPhone&nbsp;13</a>). An <strong>iPhone 12</strong> or newer should work. <strong>Pro</strong> models (Pro, Pro Max, etc.) work too—bring a <strong>measuring tape</strong> and enter camera-to-plate distance and lens height after you mount.</p>
+                        <p class="text-sm text-slate-500 italic">Note: Please include your exact iPhone model when you report an issue so we can track device-specific performance.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Where does HeyBLU work best?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-2">Outdoor, daylight, tripod <strong>10–15 feet from the plate</strong> offset ~45° from the pitch line, pitch speeds <strong>~60&nbsp;MPH or less</strong> (tested), regulation baseballs or yellow softballs.</p>
+                        <p class="mb-2">Background behind the pitcher matters: <strong>dark or natural backgrounds work best</strong>. A white fence, white wall, or light-colored surface behind the pitcher makes a white baseball hard to detect — if that's your only option, try shooting from the other side of the plate. Also avoid pointing the camera into direct sun.</p>
+                        <p class="text-sm text-slate-500">Brand-new pearl-white baseballs may glare in bright sun.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">When is HeyBLU less reliable?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-2">Indoor cages and nighttime are outside the app's current range. The dimmer the natural light, the more detection quality drops — deep shade can affect tracking even during the day. Camera angle less than ~20° from the direct pitch line causes inside/outside accuracy to degrade. Tripod past ~15&nbsp;ft from the plate (10–12 ft is ideal). Pitch speeds regularly above ~65–70&nbsp;MPH (untested). Hard breaking balls (still testing). Phone below ~30% battery. Non-regulation balls (wiffles, etc.) may not track correctly.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Is HeyBLU available on Android or iPad?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-2">Android is not supported as a <strong>tracking</strong> phone—HeyBLU runs on iPhone only.</p>
+                        <p class="mb-2">However, an <strong>Android phone makes an excellent Wi‑Fi hotspot</strong> when you need Follow Game or Command Center. Any cheap Android will do; it does not need a SIM or data plan—just turn on hotspot and have both iPhones join it. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
+                        <p class="mb-0">Use a secondary <strong>iPhone or iPad</strong> to open Command Center or Follow Game. The main tracking session always runs on iPhone.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How much battery do I need? What about long games?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-2">Start with a charged phone. On a full charge, the app may work for <strong>up to about 90 minutes</strong> of active tracking, depending on your iPhone model, brightness, heat, and cellular use. For long games or back-to-back sessions, a battery pack can help—use one only if the phone still fits securely on your mount.</p>
+                        <p class="mb-0">For more on batteries, power, shade, and cooling in the dugout, see the <a href="https://www.facebook.com/groups/gamechangeradmins" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 font-medium">GameChanger Admins Facebook group</a>; it has lots of practical tips from coaches and scorekeepers.</p>
+                    </div>
+                    </div>
+                </div>
+                <div id="iphone-settings" class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What should I check on my iPhone before a session?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-3">HeyBLU keeps the screen awake while the app is open—you do not need to change Auto-Lock. Before you head to the field:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-1 mb-3">
+                            <li><strong>Wipe the camera lens</strong> before setup.</li>
+                            <li><strong>Volume up</strong>, or a <strong>Bluetooth speaker / earbuds</strong> so the pitcher can hear ball/strike calls from the mound.</li>
+                            <li><strong>Settings → HeyBLU → Local Network On</strong> if you use Command Training, Follow Game, or Calibrate from another device.</li>
+                        </ul>
+                        <p class="mb-0 text-sm text-slate-500">Charge your phone before you go; Low Power Mode and Do Not Disturb are optional.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">Airplane mode, Wi‑Fi, and interruptions</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-2"><strong>One iPhone (bullpen only):</strong> HeyBLU does not need cell service or internet to call pitches. Airplane mode is optional. Phone calls and alerts do not stop tracking, but they can interrupt ball/strike audio—Do Not Disturb is optional if you want fewer interruptions.</p>
+                        <p class="mb-0"><strong>Two devices</strong> (Follow Game, Command Center, or Calibrate from another phone): use an <strong>Android hotspot</strong> or <strong>travel router</strong> when you can. If you must use someone else’s iPhone hotspot, the <strong>Umpire (tracking) iPhone</strong> must turn on <strong>Airplane Mode</strong>, then turn <strong>Wi‑Fi back on</strong>, and join that hotspot before connecting. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
+                    </div>
+                    </div>
+                </div>
+                <div id="screen-recording" class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">What about screen recording?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-0">iOS <strong>Screen Recording</strong> is supported, but it puts extra strain on your iPhone while the camera and tracking are already working hard. You should expect <strong>lower accuracy</strong> and <strong>more missed pitches</strong> than with recording off. For the most reliable calls, <strong>do not screen-record</strong> during a HeyBLU session; if you need video, use a second phone or camera on the side when possible.</p>
+                    </div>
+                    </div>
+                </div>
+                <div class="border-t border-slate-200 faq-item">
+                    <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
+                        <span class="font-semibold text-slate-900">How do I report a problem or give feedback?</span>
+                        <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
+<p class="mb-4">We read every report. To reach us:</p>
+                        <ul class="list-disc list-inside space-y-2 ml-2 mb-4">
+                            <li>Email <a href="mailto:support@heyblu.ai" class="text-blue-600 hover:text-blue-800 font-medium">support@heyblu.ai</a> with the details below.</li>
+                            <li>Use our <a href="/support" class="text-blue-600 hover:text-blue-800 font-medium">support form</a>.</li>
+                            <li>Want to refer a coach or league? <a href="/#beta" class="text-blue-600 hover:text-blue-800 font-medium">Join the waitlist</a> on the homepage.</li>
+                        </ul>
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
+                            <p class="font-semibold text-blue-900 mb-2">When reporting an issue, please include:</p>
+                            <ul class="list-disc list-inside space-y-1 text-sm text-blue-800 ml-2">
+                                <li>Your exact iPhone model.</li>
+                                <li>The environment (Outdoor/Indoor, Sunny/Cloudy).</li>
+                                <li>The Age Group and Mound Distance settings you used (set these to match the game you're watching).</li>
+                                <li>A brief description of what happened (e.g., "No call on a clear strike down the middle," "Called ball but it was a strike," or "Tracking was unstable the whole game.")</li>
+                                <li>Did you see "Tracking unstable," "Check camera," or "DRIFT CRITICAL" (or similar)? If yes, when (e.g., whole game, after a bump)?</li>
+                                <li>Did you use on-screen <strong>Calibrate</strong> (9-zone grid)? Did you use Settings <strong>Adjust HeyBLU</strong> (Inside/Outside)? If yes, how many steps?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 mt-auto">
+        <div class="max-w-3xl mx-auto px-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8 text-sm">
+                <div>
+                    <h3 class="font-bold mb-3 text-white">Help</h3>
+                    <a href="/help" class="block text-slate-400 hover:text-white transition mb-2">Help (this page)</a>
+                    <a href="/faq" class="block text-slate-400 hover:text-white transition mb-2">FAQ (current)</a>
+                    <a href="/how-to" class="block text-slate-400 hover:text-white transition mb-2">Video Tutorials</a>
+                    <a href="/support" class="block text-slate-400 hover:text-white transition">Support</a>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-3 text-white">Product</h3>
+                    <a href="/pricing" class="block text-slate-400 hover:text-white transition mb-2">Pricing</a>
+                    <a href="/compare" class="block text-slate-400 hover:text-white transition">Strike Zone Tech</a>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-3 text-white">Company</h3>
+                    <a href="/" class="block text-slate-400 hover:text-white transition mb-2">Home</a>
+                    <a href="/about" class="block text-slate-400 hover:text-white transition">About</a>
+                </div>
+            </div>
+            <p class="text-center text-sm border-t border-slate-700 pt-6">&copy; 2026 <strong>Hey</strong><span class="text-blue-400 font-bold">BLU</span>. Built for the field.</p>
+        </div>
+    </footer>
+
+    <script>
+        window.toggleFaq = function(button) {
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            const content = button.nextElementSibling;
+            const section = button.closest('section');
+            if (section) {
+                section.querySelectorAll('.faq-button').forEach(function(btn) {
+                    if (btn !== button) {
+                        btn.setAttribute('aria-expanded', 'false');
+                        if (btn.nextElementSibling) btn.nextElementSibling.classList.add('hidden');
+                    }
+                });
+            }
+            button.setAttribute('aria-expanded', isExpanded ? 'false' : 'true');
+            if (content) content.classList.toggle('hidden', isExpanded);
+        };
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (menuBtn && mobileMenu) {
+            menuBtn.addEventListener('click', function() {
+                const open = !mobileMenu.classList.contains('hidden');
+                mobileMenu.classList.toggle('hidden', open);
+                menuBtn.setAttribute('aria-expanded', String(!open));
+            });
+        }
+        // Open hash target on load
+        if (location.hash) {
+            const el = document.querySelector(location.hash);
+            if (el) {
+                const b = el.querySelector('.faq-button');
+                if (b) toggleFaq(b);
+            }
+        }
+    </script>
+    <script src="/faq-search.js"></script>
+</body>
+</html>

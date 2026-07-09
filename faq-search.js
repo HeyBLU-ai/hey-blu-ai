@@ -262,7 +262,7 @@
 
             if (!matches.length) {
                 results.innerHTML =
-                    '<p class="px-4 py-3 text-sm text-slate-600">No matches. Try <strong>hotspot</strong>, <strong>calibrate</strong>, <strong>red lines</strong>, or <strong>pricing</strong>. Or open the <a href="/field-guide#fix-a-problem" class="text-blue-600 font-medium underline">Field Guide</a>.</p>';
+                    '<p class="px-4 py-3 text-sm text-slate-600">No matches. Try <strong>hotspot</strong>, <strong>calibrate</strong>, <strong>red lines</strong>, or <strong>pricing</strong>. Or open <a href="/how-to" class="text-blue-600 font-medium underline">Video Tutorials</a>.</p>';
                 results.classList.remove('hidden');
                 results.setAttribute('aria-hidden', 'false');
                 return;

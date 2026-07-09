@@ -8,7 +8,10 @@
     { "source": "/zone", "destination": "/coaches", "permanent": true },
     { "source": "/zone/", "destination": "/coaches", "permanent": true },
     { "source": "/coaching", "destination": "/coaches", "permanent": true },
-    { "source": "/coaching/", "destination": "/coaches", "permanent": true }
+    { "source": "/coaching/", "destination": "/coaches", "permanent": true },
+    { "source": "/field-guide", "destination": "/help", "permanent": false },
+    { "source": "/field-guide/", "destination": "/help", "permanent": false },
+    { "source": "/field-guide/:path*", "destination": "/help", "permanent": false }
   ],
   "builds": [
     {
@@ -149,6 +152,8 @@
     { "src": "betablu/**", "use": "@vercel/static" },
     { "src": "field-guide/index.html", "use": "@vercel/static" },
     { "src": "field-guide/**", "use": "@vercel/static" },
+    { "src": "help/index.html", "use": "@vercel/static" },
+    { "src": "help/**", "use": "@vercel/static" },
     { "src": "how-to/index.html", "use": "@vercel/static" },
     { "src": "how-to/**", "use": "@vercel/static" },
     { "src": "home2/index.html", "use": "@vercel/static" },
@@ -267,9 +272,12 @@
     { "src": "/betablu", "dest": "/betablu/index.html" },
     { "src": "/betablu/", "dest": "/betablu/index.html" },
     { "src": "/betablu/(.*)", "dest": "/betablu/$1" },
-    { "src": "/field-guide", "dest": "/field-guide/index.html" },
-    { "src": "/field-guide/", "dest": "/field-guide/index.html" },
-    { "src": "/field-guide/(.*)", "dest": "/field-guide/$1" },
+    { "src": "/field-guide", "dest": "/help/index.html" },
+    { "src": "/field-guide/", "dest": "/help/index.html" },
+    { "src": "/field-guide/(.*)", "dest": "/help/index.html" },
+    { "src": "/help", "dest": "/help/index.html" },
+    { "src": "/help/", "dest": "/help/index.html" },
+    { "src": "/help/(.*)", "dest": "/help/$1" },
     { "src": "/how-to", "dest": "/how-to/index.html" },
     { "src": "/how-to/", "dest": "/how-to/index.html" },
     { "src": "/how-to/(.*)", "dest": "/how-to/$1" },
