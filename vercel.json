@@ -13,6 +13,46 @@
     { "source": "/field-guide/", "destination": "/help", "permanent": false },
     { "source": "/field-guide/:path*", "destination": "/help", "permanent": false }
   ],
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    },
+    {
+      "source": "/:path*.html",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    },
+    {
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    },
+    {
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Pragma", "value": "no-cache" },
+        { "key": "Expires", "value": "0" }
+      ]
+    },
+    {
+      "source": "/(faq-search|site-nav|site-analytics|site-config|site-download|pricing-config|pricing-billing|pricing-teaser).js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
+      ]
+    }
+  ],
   "builds": [
     {
       "src": "api/ask.js",
