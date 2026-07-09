@@ -9,9 +9,12 @@
     { "source": "/zone/", "destination": "/coaches", "permanent": true },
     { "source": "/coaching", "destination": "/coaches", "permanent": true },
     { "source": "/coaching/", "destination": "/coaches", "permanent": true },
-    { "source": "/field-guide", "destination": "/help", "permanent": false },
-    { "source": "/field-guide/", "destination": "/help", "permanent": false },
-    { "source": "/field-guide/:path*", "destination": "/help", "permanent": false }
+    { "source": "/faq", "destination": "/help", "permanent": true },
+    { "source": "/faq/", "destination": "/help", "permanent": true },
+    { "source": "/faq/:path*", "destination": "/help", "permanent": true },
+    { "source": "/field-guide", "destination": "/help", "permanent": true },
+    { "source": "/field-guide/", "destination": "/help", "permanent": true },
+    { "source": "/field-guide/:path*", "destination": "/help", "permanent": true }
   ],
   "headers": [
     {
@@ -300,9 +303,9 @@
     { "src": "/zone", "dest": "/zone/index.html" },
     { "src": "/zone/", "dest": "/zone/index.html" },
     { "src": "/zone/(.*)", "dest": "/zone/$1" },
-    { "src": "/faq", "dest": "/betablu/index.html" },
-    { "src": "/faq/", "dest": "/betablu/index.html" },
-    { "src": "/faq/(.*)", "dest": "/betablu/index.html" },
+    { "src": "/faq", "dest": "/help/index.html" },
+    { "src": "/faq/", "dest": "/help/index.html" },
+    { "src": "/faq/(.*)", "dest": "/help/index.html" },
     { "src": "/own", "dest": "/own/index.html" },
     { "src": "/own/", "dest": "/own/index.html" },
     { "src": "/own/(.*)", "dest": "/own/$1" },

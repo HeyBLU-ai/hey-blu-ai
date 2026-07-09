@@ -21,18 +21,13 @@
         .faq-icon { transition: transform 0.2s ease; }
         .faq-button[aria-expanded="true"] .faq-icon { transform: rotate(180deg); }
         #faq-search-results:not(.hidden) { box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12); }
-        .ab-banner { background: #fef3c7; border-bottom: 1px solid #f59e0b; }
     </style>
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/site-analytics.js"></script>
 </head>
 <body class="min-h-screen flex flex-col pt-16">
 
-    <div class="ab-banner no-print text-center text-sm text-amber-950 px-4 py-2">
-        Draft help layout (B). Compare with the current <a href="/faq" class="font-semibold underline">/faq</a>. Videos stay on <a href="/how-to" class="font-semibold underline">/how-to</a>.
-    </div>
-
-    <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
+<header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
                 <a href="/" class="flex items-center space-x-3">
@@ -78,7 +73,10 @@
                 <span>▶</span> Video Tutorials
             </a>
             <a href="#pro-iphone" class="inline-flex items-center gap-2 rounded-lg border-2 border-blue-300 bg-blue-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-blue-100 transition text-sm" onclick="setTimeout(function(){var el=document.getElementById('pro-iphone'); if(!el) return; var b=el.querySelector('.faq-button'); if(b && b.getAttribute('aria-expanded')!=='true') toggleFaq(b);}, 50);">
-                Pro iPhone?
+                Pro iPhone help
+            </a>
+            <a href="#problems" class="inline-flex items-center gap-2 rounded-lg border-2 border-amber-300 bg-amber-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-amber-100 transition text-sm">
+                Something went wrong
             </a>
         </div>
 
@@ -103,7 +101,7 @@
         </section>
 
         <section id="setup" class="mb-10">
-            <h2 class="text-lg font-bold text-slate-900 mb-3">First-time setup</h2>
+            <h2 class="text-lg font-bold text-slate-900 mb-3">First-time setup tips</h2>
             <ol class="list-decimal space-y-3 text-sm text-slate-700 bg-white rounded-xl border border-slate-200 px-5 py-4 mb-4 ml-1">
                 <li class="pl-1"><strong>Set up the tripod first.</strong> About 4 long strides from home plate, in line with one of the foul lines (example: 12 feet back and 12 feet to the side). <a href="/how-to#tripod-placement" class="text-blue-600 underline">Watch →</a> · <a href="#tripod-diagram" class="text-blue-600 underline diagram-link">Diagram →</a></li>
                 <li class="pl-1"><strong>Clear home plate</strong> — ask players to stand clear before you scan.</li>
@@ -231,7 +229,7 @@
                         <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
-<p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></p>
+<p class="mb-3">The app detects if the phone has moved since you locked in the zone—that's "drift." A thin or rushed scan can make drift worse, but bumps after <strong>mounting</strong> are a frequent cause too. <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></p>
                         <p class="mb-3">After placing the zone, minimize movement; mount without bumping the tripod. If calls look consistently biased after a stable mount, use <strong>Calibrate</strong> on the primary device.</p>
                         <p class="font-semibold text-green-600">Fix: Check that the mount is tight and nothing moved. Tighten the mount, avoid bumping the tripod, and on windy days consider weighing it down or moving to a sheltered spot.</p>
                     </div>
@@ -312,7 +310,7 @@
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
 <p class="mb-3"><strong>Fast fix:</strong> Android phone hotspot (no SIM needed) or a small travel router—both iPhones join it.</p>
-                        <p class="mb-0">Full walkthrough: <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
+                        <p class="mb-0">Full walkthrough: <a href="#connect-two-devices-faq" class="text-blue-600 hover:text-blue-800 font-medium">Connect two devices →</a></p>
                     </div>
                     </div>
                 </div>
@@ -329,10 +327,10 @@
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
 <p class="mb-3 font-semibold text-orange-600">Do not skip these steps:</p>
                         <ol class="list-decimal list-inside space-y-3 ml-2">
-                            <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <strong>Scan with no one near the plate</strong>—a batter, catcher, or umpire walking through the scene during the scan is a common cause of bad calls throughout the session. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
+                            <li><strong>Scan the area:</strong> Follow the in-app instructions and move slowly so the app can build a solid 3D map. <strong>Scan with no one near the plate</strong>—a batter, catcher, or umpire walking through the scene during the scan is a common cause of bad calls throughout the session. <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
                             <li><strong>Place the zone:</strong> This is <strong>initial placement only</strong>: line up the virtual strike zone with the <strong>real home plate</strong> (on or just above the dish), matching position and angle as closely as you can. Try not to bump the phone or plate while the zone is set—you will mount next, then adjust the <strong>camera view</strong> on Mount &amp; Verify.</li>
                             <li><strong>Mount and realign:</strong> Mount on the tripod—<strong>expect the zone to shift</strong>. Set tripod height about <a href="#tripod-height" class="text-blue-600 hover:text-blue-800 font-medium">mid-zone</a> (see real plate and highest expected pitch in frame). Slide the zone onto the plate, use Distance/Height or Up/Down for size, use <strong>Adjust Plate</strong> for overhead alignment; on <strong>Pro iPhones</strong> enter measured distance and lens height. Keep the full pitch path between the <strong>red lines</strong> (see <a href="#red-lines-strike-zone" class="text-blue-600 hover:text-blue-800 font-medium">wrong and correct placements</a>). If you see drift or unstable tracking, check that the mount is tight and nothing moved.</li>
-                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then tap <strong>Calibrate</strong> and move the yellow dot to where the pitch actually crossed. <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
+                            <li><strong>Calibrate:</strong> Tap <strong>Play Ball</strong>, throw a test pitch if the call looks off, then tap <strong>Calibrate</strong> and move the yellow dot to where the pitch actually crossed. <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup →</a></li>
                             <li><strong>Tap "Play Ball":</strong> HeyBLU calls pitches once you're tracking live (use <strong>Pause, Warm Up</strong> anytime you need to stop).</li>
                         </ol>
                         <p class="mt-3 text-sm text-slate-600"><strong>Note:</strong> After End Session you can review pitches (pitch count and step through calls).</p>
@@ -402,7 +400,7 @@
                             <li><strong>One calibration after a clean pitch is usually enough.</strong> If you calibrate repeatedly and calls keep feeling wrong, calibration isn't solving the real problem — re-scan instead.</li>
                             <li><strong>The Apply button is grayed out if there wasn't enough data from the last pitch.</strong> This is intentional — calibrating from a poor-quality trajectory makes calls less accurate, not more.</li>
                         </ul>
-                        <p class="mb-0">See also: <a href="#using-the-app" class="text-blue-600 hover:text-blue-800 font-medium">Adjust Plate vs. Calibrate</a>.</p>
+                        <p class="mb-0">See also: <a href="#using" class="text-blue-600 hover:text-blue-800 font-medium">Adjust Plate vs. Calibrate</a>.</p>
                     </div>
                     </div>
                 </div>
@@ -549,7 +547,7 @@
 
                         <p class="mb-2 font-semibold text-slate-900">Multiple second screens (experimental)</p>
                         <p class="mb-2">One tracking iPhone can share with <strong>up to 7 other devices</strong> (typical: <strong>1 Command Center</strong> + up to <strong>6 Follow Game</strong>). <strong>Follow Game and Command Center can connect at the same time.</strong> The tracker antenna shows <strong>connected/7</strong>. <strong>1–2 screens</strong> are field-tested; <strong>3+</strong> are supported but experimental—prefer a <strong>travel router</strong>. Use only <strong>one Command Center</strong> for remote control per session.</p>
-                        <p class="mb-0 text-sm text-slate-500">Need more detail? See the checklist under <a href="#quick-start" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup → what to check</a>.</p>
+                        <p class="mb-0 text-sm text-slate-500">Need more detail? See the checklist under <a href="#setup" class="text-blue-600 hover:text-blue-800 font-medium">First-time setup → what to check</a>.</p>
                     </div>
                     </div>
                 </div>
@@ -586,7 +584,7 @@
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
 <p class="mb-3">Our goal was error rates no larger than a ball's width. In pristine conditions we are seeing an average <strong>1.5&nbsp;inch</strong> miss. In the wild—on your field, while you get used to proper scans and setup—anything over a <strong>3&nbsp;inch</strong> miss is either an occasional error, or it means you need to re-adjust or re-scan.</p>
-                        <p class="mb-3">Accuracy depends a lot on setup. Take your time, get to know the app, and calls become consistent. When you're seeing consistently bad calls, the <a href="#troubleshooting" class="text-blue-600 hover:text-blue-800 font-medium">Troubleshooting section</a> covers the most common causes.</p>
+                        <p class="mb-3">Accuracy depends a lot on setup. Take your time, get to know the app, and calls become consistent. When you're seeing consistently bad calls, the <a href="#problems" class="text-blue-600 hover:text-blue-800 font-medium">Troubleshooting section</a> covers the most common causes.</p>
                         <p class="mb-0">For velocity accuracy, see <a href="#mph-accuracy" class="text-blue-600 hover:text-blue-800 font-medium">How accurate is the MPH reading?</a></p>
                     </div>
                     </div>
@@ -663,7 +661,7 @@
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
 <p class="mb-2">Android is not supported as a <strong>tracking</strong> phone—HeyBLU runs on iPhone only.</p>
-                        <p class="mb-2">However, an <strong>Android phone makes an excellent Wi‑Fi hotspot</strong> when you need Follow Game or Command Center. Any cheap Android will do; it does not need a SIM or data plan—just turn on hotspot and have both iPhones join it. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
+                        <p class="mb-2">However, an <strong>Android phone makes an excellent Wi‑Fi hotspot</strong> when you need Follow Game or Command Center. Any cheap Android will do; it does not need a SIM or data plan—just turn on hotspot and have both iPhones join it. See <a href="#connect-two-devices-faq" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
                         <p class="mb-0">Use a secondary <strong>iPhone or iPad</strong> to open Command Center or Follow Game. The main tracking session always runs on iPhone.</p>
                     </div>
                     </div>
@@ -702,7 +700,7 @@
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
 <p class="mb-2"><strong>One iPhone (bullpen only):</strong> HeyBLU does not need cell service or internet to call pitches. Airplane mode is optional. Phone calls and alerts do not stop tracking, but they can interrupt ball/strike audio—Do Not Disturb is optional if you want fewer interruptions.</p>
-                        <p class="mb-0"><strong>Two devices</strong> (Follow Game, Command Center, or Calibrate from another phone): use an <strong>Android hotspot</strong> or <strong>travel router</strong> when you can. If you must use someone else’s iPhone hotspot, the <strong>Umpire (tracking) iPhone</strong> must turn on <strong>Airplane Mode</strong>, then turn <strong>Wi‑Fi back on</strong>, and join that hotspot before connecting. See <a href="#connecting-devices" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
+                        <p class="mb-0"><strong>Two devices</strong> (Follow Game, Command Center, or Calibrate from another phone): use an <strong>Android hotspot</strong> or <strong>travel router</strong> when you can. If you must use someone else’s iPhone hotspot, the <strong>Umpire (tracking) iPhone</strong> must turn on <strong>Airplane Mode</strong>, then turn <strong>Wi‑Fi back on</strong>, and join that hotspot before connecting. See <a href="#connect-two-devices-faq" class="text-blue-600 hover:text-blue-800 font-medium">how to connect two devices</a>.</p>
                     </div>
                     </div>
                 </div>
@@ -752,8 +750,7 @@
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8 text-sm">
                 <div>
                     <h3 class="font-bold mb-3 text-white">Help</h3>
-                    <a href="/help" class="block text-slate-400 hover:text-white transition mb-2">Help (this page)</a>
-                    <a href="/faq" class="block text-slate-400 hover:text-white transition mb-2">FAQ (current)</a>
+                    <a href="/help" class="block text-slate-400 hover:text-white transition mb-2">Help</a>
                     <a href="/how-to" class="block text-slate-400 hover:text-white transition mb-2">Video Tutorials</a>
                     <a href="/support" class="block text-slate-400 hover:text-white transition">Support</a>
                 </div>
