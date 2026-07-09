@@ -62,16 +62,15 @@
 
     <main class="flex-grow max-w-3xl mx-auto px-4 sm:px-6 py-6 w-full">
 
-        <h1 class="text-2xl font-bold text-slate-900 mb-5"><span class="text-blue-600">Hey</span>BLU Help</h1>
-
-        <div class="bg-slate-900 text-white rounded-xl px-5 py-4 mb-4">
-            <p class="font-semibold mb-2">Keys to success</p>
-            <ul class="text-sm space-y-1.5 text-slate-200 list-disc list-inside">
-                <li><strong class="text-white">Outdoors, daylight</strong> · tripod <strong class="text-white">10–15 ft</strong> from the plate · ~<strong class="text-white">45° offset</strong> from the pitch line.</li>
-                <li><strong class="text-white">Mount the phone</strong> — lock, then keep it still.</li>
-                <li><strong class="text-white">Red lines:</strong> pitch path between them; zone on one line, mound on the other.</li>
-                <li><strong class="text-white">Slow scan</strong> with no one near the plate.</li>
-            </ul>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:gap-4 mb-4">
+            <h1 class="text-2xl font-bold text-slate-900 shrink-0">
+                <span class="text-blue-600">Hey</span>BLU Help
+            </h1>
+            <div class="relative flex-1 mt-3 sm:mt-0">
+                <label for="faq-search-input" class="sr-only">Search help</label>
+                <input type="search" id="faq-search-input" placeholder="Search — e.g. plate moved, hotspot, calibrate…" autocomplete="off" class="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-2.5 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                <div id="faq-search-results" class="hidden absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-hidden="true" role="listbox"></div>
+            </div>
         </div>
 
         <div class="flex flex-wrap gap-3 mb-5">
@@ -83,21 +82,56 @@
             </a>
         </div>
 
-        <div class="relative mb-8">
-            <label for="faq-search-input" class="sr-only">Search help</label>
-            <input type="search" id="faq-search-input" placeholder="Search — e.g. plate moved, hotspot, calibrate…" autocomplete="off" class="w-full rounded-xl border-2 border-slate-200 bg-white px-4 py-3 text-base text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200">
-            <div id="faq-search-results" class="hidden absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-hidden="true" role="listbox"></div>
-        </div>
+        <section id="ideal-setup" class="mb-8">
+            <div class="bg-slate-900 text-white rounded-xl px-5 py-4">
+                <p class="font-semibold mb-3">Ideal setup</p>
+                <ol class="text-sm space-y-2 text-slate-200 list-decimal list-inside">
+                    <li><strong class="text-white">Outdoors, daylight</strong></li>
+                    <li><strong class="text-white">Mount your iPhone</strong> (tripod or fence clip)</li>
+                    <li><strong class="text-white">Distance and angle:</strong> about 12 feet back, 12 feet offset — in line with a foul line. <a href="#tripod-diagram" class="text-blue-300 underline hover:text-blue-200">See diagram →</a></li>
+                    <li><strong class="text-white">Scan:</strong> slow and steady</li>
+                    <li><strong class="text-white">Full pitch path:</strong> plate and mound on or just inside the red lines. Plate near the bottom of the screen. Room above the strike zone for high pitches.</li>
+                    <li><strong class="text-white">Test:</strong> throw 2–4 warm-up pitches; use <strong class="text-white">Calibrate</strong> if needed</li>
+                </ol>
+                <figure id="tripod-diagram" class="mt-4 scroll-mt-28">
+                    <img src="/images/tripod-placement.jpg" alt="Tripod placement: about 4 to 7 long strides from home plate, in line with a foul line — not directly behind the plate" class="w-full rounded-lg border border-slate-700 bg-white" width="1259" height="848" loading="lazy">
+                </figure>
+            </div>
+        </section>
 
         <section id="setup" class="mb-10">
             <h2 class="text-lg font-bold text-slate-900 mb-3">First-time setup</h2>
-            <ol class="list-decimal list-inside space-y-2 text-sm text-slate-700 bg-white rounded-xl border border-slate-200 px-5 py-4 mb-3">
-                <li><strong>Tripod</strong> 10–15 ft from the plate, ~45° offset; mid-zone height; mounted. <a href="/how-to#tripod-placement" class="text-blue-600 underline">Watch →</a></li>
-                <li><strong>Scan</strong> slowly (~30 seconds), no one near the plate. <a href="/how-to#scan-phase" class="text-blue-600 underline">Watch →</a></li>
-                <li><strong>Place zone</strong> on the real plate, then walk to the tripod.</li>
-                <li><strong>Mount &amp; frame</strong> — pitch path between the red lines.</li>
-                <li><strong>Play Ball</strong> → test pitch → Calibrate only if calls are systematically off.</li>
+            <ol class="list-decimal space-y-3 text-sm text-slate-700 bg-white rounded-xl border border-slate-200 px-5 py-4 mb-4 ml-1">
+                <li class="pl-1"><strong>Set up the tripod first.</strong> About 4 long strides from home plate, in line with one of the foul lines (example: 12 feet back and 12 feet to the side). <a href="/how-to#tripod-placement" class="text-blue-600 underline">Watch →</a> · <a href="#tripod-diagram" class="text-blue-600 underline">Diagram →</a></li>
+                <li class="pl-1"><strong>Clear home plate</strong> — ask players to stand clear before you scan.</li>
+                <li class="pl-1"><strong>Scan slow and steady</strong>, always keeping home plate in view. <a href="/how-to#scan-phase" class="text-blue-600 underline">Watch →</a></li>
+                <li class="pl-1"><strong>Walk to the tripod slowly</strong>, still keeping home plate in view.</li>
+                <li class="pl-1"><strong>Mount the iPhone carefully.</strong> Avoid shake. Keep fingers off the lens.</li>
+                <li class="pl-1"><strong>Frame the pitch path.</strong> Pan so the blue strike zone sits on one red line and the pitcher’s mound on the other. HeyBLU only tracks between the red lines — it needs the full pitch.
+                    <ul class="list-disc list-inside mt-2 ml-2 text-slate-600 space-y-1">
+                        <li>Home plate near the bottom of the screen</li>
+                        <li>Room at the top for high pitches</li>
+                    </ul>
+                </li>
+                <li class="pl-1"><strong>Tap Adjust Plate</strong> to confirm the blue plate is still on the real home plate.
+                    <ul class="list-disc list-inside mt-2 ml-2 text-slate-600 space-y-1">
+                        <li><strong>Pro iPhones</strong> — if the zone “ran away,” tap the pulsing distance card (bottom right). Enter real distance to the plate and lens height from the ground. Finger-slide the blue zone and plate back onto the real plate. Then tap <strong>Adjust Plate</strong> for a final check. <a href="#pro-iphone" class="text-blue-600 underline">Pro fix →</a></li>
+                    </ul>
+                </li>
+                <li class="pl-1"><strong>Throw 2–4 test or warm-up pitches.</strong> If two pitches miss in the same direction, <strong>Calibrate</strong> fixes the next one.</li>
+                <li class="pl-1"><strong>Play Ball</strong> starts your session.</li>
             </ol>
+
+            <div class="bg-white rounded-xl border border-slate-200 px-5 py-4">
+                <h3 class="font-semibold text-slate-900 mb-3">Additional tips</h3>
+                <ol class="list-decimal space-y-2 text-sm text-slate-700 ml-1">
+                    <li class="pl-1">To hear calls from anywhere on the field, set up a Bluetooth speaker <strong>before</strong> opening HeyBLU.</li>
+                    <li class="pl-1">Don’t want to keep a pitch? Use the on-screen delete control.</li>
+                    <li class="pl-1">Tracking different pitchers? Add them on screen, or during setup.</li>
+                    <li class="pl-1">Coach from the mound or dugout? Connect a second device (iPad or iPhone). Put both on a shared Wi‑Fi that isn’t either phone’s Personal Hotspot — Personal Hotspot sharing between the two main devices doesn’t work. Tracking and Following devices: Airplane Mode on, then Wi‑Fi on, join that shared network.</li>
+                    <li class="pl-1">Live batting practice? Use <strong>Live At Bats</strong> during setup. Consider turning off “Ball” calls so swings aren’t announced as balls.</li>
+                </ol>
+            </div>
         </section>
 
 
