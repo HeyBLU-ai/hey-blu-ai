@@ -62,8 +62,7 @@
 
     <main class="flex-grow max-w-3xl mx-auto px-4 sm:px-6 py-6 w-full">
 
-        <h1 class="text-2xl font-bold text-slate-900 mb-1"><span class="text-blue-600">Hey</span>BLU Help</h1>
-        <p class="text-sm text-slate-600 mb-5">Scan for your problem. Open one answer. Prefer video? Use the tutorials link.</p>
+        <h1 class="text-2xl font-bold text-slate-900 mb-5"><span class="text-blue-600">Hey</span>BLU Help</h1>
 
         <div class="bg-slate-900 text-white rounded-xl px-5 py-4 mb-4">
             <p class="font-semibold mb-2">Keys to success</p>
@@ -75,23 +74,14 @@
             </ul>
         </div>
 
-        <a href="/how-to" class="flex items-center gap-3 rounded-xl border-2 border-green-300 bg-green-50 px-4 py-3 mb-4 hover:bg-green-100 transition">
-            <span class="text-xl">▶</span>
-            <div class="min-w-0">
-                <p class="font-bold text-slate-900 text-sm">Video Tutorials</p>
-                <p class="text-xs text-slate-600">Tripod placement, scan, and more — separate page.</p>
-            </div>
-            <svg class="w-5 h-5 text-green-700 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a>
-
-        <a href="#pro-iphone" class="flex items-center gap-3 rounded-xl border-2 border-blue-300 bg-blue-50 px-4 py-3 mb-5 hover:bg-blue-100 transition" onclick="setTimeout(function(){var el=document.getElementById('pro-iphone'); if(!el) return; var b=el.querySelector('.faq-button'); if(b && b.getAttribute('aria-expanded')!=='true') toggleFaq(b);}, 50);">
-            <span class="text-xl">📱</span>
-            <div class="min-w-0">
-                <p class="font-bold text-slate-900 text-sm">Pro iPhone?</p>
-                <p class="text-xs text-slate-600">Blue plate moved or shrank after you locked it — open the fix.</p>
-            </div>
-            <svg class="w-5 h-5 text-blue-700 ml-auto shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-        </a>
+        <div class="flex flex-wrap gap-3 mb-5">
+            <a href="/how-to" class="inline-flex items-center gap-2 rounded-lg border-2 border-green-300 bg-green-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-green-100 transition text-sm">
+                <span>▶</span> Video Tutorials
+            </a>
+            <a href="#pro-iphone" class="inline-flex items-center gap-2 rounded-lg border-2 border-blue-300 bg-blue-50 px-4 py-2.5 font-semibold text-slate-900 hover:bg-blue-100 transition text-sm" onclick="setTimeout(function(){var el=document.getElementById('pro-iphone'); if(!el) return; var b=el.querySelector('.faq-button'); if(b && b.getAttribute('aria-expanded')!=='true') toggleFaq(b);}, 50);">
+                Pro iPhone?
+            </a>
+        </div>
 
         <div class="relative mb-8">
             <label for="faq-search-input" class="sr-only">Search help</label>
@@ -141,17 +131,15 @@
                 </div>
                 <div id="pro-iphone" class="border-t border-slate-200 faq-item" data-keywords="pro iphone pro max lidar blue plate moved shrank lock walk tripod distance lens height confirm distance measurements slide adjust plate">
                     <button class="faq-button w-full text-left px-5 py-4 flex justify-between items-center gap-3 focus:outline-none" onclick="toggleFaq(this)" aria-expanded="false">
-                        <span class="font-semibold text-slate-900">Pro iPhone: the blue plate moved and shrank when I walked to the tripod</span>
+                        <span class="font-semibold text-slate-900">Pro iPhone: blue plate moved or shrank after lock</span>
                         <svg class="faq-icon w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                     </button>
                     <div class="hidden px-5 pb-5 text-slate-600 text-sm leading-relaxed">
-<p class="mb-3">Expected on Pro iPhones. After you lock the plate and walk to the tripod, the blue plate and zone can jump and shrink. Tap the pulsing distance number (or Confirm Distance), then enter the real measurements:</p>
-                        <ul class="list-disc list-inside space-y-2 ml-2 mb-3">
-                            <li><strong>Camera-to-plate distance</strong> — lens straight to the center of home plate.</li>
-                            <li><strong>Lens height</strong> — ground up to the camera lens.</li>
-                        </ul>
-                        <p class="mb-3">Use a tape measure. After you enter the numbers, the blue plate may still sit feet away from the real plate. <strong>Use your finger to slide the strike zone and plate back on top of the real plate.</strong></p>
-                        <p class="mb-0">Only then use <strong>Adjust Plate</strong> if it is already very close (or sitting on the plate) but not flush. Check the view — you are ready to go.</p>
+                        <ol class="list-decimal list-inside space-y-2">
+                            <li>Tap the pulsing distance number → enter real <strong>camera-to-plate</strong> and <strong>lens height</strong> (tape measure).</li>
+                            <li>Finger-slide the blue plate/zone back onto the real plate.</li>
+                            <li>If it’s almost on but not flush → <strong>Adjust Plate</strong>.</li>
+                        </ol>
                     </div>
                 </div>
                 <div class="border-t border-slate-200 faq-item" data-keywords="wrong call decision tree fix bad call playbook all outside all inside all high all low zone size bullpen mode rescan random calls">
