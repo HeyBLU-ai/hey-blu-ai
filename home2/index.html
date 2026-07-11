@@ -18,7 +18,7 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
-        #beta, #playbook, #pricing, #how-it-works, #what-you-get, #live-call-results {
+        #beta, #playbook, #pricing, #how-it-works, #live-call-results {
             scroll-margin-top: 5rem;
         }
     </style>
@@ -58,23 +58,23 @@
 
     <main class="pt-16">
 
-        <!-- Hero: one story, one primary audience -->
-        <section class="bg-white py-12 md:py-20 px-4" aria-labelledby="hero-headline">
+        <!-- Hero -->
+        <section class="bg-white py-10 md:py-16 px-4" aria-labelledby="hero-headline">
             <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <div>
-                        <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-5">
+                        <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
                             Every bullpen deserves a Big League Umpire.
                         </h1>
                         <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-6">
-                            Hear ball and strike on every pitch—with an iPhone and a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline font-semibold">tripod</a>. Adjustable zone for youth baseball and fast-pitch softball.
+                            One iPhone and a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline font-semibold">tripod</a>. Adjustable zone for youth baseball and fast-pitch softball.
                         </p>
-                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 mb-5">
                             <a href="#beta" class="inline-block bg-blue-600 text-white font-bold text-lg py-4 px-8 rounded-lg hover:bg-blue-700 transition shadow-lg text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
                                 Join the Launch Waitlist
                             </a>
-                            <a href="#how-it-works" class="text-blue-600 font-semibold hover:text-blue-800 underline text-center sm:text-left px-2">
-                                See how it works →
+                            <a href="#live-call-results" class="text-blue-600 font-semibold hover:text-blue-800 underline text-center sm:text-left px-2">
+                                See it in action →
                             </a>
                         </div>
                         <p class="text-sm text-gray-500">
@@ -86,79 +86,46 @@
                     </div>
                     <div class="order-first lg:order-none">
                         <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200">
-                            <video src="/images/hero-strike-loop.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU calling STRIKE on a live pitch—the strike zone overlay and ball-track dot on the field"></video>
+                            <video src="/images/hero-strike-loop.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU calling STRIKE on a live pitch with strike zone overlay"></video>
                         </div>
-                        <p class="text-gray-500 text-center mt-3 text-sm">Ball or strike—called out loud, with live zone overlay on every pitch.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 2nd: live call + session results -->
-        <section id="live-call-results" class="py-14 px-4 bg-slate-50 border-t border-gray-100" aria-labelledby="live-call-heading">
+        <!-- Live call + results — video carries the copy -->
+        <section id="live-call-results" class="px-4 pb-12 md:pb-16" aria-label="Live pitch calls and session results">
             <div class="max-w-5xl mx-auto">
-                <div class="text-center mb-8">
-                    <h2 id="live-call-heading" class="text-3xl md:text-4xl font-extrabold text-gray-900">Live calls. Instant results.</h2>
-                    <p class="text-gray-600 mt-3 text-lg max-w-2xl mx-auto">Hear every pitch—then open the session report with location, speed, and strike rate.</p>
-                </div>
                 <div class="rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200 bg-white">
                     <video src="/images/Live_call_results.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU live pitch call on iPhone beside a session summary report"></video>
                 </div>
             </div>
         </section>
 
-        <!-- What you get — one tight strip -->
-        <section id="what-you-get" class="py-10 px-4 bg-slate-900 text-white" aria-label="What you get">
-            <div class="max-w-5xl mx-auto">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center md:text-left">
-                    <div>
-                        <p class="font-bold text-base mb-1">Calls out loud</p>
-                        <p class="text-slate-400 text-sm leading-relaxed">Ball or strike on every pitch.</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-base mb-1">Location on the zone</p>
-                        <p class="text-slate-400 text-sm leading-relaxed">See where each pitch crossed.</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-base mb-1">Session history</p>
-                        <p class="text-slate-400 text-sm leading-relaxed">Heatmaps, reports, and exports.</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-base mb-1">Second phone</p>
-                        <p class="text-slate-400 text-sm leading-relaxed">Share the live feed when you want.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- How It Works — three steps (moved below product story) -->
+        <!-- How It Works -->
         <section id="how-it-works" class="py-14 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
             <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl md:text-5xl font-extrabold">How It Works</h2>
-                    <p class="text-gray-400 mt-3 text-lg">Mount. Throw. Review.</p>
-                </div>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-center mb-10">How It Works</h2>
                 <div class="max-w-4xl mx-auto mb-10">
                     <div class="rounded-xl overflow-hidden shadow-2xl ring-1 ring-gray-700">
-                        <video src="/images/how-it-works-loop.mp4" class="w-full h-auto aspect-video object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="iPhone mounted on a tripod behind a chain-link backstop—the full HeyBLU hardware setup"></video>
+                        <video src="/images/how-it-works-loop.mp4" class="w-full h-auto aspect-video object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="iPhone mounted on a tripod behind a chain-link backstop"></video>
                     </div>
-                    <p class="text-center text-gray-400 text-sm mt-4">One iPhone, one <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-300 underline hover:text-blue-200">tripod</a>.</p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                    <div class="text-center md:text-left">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center md:text-left">
+                    <div>
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-lg font-bold mx-auto md:mx-0 mb-3">1</div>
-                        <h3 class="text-xl font-bold mb-2">Mount</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Set the phone beside the plate, lock the zone to home, and frame the pitch path.</p>
+                        <h3 class="text-xl font-bold mb-1">Mount</h3>
+                        <p class="text-gray-300 text-sm">Tripod beside the plate. Lock the zone.</p>
                     </div>
-                    <div class="text-center md:text-left">
+                    <div>
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-lg font-bold mx-auto md:mx-0 mb-3">2</div>
-                        <h3 class="text-xl font-bold mb-2">Throw</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Hear ball and strike out loud. See where each pitch crossed the zone as you go.</p>
+                        <h3 class="text-xl font-bold mb-1">Throw</h3>
+                        <p class="text-gray-300 text-sm">Get the call. See the location.</p>
                     </div>
-                    <div class="text-center md:text-left">
+                    <div>
                         <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-lg font-bold mx-auto md:mx-0 mb-3">3</div>
-                        <h3 class="text-xl font-bold mb-2">Review</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Save the session—heatmaps, reports, and exports for the next bullpen.</p>
+                        <h3 class="text-xl font-bold mb-1">Review</h3>
+                        <p class="text-gray-300 text-sm">Heatmaps, reports, exports.</p>
                     </div>
                 </div>
                 <p class="text-center text-sm text-gray-400 mt-10">
@@ -169,64 +136,34 @@
             </div>
         </section>
 
-        <!-- Use cases — where else it fits -->
+        <!-- Use cases -->
         <section id="playbook" class="py-14 px-4 bg-white">
             <div class="max-w-6xl mx-auto">
                 <div class="text-center mb-10">
                     <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Where coaches use it</h2>
-                    <p class="text-lg text-gray-600 mt-3 max-w-xl mx-auto">Start in the bullpen. Same objective calls for practice, tryouts, and hitters.</p>
+                    <p class="text-lg text-gray-600 mt-3 max-w-xl mx-auto">Start in the bullpen. Same calls for practice, tryouts, and hitters.</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <div id="playbook-command-trainer" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Bullpen command</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Call a spot, throw to it, get an instant ball or strike—plus a session report when you’re done.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">Call a spot, throw to it, get instant feedback—and a session report when you’re done.</p>
                     </div>
                     <div id="playbook-practice-scrimmage-umpire" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Practice &amp; scrimmage</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Need objective calls when there’s no umpire? HeyBLU calls so coaches can coach.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">No umpire? HeyBLU calls so coaches can coach.</p>
                     </div>
                     <div id="playbook-tryout-evaluator" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Tryouts</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">See who’s hitting their spots. Save and compare every pitcher’s results.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">See who’s hitting their spots. Save and compare every pitcher.</p>
                     </div>
                     <div id="playbook-batters-eye-trainer" class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Batter’s eye</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Give hitters instant validation—lay off balls, learn the edges.</p>
+                        <p class="text-gray-600 text-sm leading-relaxed">Instant validation—lay off balls, learn the edges.</p>
                     </div>
                 </div>
                 <p class="text-center mt-8">
                     <a href="/coaches" class="text-blue-600 font-semibold hover:text-blue-800 underline">More for coaches →</a>
                 </p>
-            </div>
-        </section>
-
-        <!-- Product proof — replace old See it in action -->
-        <section id="product" class="py-14 px-4 bg-slate-50 border-t border-gray-200">
-            <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-10">
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900">After the call</h2>
-                    <p class="text-gray-600 mt-3">Location, history, and a second phone when you want eyes in the dugout.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <div class="rounded-xl overflow-hidden shadow-lg ring-1 ring-gray-200 bg-white">
-                            <img src="/images/Pitch_Result.jpg" alt="Pitch result with ball or strike location on the strike zone" class="w-full h-auto" loading="lazy">
-                        </div>
-                        <p class="text-sm text-gray-600 mt-3 text-center">Every pitch lands on the zone.</p>
-                    </div>
-                    <div>
-                        <div class="rounded-xl overflow-hidden shadow-lg ring-1 ring-gray-200 bg-white">
-                            <img src="/images/Session_Summary.jpg" alt="Session summary with pitch history and heatmap" class="w-full h-auto" loading="lazy">
-                        </div>
-                        <p class="text-sm text-gray-600 mt-3 text-center">Session summary when you’re done.</p>
-                    </div>
-                    <div>
-                        <div class="rounded-xl overflow-hidden shadow-lg ring-1 ring-gray-200 bg-white">
-                            <img src="/images/Track_Follow.jpg" alt="Tracking phone and Follow Game on a second device" class="w-full h-auto" loading="lazy">
-                        </div>
-                        <p class="text-sm text-gray-600 mt-3 text-center">Share live to another iPhone.</p>
-                    </div>
-                </div>
             </div>
         </section>
 
