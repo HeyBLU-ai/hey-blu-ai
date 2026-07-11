@@ -10,11 +10,11 @@
         return baseUrl + (baseUrl.indexOf('?') >= 0 ? '&' : '?') + q;
     }
 
-    var link = document.getElementById('app-store-download-link');
+    var links = document.querySelectorAll('#app-store-download-link, a.app-store-download-link');
     var note = document.getElementById('app-download-beta-note');
     var url = appendUtm(cfg.APP_STORE_LIVE ? cfg.DOWNLOAD_URL_LIVE : cfg.DOWNLOAD_URL_BETA);
 
-    if (link) {
+    links.forEach(function (link) {
         link.href = url;
         if (/^https?:\/\//i.test(url)) {
             link.setAttribute('target', '_blank');
@@ -23,7 +23,7 @@
             link.removeAttribute('target');
             link.removeAttribute('rel');
         }
-    }
+    });
 
     if (note) {
         if (cfg.APP_STORE_LIVE) {
