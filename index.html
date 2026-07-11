@@ -17,74 +17,53 @@
             font-family: 'Inter', sans-serif;
             scroll-behavior: smooth;
         }
-        .hero-gradient {
-            background-image: url('/images/baseball_field_night.JPG');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            position: relative;
+        #beta, #playbook, #pricing, #how-it-works, #live-call-results, #download {
+            scroll-margin-top: 5rem;
         }
-        .hero-gradient::before {
+        .use-case-tile {
+            position: relative;
+            min-height: 240px;
+            border-radius: 1rem;
+            overflow: hidden;
+            display: block;
+        }
+        .use-case-tile img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+        .use-case-tile:hover img {
+            transform: scale(1.04);
+        }
+        .use-case-tile::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 64, 175, 0.65) 50%, rgba(59, 130, 246, 0.55) 100%);
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.45) 55%, rgba(15, 23, 42, 0.15) 100%);
+        }
+        .use-case-tile .tile-copy {
+            position: relative;
             z-index: 1;
-        }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-        .animate-float {
-            animation: float 3s ease-in-out infinite;
-        }
-        .use-case-chips-outer {
-            background: linear-gradient(90deg, #0f172a 0%, #1e3a8a 50%, #0f172a 100%);
-        }
-        .use-case-chips {
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.75rem;
-            max-width: 72rem;
-            margin: 0 auto;
-            padding: 1rem;
+            flex-direction: column;
+            justify-content: flex-end;
+            min-height: 240px;
+            padding: 1.5rem;
+            color: #fff;
         }
-        .use-case-chip {
-            display: inline-block;
-            font-size: 0.875rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-            color: #f8fafc;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 9999px;
-            padding: 0.5rem 1rem;
-            transition: background 0.15s ease, border-color 0.15s ease;
+        .step-shot {
+            border-radius: 0.75rem;
+            overflow: hidden;
+            aspect-ratio: 16 / 10;
+            background: #0f172a;
         }
-        .use-case-chip:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(249, 115, 22, 0.6);
-        }
-        #beta {
-            scroll-margin-top: 5rem;
-        }
-        #playbook {
-            scroll-margin-top: 5rem;
-        }
-        #pricing {
-            scroll-margin-top: 5rem;
-        }
-        .pricing-check {
-            flex-shrink: 0;
+        .step-shot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
     <script src="/site-config.js"></script>
@@ -93,7 +72,6 @@
 </head>
 <body class="bg-gray-50 text-gray-900">
 
-    <!-- Header -->
     <header id="heyblu-site-header" class="bg-white/95 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
@@ -101,9 +79,9 @@
                     <img src="/images/HeyBLU%20-%20black-blue%20vector%20logo5.svg" alt="HeyBLU" class="h-10 md:h-13 w-auto max-w-[200px]" loading="eager" fetchpriority="high">
                 </a>
                 <nav class="hidden md:flex items-center space-x-6" aria-label="Main">
-                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
                     <a href="#playbook" class="text-gray-700 hover:text-blue-600 font-medium transition">Use Cases</a>
                     <a href="/pricing" class="text-gray-700 hover:text-blue-600 font-medium transition">Pricing</a>
+                    <a href="#how-it-works" class="text-gray-700 hover:text-blue-600 font-medium transition">How It Works</a>
                     <a href="/help" class="text-gray-700 hover:text-blue-600 font-medium transition">Help</a>
                     <a href="#beta" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105">Join Waitlist</a>
                 </nav>
@@ -112,9 +90,9 @@
                 </button>
             </div>
             <div id="mobile-menu" class="hidden md:hidden pb-4 space-y-2">
-                <a href="#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
                 <a href="#playbook" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Use Cases</a>
                 <a href="/pricing" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Pricing</a>
+                <a href="#how-it-works" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">How It Works</a>
                 <a href="/help" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Help</a>
                 <a href="#beta" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 rounded">Join Waitlist</a>
             </div>
@@ -123,197 +101,162 @@
     <script src="/site-nav.js"></script>
 
     <main class="pt-16">
-        <!-- Hero Section -->
-        <section class="bg-white py-12 md:py-20 px-4" aria-labelledby="hero-headline">
+
+        <!-- Hero -->
+        <section class="bg-white py-10 md:py-16 px-4" aria-labelledby="hero-headline">
             <div class="max-w-7xl mx-auto">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <div>
-                        <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-5">
+                        <h1 id="hero-headline" class="text-4xl md:text-5xl xl:text-6xl font-extrabold text-gray-900 leading-tight mb-4">
                             Every bullpen deserves a Big League Umpire.
                         </h1>
-                        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-4">
+                        <p class="text-lg md:text-xl text-gray-600 leading-relaxed mb-6">
                             Real-time calls with just an iPhone and a <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline font-semibold">tripod</a>. Fully adjustable strike zone for youth baseball and fast-pitch softball.
                         </p>
-                        <p class="text-sm text-gray-600 mb-6">
-                            <a href="#playbook-command-trainer" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Pitchers</a>
-                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
-                            <a href="/coaches" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Coaches</a>
-                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
-                            <a href="#playbook" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Parents</a>
-                            <span class="text-gray-300 mx-2" aria-hidden="true">|</span>
-                            <a href="/smart-field" class="font-semibold text-blue-600 hover:text-blue-800 underline">For Leagues</a>
-                        </p>
-                        <div class="flex flex-col items-start gap-3">
-                            <a href="#beta" class="inline-block bg-blue-600 text-white font-bold text-lg py-4 px-8 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
-                                Join the Launch Waitlist
-                            </a>
+                        <div class="mb-5" id="download">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div>
+                                    <a id="app-store-download-link" href="https://testflight.apple.com/join/1kC7Ur8G" class="inline-block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2" aria-label="Download HeyBLU on the App Store">
+                                        <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" alt="Download on the App Store" width="180" height="60" class="h-14 w-auto">
+                                    </a>
+                                    <p id="app-download-beta-note" class="text-xs text-gray-500 mt-2 max-w-xs"></p>
+                                </div>
+                                <a href="#beta" class="inline-block bg-blue-600 text-white font-bold text-base py-3 px-6 rounded-lg hover:bg-blue-700 transition shadow-lg text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
+                                    Join the Launch Waitlist
+                                </a>
+                            </div>
                         </div>
+                        <p class="text-sm text-gray-500">
+                            Built for bullpens and practice.
+                            <a href="/coaches" class="text-gray-600 hover:text-blue-600 underline">Coaches</a>
+                            <span class="text-gray-300 mx-1.5" aria-hidden="true">·</span>
+                            <a href="/smart-field" class="text-gray-600 hover:text-blue-600 underline">Leagues</a>
+                        </p>
                     </div>
                     <div class="order-first lg:order-none">
                         <div class="relative rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200">
-                            <video src="/images/hero-strike-loop.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU calling STRIKE on a live pitch—the strike zone overlay and ball-track dot on the field"></video>
-                        </div>
-                        <p class="text-gray-500 text-center mt-3 text-sm">Ball or strike—called out loud, with live zone overlay on every pitch.</p>
-                    </div>
-                </div>
-
-                <div class="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen mt-10 mb-2">
-                    <div class="use-case-chips-outer py-3" aria-label="HeyBLU use cases">
-                        <div class="use-case-chips">
-                            <a href="#playbook-command-trainer" class="use-case-chip">Command Trainer</a>
-                            <a href="#playbook-practice-scrimmage-umpire" class="use-case-chip">Practice &amp; Scrimmage Umpire</a>
-                            <a href="#playbook-tryout-evaluator" class="use-case-chip">Tryout Evaluator</a>
-                            <a href="#playbook-batters-eye-trainer" class="use-case-chip">Batter's Eye Trainer</a>
+                            <video src="/images/hero-strike-loop.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU calling STRIKE on a live pitch with strike zone overlay"></video>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- How It Works -->
-        <section id="how-it-works" class="py-14 px-4 bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-            <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl md:text-5xl font-extrabold">How It Works</h2>
+        <!-- Live call + results -->
+        <section id="live-call-results" class="px-4 pb-12 md:pb-16" aria-label="Live pitch calls and session results">
+            <div class="max-w-5xl mx-auto">
+                <div class="rounded-2xl overflow-hidden shadow-2xl ring-1 ring-gray-200 bg-white">
+                    <video src="/images/Live_call_results.mp4" class="w-full h-auto object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="HeyBLU live pitch call on iPhone beside a session summary report"></video>
                 </div>
-                <div class="max-w-4xl mx-auto mb-10">
-                    <div class="rounded-xl overflow-hidden shadow-2xl ring-1 ring-gray-700">
-                        <video src="/images/how-it-works-loop.mp4" class="w-full h-auto aspect-video object-cover" width="1200" height="675" autoplay loop muted playsinline aria-label="iPhone mounted on a tripod behind a chain-link backstop—the full HeyBLU hardware setup"></video>
-                    </div>
-                    <p class="text-center text-gray-400 text-sm mt-4">One phone, one <a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-300 underline hover:text-blue-200">tripod</a>—that’s the setup.</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
-                    <div class="text-center lg:text-left">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto lg:mx-0 mb-3">1</div>
-                        <h3 class="text-lg font-bold mb-1">Set sport &amp; zone</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Pick youth baseball or softball and match the zone to your league.</p>
-                    </div>
-                    <div class="text-center lg:text-left">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto lg:mx-0 mb-3">2</div>
-                        <h3 class="text-lg font-bold mb-1">Mount the iPhone</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed"><a href="https://a.co/d/0d8PVahz" target="_blank" rel="noopener noreferrer" class="text-blue-300 underline hover:text-blue-200">Tripod</a> beside home plate with a clear view of the plate and pitching lane.</p>
-                    </div>
-                    <div class="text-center lg:text-left">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto lg:mx-0 mb-3">3</div>
-                        <h3 class="text-lg font-bold mb-1">Lock the plate</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Tap to anchor the zone to real home plate, then fine-tune alignment.</p>
-                    </div>
-                    <div class="text-center lg:text-left">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto lg:mx-0 mb-3">4</div>
-                        <h3 class="text-lg font-bold mb-1">Throw</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Hear ball/strike calls out loud on every pitch. Live zone feedback as you go.</p>
-                    </div>
-                    <div class="text-center lg:text-left">
-                        <div class="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center text-xl font-bold mx-auto lg:mx-0 mb-3">5</div>
-                        <h3 class="text-lg font-bold mb-1">Review</h3>
-                        <p class="text-gray-300 text-sm leading-relaxed">Save every session with heatmaps, reports, and exports.</p>
-                    </div>
-                </div>
-                <p class="text-center text-sm text-gray-400 mt-8"><a href="/help" class="text-blue-300 underline font-medium">Setup help →</a></p>
             </div>
         </section>
 
-        <!-- Use Cases -->
-        <section id="playbook" class="py-14 px-4 bg-white">
+        <!-- Use cases — photo tiles -->
+        <section id="playbook" class="py-14 px-4 bg-slate-950">
             <div class="max-w-6xl mx-auto">
-                <div class="text-center mb-10">
-                    <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900">Use Cases</h2>
-                    <p class="text-lg text-gray-600 mt-3 max-w-xl mx-auto">Same bullpen workflows for youth baseball and fast-pitch softball.</p>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div id="playbook-command-trainer" class="use-case-card bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Command Trainer</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Intend a strike on the outside corner, get instant feedback, as well as a post-session report.</p>
+                <h2 class="text-4xl md:text-5xl font-extrabold text-white text-center mb-10">How coaches use it</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+                    <div id="playbook-command-trainer" class="use-case-tile">
+                        <img src="/images/Pitch_Result.jpg" alt="Pitch location on the strike zone" loading="lazy">
+                        <div class="tile-copy">
+                            <h3 class="text-xl font-bold mb-1">Bullpen umpire</h3>
+                            <p class="text-sm text-slate-200 leading-relaxed">Instant feedback on every pitch thrown.</p>
+                        </div>
                     </div>
-                    <div id="playbook-practice-scrimmage-umpire" class="use-case-card bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Practice &amp; Scrimmage Umpire</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">No umpire, no problem. Use HeyBLU to make objective ball-strike calls instantly freeing up coaches to just coach.</p>
+                    <div id="playbook-practice-scrimmage-umpire" class="use-case-tile">
+                        <img src="/images/Ball-call-MLK-kids.jpg" alt="Kids on the field during practice" loading="lazy">
+                        <div class="tile-copy">
+                            <h3 class="text-xl font-bold mb-1">Practice &amp; scrimmage</h3>
+                            <p class="text-sm text-slate-200 leading-relaxed">With a Bluetooth speaker, let HeyBLU call balls and strikes.</p>
+                        </div>
                     </div>
-                    <div id="playbook-tryout-evaluator" class="use-case-card bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Tryout Evaluator</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Let HeyBLU tell you who is hitting their spots. Save and compare every pitcher's results.</p>
+                    <div id="playbook-tryout-evaluator" class="use-case-tile">
+                        <img src="/images/strike-middle.jpg" alt="Strike zone overlay on a pitch" loading="lazy">
+                        <div class="tile-copy">
+                            <h3 class="text-xl font-bold mb-1">Tryouts</h3>
+                            <p class="text-sm text-slate-200 leading-relaxed">See who’s hitting their spots. Save and compare every pitcher.</p>
+                        </div>
                     </div>
-                    <div id="playbook-batters-eye-trainer" class="use-case-card bg-white rounded-2xl border-2 border-gray-200 p-6 shadow-sm">
-                        <h3 class="text-lg font-bold text-gray-900 mb-2">Batter's Eye Trainer</h3>
-                        <p class="text-gray-600 text-sm leading-relaxed">Give your hitters instant, objective validation to train their eye and lay off bad pitches while learning the edges.</p>
+                    <div id="playbook-batters-eye-trainer" class="use-case-tile">
+                        <img src="/images/ball-call-youth-bullpen.jpg" alt="Youth pitcher in a bullpen" loading="lazy">
+                        <div class="tile-copy">
+                            <h3 class="text-xl font-bold mb-1">Batter’s eye</h3>
+                            <p class="text-sm text-slate-200 leading-relaxed">Instant validation—lay off balls, learn the edges.</p>
+                        </div>
                     </div>
                 </div>
                 <p class="text-center mt-8">
-                    <a href="/coaches" class="text-blue-600 font-semibold hover:text-blue-800 underline">More use cases →</a>
+                    <a href="/coaches" class="text-blue-300 font-semibold hover:text-white underline">More for coaches →</a>
                 </p>
             </div>
         </section>
 
-        <!-- Pricing teaser — full details at /pricing -->
-        <section id="pricing" class="py-14 px-4 bg-white border-t border-gray-200">
-            <div class="max-w-2xl mx-auto text-center">
-                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Pricing</h2>
-                <span id="pricing-teaser-badge" class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-bold text-blue-800 mb-4">Launch pricing</span>
-                <p id="pricing-teaser-line" class="text-lg text-gray-700 mb-3 leading-relaxed">HeyBLU — 14-day free trial, then $4.99/mo or $49.99/yr.</p>
-                <p id="pricing-teaser-trial" class="text-sm text-gray-500 mb-8">14-day free trial · cancel anytime in Apple Subscriptions</p>
-                <a href="/pricing" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition shadow-sm">See what's included →</a>
-                <p class="text-center text-gray-500 text-sm mt-6"><a href="/help" class="text-blue-600 font-semibold hover:text-blue-800 underline">FAQ</a> · League pilots: <a href="mailto:info@heyblu.ai" class="text-blue-600 font-semibold hover:text-blue-800 underline">info@heyblu.ai</a></p>
+        <!-- Pricing — dark conversion band -->
+        <section id="pricing" class="relative py-16 md:py-20 px-4 overflow-hidden">
+            <div class="absolute inset-0">
+                <img src="/images/baseball_field_night.JPG" alt="" class="w-full h-full object-cover" loading="lazy">
+                <div class="absolute inset-0 bg-slate-950/85"></div>
+            </div>
+            <div class="relative max-w-2xl mx-auto text-center text-white">
+                <h2 class="text-4xl md:text-5xl font-extrabold mb-4">Pricing</h2>
+                <span id="pricing-teaser-badge" class="inline-flex items-center rounded-full bg-blue-500/20 border border-blue-400/40 px-3 py-1 text-xs font-bold text-blue-200 mb-4">Launch pricing</span>
+                <p id="pricing-teaser-line" class="text-lg md:text-xl text-slate-100 mb-2 leading-relaxed">HeyBLU — 14-day free trial, then $4.99/mo or $49.99/yr.</p>
+                <p id="pricing-teaser-trial" class="text-sm text-slate-300 mb-8">14-day free trial · cancel anytime in Apple Subscriptions</p>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
+                    <a href="#beta" class="inline-block bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-6 rounded-lg transition shadow-sm">Join the Launch Waitlist</a>
+                    <a href="/pricing" class="inline-block border border-white/40 hover:border-white text-white font-bold py-3 px-6 rounded-lg transition">See what's included →</a>
+                </div>
+                <div class="flex flex-col items-center gap-2 mb-6">
+                    <a href="https://testflight.apple.com/join/1kC7Ur8G" class="app-store-download-link inline-block rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400" aria-label="Download HeyBLU on the App Store">
+                        <img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/white/en-us?size=250x83" alt="Download on the App Store" width="160" height="54" class="h-12 w-auto opacity-90">
+                    </a>
+                </div>
+                <p class="text-sm text-slate-400"><a href="/help" class="text-blue-300 hover:text-white underline">FAQ</a> · League pilots: <a href="mailto:info@heyblu.ai" class="text-blue-300 hover:text-white underline">info@heyblu.ai</a></p>
             </div>
         </section>
 
-        <!-- See it in action -->
-        <section id="see-it-in-action" class="py-14 px-4 bg-white border-t border-gray-200">
-            <div class="max-w-7xl mx-auto">
-                <p class="text-center text-sm font-semibold text-gray-500 uppercase tracking-wide mb-6">See it in action</p>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12">
-                    <div class="relative">
-                        <div class="relative rounded-lg overflow-hidden shadow-xl video-container" id="video-container">
-                            <div id="video-thumbnail" class="relative cursor-pointer group" onclick="loadVideo()">
-                                <img src="/images/heyblu thumbnail youtube.jpg" alt="Live strike zone tracking demo video" class="w-full h-auto" loading="lazy">
-                                <div class="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 group-hover:bg-opacity-40 transition">
-                                    <div class="w-16 h-16 md:w-20 md:h-20 bg-red-600 rounded-full flex items-center justify-center shadow-2xl transform group-hover:scale-110 transition">
-                                        <svg class="w-8 h-8 md:w-10 md:h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                                            <path d="M8 5v14l11-7z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="video-embed" class="hidden" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-                                <iframe id="youtube-iframe" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-                                    src=""
-                                    title="HeyBLU demo video"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                    allowfullscreen
-                                    loading="lazy">
-                                </iframe>
-                            </div>
+        <!-- How It Works — visual steps -->
+        <section id="how-it-works" class="py-14 md:py-16 px-4 bg-white">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 text-center mb-10">How It Works</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div>
+                        <div class="step-shot mb-4 shadow-md ring-1 ring-gray-200">
+                            <img src="/images/Mount_phone.jpg" alt="iPhone mounted for tracking" loading="lazy">
                         </div>
-                        <p class="text-gray-500 text-center mt-3 text-sm">Live tracking and instant calls. <span class="text-blue-600 font-semibold">Click to play</span></p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1"><span class="text-blue-600">1.</span> Mount</h3>
+                        <p class="text-gray-600 text-sm">Tripod beside the plate. Lock the zone.</p>
                     </div>
                     <div>
-                        <div class="relative rounded-lg overflow-hidden shadow-xl">
-                            <img src="/images/2 devices.png" alt="HeyBLU Command Center and analytics on two devices" class="w-full h-auto" loading="lazy">
+                        <div class="step-shot mb-4 shadow-md ring-1 ring-gray-200">
+                            <img src="/images/Pitch_Result.jpg" alt="Ball or strike location on the zone" loading="lazy">
                         </div>
-                        <p class="text-gray-500 text-center mt-3 text-sm">Command Center on a second iPhone. Others can Follow Game on their own phone when you share the live feed.</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1"><span class="text-blue-600">2.</span> Throw</h3>
+                        <p class="text-gray-600 text-sm">Get the call. See the location.</p>
+                    </div>
+                    <div>
+                        <div class="step-shot mb-4 shadow-md ring-1 ring-gray-200">
+                            <img src="/images/Session_Summary.jpg" alt="Session summary report" loading="lazy">
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 mb-1"><span class="text-blue-600">3.</span> Review</h3>
+                        <p class="text-gray-600 text-sm">Heatmaps, reports, exports.</p>
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- ABCA proof -->
-        <section class="py-8 px-4 bg-slate-50 border-y border-slate-200" aria-label="ABCA Expo Theater">
-            <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 text-center sm:text-left">
-                <p class="text-gray-700 font-medium">Presented at <span class="font-bold text-gray-900">ABCA Expo Theater</span></p>
-                <a href="https://www.dropbox.com/scl/fi/ckojv0r9ix3kkawmgshth/Expo_01_HeyBlu_FINAL-Daren-EXPO-01-05.mp4?rlkey=e6s5npgboxkek60lip3r48mqe&e=1&dl=0" target="_blank" rel="noopener noreferrer" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 rounded-lg transition shadow-sm shrink-0">
-                    Watch the presentation →
-                </a>
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
+                    <a href="/how-to" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3 px-6 transition shadow-sm">Video tutorials</a>
+                    <a href="/help" class="inline-flex items-center justify-center rounded-lg border-2 border-blue-600 text-blue-700 hover:bg-blue-50 font-semibold text-sm py-3 px-6 transition">Help</a>
+                </div>
             </div>
         </section>
 
         <!-- Launch Waitlist -->
-        <section id="beta" class="py-14 px-4 bg-slate-50">
+        <section id="beta" class="py-14 px-4 bg-slate-50 border-t border-gray-200">
             <div class="max-w-2xl mx-auto">
                 <div class="text-center mb-10">
                     <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4">Join the Launch Waitlist</h2>
-                    <p class="text-lg text-gray-600">Be first to know when HeyBLU hits the App Store. Drop your name and email—we'll keep you posted.</p>
+                    <p class="text-lg text-gray-600">Be first to know when HeyBLU hits the App Store.</p>
                 </div>
-                <div class="bg-gray-50 rounded-2xl shadow-xl p-8 border-2 border-gray-200">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
                     <form id="beta-signup-form" action="https://formspree.io/f/mjkrezok" method="POST" class="space-y-6">
                         <input type="hidden" name="_subject" value="Launch waitlist">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -331,7 +274,7 @@
                             <input type="email" name="email" id="email" required autocomplete="email" class="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                         </div>
                         <p id="beta-form-error" class="hidden text-sm text-red-600" role="alert"></p>
-                        <button type="submit" id="beta-submit-btn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition transform hover:scale-105 shadow-lg disabled:opacity-60 disabled:cursor-not-allowed disabled:transform-none">
+                        <button type="submit" id="beta-submit-btn" class="w-full bg-blue-600 text-white font-bold py-4 px-6 rounded-lg hover:bg-blue-700 transition shadow-lg disabled:opacity-60 disabled:cursor-not-allowed">
                             Join the Waitlist
                         </button>
                     </form>
@@ -345,7 +288,6 @@
         </section>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-gray-800 text-white py-12 px-4">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
@@ -361,7 +303,7 @@
                     <div class="space-y-2">
                         <a href="/#playbook" class="block text-gray-400 hover:text-white transition">Use Cases</a>
                         <a href="/pricing" class="block text-gray-400 hover:text-white transition">Pricing</a>
-                        <a href="/field-guide" class="block text-gray-400 hover:text-white transition">Field Guide</a>
+                        <a href="/help" class="block text-gray-400 hover:text-white transition">Help</a>
                         <a href="/compare" class="block text-gray-400 hover:text-white transition">Strike Zone Tech</a>
                     </div>
                 </div>
@@ -391,7 +333,6 @@
 
     <script src="/site-download.js"></script>
     <script>
-        // Smooth scrolling for in-page anchors
         document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
             anchor.addEventListener('click', function (e) {
                 var href = this.getAttribute('href');
@@ -404,21 +345,6 @@
                 if (mobileMenu) mobileMenu.classList.add('hidden');
             });
         });
-
-        // YouTube Video Loader
-        function loadVideo() {
-            const thumbnail = document.getElementById('video-thumbnail');
-            const embed = document.getElementById('video-embed');
-            const iframe = document.getElementById('youtube-iframe');
-            
-            // Hide thumbnail, show embed
-            thumbnail.classList.add('hidden');
-            embed.classList.remove('hidden');
-            
-            // Load YouTube iframe with autoplay
-            // Video ID: b8KMjhkqqYE
-            iframe.src = 'https://www.youtube.com/embed/b8KMjhkqqYE?autoplay=1&rel=0';
-        }
     </script>
 
     <script>
@@ -476,4 +402,3 @@
 
 </body>
 </html>
-
