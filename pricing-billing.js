@@ -59,7 +59,8 @@
             if (annual) {
                 priceDisplay.innerHTML =
                     cfg.formatUSD(cfg.annualUSD) +
-                    '<span class="text-lg font-semibold text-gray-600">/yr</span>';
+                    '<span class="text-lg font-semibold text-gray-600">/yr</span>' +
+                    '<span class="text-lg font-semibold text-gray-600" aria-hidden="true">*</span>';
                 if (priceNote) {
                     priceNote.textContent =
                         'About ' + cfg.formatUSD(cfg.annualPerMonthUSD()) + '/mo billed annually';
@@ -67,7 +68,8 @@
             } else {
                 priceDisplay.innerHTML =
                     cfg.formatUSD(cfg.monthlyUSD) +
-                    '<span class="text-lg font-semibold text-gray-600">/mo</span>';
+                    '<span class="text-lg font-semibold text-gray-600">/mo</span>' +
+                    '<span class="text-lg font-semibold text-gray-600" aria-hidden="true">*</span>';
                 if (priceNote) priceNote.textContent = '';
             }
         }
