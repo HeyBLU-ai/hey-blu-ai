@@ -185,7 +185,10 @@ const anthropic = process.env.ANTHROPIC_API_KEY
   : null;
 
 const ANSWER_TIMEOUT_MS = Number(process.env.ANTHROPIC_ANSWER_TIMEOUT_MS ?? 22000);
-const VERIFY_TIMEOUT_MS = Number(process.env.ANTHROPIC_VERIFY_TIMEOUT_MS ?? 12000);
+// 20s (was 12s): a slow-but-valid verifier pass was being killed at 12s and
+// fail-closed into an "I cannot verify" non-answer. This stays well within the
+// client's 45s fetch timeout and the function's 60s max duration.
+const VERIFY_TIMEOUT_MS = Number(process.env.ANTHROPIC_VERIFY_TIMEOUT_MS ?? 20000);
 
 function withTimeout(promise, ms, label = 'Operation') {
   return Promise.race([
@@ -918,6 +921,26 @@ function persistAnswerEvent({
   ).catch(err => console.error('[ask-v2] answer_event persist failed (non-fatal):', err.message));
 }
 
+/**
+ * User-facing message for a verifier-blocked answer.
+ *
+ * With RULEBOOK_DEBUG=1 it appends a one-line diagnostic (verifier status,
+ * whether it errored/timed out, how many evidence bundles were retrieved, the
+ * best match score, and the cited rule numbers) so a block can be diagnosed
+ * straight from the screen — no dev tools required. The suffix only appears
+ * when the debug flag is on, so it is safe to leave in place.
+ */
+function buildUnverifiableMessage(verifierAudit, { _debug = null, cited_rule_numbers = [] } = {}) {
+  const base = 'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.';
+  if (process.env.RULEBOOK_DEBUG !== '1') return base;
+  const status  = verifierAudit?.status ?? '?';
+  const err     = verifierAudit?._error ? ` (${verifierAudit._error})` : '';
+  const bundles = _debug?.bundle_count ?? '?';
+  const score   = _debug?.primaryBestScore ?? '?';
+  const rules   = (cited_rule_numbers ?? []).join(', ') || 'none';
+  return `${base}\n\n[debug] verifier=${status}${err} | bundles=${bundles} | bestScore=${score} | rules=${rules}`;
+}
+
 // ── Main Handler ─────────────────────────────────────────────────────────────
 
 const handler = async (req, res) => {
@@ -1010,7 +1033,7 @@ const handler = async (req, res) => {
           return res.status(200).json({
             state:            'unverifiable',
             error:            'unverifiable',
-            message:          'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.',
+            message:          buildUnverifiableMessage(verifierAudit, { _debug, cited_rule_numbers }),
             league_slug,
             active_version_id,
             ...(process.env.RULEBOOK_DEBUG === '1' ? { verifier_audit: verifierAudit } : {}),
@@ -1146,7 +1169,7 @@ const handler = async (req, res) => {
       return res.status(200).json({
         state:            'unverifiable',
         error:            'unverifiable',
-        message:          'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.',
+        message:          buildUnverifiableMessage(verifierAudit, { _debug, cited_rule_numbers }),
         league_slug,
         active_version_id,
         ...(process.env.RULEBOOK_DEBUG === '1' ? { verifier_audit: verifierAudit } : {}),
