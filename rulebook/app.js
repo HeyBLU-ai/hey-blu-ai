@@ -1206,16 +1206,16 @@ function showActionToast(message) {
           .then((registration) => {
             console.log('Service Worker registered successfully:', registration.scope);
             
-            // Check for updates
+            // When a new version is detected, activate it silently. The app
+            // shell is served network-first and CSS/libraries are
+            // stale-while-revalidate, so the fresh version loads on the next
+            // navigation — no stale trap, and no disruptive update prompt.
             registration.addEventListener('updatefound', () => {
               const newWorker = registration.installing;
+              if (!newWorker) return;
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  // New version available
-                  if (confirm('A new version of HeyBLU.AI is available. Would you like to update?')) {
-                    newWorker.postMessage({ type: 'SKIP_WAITING' });
-                    window.location.reload();
-                  }
+                  newWorker.postMessage({ type: 'SKIP_WAITING' });
                 }
               });
             });

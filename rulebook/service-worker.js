@@ -1,6 +1,6 @@
-const CACHE_NAME = 'heyblu-v1.0.3';
-const STATIC_CACHE = 'heyblu-static-v1.0.3';
-const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.3';
+const CACHE_NAME = 'heyblu-v1.0.4';
+const STATIC_CACHE = 'heyblu-static-v1.0.4';
+const DYNAMIC_CACHE = 'heyblu-dynamic-v1.0.4';
 
 // Files to cache immediately (paths relative to /rulebook/ scope)
 const STATIC_FILES = [
@@ -56,6 +56,13 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+// Allow the page to tell a waiting worker to activate immediately.
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
   const { request } = event;
@@ -86,9 +93,38 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
+  // Styles + third-party libraries: stale-while-revalidate so a deploy's CSS or
+  // library change is picked up automatically on the next load, without ever
+  // requiring a service-worker version bump or trapping the user on old assets.
+  if (url.pathname === '/public/output.css' ||
+      url.pathname === '/dist/output.css' ||
+      url.hostname === 'fonts.googleapis.com' ||
+      url.hostname === 'cdn.jsdelivr.net') {
+    event.respondWith(handleStaleWhileRevalidate(request));
+    return;
+  }
+
   // Handle static file requests
   event.respondWith(handleStaticRequest(request));
 });
+
+// Stale-while-revalidate: serve the cached copy instantly (if any) while
+// fetching a fresh copy in the background for next time.
+async function handleStaleWhileRevalidate(request) {
+  const cache = await caches.open(DYNAMIC_CACHE);
+  const cached = await cache.match(request);
+
+  const networkPromise = fetch(request)
+    .then((networkResponse) => {
+      if (networkResponse && networkResponse.ok) {
+        cache.put(request, networkResponse.clone());
+      }
+      return networkResponse;
+    })
+    .catch(() => null);
+
+  return cached || (await networkPromise) || fetch(request);
+}
 
 async function handleNetworkFirstRequest(request) {
   try {
