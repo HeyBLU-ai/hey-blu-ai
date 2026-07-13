@@ -7,7 +7,6 @@
 
     var line = document.getElementById('pricing-teaser-line');
     var badge = document.getElementById('pricing-teaser-badge');
-    var trial = document.getElementById('pricing-teaser-trial');
 
     if (line) {
         line.textContent =
@@ -16,8 +15,5 @@
     }
     if (badge && cfg.launchRateLabel) {
         badge.textContent = cfg.launchRateLabel;
-    }
-    if (trial) {
-        trial.textContent = cfg.trialDays + '-day free trial · cancel anytime in Apple Subscriptions';
     }
 })();

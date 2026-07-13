@@ -333,7 +333,7 @@
             <!-- Effective Date -->
             <div style="margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid #e5e5e5;">
                 <div class="effective-date">Effective Date</div>
-                <div class="date-value">June 13, 2026</div>
+                <div class="date-value">July 13, 2026</div>
             </div>
 
             <!-- Introduction -->
@@ -391,7 +391,8 @@
                 <ul>
                     <li><strong>No PII required for core app use:</strong> Name, email, and similar identifiers are not required to track pitches in the app.</li>
                     <li><strong>Minors:</strong> HeyBLU may be used around youth baseball, but we do <strong>not</strong> link a child's on-field activity to a child's identity in our systems. We do not knowingly collect a minor's name or contact information through the core app.</li>
-                    <li><strong>Pseudonymous diagnostics:</strong> We may use pseudonymous device identifiers (not your name or email) for basic app performance measurement and crash diagnostics, such as through Apple's standard developer tools. These identifiers are used to keep the app stable, not to profile individual players on the field.</li>
+                    <li><strong>App analytics and diagnostics:</strong> The app may send pseudonymous data (not your name or email)—such as a device identifier, product interaction events, crash or performance signals, and subscription-related status—to help us understand how the app is used and keep it stable. We use <strong>PostHog</strong> for product analytics and <strong>Apple</strong> developer tools for crash and performance diagnostics. These signals are not used to profile individual players on the field.</li>
+                    <li><strong>On-device AR / camera:</strong> Environment scanning and camera frames used for strike-zone tracking (e.g., via ARKit) are processed on your device for the session. We do not upload live camera video or images from normal app operation to PostHog or our servers.</li>
                 </ul>
 
                 <h3>Website, Beta, and Support (When You Contact Us)</h3>
@@ -419,7 +420,8 @@
                 <ul>
                     <li>When you fill out forms (e.g., to join the beta waitlist, request league rulebook integration, or contact us)</li>
                     <li>When you use our Services (e.g., asking questions in the rulebook assistant, using strike zone tracking)</li>
-                    <li>Through cookies and third-party analytics (e.g., Google Analytics)</li>
+                    <li>Through cookies and third-party analytics on the website (e.g., Google Analytics)</li>
+                    <li>Through in-app product analytics (PostHog) and subscription status services (RevenueCat / Apple), using pseudonymous identifiers and purchase-related status—not your payment card number</li>
                     <li>When you voluntarily provide information through surveys, feedback forms, or customer support</li>
                 </ul>
             </section>
@@ -437,7 +439,8 @@
                     <li>Process beta program applications and manage waitlists</li>
                     <li>Respond to your questions and provide customer support</li>
                     <li>Send important updates about our Services, product launches, and beta program (when you have provided contact information)</li>
-                    <li>Measure basic app performance and diagnose crashes using pseudonymous identifiers</li>
+                    <li>Measure product usage with PostHog (pseudonymous device and interaction data) and diagnose crashes or performance issues using Apple developer tools</li>
+                    <li>Verify subscription status and entitlements via Apple and RevenueCat</li>
                     <li>Analyze website usage patterns and improve user experience</li>
                     <li>Ensure security and prevent fraud</li>
                     <li>Comply with legal obligations</li>
@@ -449,9 +452,9 @@
             <section id="subscriptions-payments">
                 <h2>4. Subscriptions &amp; Payments</h2>
 
-                <p>HeyBLU is a paid auto-renewable subscription purchased through Apple's In-App Purchase system. <strong>We do not receive or store your payment card number.</strong> Apple processes payment and provides us with purchase status information (such as whether a subscription is active, in trial, or expired).</p>
+                <p>HeyBLU is a paid auto-renewable subscription purchased through Apple's In-App Purchase system. <strong>We do not receive or store your payment card number.</strong> Apple processes payment. We use <strong>RevenueCat</strong> to manage subscription status and entitlements (such as whether a subscription is active, in trial, or expired).</p>
 
-                <h3>What Apple may share with us</h3>
+                <h3>What Apple / RevenueCat may share with us</h3>
                 <ul>
                     <li>Subscription status and entitlement (active, trial, expired, or cancelled)</li>
                     <li>Product identifier, purchase date, and renewal period (monthly or annual)</li>
@@ -486,11 +489,12 @@
                 <p>Depending on how you interact with us, the following services may process data:</p>
                 
                 <ul>
-                    <li><strong>Apple (Apple Inc.):</strong> App Store, TestFlight, and iOS platform services (including crash and performance diagnostics you allow through iOS). Subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a></li>
+                    <li><strong>Apple (Apple Inc.):</strong> App Store, TestFlight, In-App Purchase, and iOS platform services (including crash and performance diagnostics you allow through iOS). Subject to Apple's privacy policy: <a href="https://www.apple.com/privacy/privacy-policy" target="_blank" rel="noopener">https://www.apple.com/privacy/privacy-policy</a></li>
+                    <li><strong>RevenueCat (RevenueCat, Inc.):</strong> Subscription status, entitlements, and related purchase history signals for the iOS app. Subject to RevenueCat's privacy policy: <a href="https://www.revenuecat.com/privacy" target="_blank" rel="noopener">https://www.revenuecat.com/privacy</a></li>
+                    <li><strong>PostHog (PostHog Inc.):</strong> Product analytics for the iOS app (e.g., pseudonymous device identifiers and product interaction events). Subject to PostHog's privacy policy: <a href="https://posthog.com/privacy" target="_blank" rel="noopener">https://posthog.com/privacy</a></li>
                     <li><strong>Vercel (Vercel Inc.):</strong> Hosts the heyblu.ai website. Subject to Vercel's privacy policy: <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">https://vercel.com/legal/privacy-policy</a></li>
                     <li><strong>Formspree (or similar form handlers):</strong> Processes information you submit through website forms (e.g., beta signup, support). Subject to the processor's privacy policy.</li>
                     <li><strong>OpenAI (OpenAI, L.L.C.), if enabled:</strong> Processes <strong>text-only</strong> queries for an optional rulebook assistant on the website—not live camera video from the iOS app. Subject to OpenAI's privacy policy: <a href="https://openai.com/privacy" target="_blank" rel="noopener">https://openai.com/privacy</a></li>
-                    <li><strong>Payment processors:</strong> If you make purchases, Apple In-App Purchase or other payment processors handle payment data. We do not store full payment card numbers.</li>
                     <li><strong>Website analytics:</strong> We may use analytics on heyblu.ai (e.g., Google Analytics) that collect pseudonymous or aggregated website usage data.</li>
                 </ul>
 
@@ -553,7 +557,9 @@
                     <li><strong>Beta and contact forms:</strong> Name, email, and form responses—typically up to 3 years after your last interaction, or sooner if you request deletion.</li>
                     <li><strong>Support communications:</strong> Emails, bug reports, and optional attachments you send—typically up to 3 years to resolve issues and improve the product.</li>
                     <li><strong>Website analytics:</strong> Pseudonymous or aggregated usage data—typically up to 2 years.</li>
-                    <li><strong>Crash and performance diagnostics:</strong> Pseudonymous technical logs via Apple's developer tools—retained according to Apple's and our vendor's standard periods.</li>
+                    <li><strong>App product analytics (PostHog):</strong> Pseudonymous device and interaction data—retained according to our PostHog project settings and PostHog's standard periods.</li>
+                    <li><strong>Crash and performance diagnostics:</strong> Pseudonymous technical logs via Apple's developer tools—retained according to Apple's standard periods.</li>
+                    <li><strong>Subscription status (RevenueCat / Apple):</strong> Entitlement and purchase-history signals needed to provide the subscription—retained while relevant to an active or recently active subscription and per those vendors' policies.</li>
                     <li><strong>Legal and compliance:</strong> We may retain certain records longer if required by law, regulation, dispute resolution, or to protect our legal rights.</li>
                 </ul>
 
