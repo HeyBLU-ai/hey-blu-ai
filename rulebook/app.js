@@ -661,9 +661,17 @@ function showActionToast(message) {
         applyDisclaimerMeta(conversation[currentTurnIndex], data);
         applyRetrievalMeta(conversation[currentTurnIndex], data);
 
+        // Fetch the share link in the background so the answer paints
+        // immediately. Re-render this turn only once the link is ready, and
+        // only if it is still the turn on screen.
         if (data.state !== 'unverifiable') {
-          const shortUrl = await getShortUrl(question, reply, league, '');
-          conversation[currentTurnIndex].shortUrl = shortUrl;
+          getShortUrl(question, reply, league, '')
+            .then((shortUrl) => {
+              if (!shortUrl) return;
+              conversation[currentTurnIndex].shortUrl = shortUrl;
+              if (conversation.length - 1 === currentTurnIndex) renderConversation();
+            })
+            .catch((err) => console.error('Error creating short link:', err));
         }
 
       } catch (err) {
