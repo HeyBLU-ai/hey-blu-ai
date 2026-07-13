@@ -174,7 +174,9 @@ import OpenAI from 'openai';
 import { runVerifier, isVerifierBlocked } from './verifier.js';
 import {
   fetchEvidenceBundlesWithFallback,
+  fetchEvidenceBundles,
   formatEvidenceBundlesForPrompt,
+  bestEvidenceScore,
   vectorLiteral,
   DEFAULT_EVIDENCE_FALLBACK_SCORE_THRESHOLD,
 } from '../lib/ingest/evidence-bundle.js';
@@ -651,6 +653,69 @@ function writeAnswerCache(dbPool, {
   ]).catch(err => console.warn('[ask-v2] Cache write failed:', err.message));
 }
 
+/**
+ * Draft an answer from a set of Evidence Bundles and run it through the
+ * fail-closed verifier gate. Shared by the primary pass and the fallback
+ * (cascade) pass so both behave identically.
+ *
+ * @returns {Promise<{ reply: string, verifierAudit: Object, blocked: boolean }>}
+ */
+async function draftAndVerify({
+  bundles,
+  leagueName,
+  sanitizedQuestion,
+  extraContext,
+  conversation,
+  leagueSlug,
+  usedFallback = false,
+  fallbackLeagueName = null,
+  fallbackLeagueSlug = null,
+}) {
+  const prompt = buildEvidencePrompt({
+    bundles,
+    leagueName,
+    sanitizedQuestion,
+    extraContext,
+    conversation,
+    leagueSlug,
+    usedFallback,
+    fallbackLeagueName,
+    fallbackLeagueSlug,
+  });
+
+  const message = await withTimeout(
+    anthropic.messages.create({
+      model:      LLM_ANSWER_MODEL,
+      max_tokens: 1024,
+      messages:   [{ role: 'user', content: prompt }],
+    }),
+    ANSWER_TIMEOUT_MS,
+    'Answer generation',
+  );
+
+  const reply = message.content[0]?.text?.trim() || 'No answer received.';
+
+  let verifierAudit;
+  try {
+    verifierAudit = await withTimeout(
+      runVerifier({ anthropicClient: anthropic, draftAnswer: reply, bundles }),
+      VERIFY_TIMEOUT_MS,
+      'Answer verification',
+    );
+  } catch (err) {
+    console.warn('[ask-v2] Verifier timed out (fail-closed):', err.message);
+    verifierAudit = {
+      status:             'unsupported',
+      claims:             [],
+      unsupported_claims: ['verifier_timeout: ' + err.message.slice(0, 120)],
+      confidence:         'low',
+      _error:             'timeout',
+    };
+  }
+
+  return { reply, verifierAudit, blocked: isVerifierBlocked(verifierAudit) };
+}
+
 async function runRAG({ sanitizedQuestion, league, conversation, extraContext = '' }) {
   const { slug: leagueSlug } = resolveLeague(league);
   const normalizedQ = normalizeQuestion(sanitizedQuestion);
@@ -743,8 +808,12 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     try { dbClient.release(); } catch { /* ignore */ }
   }
 
-  // ── Step 3: Build prompt from Evidence Bundles ───────────────────────────
-  const prompt = buildEvidencePrompt({
+  // ── Step 3+4: Draft from Evidence Bundles, then verify (fail-closed gate) ──
+  //
+  // Every factual claim in the draft is checked against the retrieved source
+  // spans. The verifier is fail-closed — any error or ambiguity blocks the
+  // draft from reaching the user.
+  let { reply, verifierAudit, blocked } = await draftAndVerify({
     bundles,
     leagueName,
     sanitizedQuestion,
@@ -756,41 +825,74 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     fallbackLeagueSlug,
   });
 
-  const message = await withTimeout(
-    anthropic.messages.create({
-      model:      LLM_ANSWER_MODEL,
-      max_tokens: 1024,
-      messages:   [{ role: 'user', content: prompt }],
-    }),
-    ANSWER_TIMEOUT_MS,
-    'Answer generation',
-  );
-
-  const reply = message.content[0]?.text?.trim() || 'No answer received.';
-
-  // ── Step 4: Verifier (blocking gate) ─────────────────────────────────────
+  // ── Step 4b: Fallback cascade ────────────────────────────────────────────
   //
-  // Every factual claim in the draft is checked against the retrieved source
-  // spans.  The verifier is fail-closed — any error or ambiguity blocks the
-  // draft from reaching the user.
-  let verifierAudit;
-  try {
-    verifierAudit = await withTimeout(
-      runVerifier({ anthropicClient: anthropic, draftAnswer: reply, bundles }),
-      VERIFY_TIMEOUT_MS,
-      'Answer verification',
-    );
-  } catch (err) {
-    console.warn('[ask-v2] Verifier timed out (fail-closed):', err.message);
-    verifierAudit = {
-      status:             'unsupported',
-      claims:             [],
-      unsupported_claims: ['verifier_timeout: ' + err.message.slice(0, 120)],
-      confidence:         'low',
-      _error:             'timeout',
-    };
+  // A high retrieval score only means "these were the closest chunks in the
+  // primary rulebook" — not "the primary rulebook actually answers this". The
+  // only reliable signal that the league's own book has no applicable rule is
+  // the drafter/verifier returning `no_rule_found` AFTER trying. When that
+  // happens and a governing fallback rulebook is configured (e.g. a local
+  // league that defers to the ORB), retrieve + answer from the fallback and
+  // present it (labeled) instead of a dead-end. We only adopt the fallback if
+  // it produces a real, verified answer; otherwise we keep the primary's
+  // honest "no applicable rule" response.
+  const canCascade =
+    !usedFallback &&
+    fallbackActiveVersionId &&
+    fallbackActiveVersionId !== activeVersionId &&
+    verifierAudit.status === 'no_rule_found';
+
+  if (canCascade) {
+    const queryEmbedding = await embeddingPromise;
+    let fallbackBundles = [];
+    let fallbackMethod = 'evidence';
+    const fbClient = await pool.connect();
+    try {
+      const fb = await fetchEvidenceBundles(
+        fbClient,
+        fallbackActiveVersionId,
+        sanitizedQuestion,
+        { queryEmbedding },
+      );
+      fallbackBundles = fb.bundles ?? [];
+      fallbackMethod  = fb.method ?? 'evidence';
+    } finally {
+      try { fbClient.release(); } catch { /* ignore */ }
+    }
+
+    if (fallbackBundles.length) {
+      const fbResult = await draftAndVerify({
+        bundles:            fallbackBundles,
+        leagueName,
+        sanitizedQuestion,
+        extraContext,
+        conversation,
+        leagueSlug,
+        usedFallback:       true,
+        fallbackLeagueName,
+        fallbackLeagueSlug,
+      });
+
+      // Adopt the fallback only when it produced a real, verified answer.
+      // If the fallback also has no rule (or fails verification), keep the
+      // primary's honest "no applicable rule" response.
+      if (!fbResult.blocked && fbResult.verifierAudit.status !== 'no_rule_found') {
+        reply             = fbResult.reply;
+        verifierAudit     = fbResult.verifierAudit;
+        blocked           = fbResult.blocked;
+        bundles           = fallbackBundles;
+        method            = `cascade_fallback_${fallbackMethod}`;
+        usedFallback      = true;
+        fallbackBestScore = bestEvidenceScore(fallbackBundles);
+        retrievalMeta = {
+          ...retrievalMeta,
+          fallbackBestScore,
+          fallbackVersionId: fallbackActiveVersionId,
+          cascade:           true,
+        };
+      }
+    }
   }
-  const blocked = isVerifierBlocked(verifierAudit);
 
   // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
   //   Only write if the verifier explicitly approved the answer AND this is not
