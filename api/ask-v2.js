@@ -941,6 +941,25 @@ function buildUnverifiableMessage(verifierAudit, { _debug = null, cited_rule_num
   return `${base}\n\n[debug] verifier=${status}${err} | bundles=${bundles} | bestScore=${score} | rules=${rules}`;
 }
 
+/**
+ * When RULEBOOK_DEBUG=1, append a one-line diagnostic to a successful answer so
+ * retrieval behavior (did we fall back? how well did the primary rulebook
+ * match?) is visible straight from the screen. No-op unless the flag is on.
+ */
+function buildAnswerDebug(reply, { usedFallback = false, _debug = null, verifierAudit = null, cited_rule_numbers = [] } = {}) {
+  if (process.env.RULEBOOK_DEBUG !== '1') return reply;
+  const parts = [
+    `fallback=${usedFallback ? 'YES→' + (_debug?.fallbackVersionId ? 'fallback book' : '?') : 'no'}`,
+    `verifier=${verifierAudit?.status ?? '?'}`,
+    `bundles=${_debug?.bundle_count ?? '?'}`,
+    `primaryScore=${_debug?.primaryBestScore ?? '?'}`,
+    `fallbackScore=${_debug?.fallbackBestScore ?? '?'}`,
+    `threshold=${_debug?.scoreThreshold ?? '?'}`,
+    `rules=${(cited_rule_numbers ?? []).join(', ') || 'none'}`,
+  ];
+  return `${reply}\n\n[debug] ${parts.join(' | ')}`;
+}
+
 // ── Main Handler ─────────────────────────────────────────────────────────────
 
 const handler = async (req, res) => {
@@ -1061,7 +1080,7 @@ const handler = async (req, res) => {
           state:                'ruling',
           matrix_id:            matrix.id,
           answers_used:         matrixState.answers,
-          reply,
+          reply:                buildAnswerDebug(reply, { usedFallback, _debug, verifierAudit, cited_rule_numbers }),
           cached,
           usedFallback,
           fallbackLeague,
@@ -1195,7 +1214,7 @@ const handler = async (req, res) => {
 
     return res.status(200).json({
       state:                'answered',
-      reply,
+      reply:                buildAnswerDebug(reply, { usedFallback, _debug, verifierAudit, cited_rule_numbers }),
       cached,
       usedFallback,
       fallbackLeague,
