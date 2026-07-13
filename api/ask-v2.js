@@ -836,6 +836,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
   // present it (labeled) instead of a dead-end. We only adopt the fallback if
   // it produces a real, verified answer; otherwise we keep the primary's
   // honest "no applicable rule" response.
+  let cascade = null;
   const canCascade =
     !usedFallback &&
     fallbackActiveVersionId &&
@@ -860,6 +861,15 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
       try { fbClient.release(); } catch { /* ignore */ }
     }
 
+    cascade = {
+      attempted:        true,
+      fallback_bundles: fallbackBundles.length,
+      fallback_score:   fallbackBundles.length ? bestEvidenceScore(fallbackBundles) : 0,
+      fallback_status:  null,
+      fallback_blocked: null,
+      adopted:          false,
+    };
+
     if (fallbackBundles.length) {
       const fbResult = await draftAndVerify({
         bundles:            fallbackBundles,
@@ -873,6 +883,9 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
         fallbackLeagueSlug,
       });
 
+      cascade.fallback_status  = fbResult.verifierAudit.status;
+      cascade.fallback_blocked = fbResult.blocked;
+
       // Adopt the fallback only when it produced a real, verified answer.
       // If the fallback also has no rule (or fails verification), keep the
       // primary's honest "no applicable rule" response.
@@ -883,7 +896,8 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
         bundles           = fallbackBundles;
         method            = `cascade_fallback_${fallbackMethod}`;
         usedFallback      = true;
-        fallbackBestScore = bestEvidenceScore(fallbackBundles);
+        fallbackBestScore = cascade.fallback_score;
+        cascade.adopted   = true;
         retrievalMeta = {
           ...retrievalMeta,
           fallbackBestScore,
@@ -892,6 +906,23 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
         };
       }
     }
+  }
+
+  // ── Step 4c: Graceful no-rule terminal state ─────────────────────────────
+  //
+  // A `no_rule_found` outcome means the rulebook honestly has no applicable
+  // rule — it is NOT a verification failure. The fail-closed gate can still
+  // flag stray `unsupported_claims` on the drafter's explanatory prose, which
+  // would otherwise surface as the alarming "I cannot verify this answer"
+  // message. When we reach this point still holding a `no_rule_found` (i.e. we
+  // did not adopt a fallback answer), present an honest, non-blocked no-rule
+  // message instead — covering the fallback book too when we consulted it.
+  if (!usedFallback && verifierAudit.status === 'no_rule_found') {
+    blocked = false;
+    reply   = buildNoRuleMessage({
+      leagueName,
+      fallbackLeagueName: cascade?.attempted ? fallbackLeagueName : null,
+    });
   }
 
   // ── Step 5: Cache write (non-blocking, approved only) ─────────────────────
@@ -924,6 +955,7 @@ async function runRAG({ sanitizedQuestion, league, conversation, extraContext = 
     retrieval_method: method,
     bundle_count:     bundles.length,
     used_fallback:    usedFallback,
+    cascade,
     ...retrievalMeta,
     bundles: bundles.map(b => ({
       bundle_id:       b.bundle_id,
@@ -1024,13 +1056,32 @@ function persistAnswerEvent({
 }
 
 /**
+ * Honest "no applicable rule" message for a `no_rule_found` outcome. Names the
+ * fallback rulebook when we actually consulted it (cascade), so the user knows
+ * the governing book was checked too.
+ */
+function buildNoRuleMessage({ leagueName, fallbackLeagueName = null }) {
+  const books = fallbackLeagueName
+    ? `the ${leagueName} rulebook or the ${fallbackLeagueName} rules it defers to`
+    : `the ${leagueName} rulebook`;
+  return `I could not find an applicable rule for that question in ${books}. Try rephrasing with the specific rule topic (for example the play or situation involved), or consult the official rulebook directly.`;
+}
+
+/** One-line cascade summary for the debug suffix, or '' when no cascade ran. */
+function cascadeDebugStr(_debug) {
+  const c = _debug?.cascade;
+  if (!c) return '';
+  return ` | cascade=${c.attempted ? 'ran' : 'no'}(fbBundles=${c.fallback_bundles}, fbScore=${c.fallback_score}, fbStatus=${c.fallback_status ?? '-'}, fbBlocked=${c.fallback_blocked ?? '-'}, adopted=${c.adopted})`;
+}
+
+/**
  * User-facing message for a verifier-blocked answer.
  *
  * With RULEBOOK_DEBUG=1 it appends a one-line diagnostic (verifier status,
  * whether it errored/timed out, how many evidence bundles were retrieved, the
- * best match score, and the cited rule numbers) so a block can be diagnosed
- * straight from the screen — no dev tools required. The suffix only appears
- * when the debug flag is on, so it is safe to leave in place.
+ * best match score, cited rule numbers, and any cascade attempt) so a block can
+ * be diagnosed straight from the screen. The suffix only appears when the debug
+ * flag is on, so it is safe to leave in place.
  */
 function buildUnverifiableMessage(verifierAudit, { _debug = null, cited_rule_numbers = [] } = {}) {
   const base = 'I cannot verify this answer from the loaded rulebook. Please rephrase or consult the official rulebook directly.';
@@ -1040,7 +1091,7 @@ function buildUnverifiableMessage(verifierAudit, { _debug = null, cited_rule_num
   const bundles = _debug?.bundle_count ?? '?';
   const score   = _debug?.primaryBestScore ?? '?';
   const rules   = (cited_rule_numbers ?? []).join(', ') || 'none';
-  return `${base}\n\n[debug] verifier=${status}${err} | bundles=${bundles} | bestScore=${score} | rules=${rules}`;
+  return `${base}\n\n[debug] verifier=${status}${err} | bundles=${bundles} | bestScore=${score} | rules=${rules}${cascadeDebugStr(_debug)}`;
 }
 
 /**
@@ -1059,7 +1110,7 @@ function buildAnswerDebug(reply, { usedFallback = false, _debug = null, verifier
     `threshold=${_debug?.scoreThreshold ?? '?'}`,
     `rules=${(cited_rule_numbers ?? []).join(', ') || 'none'}`,
   ];
-  return `${reply}\n\n[debug] ${parts.join(' | ')}`;
+  return `${reply}\n\n[debug] ${parts.join(' | ')}${cascadeDebugStr(_debug)}`;
 }
 
 // ── Main Handler ─────────────────────────────────────────────────────────────
