@@ -1,5 +1,10 @@
 # HeyBLU — Product & Messaging Brief (for external LLMs)
 
+> **DEPRECATED — do not use for new work.**  
+> Brand and marketing SSOT is now **`docs/HEYBLU_BRAND_GUIDE.md`**.  
+> Web/app implementation rules remain in **`docs/HEYBLU_BEST_PRACTICES.md`**.  
+> This file is kept only for historical context.
+
 **Codebase truth:** For repo-grounded app capabilities, limits, modes, and external-LLM positioning, use the sibling **BLU-App** repository: `docs/EXTERNAL_LLM_MESSAGING_AND_POSITIONING.md` (this file is a web/marketing companion, not the canonical app brief).
 
 **Purpose:** Give any language model instant, accurate context for pitch decks, ads, email/DM campaigns, web copy, and coach-facing outreach—without access to this repo.  

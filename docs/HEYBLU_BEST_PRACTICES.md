@@ -1,12 +1,14 @@
 # HeyBLU — Best Practices (App + Web)
 
-**Purpose:** Single authority for product, UX, and copy decisions. Agents and humans read this before changing user-facing surfaces.
+**Purpose:** Web/app implementation guide — where copy lives, tier gates, and page-type rules. Agents and humans read this before changing user-facing surfaces.
+
+**Brand & messaging SSOT:** `docs/HEYBLU_BRAND_GUIDE.md` (tone, ICPs, headlines, campaigns). This file complements it; it does not replace it.
 
 **Repos:**
 - **iOS app:** `BLU/BLU2` — capabilities, gates, and in-app copy are canonical there.
 - **Web:** this repo — must match the app paywall and tier gates exactly.
 
-**When docs conflict:** Live app paywall + shipped tier gates > this file > `HEYBLU_PRODUCT_AND_MESSAGING_BRIEF.md` > `HeyBLU_App_Store_Launch_Plan_v*.md` (launch plans are strategy drafts, not product spec).
+**When docs conflict:** Live app paywall + shipped tier gates > `HEYBLU_BRAND_GUIDE.md` > this file > deprecated `HEYBLU_PRODUCT_AND_MESSAGING_BRIEF.md` > `HeyBLU_App_Store_Launch_Plan_v*.md` (launch plans are strategy drafts, not product spec).
 
 ---
 

@@ -5,7 +5,7 @@ alwaysApply: true
 
 # HeyBLU standards
 
-Read `docs/HEYBLU_BEST_PRACTICES.md` before editing marketing HTML, FAQ, pricing, or docs.
+Read `docs/HEYBLU_BRAND_GUIDE.md` (brand/messaging SSOT) and `docs/HEYBLU_BEST_PRACTICES.md` (web/app implementation) before editing marketing HTML, FAQ, pricing, or docs. Do not use deprecated `docs/HEYBLU_PRODUCT_AND_MESSAGING_BRIEF.md`.
 
 ## Copy edits
 
