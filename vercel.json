@@ -34,7 +34,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -187,6 +187,7 @@
     { "src": "support/index.html", "use": "@vercel/static" },
     { "src": "about/index.html", "use": "@vercel/static" },
     { "src": "coaches/index.html", "use": "@vercel/static" },
+    { "src": "field-kit/index.html", "use": "@vercel/static" },
     { "src": "smart-field/index.html", "use": "@vercel/static" },
     { "src": "zone/index.html", "use": "@vercel/static" },
     { "src": "own/index.html", "use": "@vercel/static" },
@@ -297,6 +298,9 @@
     { "src": "/coaches", "dest": "/coaches/index.html" },
     { "src": "/coaches/", "dest": "/coaches/index.html" },
     { "src": "/coaches/(.*)", "dest": "/coaches/$1" },
+    { "src": "/field-kit", "dest": "/field-kit/index.html" },
+    { "src": "/field-kit/", "dest": "/field-kit/index.html" },
+    { "src": "/field-kit/(.*)", "dest": "/field-kit/$1" },
     { "src": "/smart-field", "dest": "/smart-field/index.html" },
     { "src": "/smart-field/", "dest": "/smart-field/index.html" },
     { "src": "/smart-field/(.*)", "dest": "/smart-field/$1" },
