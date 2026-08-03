@@ -31,12 +31,19 @@
         var appStoreLinks = document.querySelectorAll('#app-store-download-link, a.app-store-download-link');
         appStoreLinks.forEach(function (link) {
             link.addEventListener('click', function () {
+                var location = link.getAttribute('data-cta') || link.id || 'unlabeled';
                 trackEvent('app_store_click', {
                     path: pagePath(),
                     href: link.href || '',
-                    location: link.getAttribute('data-cta') || link.id || 'unlabeled',
+                    location: location,
                     utm: window.HEYBLU_DOWNLOAD_UTM || ''
                 });
+                if (typeof window.fbq === 'function') {
+                    window.fbq('trackCustom', 'AppStoreClick', {
+                        content_name: location,
+                        path: pagePath()
+                    });
+                }
             });
         });
 
