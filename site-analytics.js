@@ -28,16 +28,17 @@
     }
 
     onReady(function () {
-        var appStoreLink = document.getElementById('app-store-download-link');
-        if (appStoreLink) {
-            appStoreLink.addEventListener('click', function () {
+        var appStoreLinks = document.querySelectorAll('#app-store-download-link, a.app-store-download-link');
+        appStoreLinks.forEach(function (link) {
+            link.addEventListener('click', function () {
                 trackEvent('app_store_click', {
                     path: pagePath(),
-                    href: appStoreLink.href || '',
+                    href: link.href || '',
+                    location: link.getAttribute('data-cta') || link.id || 'unlabeled',
                     utm: window.HEYBLU_DOWNLOAD_UTM || ''
                 });
             });
-        }
+        });
 
         var testFlightLink = document.getElementById('testflight-invite-link');
         if (testFlightLink) {
@@ -65,5 +66,29 @@
         document.addEventListener('heyblu:waitlist-success', function () {
             trackEvent('waitlist_submit', { path: pagePath() });
         });
+
+        var scrollMarks = [25, 50, 75, 100];
+        var scrollFired = {};
+        var scrollTicking = false;
+        function checkScrollDepth() {
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            if (docHeight <= 0) return;
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            var pct = Math.round((scrollTop / docHeight) * 100);
+            scrollMarks.forEach(function (mark) {
+                if (pct >= mark && !scrollFired[mark]) {
+                    scrollFired[mark] = true;
+                    trackEvent('scroll_depth', { path: pagePath(), percent: mark });
+                }
+            });
+        }
+        window.addEventListener('scroll', function () {
+            if (scrollTicking) return;
+            scrollTicking = true;
+            window.requestAnimationFrame(function () {
+                checkScrollDepth();
+                scrollTicking = false;
+            });
+        }, { passive: true });
     });
 })();
