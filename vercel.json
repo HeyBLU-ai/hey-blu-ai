@@ -11,10 +11,7 @@
     { "source": "/coaching/", "destination": "/coaches", "permanent": true },
     { "source": "/faq", "destination": "/help", "permanent": true },
     { "source": "/faq/", "destination": "/help", "permanent": true },
-    { "source": "/faq/:path*", "destination": "/help", "permanent": true },
-    { "source": "/field-guide", "destination": "/help", "permanent": true },
-    { "source": "/field-guide/", "destination": "/help", "permanent": true },
-    { "source": "/field-guide/:path*", "destination": "/help", "permanent": true }
+    { "source": "/faq/:path*", "destination": "/help", "permanent": true }
   ],
   "headers": [
     {
@@ -34,7 +31,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -42,7 +39,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -196,6 +193,8 @@
     { "src": "betablu/**", "use": "@vercel/static" },
     { "src": "field-guide/index.html", "use": "@vercel/static" },
     { "src": "field-guide/**", "use": "@vercel/static" },
+    { "src": "gear/index.html", "use": "@vercel/static" },
+    { "src": "gear/**", "use": "@vercel/static" },
     { "src": "help/index.html", "use": "@vercel/static" },
     { "src": "help/**", "use": "@vercel/static" },
     { "src": "how-to/index.html", "use": "@vercel/static" },
@@ -319,9 +318,12 @@
     { "src": "/betablu", "dest": "/betablu/index.html" },
     { "src": "/betablu/", "dest": "/betablu/index.html" },
     { "src": "/betablu/(.*)", "dest": "/betablu/$1" },
-    { "src": "/field-guide", "dest": "/help/index.html" },
-    { "src": "/field-guide/", "dest": "/help/index.html" },
-    { "src": "/field-guide/(.*)", "dest": "/help/index.html" },
+    { "src": "/field-guide", "dest": "/field-guide/index.html" },
+    { "src": "/field-guide/", "dest": "/field-guide/index.html" },
+    { "src": "/field-guide/(.*)", "dest": "/field-guide/$1" },
+    { "src": "/gear", "dest": "/gear/index.html" },
+    { "src": "/gear/", "dest": "/gear/index.html" },
+    { "src": "/gear/(.*)", "dest": "/gear/$1" },
     { "src": "/help", "dest": "/help/index.html" },
     { "src": "/help/", "dest": "/help/index.html" },
     { "src": "/help/(.*)", "dest": "/help/$1" },

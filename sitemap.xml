@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://heyblu.ai/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://heyblu.ai/faq</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://heyblu.ai/field-guide</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heyblu.ai/help</loc><changefreq>monthly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://heyblu.ai/field-guide</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
+  <url><loc>https://heyblu.ai/how-to</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://heyblu.ai/gear</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/compare</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
   <url><loc>https://heyblu.ai/compare/abs-youth-baseball</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heyblu.ai/compare/automated-strike-zone-app</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
@@ -12,6 +14,7 @@
   <url><loc>https://heyblu.ai/pricing</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
   <url><loc>https://heyblu.ai/coaches</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
   <url><loc>https://heyblu.ai/smart-field</loc><changefreq>monthly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://heyblu.ai/field-kit</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/about</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/support</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
   <url><loc>https://heyblu.ai/privacy</loc><changefreq>yearly</changefreq><priority>0.3</priority></url>
