@@ -116,6 +116,8 @@
         <p class="text-gray-600 mb-6">Found an issue? Help us fix it by providing details below. You can also use the in-app "Send Feedback" feature.</p>
 
         <form id="support-form" method="POST" action="https://formspree.io/f/mjkrezok" enctype="multipart/form-data" onsubmit="return submitSupportForm(event)" class="space-y-4">
+          <!-- Honeypot: hidden from real visitors, silently discarded by Formspree if filled by a bot -->
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Your name</label>
@@ -221,6 +223,10 @@
   </footer>
 
   <script>
+    // Records when the form became interactive, so we can silently reject
+    // submissions that arrive faster than a human could fill the form (bots).
+    const supportFormLoadedAt = Date.now();
+
     // Support form submission
     async function submitSupportForm(e) {
       e.preventDefault();
@@ -228,7 +234,16 @@
       const status = document.getElementById('form-status');
       const submitBtn = form.querySelector('button[type="submit"]');
       const originalText = submitBtn.textContent;
-      
+
+      // Honeypot filled, or submitted too fast to be human — pretend success, send nothing.
+      const honeypot = form.querySelector('input[name="_gotcha"]');
+      if ((honeypot && honeypot.value) || Date.now() - supportFormLoadedAt < 3000) {
+        status.textContent = 'Report sent — we will respond within 48 hours.';
+        status.className = 'text-sm text-green-600';
+        form.reset();
+        return false;
+      }
+
       status.textContent = 'Sending…';
       status.className = 'text-sm text-blue-600';
       submitBtn.disabled = true;
