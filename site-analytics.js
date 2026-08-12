@@ -44,6 +44,13 @@
                         path: pagePath()
                     });
                 }
+                if (window.posthog && typeof window.posthog.capture === 'function') {
+                    window.posthog.capture('app_store_click', {
+                        path: pagePath(),
+                        href: link.href || '',
+                        location: location
+                    });
+                }
             });
         });
 
