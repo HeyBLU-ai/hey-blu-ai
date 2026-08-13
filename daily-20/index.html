@@ -9,14 +9,14 @@
     <meta property="og:url" content="https://heyblu.ai/daily20">
     <meta property="og:title" content="Daily 20 — HeyBLU Pitching Contest">
     <meta property="og:description" content="Throw 20 pitches. Share your heatmap. See yours on the wall.">
-    <meta property="og:image" content="https://heyblu.ai/images/daily20-banner.jpg">
+    <meta property="og:image" content="https://heyblu.ai/images/daily20-prizes.jpg">
     <link rel="icon" href="/images/heyblu-favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-        .hero-banner {
+        .full-bleed {
             width: 100%;
             height: auto;
             display: block;
@@ -76,32 +76,22 @@
     <script src="/site-nav.js"></script>
 
     <div class="pt-16 bg-slate-950">
-        <img src="/images/daily20-banner.jpg" alt="The Daily 20 — Own the Zone. Win Big." class="hero-banner" width="3168" height="1344">
+        <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest: throw 20 pitches, email your heatmap, win prizes" class="full-bleed" width="2752" height="1536">
     </div>
     <h1 class="sr-only">Daily 20</h1>
 
-    <main class="max-w-7xl mx-auto px-4 pb-16">
-        <p class="text-lg text-gray-600 mt-8 mb-8 leading-relaxed max-w-2xl">Twenty pitches. One heatmap. Weekly winners — prizes announced as we go.</p>
+    <div class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <p class="text-sm sm:text-base text-gray-700">Download HeyBLU — free 14 days. Throw 20. Share the heatmap to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a> (subject Daily 20).</p>
+            <div class="flex flex-wrap gap-3 shrink-0">
+                <a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 transition shadow-sm" target="_blank" rel="noopener noreferrer">Download</a>
+                <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="inline-flex items-center justify-center rounded-lg border-2 border-blue-600 text-blue-700 hover:bg-blue-50 font-bold py-2.5 px-5 transition">Email</a>
+            </div>
+        </div>
+    </div>
 
-        <section class="mb-10" aria-labelledby="qualify-heading">
-            <h2 id="qualify-heading" class="text-xl font-extrabold mb-4">To qualify:</h2>
-            <ol class="space-y-3 text-gray-800 mb-6">
-                <li><span class="font-bold text-blue-600">1.</span> Throw 20 pitches and email your Heatmap report to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a>, Subject “Daily 20” or tap the blue <strong>Email</strong> button below</li>
-                <li><span class="font-bold text-blue-600">2.</span> Prizes based on most daily 20’s, best strike percentages, and most improvement</li>
-            </ol>
-            <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 transition shadow-sm">Email</a>
-        </section>
-
-        <section class="mb-10" aria-labelledby="free-entry-heading">
-            <h2 id="free-entry-heading" class="text-xl font-extrabold mb-4">Free Entry:</h2>
-            <ol class="space-y-3 text-gray-800">
-                <li><span class="font-bold text-blue-600">1.</span> <a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link text-blue-600 font-bold underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">Download HeyBLU from the App Store</a>. It is Free for 14 days</li>
-                <li><span class="font-bold text-blue-600">2.</span> Select “Track Pitches”, use a Tripod and get 20 “Ball” or “Strike” calls</li>
-                <li><span class="font-bold text-blue-600">3.</span> End session, tap “Summary” and Share the “Heatmap” to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a></li>
-            </ol>
-        </section>
-
-        <section class="mb-12" aria-labelledby="wall-heading">
+    <main class="max-w-7xl mx-auto px-4 py-10 pb-16">
+        <section aria-labelledby="wall-heading">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
                 <div class="flex items-center gap-3">
                     <img src="/images/daily20-logo.jpg" alt="" class="daily20-logo" width="1536" height="2730">
@@ -115,18 +105,18 @@
             <p id="wall-none" class="hidden text-gray-600 mb-4">No matching pitcher.</p>
             <div id="wall-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3"></div>
         </section>
-
-        <figure class="rounded-xl overflow-hidden border border-slate-800 shadow-lg max-w-4xl">
-            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest prizes, including a Hype Fire bat, and how to play" class="w-full h-auto" width="2752" height="1536">
-        </figure>
     </main>
+
+    <div class="bg-slate-950">
+        <img src="/images/daily20-banner.jpg" alt="" class="full-bleed" width="3168" height="1344">
+    </div>
 
     <div id="lightbox" class="fixed inset-0 z-[60] bg-black/85 items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Heatmap">
         <button type="button" id="lightbox-close" class="absolute top-4 right-4 text-white text-3xl leading-none px-2" aria-label="Close">&times;</button>
         <img id="lightbox-img" alt="" class="max-h-[90vh] max-w-full rounded-lg shadow-2xl">
     </div>
 
-    <footer class="bg-gray-800 text-white py-12 px-4 mt-10">
+    <footer class="bg-gray-800 text-white py-12 px-4">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
                 <div class="sm:col-span-2 lg:col-span-2">
