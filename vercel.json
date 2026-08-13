@@ -11,7 +11,10 @@
     { "source": "/coaching/", "destination": "/coaches", "permanent": true },
     { "source": "/faq", "destination": "/help", "permanent": true },
     { "source": "/faq/", "destination": "/help", "permanent": true },
-    { "source": "/faq/:path*", "destination": "/help", "permanent": true }
+    { "source": "/faq/:path*", "destination": "/help", "permanent": true },
+    { "source": "/daily-20", "destination": "/daily20", "permanent": true },
+    { "source": "/daily-20/", "destination": "/daily20", "permanent": true },
+    { "source": "/daily-20/:path*", "destination": "/daily20/:path*", "permanent": true }
   ],
   "headers": [
     {
@@ -31,7 +34,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -39,7 +42,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -330,6 +333,9 @@
     { "src": "/daily-20", "dest": "/daily-20/index.html" },
     { "src": "/daily-20/", "dest": "/daily-20/index.html" },
     { "src": "/daily-20/(.*)", "dest": "/daily-20/$1" },
+    { "src": "/daily20", "dest": "/daily-20/index.html" },
+    { "src": "/daily20/", "dest": "/daily-20/index.html" },
+    { "src": "/daily20/(.*)", "dest": "/daily-20/$1" },
     { "src": "/help", "dest": "/help/index.html" },
     { "src": "/help/", "dest": "/help/index.html" },
     { "src": "/help/(.*)", "dest": "/help/$1" },

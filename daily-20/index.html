@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Daily 20 — throw 20 pitches, share your heatmap, see it on the wall. Weekly winners. Start the HeyBLU trial and email your report.">
     <title>Daily 20 — HeyBLU Pitching Contest</title>
-    <link rel="canonical" href="https://heyblu.ai/daily-20">
-    <meta property="og:url" content="https://heyblu.ai/daily-20">
+    <link rel="canonical" href="https://heyblu.ai/daily20">
+    <meta property="og:url" content="https://heyblu.ai/daily20">
     <meta property="og:title" content="Daily 20 — HeyBLU Pitching Contest">
     <meta property="og:description" content="Throw 20 pitches. Share your heatmap. See yours on the wall.">
     <meta property="og:image" content="https://heyblu.ai/images/daily20-banner.jpg">
@@ -137,7 +137,7 @@
                     <div class="space-y-2">
                         <a href="/#playbook" class="block text-gray-400 hover:text-white transition">Use Cases</a>
                         <a href="/pricing" class="block text-gray-400 hover:text-white transition">Pricing</a>
-                        <a href="/daily-20" class="block text-gray-400 hover:text-white transition">Daily 20</a>
+                        <a href="/daily20" class="block text-gray-400 hover:text-white transition">Daily 20</a>
                         <a href="/field-guide" class="block text-gray-400 hover:text-white transition">Field Guide</a>
                         <a href="/compare" class="block text-gray-400 hover:text-white transition">Strike Zone Tech</a>
                     </div>
@@ -258,7 +258,7 @@
             }));
         });
 
-        fetch('/daily-20/entries.json')
+        fetch('/daily20/entries.json')
             .then(function (res) { return res.ok ? res.json() : []; })
             .then(function (data) {
                 entries = Array.isArray(data) ? data.slice() : [];

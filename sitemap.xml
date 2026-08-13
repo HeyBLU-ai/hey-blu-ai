@@ -5,7 +5,7 @@
   <url><loc>https://heyblu.ai/field-guide</loc><changefreq>monthly</changefreq><priority>0.85</priority></url>
   <url><loc>https://heyblu.ai/how-to</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heyblu.ai/gear</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://heyblu.ai/daily-20</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
+  <url><loc>https://heyblu.ai/daily20</loc><changefreq>weekly</changefreq><priority>0.75</priority></url>
   <url><loc>https://heyblu.ai/compare</loc><changefreq>weekly</changefreq><priority>0.85</priority></url>
   <url><loc>https://heyblu.ai/compare/abs-youth-baseball</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
   <url><loc>https://heyblu.ai/compare/automated-strike-zone-app</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
