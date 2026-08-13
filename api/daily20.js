@@ -1,6 +1,7 @@
 /**
  * GET  /api/daily20          — list wall entries (no image bytes)
  * GET  /api/daily20?image=id — serve heatmap image
+ * GET  /api/daily20?auth=1   — ping ADMIN_PASSWORD (Bearer)
  * POST /api/daily20          — public submit { pitcher, date?, file_base64, mime, _gotcha }
  * DELETE /api/daily20?id=    — Bearer ADMIN_PASSWORD
  */
@@ -211,12 +212,23 @@ async function submit(req, res) {
   }
 }
 
-async function remove(req, res) {
+function requireAdmin(req, res) {
   const expected = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || '';
   const password = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
   if (!safeCompareSecret(password, expected)) {
-    return res.status(401).json({ error: 'Unauthorized' });
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
   }
+  return true;
+}
+
+function pingAuth(req, res) {
+  if (!requireAdmin(req, res)) return;
+  return res.status(200).json({ ok: true });
+}
+
+async function remove(req, res) {
+  if (!requireAdmin(req, res)) return;
   const id = Number(req.query?.id);
   if (!Number.isInteger(id) || id < 1) {
     return res.status(400).json({ error: 'Invalid id' });
@@ -242,6 +254,7 @@ export default async function handler(req, res) {
   cors(res);
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method === 'GET') {
+    if (req.query?.auth != null && req.query.auth !== '') return pingAuth(req, res);
     if (req.query?.image != null && req.query.image !== '') return serveImage(req, res);
     return listEntries(res);
   }
