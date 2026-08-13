@@ -21,6 +21,29 @@
             height: auto;
             display: block;
         }
+        .prizes-banner {
+            background: #0c1f3f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .prizes-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        @media (min-width: 768px) {
+            .prizes-banner {
+                aspect-ratio: 3 / 1;
+            }
+            .prizes-banner img {
+                width: auto;
+                height: 100%;
+                max-width: 100%;
+                object-fit: contain;
+            }
+        }
         .daily20-logo {
             width: 56px;
             height: 56px;
@@ -75,8 +98,10 @@
     </header>
     <script src="/site-nav.js"></script>
 
-    <div class="pt-16 bg-slate-950">
-        <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest: throw 20 pitches, email your heatmap, win prizes" class="full-bleed" width="2752" height="1536">
+    <div class="pt-16" style="background:#0c1f3f">
+        <div class="prizes-banner">
+            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest: throw 20 pitches, email your heatmap, win prizes" width="2752" height="1536">
+        </div>
     </div>
     <h1 class="sr-only">Daily 20</h1>
 
