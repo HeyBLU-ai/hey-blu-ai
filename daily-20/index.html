@@ -17,25 +17,18 @@
         body { font-family: 'Inter', sans-serif; }
         .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
         .hero-banner {
-            height: 280px;
-            object-fit: cover;
-            object-position: left center;
-        }
-        @media (min-width: 768px) {
-            .hero-banner { height: 360px; }
+            width: 100%;
+            height: auto;
+            display: block;
         }
         .daily20-logo {
-            width: 104px;
-            height: 104px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             object-fit: cover;
             object-position: center;
-            border: 4px solid #fff;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.35);
             background: #0b1a3a;
-        }
-        @media (min-width: 768px) {
-            .daily20-logo { width: 120px; height: 120px; }
+            flex-shrink: 0;
         }
         .heatmap-card img {
             aspect-ratio: 1080 / 1920;
@@ -82,16 +75,13 @@
     </header>
     <script src="/site-nav.js"></script>
 
-    <div class="relative pt-16">
-        <img src="/images/daily20-banner.jpg" alt="" class="hero-banner w-full" width="3168" height="1344">
-        <div class="max-w-5xl mx-auto px-4">
-            <img src="/images/daily20-logo.jpg" alt="The Daily 20 pitching contest by HeyBLU" class="daily20-logo -mt-14 md:-mt-16 relative z-10" width="1536" height="2730">
-        </div>
+    <div class="pt-16 bg-slate-950">
+        <img src="/images/daily20-banner.jpg" alt="The Daily 20 — Own the Zone. Win Big." class="hero-banner" width="3168" height="1344">
     </div>
     <h1 class="sr-only">Daily 20</h1>
 
-    <main class="max-w-5xl mx-auto px-4 pb-16">
-        <p class="text-lg text-gray-600 mt-5 mb-8 leading-relaxed max-w-2xl">Twenty pitches. One heatmap. Weekly winners — prizes announced as we go.</p>
+    <main class="max-w-7xl mx-auto px-4 pb-16">
+        <p class="text-lg text-gray-600 mt-8 mb-8 leading-relaxed max-w-2xl">Twenty pitches. One heatmap. Weekly winners — prizes announced as we go.</p>
 
         <section class="mb-10" aria-labelledby="enter-heading">
             <h2 id="enter-heading" class="text-xl font-extrabold mb-4">How to enter</h2>
@@ -104,15 +94,18 @@
             <p class="text-sm text-gray-500 mt-4 max-w-xl">Sending the report is permission to show it here, with the pitcher name as it appears on the card. Share it on Instagram too if you want — email is what counts.</p>
         </section>
 
-        <figure class="mb-12 rounded-xl overflow-hidden border border-slate-800 shadow-lg">
+        <figure class="mb-12 rounded-xl overflow-hidden border border-slate-800 shadow-lg max-w-4xl">
             <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest prizes, including a Hype Fire bat, and how to play" class="w-full h-auto" width="2752" height="1536">
         </figure>
 
         <section aria-labelledby="wall-heading">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
-                <div>
-                    <h2 id="wall-heading" class="text-xl font-extrabold">The wall</h2>
-                    <p class="text-sm text-gray-500 mt-1">Find your name. Send the link.</p>
+                <div class="flex items-center gap-3">
+                    <img src="/images/daily20-logo.jpg" alt="" class="daily20-logo" width="1536" height="2730">
+                    <div>
+                        <h2 id="wall-heading" class="text-xl font-extrabold">The wall</h2>
+                        <p class="text-sm text-gray-500 mt-1">Find your name. Send the link.</p>
+                    </div>
                 </div>
                 <label class="sr-only" for="pitcher-filter">Find a pitcher</label>
                 <input id="pitcher-filter" type="search" placeholder="Find a pitcher…" class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -120,7 +113,7 @@
 
             <p id="wall-empty" class="hidden text-gray-600 mb-4">Heatmaps show up here after we post them.</p>
             <p id="wall-none" class="hidden text-gray-600 mb-4">No matching pitcher.</p>
-            <div id="wall-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+            <div id="wall-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3"></div>
         </section>
     </main>
 
@@ -245,7 +238,7 @@
                 img.loading = 'lazy';
                 img.className = 'w-full';
                 var cap = document.createElement('p');
-                cap.className = 'px-3 py-3 text-sm font-semibold text-white';
+                cap.className = 'px-2 py-2 text-xs font-semibold text-white leading-snug';
                 cap.textContent = alt;
                 btn.appendChild(img);
                 btn.appendChild(cap);
