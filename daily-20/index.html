@@ -81,12 +81,24 @@
     <h1 class="sr-only">Daily 20</h1>
 
     <div class="bg-white border-b border-gray-200">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <p class="text-sm sm:text-base text-gray-700">Download HeyBLU — free 14 days. Throw 20. Share the heatmap to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a> (subject Daily 20).</p>
-            <div class="flex flex-wrap gap-3 shrink-0">
-                <a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 transition shadow-sm" target="_blank" rel="noopener noreferrer">Download</a>
-                <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="inline-flex items-center justify-center rounded-lg border-2 border-blue-600 text-blue-700 hover:bg-blue-50 font-bold py-2.5 px-5 transition">Email</a>
-            </div>
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <form id="daily20-form" class="flex flex-col lg:flex-row lg:items-end gap-3">
+                <p class="text-sm text-gray-700 lg:flex-1 lg:pb-2">Download HeyBLU (14 days free). Throw 20. Post the heatmap — it goes on the wall. Or <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">email it</a>.</p>
+                <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
+                <div>
+                    <label for="pitcher-name" class="block text-xs font-semibold text-gray-500 mb-1">Pitcher name</label>
+                    <input id="pitcher-name" name="pitcher" type="text" required maxlength="80" placeholder="John P." class="w-full lg:w-40 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="heatmap-file" class="block text-xs font-semibold text-gray-500 mb-1">Heatmap</label>
+                    <input id="heatmap-file" name="heatmap" type="file" accept="image/jpeg,image/png,image/webp,image/jpg" required class="w-full lg:w-52 text-sm text-gray-700 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-gray-100 file:font-semibold file:text-gray-800">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button type="submit" id="daily20-submit" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-5 transition shadow-sm">Post</button>
+                    <a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link inline-flex items-center justify-center rounded-lg border-2 border-blue-600 text-blue-700 hover:bg-blue-50 font-bold py-2.5 px-5 transition" target="_blank" rel="noopener noreferrer">Download</a>
+                </div>
+            </form>
+            <p id="daily20-status" class="text-sm mt-2 min-h-[1.25rem]" role="status" aria-live="polite"></p>
         </div>
     </div>
 
@@ -252,19 +264,99 @@
             }));
         });
 
-        fetch('/daily20/entries.json')
-            .then(function (res) { return res.ok ? res.json() : []; })
-            .then(function (data) {
-                entries = Array.isArray(data) ? data.slice() : [];
-                entries.sort(function (a, b) {
-                    return String(b.date || '').localeCompare(String(a.date || ''));
-                });
-                render(entries);
-            })
-            .catch(function () {
-                entries = [];
+        function sortEntries() {
+            entries.sort(function (a, b) {
+                return String(b.date || '').localeCompare(String(a.date || ''));
+            });
+        }
+
+        function loadWall() {
+            Promise.all([
+                fetch('/api/daily20').then(function (res) { return res.ok ? res.json() : { entries: [] }; }).catch(function () { return { entries: [] }; }),
+                fetch('/daily20/entries.json').then(function (res) { return res.ok ? res.json() : []; }).catch(function () { return []; })
+            ]).then(function (results) {
+                var live = (results[0] && results[0].entries) ? results[0].entries : [];
+                var seeded = Array.isArray(results[1]) ? results[1] : [];
+                entries = live.concat(seeded);
+                sortEntries();
                 render(entries);
             });
+        }
+
+        function fileToBase64(file) {
+            return new Promise(function (resolve, reject) {
+                var reader = new FileReader();
+                reader.onload = function () {
+                    var result = String(reader.result || '');
+                    var comma = result.indexOf(',');
+                    resolve(comma >= 0 ? result.slice(comma + 1) : result);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        var form = document.getElementById('daily20-form');
+        var statusEl = document.getElementById('daily20-status');
+        var submitBtn = document.getElementById('daily20-submit');
+        if (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                var fileInput = document.getElementById('heatmap-file');
+                var pitcherInput = document.getElementById('pitcher-name');
+                var file = fileInput && fileInput.files && fileInput.files[0];
+                var pitcher = pitcherInput ? pitcherInput.value.trim() : '';
+                var honeypot = form.querySelector('input[name="_gotcha"]');
+                if (!file || !pitcher) {
+                    statusEl.textContent = 'Add the pitcher name and heatmap image.';
+                    statusEl.className = 'text-sm mt-2 text-red-600';
+                    return;
+                }
+                if (file.size > 2 * 1024 * 1024) {
+                    statusEl.textContent = 'Image must be 2 MB or smaller.';
+                    statusEl.className = 'text-sm mt-2 text-red-600';
+                    return;
+                }
+                statusEl.textContent = 'Posting…';
+                statusEl.className = 'text-sm mt-2 text-blue-600';
+                submitBtn.disabled = true;
+                fileToBase64(file).then(function (b64) {
+                    return fetch('/api/daily20', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            pitcher: pitcher,
+                            mime: file.type || 'image/jpeg',
+                            file_base64: b64,
+                            _gotcha: honeypot ? honeypot.value : ''
+                        })
+                    });
+                }).then(function (res) {
+                    return res.json().then(function (data) {
+                        if (!res.ok) throw new Error(data.error || 'Could not post');
+                        return data;
+                    });
+                }).then(function (data) {
+                    statusEl.textContent = 'On the wall.';
+                    statusEl.className = 'text-sm mt-2 text-green-600';
+                    form.reset();
+                    if (data.entry) {
+                        entries.unshift(data.entry);
+                        sortEntries();
+                        render(entries);
+                    } else {
+                        loadWall();
+                    }
+                }).catch(function (err) {
+                    statusEl.textContent = err.message || 'Could not post. Email info@heyblu.ai.';
+                    statusEl.className = 'text-sm mt-2 text-red-600';
+                }).then(function () {
+                    submitBtn.disabled = false;
+                });
+            });
+        }
+
+        loadWall();
     })();
     </script>
 </body>

@@ -158,6 +158,13 @@
       "src": "api/feedback.js",
       "use": "@vercel/node"
     },
+    {
+      "src": "api/daily20.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["lib/**"]
+      }
+    },
     { "src": "admin/index.html", "use": "@vercel/static" },
     { "src": "admin/review/index.html", "use": "@vercel/static" },
     { "src": "index.html", "use": "@vercel/static" },
@@ -262,6 +269,7 @@
     { "src": "/api/submit-feedback",      "dest": "api/submit-feedback.js"      },
     { "src": "/api/admin/feedback",       "dest": "api/admin/feedback.js"       },
     { "src": "/api/feedback",             "dest": "api/feedback.js"             },
+    { "src": "/api/daily20",              "dest": "api/daily20.js"              },
     { "src": "/admin/review",         "dest": "/admin/review/index.html" },
     { "src": "/admin/review/",        "dest": "/admin/review/index.html" },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },
