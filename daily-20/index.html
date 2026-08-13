@@ -83,29 +83,29 @@
     <main class="max-w-7xl mx-auto px-4 pb-16">
         <p class="text-lg text-gray-600 mt-8 mb-8 leading-relaxed max-w-2xl">Twenty pitches. One heatmap. Weekly winners — prizes announced as we go.</p>
 
-        <section class="mb-10" aria-labelledby="enter-heading">
-            <h2 id="enter-heading" class="text-xl font-extrabold mb-4">How to enter</h2>
+        <section class="mb-10" aria-labelledby="qualify-heading">
+            <h2 id="qualify-heading" class="text-xl font-extrabold mb-4">To qualify:</h2>
             <ol class="space-y-3 text-gray-800 mb-6">
-                <li><span class="font-bold text-blue-600">1.</span> Start the 14-day trial in HeyBLU. Track Pitches is behind the paywall.</li>
-                <li><span class="font-bold text-blue-600">2.</span> Set up, scan, throw 20 pitches.</li>
-                <li><span class="font-bold text-blue-600">3.</span> Open the heatmap → Share → Mail to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a> with subject <strong>Daily 20</strong>.</li>
+                <li><span class="font-bold text-blue-600">1.</span> Throw 20 pitches and email your Heatmap report to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a>, Subject “Daily 20” or tap the blue <strong>Email</strong> button below</li>
+                <li><span class="font-bold text-blue-600">2.</span> Prizes based on most daily 20’s, best strike percentages, and most improvement</li>
             </ol>
-            <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 transition shadow-sm">Email your heatmap</a>
-            <p class="text-sm text-gray-500 mt-4 max-w-xl">Sending the report is permission to show it here, with the pitcher name as it appears on the card. Share it on Instagram too if you want — email is what counts.</p>
+            <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 transition shadow-sm">Email</a>
         </section>
 
-        <figure class="mb-12 rounded-xl overflow-hidden border border-slate-800 shadow-lg max-w-4xl">
-            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest prizes, including a Hype Fire bat, and how to play" class="w-full h-auto" width="2752" height="1536">
-        </figure>
+        <section class="mb-10" aria-labelledby="free-entry-heading">
+            <h2 id="free-entry-heading" class="text-xl font-extrabold mb-4">Free Entry:</h2>
+            <ol class="space-y-3 text-gray-800">
+                <li><span class="font-bold text-blue-600">1.</span> <a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link text-blue-600 font-bold underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">Download HeyBLU from the App Store</a>. It is Free for 14 days</li>
+                <li><span class="font-bold text-blue-600">2.</span> Select “Track Pitches”, use a Tripod and get 20 “Ball” or “Strike” calls</li>
+                <li><span class="font-bold text-blue-600">3.</span> End session, tap “Summary” and Share the “Heatmap” to <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">info@heyblu.ai</a></li>
+            </ol>
+        </section>
 
-        <section aria-labelledby="wall-heading">
+        <section class="mb-12" aria-labelledby="wall-heading">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
                 <div class="flex items-center gap-3">
                     <img src="/images/daily20-logo.jpg" alt="" class="daily20-logo" width="1536" height="2730">
-                    <div>
-                        <h2 id="wall-heading" class="text-xl font-extrabold">The wall</h2>
-                        <p class="text-sm text-gray-500 mt-1">Find your name. Send the link.</p>
-                    </div>
+                    <h2 id="wall-heading" class="text-xl font-extrabold">Own the Zone Wall of Fame</h2>
                 </div>
                 <label class="sr-only" for="pitcher-filter">Find a pitcher</label>
                 <input id="pitcher-filter" type="search" placeholder="Find a pitcher…" class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm">
@@ -115,6 +115,10 @@
             <p id="wall-none" class="hidden text-gray-600 mb-4">No matching pitcher.</p>
             <div id="wall-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-3"></div>
         </section>
+
+        <figure class="rounded-xl overflow-hidden border border-slate-800 shadow-lg max-w-4xl">
+            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest prizes, including a Hype Fire bat, and how to play" class="w-full h-auto" width="2752" height="1536">
+        </figure>
     </main>
 
     <div id="lightbox" class="fixed inset-0 z-[60] bg-black/85 items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Heatmap">
