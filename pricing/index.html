@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="HeyBLU — 14-day free trial, then $4.99/mo or $49.99/yr. Live ball/strike calls, saved sessions, Command Center, and bullpen reports. Follow Game lets others watch on their own iPhone.">
+    <meta name="description" content="HeyBLU — 14-day free trial, then monthly or annual. Live ball/strike calls, saved sessions, Command Center, and bullpen reports. Follow Game lets others watch on their own iPhone.">
     <title>Pricing — HeyBLU</title>
     <link rel="canonical" href="https://heyblu.ai/pricing">
     <meta property="og:url" content="https://heyblu.ai/pricing">
@@ -52,8 +52,8 @@
     <main class="max-w-6xl mx-auto px-4 py-12 pt-24">
         <h1 class="text-3xl md:text-4xl font-extrabold mb-10 text-center">Pricing</h1>
 
-        <!-- Monthly / Annual toggle -->
-        <div class="flex flex-wrap items-center justify-center gap-3 mb-10" role="group" aria-label="Billing period">
+        <!-- Monthly / Annual toggle (shown only when pricing-config showPublicAmounts is true) -->
+        <div id="pricing-billing-toggle-wrap" class="hidden flex flex-wrap items-center justify-center gap-3 mb-10" role="group" aria-label="Billing period">
             <span id="pricing-label-monthly" class="text-sm font-semibold text-gray-900">Monthly</span>
             <button type="button" id="pricing-billing-toggle" role="switch" aria-checked="false" aria-labelledby="pricing-label-monthly pricing-label-annual" class="relative inline-flex h-8 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2">
                 <span class="pointer-events-none absolute left-0.5 top-0.5 inline-block h-7 w-7 rounded-full bg-white shadow transition-transform duration-200 ease-in-out" id="pricing-toggle-knob"></span>
@@ -65,11 +65,11 @@
         </div>
 
         <div class="bg-blue-50 rounded-2xl border-2 border-blue-200 p-6 md:p-8 shadow-sm max-w-xl mx-auto mb-12 relative">
-            <span class="absolute top-4 right-4 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold text-white">Launch pricing</span>
+            <span id="pricing-launch-badge" class="hidden absolute top-4 right-4 inline-flex items-center rounded-full bg-blue-600 px-2.5 py-0.5 text-xs font-bold text-white" hidden></span>
             <h2 class="text-2xl font-extrabold text-gray-900 mb-1">HeyBLU</h2>
-            <p class="text-3xl font-extrabold text-gray-900 mb-0" id="pro-price-display">$4.99<span class="text-lg font-semibold text-gray-600">/mo</span><span class="text-lg font-semibold text-gray-600" aria-hidden="true">*</span></p>
-            <p class="text-sm text-blue-700 mt-1 min-h-[1.25rem]" id="pro-price-note" aria-live="polite"></p>
-            <p class="text-xs text-gray-600 mt-1 mb-1">* Early subscribers keep launch pricing.</p>
+            <p class="text-3xl font-extrabold text-gray-900 mb-0" id="pro-price-display">Monthly or annual</p>
+            <p class="text-sm text-blue-700 mt-1 min-h-[1.25rem]" id="pro-price-note" aria-live="polite">Current price shown in the app when you subscribe.</p>
+            <p id="pro-price-footnote" class="hidden text-xs text-gray-600 mt-1 mb-1"></p>
             <p class="text-sm font-semibold text-blue-800 mt-3 mb-4">14-day free trial</p>
             <ul class="text-gray-700 text-sm space-y-3">
                 <li class="flex items-start gap-2.5">

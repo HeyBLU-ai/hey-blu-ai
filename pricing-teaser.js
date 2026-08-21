@@ -9,11 +9,23 @@
     var badge = document.getElementById('pricing-teaser-badge');
 
     if (line) {
-        line.textContent =
-            'HeyBLU — ' + cfg.trialDays + '-day free trial, then ' +
-            cfg.formatUSD(cfg.monthlyUSD) + '/mo or ' + cfg.formatUSD(cfg.annualUSD) + '/yr.';
+        if (cfg.showPublicAmounts) {
+            line.textContent =
+                'HeyBLU — ' + cfg.trialDays + '-day free trial, then ' +
+                cfg.formatUSD(cfg.monthlyUSD) + '/mo or ' + cfg.formatUSD(cfg.annualUSD) + '/yr.';
+        } else {
+            line.textContent = cfg.softTrialLine
+                ? cfg.softTrialLine()
+                : ('HeyBLU — ' + cfg.trialDays + '-day free trial, then monthly or annual.');
+        }
     }
-    if (badge && cfg.launchRateLabel) {
-        badge.textContent = cfg.launchRateLabel;
+    if (badge) {
+        if (cfg.showPublicAmounts && cfg.launchRateLabel) {
+            badge.textContent = cfg.launchRateLabel;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+            badge.setAttribute('hidden', '');
+        }
     }
 })();

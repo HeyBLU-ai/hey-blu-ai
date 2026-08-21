@@ -19,7 +19,7 @@
         calibrate: ['calibrate', 'calibration', 'calibrating', '9 zone', '9-zone', 'grid', 'adjust plate'],
         tripod: ['tripod', 'mount', 'mounted', 'mounting', 'height', 'mid zone', 'mid-zone', 'camera height', 'lens height'],
         height: ['height', 'tripod', 'mid zone', 'mid-zone', 'camera', 'lens', 'top of zone', 'bottom of zone'],
-        price: ['price', 'pricing', 'cost', 'costs', 'subscription', 'trial', '4.99', '49.99'],
+        price: ['price', 'pricing', 'cost', 'costs', 'subscription', 'trial', 'monthly', 'annual'],
         subscription: ['subscription', 'subscribe', 'trial', 'pricing', 'cost'],
         report: ['report', 'reports', 'summary', 'spreadsheet', 'export', 'session', 'heatmap', 'history'],
         android: ['android', 'hotspot'],
