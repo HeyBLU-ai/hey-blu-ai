@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Daily 20 — throw 20 pitches, share your heatmap, see it on the wall. Weekly winners. Start the HeyBLU trial and email your report.">
+    <meta name="description" content="Daily 20 — throw 20 pitches, upload your heatmap, enter for a weekly drawing. Adult email required so we can contact winners.">
     <title>Daily 20 — HeyBLU Pitching Contest</title>
     <link rel="canonical" href="https://heyblu.ai/daily20">
     <meta property="og:url" content="https://heyblu.ai/daily20">
@@ -100,7 +100,7 @@
 
     <div class="pt-16" style="background:#0c1f3f">
         <div class="prizes-banner">
-            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest: throw 20 pitches, email your heatmap, win prizes" width="2752" height="1536">
+            <img src="/images/daily20-prizes.jpg" alt="Daily 20 contest: throw 20 pitches, upload your heatmap, win prizes" width="2752" height="1536">
         </div>
     </div>
     <h1 class="sr-only">Daily 20</h1>
@@ -109,18 +109,39 @@
         <div class="max-w-7xl mx-auto px-4 py-5">
             <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-2 md:gap-8">
                 <form id="daily20-form" class="flex-1 space-y-4">
-                    <p class="text-sm text-gray-700"><a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link text-blue-600 font-bold underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">Download HeyBLU</a> (14 days free). Throw 20. Post your heatmap to the wall. Or <a href="mailto:info@heyblu.ai?subject=Daily%2020" class="text-blue-600 font-semibold underline">email it</a>.</p>
+                    <p class="text-sm text-gray-700"><a href="https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=Daily20&mt=8" class="app-store-download-link text-blue-600 font-bold underline hover:text-blue-800" target="_blank" rel="noopener noreferrer">Download HeyBLU</a> (14 days free). Throw 20. Share the heatmap from Session Summary, then enter below for a chance to win. <a href="/daily20/rules" class="text-blue-600 font-semibold underline">Official Rules</a>.</p>
                     <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true">
-                    <div class="flex flex-col sm:flex-row sm:items-end gap-3">
-                        <div class="sm:flex-1">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="sm:col-span-2">
                             <label for="heatmap-file" class="block text-sm font-semibold text-gray-900 mb-1">Upload your Daily 20 Heatmap</label>
                             <input id="heatmap-file" name="heatmap" type="file" accept="image/jpeg,image/png,image/webp,image/jpg" required class="w-full text-sm text-gray-700 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:bg-blue-50 file:font-semibold file:text-blue-800">
                         </div>
-                        <div class="sm:w-56">
-                            <label for="pitcher-name" class="block text-sm font-semibold text-gray-900 mb-1">Enter Pitcher’s name for the Wall of Fame</label>
+                        <div>
+                            <label for="pitcher-name" class="block text-sm font-semibold text-gray-900 mb-1">Wall of Fame display name</label>
                             <input id="pitcher-name" name="pitcher" type="text" required maxlength="80" placeholder="John P." class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                         </div>
-                        <button type="submit" id="daily20-submit" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 transition shadow-sm shrink-0">Post</button>
+                        <div>
+                            <label for="entrant-email" class="block text-sm font-semibold text-gray-900 mb-1">Adult email (to contact you if you win)</label>
+                            <input id="entrant-email" name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@email.com" class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                    </div>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input id="age-attested" name="ageAttested" type="checkbox" required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span>I am 18 or older and entering on behalf of this household.</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input id="rules-accepted" name="rulesAccepted" type="checkbox" required class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span>I agree to the <a href="/daily20/rules" class="text-blue-600 font-semibold underline">Official Rules</a>.</span>
+                        </label>
+                        <label class="flex items-start gap-2 cursor-pointer">
+                            <input id="marketing-opt-in" name="marketingOptIn" type="checkbox" class="mt-1 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                            <span>Also send me HeyBLU news and offers. (Optional — unchecked by default.)</span>
+                        </label>
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <button type="submit" id="daily20-submit" class="inline-flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold py-2.5 px-6 transition shadow-sm shrink-0">Enter Daily 20</button>
+                        <p class="text-xs text-gray-500">One entry per email per day. The wall shows your display name and heatmap only — not your email.</p>
                     </div>
                     <p id="daily20-status" class="text-sm hidden" role="status" aria-live="polite"></p>
                 </form>
@@ -175,6 +196,7 @@
                         <a href="/#playbook" class="block text-gray-400 hover:text-white transition">Use Cases</a>
                         <a href="/pricing" class="block text-gray-400 hover:text-white transition">Pricing</a>
                         <a href="/daily20" class="block text-gray-400 hover:text-white transition">Daily 20</a>
+                        <a href="/daily20/rules" class="block text-gray-400 hover:text-white transition">Daily 20 Rules</a>
                         <a href="/field-guide" class="block text-gray-400 hover:text-white transition">Field Guide</a>
                         <a href="/compare" class="block text-gray-400 hover:text-white transition">Strike Zone Tech</a>
                     </div>
@@ -335,21 +357,35 @@
                 e.preventDefault();
                 var fileInput = document.getElementById('heatmap-file');
                 var pitcherInput = document.getElementById('pitcher-name');
+                var emailInput = document.getElementById('entrant-email');
+                var ageBox = document.getElementById('age-attested');
+                var rulesBox = document.getElementById('rules-accepted');
+                var marketingBox = document.getElementById('marketing-opt-in');
                 var file = fileInput && fileInput.files && fileInput.files[0];
                 var pitcher = pitcherInput ? pitcherInput.value.trim() : '';
+                var email = emailInput ? emailInput.value.trim() : '';
                 var honeypot = form.querySelector('input[name="_gotcha"]');
-                if (!file || !pitcher) {
-                    statusEl.textContent = 'Add the pitcher name and heatmap image.';
-                    statusEl.className = 'text-sm mt-2 text-red-600';
+                if (!file || !pitcher || !email) {
+                    statusEl.textContent = 'Add the heatmap, display name, and adult email.';
+                    statusEl.className = 'text-sm text-red-600';
+                    statusEl.classList.remove('hidden');
+                    return;
+                }
+                if (!ageBox || !ageBox.checked || !rulesBox || !rulesBox.checked) {
+                    statusEl.textContent = 'Confirm you are 18+ and agree to the Official Rules.';
+                    statusEl.className = 'text-sm text-red-600';
+                    statusEl.classList.remove('hidden');
                     return;
                 }
                 if (file.size > 2 * 1024 * 1024) {
                     statusEl.textContent = 'Image must be 2 MB or smaller.';
-                    statusEl.className = 'text-sm mt-2 text-red-600';
+                    statusEl.className = 'text-sm text-red-600';
+                    statusEl.classList.remove('hidden');
                     return;
                 }
-                statusEl.textContent = 'Posting…';
-                statusEl.className = 'text-sm mt-2 text-blue-600';
+                statusEl.textContent = 'Entering…';
+                statusEl.className = 'text-sm text-blue-600';
+                statusEl.classList.remove('hidden');
                 submitBtn.disabled = true;
                 fileToBase64(file).then(function (b64) {
                     return fetch('/api/daily20', {
@@ -357,6 +393,10 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             pitcher: pitcher,
+                            email: email,
+                            ageAttested: true,
+                            rulesAccepted: true,
+                            marketingOptIn: !!(marketingBox && marketingBox.checked),
                             mime: file.type || 'image/jpeg',
                             file_base64: b64,
                             _gotcha: honeypot ? honeypot.value : ''
@@ -364,12 +404,12 @@
                     });
                 }).then(function (res) {
                     return res.json().then(function (data) {
-                        if (!res.ok) throw new Error(data.error || 'Could not post');
+                        if (!res.ok) throw new Error(data.error || 'Could not enter');
                         return data;
                     });
                 }).then(function (data) {
-                    statusEl.textContent = 'On the wall.';
-                    statusEl.className = 'text-sm mt-2 text-green-600';
+                    statusEl.textContent = 'Entered. You are on the wall — we will email you only if you win (and for news only if you opted in).';
+                    statusEl.className = 'text-sm text-green-600';
                     form.reset();
                     if (data.entry) {
                         entries.unshift(data.entry);
@@ -379,8 +419,8 @@
                         loadWall();
                     }
                 }).catch(function (err) {
-                    statusEl.textContent = err.message || 'Could not post. Email info@heyblu.ai.';
-                    statusEl.className = 'text-sm mt-2 text-red-600';
+                    statusEl.textContent = err.message || 'Could not enter. Email support@heyblu.ai.';
+                    statusEl.className = 'text-sm text-red-600';
                 }).then(function () {
                     submitBtn.disabled = false;
                 });

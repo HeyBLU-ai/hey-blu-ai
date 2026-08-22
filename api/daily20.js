@@ -1,8 +1,9 @@
 /**
- * GET  /api/daily20          — list wall entries (no image bytes)
+ * GET  /api/daily20          — list wall entries (no image bytes; no emails)
+ * GET  /api/daily20 + Bearer — list including contact_email for admin moderate
  * GET  /api/daily20?image=id — serve heatmap image
  * GET  /api/daily20?auth=1   — ping ADMIN_PASSWORD (Bearer)
- * POST /api/daily20          — public submit { pitcher, date?, file_base64, mime, _gotcha }
+ * POST /api/daily20          — public submit { pitcher, email, rulesAccepted, ageAttested, marketingOptIn?, file_base64, mime, _gotcha }
  * DELETE /api/daily20?id=    — Bearer ADMIN_PASSWORD
  */
 import pg from 'pg';
@@ -17,6 +18,7 @@ const ALLOWED_MIME = {
   'image/png': 'image/png',
   'image/webp': 'image/webp',
 };
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function db() {
   return new Client({
@@ -56,6 +58,23 @@ function formatDate(value) {
   return todayIso();
 }
 
+function normalizeEmail(value) {
+  return sanitize(String(value || ''), 254).toLowerCase();
+}
+
+function isTruthy(value) {
+  return value === true || value === 'true' || value === '1' || value === 1 || value === 'on' || value === 'yes';
+}
+
+function adminPasswordFromReq(req) {
+  return String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
+}
+
+function isAdminAuthorized(req) {
+  const expected = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || '';
+  return safeCompareSecret(adminPasswordFromReq(req), expected);
+}
+
 async function ensureTable(client) {
   await client.query(`
     CREATE TABLE IF NOT EXISTS daily20_entries (
@@ -69,6 +88,18 @@ async function ensureTable(client) {
       image_bytes BYTEA NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `);
+  await client.query(`
+    ALTER TABLE daily20_entries
+      ADD COLUMN IF NOT EXISTS contact_email TEXT,
+      ADD COLUMN IF NOT EXISTS marketing_opt_in BOOLEAN NOT NULL DEFAULT FALSE,
+      ADD COLUMN IF NOT EXISTS rules_accepted_at TIMESTAMPTZ,
+      ADD COLUMN IF NOT EXISTS entrant_age_attested BOOLEAN NOT NULL DEFAULT FALSE
+  `);
+  await client.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS daily20_entries_email_date_uidx
+      ON daily20_entries (lower(contact_email), entry_date)
+      WHERE contact_email IS NOT NULL AND contact_email <> ''
   `);
 }
 
@@ -90,29 +121,44 @@ function optionalNumber(value) {
   return Number.isFinite(n) ? n : null;
 }
 
-async function listEntries(res) {
+function mapPublicEntry(row) {
+  return {
+    id: row.id,
+    pitcher: row.pitcher,
+    date: formatDate(row.entry_date),
+    strikePct: row.strike_pct,
+    topVelo: row.top_velo,
+    avgVelo: row.avg_velo,
+    src: `/api/daily20?image=${row.id}`,
+  };
+}
+
+function mapAdminEntry(row) {
+  return {
+    ...mapPublicEntry(row),
+    contactEmail: row.contact_email || '',
+    marketingOptIn: Boolean(row.marketing_opt_in),
+    ageAttested: Boolean(row.entrant_age_attested),
+  };
+}
+
+async function listEntries(req, res) {
   if (!process.env.DATABASE_URL) {
     return res.status(200).json({ entries: [] });
   }
+  const includePrivate = isAdminAuthorized(req);
   const client = db();
   try {
     await client.connect();
     await ensureTable(client);
     const { rows } = await client.query(`
-      SELECT id, pitcher, entry_date, strike_pct, top_velo, avg_velo
+      SELECT id, pitcher, entry_date, strike_pct, top_velo, avg_velo,
+             contact_email, marketing_opt_in, entrant_age_attested
       FROM daily20_entries
       ORDER BY entry_date DESC, id DESC
     `);
     return res.status(200).json({
-      entries: rows.map((row) => ({
-        id: row.id,
-        pitcher: row.pitcher,
-        date: formatDate(row.entry_date),
-        strikePct: row.strike_pct,
-        topVelo: row.top_velo,
-        avgVelo: row.avg_velo,
-        src: `/api/daily20?image=${row.id}`,
-      })),
+      entries: rows.map((row) => (includePrivate ? mapAdminEntry(row) : mapPublicEntry(row))),
     });
   } catch (err) {
     console.error('[daily20 list]', err);
@@ -160,6 +206,19 @@ async function submit(req, res) {
   const pitcher = sanitize(body.pitcher || '', 80);
   if (!pitcher) return res.status(400).json({ error: 'Pitcher name is required' });
 
+  const email = normalizeEmail(body.email || body.contactEmail || '');
+  if (!email || !EMAIL_RE.test(email)) {
+    return res.status(400).json({ error: 'A valid adult email is required' });
+  }
+
+  if (!isTruthy(body.rulesAccepted) && !isTruthy(body.rules_accepted)) {
+    return res.status(400).json({ error: 'You must agree to the Official Rules' });
+  }
+  if (!isTruthy(body.ageAttested) && !isTruthy(body.age_attested) && !isTruthy(body.entrantAgeAttested)) {
+    return res.status(400).json({ error: 'Confirm you are 18 or older' });
+  }
+
+  const marketingOptIn = isTruthy(body.marketingOptIn) || isTruthy(body.marketing_opt_in);
   const mime = ALLOWED_MIME[String(body.mime || body.type || 'image/jpeg').toLowerCase()];
   if (!mime) return res.status(400).json({ error: 'Use a JPEG, PNG, or WebP heatmap' });
 
@@ -173,38 +232,50 @@ async function submit(req, res) {
     return res.status(500).json({ error: 'DATABASE_URL not configured' });
   }
 
+  const entryDate = normalizeDate(body.date);
   const client = db();
   try {
     await client.connect();
     await ensureTable(client);
+
+    const existing = await client.query(
+      `SELECT id FROM daily20_entries
+       WHERE lower(contact_email) = $1 AND entry_date = $2
+       LIMIT 1`,
+      [email, entryDate],
+    );
+    if (existing.rows.length) {
+      return res.status(409).json({ error: 'Already entered today with this email. One entry per email per day.' });
+    }
+
     const { rows } = await client.query(
-      `INSERT INTO daily20_entries (pitcher, entry_date, strike_pct, top_velo, avg_velo, image_mime, image_bytes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7)
+      `INSERT INTO daily20_entries (
+         pitcher, entry_date, strike_pct, top_velo, avg_velo, image_mime, image_bytes,
+         contact_email, marketing_opt_in, rules_accepted_at, entrant_age_attested
+       )
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), TRUE)
        RETURNING id, pitcher, entry_date, strike_pct, top_velo, avg_velo`,
       [
         pitcher,
-        normalizeDate(body.date),
+        entryDate,
         optionalNumber(body.strikePct),
         optionalNumber(body.topVelo),
         optionalNumber(body.avgVelo),
         mime,
         image,
+        email,
+        marketingOptIn,
       ],
     );
     const row = rows[0];
     return res.status(200).json({
       ok: true,
-      entry: {
-        id: row.id,
-        pitcher: row.pitcher,
-        date: formatDate(row.entry_date),
-        strikePct: row.strike_pct,
-        topVelo: row.top_velo,
-        avgVelo: row.avg_velo,
-        src: `/api/daily20?image=${row.id}`,
-      },
+      entry: mapPublicEntry(row),
     });
   } catch (err) {
+    if (err && err.code === '23505') {
+      return res.status(409).json({ error: 'Already entered today with this email. One entry per email per day.' });
+    }
     console.error('[daily20 submit]', err);
     return res.status(500).json({ error: 'Could not save heatmap' });
   } finally {
@@ -213,9 +284,7 @@ async function submit(req, res) {
 }
 
 function requireAdmin(req, res) {
-  const expected = process.env.ADMIN_PASSWORD || process.env.ADMIN_SECRET || '';
-  const password = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '').trim();
-  if (!safeCompareSecret(password, expected)) {
+  if (!isAdminAuthorized(req)) {
     res.status(401).json({ error: 'Unauthorized' });
     return false;
   }
@@ -256,7 +325,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     if (req.query?.auth != null && req.query.auth !== '') return pingAuth(req, res);
     if (req.query?.image != null && req.query.image !== '') return serveImage(req, res);
-    return listEntries(res);
+    return listEntries(req, res);
   }
   if (req.method === 'POST') return submit(req, res);
   if (req.method === 'DELETE') return remove(req, res);

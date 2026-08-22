@@ -21,7 +21,7 @@
   <div id="gate" class="min-h-screen flex items-center justify-center px-4">
     <form id="login-form" class="w-full max-w-sm space-y-4">
       <h1 class="text-xl font-semibold">Daily 20 moderate</h1>
-      <p class="text-sm text-slate-400">Same admin password as the rulebook dashboard. This page only deletes wall photos.</p>
+      <p class="text-sm text-slate-400">Same admin password as the rulebook dashboard. Contact emails are for winner outreach only — never shown on the public wall.</p>
       <input id="password" type="password" autocomplete="current-password" placeholder="Password"
         class="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
       <p id="auth-error" class="text-sm text-red-400 hidden"></p>
@@ -88,7 +88,11 @@
 
     async function loadList() {
       listError.classList.add('hidden');
-      const res = await fetch('/api/daily20');
+      const res = await fetch('/api/daily20', { headers: headers() });
+      if (res.status === 401) {
+        showGate('Session expired. Unlock again.');
+        return;
+      }
       if (!res.ok) {
         listError.textContent = 'Could not load wall entries.';
         listError.classList.remove('hidden');
@@ -100,6 +104,10 @@
       empty.classList.toggle('hidden', entries.length > 0);
       grid.innerHTML = '';
       for (const entry of entries) {
+        const marketing = entry.marketingOptIn ? ' · marketing opt-in' : '';
+        const emailLine = entry.contactEmail
+          ? `<p class="text-xs text-emerald-300/90 break-all">${escapeHtml(entry.contactEmail)}${escapeHtml(marketing)}</p>`
+          : `<p class="text-xs text-slate-500">No email on file</p>`;
         const card = document.createElement('article');
         card.className = 'thumb rounded-lg overflow-hidden bg-slate-900 border border-slate-800';
         card.innerHTML = `
@@ -107,6 +115,7 @@
           <div class="p-3 space-y-2">
             <p class="text-sm font-medium truncate">${escapeHtml(entry.pitcher)}</p>
             <p class="text-xs text-slate-400">${escapeHtml(entry.date || '')}</p>
+            ${emailLine}
             <button type="button" data-id="${entry.id}" data-name="${escapeHtml(entry.pitcher)}"
               class="delete-btn w-full rounded bg-red-700 hover:bg-red-600 py-1.5 text-xs font-medium">Delete</button>
           </div>
