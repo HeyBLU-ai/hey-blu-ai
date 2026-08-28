@@ -44,6 +44,13 @@
                         path: pagePath()
                     });
                 }
+                if (typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
+                    window.ttq.track('Download', {
+                        content_name: location,
+                        content_type: 'app_store',
+                        path: pagePath()
+                    });
+                }
                 if (window.posthog && typeof window.posthog.capture === 'function') {
                     window.posthog.capture('app_store_click', {
                         path: pagePath(),
