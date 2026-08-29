@@ -5,7 +5,7 @@
 > Web/app implementation rules remain in **`docs/HEYBLU_BEST_PRACTICES.md`**.  
 > This file is kept only for historical context.
 
-**Codebase truth:** For repo-grounded app capabilities, limits, modes, and external-LLM positioning, use the sibling **BLU-App** repository: `docs/EXTERNAL_LLM_MESSAGING_AND_POSITIONING.md` (this file is a web/marketing companion, not the canonical app brief).
+**Codebase truth:** For repo-grounded app capabilities, limits, modes, and external-LLM positioning, use the **heyblu-hq** repository: `docs/messaging/EXTERNAL_LLM_MESSAGING_AND_POSITIONING.md` (this file is a web/marketing companion, not the canonical app brief; also — this whole file is deprecated per `docs/HEYBLU_BEST_PRACTICES.md`, don't use it either).
 
 **Purpose:** Give any language model instant, accurate context for pitch decks, ads, email/DM campaigns, web copy, and coach-facing outreach—without access to this repo.  
 **Last aligned to repo:** Field guide, marketing homepage (`index.html`), FAQ (`/faq` → `betablu/index.html`).  

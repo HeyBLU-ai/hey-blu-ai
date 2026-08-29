@@ -8,7 +8,7 @@
 - **iOS app:** `BLU/BLU2` — capabilities, gates, and in-app copy are canonical there.
 - **Web:** this repo — must match the app paywall and tier gates exactly.
 
-**When docs conflict:** Live app paywall + shipped tier gates > `HEYBLU_BRAND_GUIDE.md` > this file > deprecated `HEYBLU_PRODUCT_AND_MESSAGING_BRIEF.md` > `HeyBLU_App_Store_Launch_Plan_v*.md` (launch plans are strategy drafts, not product spec).
+**When docs conflict:** Live app paywall + shipped tier gates > `HEYBLU_BRAND_GUIDE.md` > this file > deprecated `HEYBLU_PRODUCT_AND_MESSAGING_BRIEF.md` > `heyblu-hq/docs/archive/HeyBLU_App_Store_Launch_Plan_v*.md` (launch plans are strategy drafts, not product spec; moved to the `heyblu-hq` repo 2026-08-29 as historical — the launch they describe already happened).
 
 ---
 
