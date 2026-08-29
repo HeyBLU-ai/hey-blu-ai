@@ -51,6 +51,19 @@
                         path: pagePath()
                     });
                 }
+                if (typeof window.gtag === 'function') {
+                    // Google's automatic "outbound click" detection does not fire for this
+                    // link despite every relevant setting being enabled (confirmed via direct
+                    // network inspection, 2026-08-29) — so this conversion action
+                    // ("Outbound click (1)") is reported explicitly instead, the same way
+                    // Meta/TikTok are above. Links open in a new tab (target="_blank"), so
+                    // there is no navigation to delay and no event_callback is needed.
+                    window.gtag('event', 'conversion', {
+                        'send_to': 'AW-18414770701/NUe9CPrRpuocEI207MxE',
+                        'value': 1.0,
+                        'currency': 'USD'
+                    });
+                }
                 if (window.posthog && typeof window.posthog.capture === 'function') {
                     window.posthog.capture('app_store_click', {
                         path: pagePath(),
