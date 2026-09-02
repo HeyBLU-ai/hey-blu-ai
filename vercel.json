@@ -50,7 +50,7 @@
       ]
     },
     {
-      "source": "/(faq-search|site-nav|site-analytics|site-config|site-download|pricing-config|pricing-billing|pricing-teaser|tiktok-pixel-init).js",
+      "source": "/(faq-search|site-nav|site-analytics|site-config|site-download|pricing-config|pricing-billing|pricing-teaser|tiktok-pixel-init|utm-capture).js",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, must-revalidate" }
       ]
@@ -225,6 +225,7 @@
     { "src": "site-analytics.js", "use": "@vercel/static" },
     { "src": "google-ads-tag.js", "use": "@vercel/static" },
     { "src": "posthog-init.js", "use": "@vercel/static" },
+    { "src": "utm-capture.js", "use": "@vercel/static" },
     { "src": "tiktok-pixel-init.js", "use": "@vercel/static" },
     { "src": "pricing-config.js", "use": "@vercel/static" },
     { "src": "pricing-billing.js", "use": "@vercel/static" },
@@ -380,6 +381,7 @@
     { "src": "/site-analytics.js", "dest": "/site-analytics.js" },
     { "src": "/google-ads-tag.js", "dest": "/google-ads-tag.js" },
     { "src": "/posthog-init.js", "dest": "/posthog-init.js" },
+    { "src": "/utm-capture.js", "dest": "/utm-capture.js" },
     { "src": "/tiktok-pixel-init.js", "dest": "/tiktok-pixel-init.js" },
     { "src": "/pricing-config.js", "dest": "/pricing-config.js" },
     { "src": "/pricing-billing.js", "dest": "/pricing-billing.js" },
