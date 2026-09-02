@@ -126,7 +126,9 @@ Messaging spans **baseball and fast-pitch softball** youth. Keep copy inclusive 
 | Subscriptions | RevenueCat + Apple | Live |
 | Install attribution | App Store Connect campaign links | Live |
 | Website traffic | Vercel Web Analytics (+ custom events in `site-analytics.js`) | Live |
-| Website analytics (planned) | Google Analytics | Planned — not yet on site |
+| Google Ads conversion tag | `google-ads-tag.js`, account 534-835-4776 (`AW-18414770701`) — `/` and `/home2` only | Live |
+| Inbound UTM/click-ID capture | `utm-capture.js` → PostHog super properties (last-touch, 30-day window) | Live |
+| Website analytics (planned) | Google Analytics (GA4 property) | Planned — not yet on site. Distinct from the Google Ads conversion tag above, which is live. |
 | Email / lead capture (planned) | Brevo | Planned |
 
 ---
