@@ -87,9 +87,20 @@
         }
     </style>
     <script src="/site-config.js"></script>
-    <script>window.HEYBLU_DOWNLOAD_CT = 'Home2Ads';</script>
     <script src="/posthog-init.js"></script>
     <script src="/utm-capture.js"></script>
+    <script>
+        // Per-platform App Store campaign token, not a single shared "Home2Ads" for
+        // everyone. Lets App Store Connect's own Campaigns report split downloads by
+        // ad platform (Meta vs TikTok vs organic) instead of bucketing them together.
+        // Must run after utm-capture.js (needs window.HEYBLU_CAMPAIGN) and before
+        // site-download.js (reads window.HEYBLU_DOWNLOAD_CT to build the link).
+        (function () {
+            var src = window.HEYBLU_CAMPAIGN && window.HEYBLU_CAMPAIGN.utm_source;
+            var safe = src && /^[a-zA-Z0-9_-]{1,40}$/.test(src) ? src : null;
+            window.HEYBLU_DOWNLOAD_CT = safe ? ('Home2-' + safe) : 'Home2Ads';
+        })();
+    </script>
     <script defer src="/_vercel/insights/script.js"></script>
     <script defer src="/site-analytics.js"></script>
     <!-- Google tag (gtag.js) -->
