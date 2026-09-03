@@ -1,10 +1,15 @@
 /**
  * PostHog product analytics — HeyBLU project (ID 453131, US Cloud).
  * Loader snippet copied verbatim from PostHog Settings -> Project -> "Project API Key".
+ *
+ * Traffic is routed through our own domain (/ingest) via vercel.json rewrites instead
+ * of calling us.i.posthog.com directly — this avoids ad-blocker / tracker-blocker loss
+ * on landing pages and campaign funnels. See DEPLOYMENT.md "PostHog reverse proxy" for
+ * how to verify or roll back.
  */
 (function () {
     var POSTHOG_KEY = 'phc_x68yPBSjBmdfBff5ZUHK84NYtdCcuoS87gPpdStZPJwk';
-    var POSTHOG_HOST = 'https://us.i.posthog.com';
+    var POSTHOG_HOST = '/ingest';
 
     if (!POSTHOG_KEY) return;
 
@@ -12,6 +17,7 @@
 
     posthog.init(POSTHOG_KEY, {
         api_host: POSTHOG_HOST,
+        ui_host: 'https://us.posthog.com',
         defaults: '2026-05-30',
         person_profiles: 'identified_only'
     });

@@ -256,6 +256,9 @@
     { "src": "images/**", "use": "@vercel/static" }
   ],
   "routes": [
+    { "src": "/ingest/static/(.*)", "dest": "https://us-assets.i.posthog.com/static/$1" },
+    { "src": "/ingest/array/(.*)",  "dest": "https://us-assets.i.posthog.com/array/$1"  },
+    { "src": "/ingest/(.*)",        "dest": "https://us.i.posthog.com/$1"               },
     { "src": "/api/ask",    "dest": "api/ask.js"    },
     { "src": "/api/ask-v2", "dest": "api/ask-v2.js" },
     { "src": "/api/shorten", "dest": "api/shorten.ts" },

@@ -588,6 +588,31 @@ The main site’s **Apply for Beta / Request TestFlight Access** form posts to t
 
 **Post-deploy:** Submit a test from `https://heyblu.ai/#beta` and confirm the entry appears in Formspree with the expected subject and fields. Optionally spot-check `https://heyblu.ai/#field-notes` (Substack links) and hero imagery on `/`.
 
+### PostHog reverse proxy (`/ingest`)
+
+**Why:** Browser ad-blockers and tracker-blockers commonly block requests to `us.i.posthog.com` by hostname, silently dropping pageviews and events on landing pages / ad campaign funnels. Routing PostHog traffic through our own domain (`heyblu.ai/ingest`) avoids most of that loss.
+
+**What's in place:**
+- `vercel.json` `routes` (added **before** the catch-all routes, order matters):
+  ```json
+  { "src": "/ingest/static/(.*)", "dest": "https://us-assets.i.posthog.com/static/$1" },
+  { "src": "/ingest/array/(.*)",  "dest": "https://us-assets.i.posthog.com/array/$1"  },
+  { "src": "/ingest/(.*)",        "dest": "https://us.i.posthog.com/$1"               }
+  ```
+  The `static` and `array` (remote config) rules must stay above the generic `/ingest/(.*)` catch-all or they'll never match.
+- `posthog-init.js` — `api_host` is `'/ingest'` (relative path, avoids cross-origin issues) instead of `'https://us.i.posthog.com'`. `ui_host` stays `'https://us.posthog.com'` so the in-app toolbar/links still work.
+- No change to the project API key, no change to region (still US Cloud), no change to `person_profiles: 'identified_only'`.
+- `utm-capture.js` and `site-analytics.js` call `window.posthog.*` only — they don't hardcode a host, so nothing to change there.
+
+**How to verify after deploy:**
+1. Open `https://heyblu.ai` (or `/pricing`, `/daily20`, `/field-guide`, any `/compare/*` page) in a fresh tab with DevTools Network open.
+2. Confirm requests go to `heyblu.ai/ingest/static/array.js`, `heyblu.ai/ingest/e/`, `heyblu.ai/ingest/decide/`, etc. — **not** `us.i.posthog.com` or `us-assets.i.posthog.com` directly.
+3. Check PostHog (Activity / Live events) for the pageview.
+4. Visit with `?utm_source=test&utm_campaign=test` and confirm the event shows the `utm_source`/`utm_campaign` super properties (from `utm-capture.js`).
+5. No console errors on the pages above.
+
+**Rollback:** In `posthog-init.js`, set `POSTHOG_HOST` back to `'https://us.i.posthog.com'` (and drop `ui_host` if you want to match the old snippet exactly). The `/ingest` routes in `vercel.json` can stay — they'll just go unused.
+
 ### Beehiiv (Email Marketing)
 
 **Integration:**
