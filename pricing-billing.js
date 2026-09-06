@@ -5,15 +5,13 @@
 (function () {
     var DEFAULT_PRICING = {
         trialDays: 14,
-        showPublicAmounts: false,
-        monthlyUSD: 4.99,
-        annualUSD: 49.99,
-        launchRateLabel: '',
+        showPublicAmounts: true,
+        monthlyUSD: 12.99,
+        annualUSD: 79.99,
+        launchRateLabel: 'Launch pricing',
         currencySymbol: '$',
         annualSavingsPercent: function () {
-            var monthly = this.monthlyUSD * 12;
-            if (monthly <= 0) return 0;
-            return Math.round((1 - this.annualUSD / monthly) * 100);
+            return 50;
         },
         formatUSD: function (amount) {
             return this.currencySymbol + amount.toFixed(2);
