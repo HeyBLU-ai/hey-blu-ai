@@ -26,8 +26,14 @@ Do not beat users with tripod/setup on **pricing, terms, or every card**. Setup 
 6. **No app-speak** on marketing pages — enum/feature names (Track Pitches, Session History) stay in app/FAQ; public copy uses baseball language.
 7. **Live games — never “not”:** Lead with bullpens/practice/coaching. Do **not** tell users HeyBLU is **not** for live games or league ABS. If games come up: encourage testing in practice first, then reach out — e.g. questions or league use → `info@heyblu.ai` or `/field-guide`. See `docs/HEYBLU_BEST_PRACTICES.md` § Live games.
 
+## Analytics — do not break attribution
+
+- **`utm-capture.js` has a deliberate exception for `utm_source=app`.** The iOS app links to `/gear` and `/how-to` from its bullpen-reminder screen with campaign tags. Those visits register for the pageview but must never overwrite a stored ad click, because `/home2` derives its App Store campaign token from the stored source — overwriting it silently corrupts the per-platform download split. Rationale in `docs/HEYBLU_BRAND_GUIDE.md` § Marketing Channels. **Do not remove the guard.**
+- Site and app share **one PostHog project**. Web visitors and app users are still separate person records (the site never sees the device ID), so cross-surface comparisons are aggregate only.
+
 ## Repo split
 
 - Web: marketing site. iOS (`BLU/BLU2`): canonical capabilities.
+- Strategy, GTM and decision log: **`HeyBLU-HQ`** (docs only). Warehouse, dbt and dashboards: **`heyblu-analytics`** — its `docs/EXPERIMENTS.md` is where live tests are logged, including anything that changes what app-sourced traffic this site receives.
 
 When unsure, ask — don't pad with generic sports-app filler or liability-style warnings.

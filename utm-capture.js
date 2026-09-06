@@ -56,10 +56,21 @@
         }
     }
 
-    var incoming = readIncoming();
-    var campaign = incoming || readStored();
+    // In-app links (utm_source=app) are tagged so app-driven visits can be told apart from ad
+    // traffic. They must not overwrite a stored ad click: someone the ad found, who installed
+    // and later tapped "get a tripod" in the app, was still found by the ad. Plain last-touch
+    // would hand that credit to the app and understate ad performance.
+    function isAppSourced(data) {
+        return !!data && data.utm_source === 'app';
+    }
 
-    if (incoming) {
+    var incoming = readIncoming();
+    var stored = readStored();
+    var campaign = incoming || stored;
+
+    var wouldClobberAdClick = isAppSourced(incoming) && stored && !isAppSourced(stored);
+
+    if (incoming && !wouldClobberAdClick) {
         store(incoming);
     }
 

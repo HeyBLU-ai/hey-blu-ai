@@ -127,9 +127,18 @@ Messaging spans **baseball and fast-pitch softball** youth. Keep copy inclusive 
 | Install attribution | App Store Connect campaign links | Live |
 | Website traffic | Vercel Web Analytics (+ custom events in `site-analytics.js`) | Live |
 | Google Ads conversion tag | `google-ads-tag.js`, account 534-835-4776 (`AW-18414770701`) — `/` and `/home2` only | Live |
-| Inbound UTM/click-ID capture | `utm-capture.js` → PostHog super properties (last-touch, 30-day window) | Live |
+| Inbound UTM/click-ID capture | `utm-capture.js` → PostHog super properties (last-touch, 30-day window). **Exception:** `utm_source=app` registers for the pageview but never overwrites a stored ad click — see below | Live |
+| App → site links | iOS app tags `/gear` and `/how-to` with `utm_source=app&utm_medium=bullpen_prep&utm_campaign=variant_b` | Live (app 3.94) |
 | Website analytics (planned) | Google Analytics (GA4 property) | Planned — not yet on site. Distinct from the Google Ads conversion tag above, which is live. |
 | Email / lead capture (planned) | Brevo | Planned |
+
+### Why `utm-capture.js` treats `utm_source=app` differently
+
+The iOS app links out to `/gear` and `/how-to` from its bullpen-reminder screen, tagged so app-driven visits can be told apart from ad traffic. Those visits must **not** overwrite a stored ad click: someone the ad found, who installed and later tapped "get a tripod" inside the app, was still found by the ad.
+
+Plain last-touch would hand that credit to the app, and the damage is silent. `/home2` builds its App Store campaign token from the stored source (`HEYBLU_CAMPAIGN.utm_source` → `HEYBLU_DOWNLOAD_CT`), so overwriting it corrupts the per-platform download split that page exists to measure. Nothing errors — the numbers just quietly go wrong.
+
+So `utm-capture.js` still registers `utm_source=app` for that pageview, which is what makes the visit visible, but skips the `localStorage` write when a non-app campaign is already stored. **Do not "simplify" that guard away.**
 
 ---
 
