@@ -8,7 +8,7 @@
         showPublicAmounts: true,
         monthlyUSD: 12.99,
         annualUSD: 79.99,
-        launchRateLabel: 'Launch pricing',
+        launchRateLabel: '',
         currencySymbol: '$',
         annualSavingsPercent: function () {
             return 50;
@@ -56,7 +56,13 @@
             launchBadge.classList.remove('hidden');
             launchBadge.removeAttribute('hidden');
         }
-        if (priceFootnote) priceFootnote.classList.remove('hidden');
+        if (priceFootnote) {
+            if (cfg.launchRateLabel) {
+                priceFootnote.classList.remove('hidden');
+            } else {
+                priceFootnote.classList.add('hidden');
+            }
+        }
         if (!toggle) return;
 
         var isAnnual = false;

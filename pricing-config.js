@@ -3,7 +3,8 @@
  * Keep in sync with App Store Connect / RevenueCat when showPublicAmounts is true.
  * App paywall shows live store prices (may differ during App Store price tests).
  *
- * App Store A/B test settled Sep 2026 — winner: $12.99/mo, $79.99/yr.
+ * App Store A/B test settled Sep 2026 — $12.99/mo, $79.99/yr is standard
+ * pricing (not a launch/intro rate); not expected to change for a while.
  */
 window.HEYBLU_PRICING = {
     trialDays: 14,
@@ -11,8 +12,8 @@ window.HEYBLU_PRICING = {
     showPublicAmounts: true,
     monthlyUSD: 12.99,
     annualUSD: 79.99,
-    /** Empty hides the "Launch pricing" badges. */
-    launchRateLabel: 'Launch pricing',
+    /** Empty hides the "Launch pricing" badge — current price is standard, not introductory. */
+    launchRateLabel: '',
     currencySymbol: '$',
 
     /**
