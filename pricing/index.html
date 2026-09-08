@@ -15,6 +15,10 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
         .pricing-check { flex-shrink: 0; }
+        .trial-reminder-details > summary { list-style: none; }
+        .trial-reminder-details > summary::-webkit-details-marker { display: none; }
+        .trial-reminder-details > summary .chevron { transition: transform 0.15s ease; }
+        .trial-reminder-details[open] > summary .chevron { transform: rotate(180deg); }
     </style>
     <script src="/posthog-init.js"></script>
     <script src="/utm-capture.js"></script>
@@ -61,7 +65,7 @@
             </button>
             <span class="inline-flex items-center gap-2">
                 <span id="pricing-label-annual" class="text-sm font-semibold text-gray-500">Annual</span>
-                <span id="pricing-annual-savings" class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-800">Save 17%</span>
+                <span id="pricing-annual-savings" class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-bold text-green-800">Save 50%</span>
             </span>
         </div>
 
@@ -72,7 +76,18 @@
             <p class="text-sm text-blue-700 mt-1 min-h-[1.25rem]" id="pro-price-note" aria-live="polite"></p>
             <p id="pro-price-footnote" class="hidden text-xs text-gray-600 mt-1 mb-1"></p>
             <p class="text-sm font-semibold text-blue-800 mt-3 mb-1">14-day free trial</p>
-            <p class="text-xs text-gray-500 mb-4">Not at the field yet? Start it the day you are.</p>
+            <p class="text-sm text-gray-800 mb-2">Download today. Start your trial on a day you'll actually throw.</p>
+            <details class="trial-reminder-details mb-5 rounded-xl border border-blue-200 bg-white/80">
+                <summary class="flex cursor-pointer items-center justify-between gap-3 px-3.5 py-2.5 text-sm font-semibold text-blue-700 hover:text-blue-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-inset rounded-xl">
+                    <span>How the in-app reminder works</span>
+                    <svg class="chevron h-4 w-4 shrink-0 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="border-t border-blue-100 px-3.5 py-3 text-xs text-gray-600 leading-relaxed space-y-2">
+                    <p>Your 14 days do <strong>not</strong> start when you download. They start only when you tap <strong>Start Trial</strong> in the app.</p>
+                    <p>Not at the field yet? Set your next bullpen day in the app. HeyBLU sends one reminder that morning so you begin when you can use it.</p>
+                    <p class="text-gray-500">Download now, practice later — you won't burn trial days waiting for the field.</p>
+                </div>
+            </details>
             <ul class="text-gray-700 text-sm space-y-3">
                 <li class="flex items-start gap-2.5">
                     <svg class="pricing-check w-5 h-5 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>

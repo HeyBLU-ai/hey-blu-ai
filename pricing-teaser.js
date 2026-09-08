@@ -10,9 +10,13 @@
 
     if (line) {
         if (cfg.showPublicAmounts) {
+            var savingsPct = typeof cfg.annualSavingsPercent === 'function'
+                ? cfg.annualSavingsPercent()
+                : 50;
             line.textContent =
                 'HeyBLU — ' + cfg.trialDays + '-day free trial, then ' +
-                cfg.formatUSD(cfg.monthlyUSD) + '/mo or ' + cfg.formatUSD(cfg.annualUSD) + '/yr.';
+                cfg.formatUSD(cfg.monthlyUSD) + '/mo — or save ' + savingsPct +
+                '% with yearly (' + cfg.formatUSD(cfg.annualUSD) + ').';
         } else {
             line.textContent = cfg.softTrialLine
                 ? cfg.softTrialLine()
@@ -23,6 +27,14 @@
         if (cfg.showPublicAmounts && cfg.launchRateLabel) {
             badge.textContent = cfg.launchRateLabel;
             badge.classList.remove('hidden');
+            badge.removeAttribute('hidden');
+        } else if (cfg.showPublicAmounts) {
+            var badgePct = typeof cfg.annualSavingsPercent === 'function'
+                ? cfg.annualSavingsPercent()
+                : 50;
+            badge.textContent = 'Save ' + badgePct + '% yearly';
+            badge.classList.remove('hidden');
+            badge.removeAttribute('hidden');
         } else {
             badge.classList.add('hidden');
             badge.setAttribute('hidden', '');

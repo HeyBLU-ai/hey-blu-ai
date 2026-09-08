@@ -34,6 +34,7 @@ window.HEYBLU_PRICING = {
 
     /** Teaser / soft public line when dollar amounts must stay off the site. */
     softTrialLine: function () {
-        return 'HeyBLU — ' + this.trialDays + '-day free trial, then monthly or annual.';
+        return 'HeyBLU — ' + this.trialDays + '-day free trial, then monthly — or save ' +
+            this.annualSavingsPercent() + '% with yearly.';
     }
 };
