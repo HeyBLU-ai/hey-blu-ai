@@ -34,7 +34,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|betablu|zone|own|terms|privacy)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|betablu|zone|own|terms|privacy)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|betablu|zone|own|terms|privacy)/(.*)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|betablu|zone|own|terms|privacy)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -213,6 +213,8 @@
     { "src": "how-to/**", "use": "@vercel/static" },
     { "src": "home2/index.html", "use": "@vercel/static" },
     { "src": "home2/**", "use": "@vercel/static" },
+    { "src": "home3/index.html", "use": "@vercel/static" },
+    { "src": "home3/**", "use": "@vercel/static" },
     { "src": "compare/index.html", "use": "@vercel/static" },
     { "src": "compare/**", "use": "@vercel/static" },
     { "src": "pricing/index.html", "use": "@vercel/static" },
@@ -367,6 +369,9 @@
     { "src": "/home2", "dest": "/home2/index.html" },
     { "src": "/home2/", "dest": "/home2/index.html" },
     { "src": "/home2/(.*)", "dest": "/home2/$1" },
+    { "src": "/home3", "dest": "/home3/index.html" },
+    { "src": "/home3/", "dest": "/home3/index.html" },
+    { "src": "/home3/(.*)", "dest": "/home3/$1" },
     { "src": "/compare", "dest": "/compare/index.html" },
     { "src": "/compare/", "dest": "/compare/index.html" },
     { "src": "/compare/([^/]+)/?", "dest": "/compare/$1/index.html" },

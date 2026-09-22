@@ -2,5 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /daily20/admin
+Disallow: /home3
+Disallow: /home3/
 
 Sitemap: https://heyblu.ai/sitemap.xml
