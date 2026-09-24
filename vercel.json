@@ -34,7 +34,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|betablu|zone|own|terms|privacy)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|softball|betablu|zone|own|terms|privacy)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
@@ -42,7 +42,7 @@
       ]
     },
     {
-      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|betablu|zone|own|terms|privacy)/(.*)",
+      "source": "/(faq|help|pricing|about|support|coaches|how-to|field-guide|field-kit|gear|daily-20|daily20|compare|smart-field|home2|home3|softball|betablu|zone|own|terms|privacy)/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
         { "key": "Pragma", "value": "no-cache" },
