@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Opening the App Store…</title>
+<style>
+    body { font-family: -apple-system, sans-serif; background: #0f172a; color: #fff; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; text-align: center; }
+</style>
+</head>
+<body>
+<p>Opening the App Store…</p>
+<script>
+(function () {
+    // This page exists purely so App Store click tracking survives the iOS
+    // Universal Link hand-off. Tapping an https://apps.apple.com link directly
+    // from Meta's in-app browser can tear down the WebView almost instantly,
+    // killing pixel beacons that were still in flight. Navigating here first is
+    // a same-origin hop (not an Apple domain), so it is not intercepted — this
+    // page loads fully, fires tracking, THEN redirects to the real App Store
+    // link. By then tracking has already completed.
+    var params = new URLSearchParams(window.location.search);
+    var to = params.get('to');
+    var loc = params.get('loc') || 'unlabeled';
+    var path = params.get('path') || '/';
+    var FALLBACK = 'https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=GoRedirectFallback&mt=8';
+    var dest = FALLBACK;
+    try {
+        if (to && /^https:\/\/apps\.apple\.com\//.test(to)) {
+            dest = to;
+        }
+    } catch (e) { /* use fallback */ }
+
+    // Meta Pixel
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    window.fbq('init', '1739023907419263');
+    window.fbq('trackCustom', 'AppStoreClick', { content_name: loc, path: path });
+
+    // TikTok Pixel (best-effort; script already defines window.ttq loader)
+    var ttScript = document.createElement('script');
+    ttScript.src = '/tiktok-pixel-init.js';
+    ttScript.onload = function () {
+        if (window.ttq && typeof window.ttq.track === 'function') {
+            window.ttq.track('Download', { content_name: loc, content_type: 'app_store', path: path });
+        }
+    };
+    document.head.appendChild(ttScript);
+
+    // Google Ads conversion
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    var gScript = document.createElement('script');
+    gScript.async = true;
+    gScript.src = 'https://www.googletagmanager.com/gtag/js?id=AW-18414770701';
+    document.head.appendChild(gScript);
+    gtag('consent', 'default', { 'ad_storage': 'granted', 'analytics_storage': 'granted', 'ad_user_data': 'granted', 'ad_personalization': 'granted' });
+    gtag('js', new Date());
+    gtag('config', 'AW-18414770701');
+    gtag('event', 'conversion', { 'send_to': 'AW-18414770701/NUe9CPrRpuocEI207MxE', 'value': 1.0, 'currency': 'USD' });
+
+    function go() {
+        window.location.replace(dest);
+    }
+    // Give the beacons above a moment to actually leave before we redirect.
+    setTimeout(go, 400);
+    // Hard fallback in case JS above throws for any reason.
+    setTimeout(go, 2000);
+})();
+</script>
+<noscript>
+    <meta http-equiv="refresh" content="0;url=https://apps.apple.com/app/apple-store/id6479205383?pt=126940554&ct=GoRedirectFallback&mt=8">
+</noscript>
+</body>
+</html>

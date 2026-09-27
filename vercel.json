@@ -256,6 +256,7 @@
     { "src": "use-of-funds/**", "use": "@vercel/static" },
     { "src": "vision/index.html", "use": "@vercel/static" },
     { "src": "thank-you.html", "use": "@vercel/static" },
+    { "src": "go-app-store.html", "use": "@vercel/static" },
     { "src": "docs/setup/**", "use": "@vercel/static" },
     { "src": "images/**", "use": "@vercel/static" }
   ],
@@ -413,6 +414,7 @@
     { "src": "/revenuesprint/(.*)", "dest": "/revenuesprint/$1" },
     { "src": "/vision", "dest": "/vision/index.html" },
     { "src": "/thank-you", "dest": "/thank-you.html" },
+    { "src": "/go-app-store", "dest": "/go-app-store.html" },
     { "src": "/images/(.*)", "dest": "/images/$1" },
     { "src": "/", "dest": "/index.html" }
   ]

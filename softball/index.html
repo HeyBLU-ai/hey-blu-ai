@@ -337,13 +337,13 @@
                 if (!href) return;
                 e.preventDefault();
                 var opensNewTab = link.getAttribute('target') === '_blank';
-                setTimeout(function () {
-                    if (opensNewTab) {
-                        window.open(href, '_blank', 'noopener,noreferrer');
-                    } else {
-                        window.location.href = href;
-                    }
-                }, 300);
+                var loc = link.getAttribute('data-cta') || link.id || 'unlabeled';
+                var bridge = '/go-app-store?to=' + encodeURIComponent(href) + '&loc=' + encodeURIComponent(loc) + '&path=' + encodeURIComponent('/softball');
+                if (opensNewTab) {
+                    window.open(bridge, '_blank', 'noopener,noreferrer');
+                } else {
+                    window.location.href = bridge;
+                }
             });
         });
     </script>
