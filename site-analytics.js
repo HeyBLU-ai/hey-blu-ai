@@ -38,20 +38,25 @@
                     location: location,
                     utm: window.HEYBLU_DOWNLOAD_UTM || ''
                 });
-                if (typeof window.fbq === 'function') {
+                // Pages that route App Store taps through /go-app-store (currently /softball)
+                // set HEYBLU_AD_PIXELS_VIA_BRIDGE. The bridge page fires the Meta/TikTok/Google
+                // conversions itself, so firing them here too counted every tap twice.
+                // PostHog / Vercel events above and below still fire from the page.
+                var adPixelsViaBridge = window.HEYBLU_AD_PIXELS_VIA_BRIDGE === true;
+                if (!adPixelsViaBridge && typeof window.fbq === 'function') {
                     window.fbq('trackCustom', 'AppStoreClick', {
                         content_name: location,
                         path: pagePath()
                     });
                 }
-                if (typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
+                if (!adPixelsViaBridge && typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
                     window.ttq.track('Download', {
                         content_name: location,
                         content_type: 'app_store',
                         path: pagePath()
                     });
                 }
-                if (typeof window.gtag === 'function') {
+                if (!adPixelsViaBridge && typeof window.gtag === 'function') {
                     // Google's automatic "outbound click" detection does not fire for this
                     // link despite every relevant setting being enabled (confirmed via direct
                     // network inspection, 2026-08-29) — so this conversion action
