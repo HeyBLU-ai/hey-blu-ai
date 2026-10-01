@@ -91,11 +91,6 @@
     <script src="/posthog-init.js"></script>
     <script src="/utm-capture.js"></script>
     <script>
-        // App Store taps on this page go through /go-app-store, which fires the Meta/TikTok/Google
-        // conversions. Tell site-analytics.js not to fire them a second time from this page.
-        window.HEYBLU_AD_PIXELS_VIA_BRIDGE = true;
-    </script>
-    <script>
         // Softball ads landing page — App Store campaign token SoftBall-<utm_source>
         // so downloads from this page don't mix with Home2 baseball traffic.
         (function () {
