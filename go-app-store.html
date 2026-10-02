@@ -42,7 +42,13 @@
     s.parentNode.insertBefore(t,s)}(window, document,'script',
     'https://connect.facebook.net/en_US/fbevents.js');
     window.fbq('init', '1739023907419263');
-    window.fbq('trackCustom', 'AppStoreClick', { content_name: loc, path: path });
+    // eid is the same event ID the originating page used, so Meta merges the two copies.
+    var eid = params.get('eid');
+    if (eid && /^[a-zA-Z0-9_-]{6,64}$/.test(eid)) {
+        window.fbq('trackCustom', 'AppStoreClick', { content_name: loc, path: path }, { eventID: eid });
+    } else {
+        window.fbq('trackCustom', 'AppStoreClick', { content_name: loc, path: path });
+    }
 
     // TikTok Pixel (best-effort; script already defines window.ttq loader)
     var ttScript = document.createElement('script');

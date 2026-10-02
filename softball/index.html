@@ -338,7 +338,11 @@
                 e.preventDefault();
                 var opensNewTab = link.getAttribute('target') === '_blank';
                 var loc = link.getAttribute('data-cta') || link.id || 'unlabeled';
-                var bridge = '/go-app-store?to=' + encodeURIComponent(href) + '&loc=' + encodeURIComponent(loc) + '&path=' + encodeURIComponent('/softball');
+                // Same ID goes to site-analytics.js (this listener runs first) and to the
+                // /go-app-store copy of the event, so Meta counts one tap once.
+                var eid = 'ask_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+                window.HEYBLU_NEXT_APPSTORE_EVENT_ID = eid;
+                var bridge = '/go-app-store?to=' + encodeURIComponent(href) + '&loc=' + encodeURIComponent(loc) + '&path=' + encodeURIComponent('/softball') + '&eid=' + encodeURIComponent(eid);
                 if (opensNewTab) {
                     window.open(bridge, '_blank', 'noopener,noreferrer');
                 } else {

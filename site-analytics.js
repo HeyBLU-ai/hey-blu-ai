@@ -38,11 +38,19 @@
                     location: location,
                     utm: window.HEYBLU_DOWNLOAD_UTM || ''
                 });
+                // One shared ID per physical tap. Meta uses event name + eventID to merge
+                // duplicates: this page's pixel event, the same event re-sent by Meta's hosted
+                // Conversions API, and (on /softball) the copy fired on /go-app-store.
+                // /softball sets HEYBLU_NEXT_APPSTORE_EVENT_ID just before this runs and passes
+                // the same ID to /go-app-store.
+                var appStoreEventId = window.HEYBLU_NEXT_APPSTORE_EVENT_ID ||
+                    ('ask_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+                window.HEYBLU_NEXT_APPSTORE_EVENT_ID = null;
                 if (typeof window.fbq === 'function') {
                     window.fbq('trackCustom', 'AppStoreClick', {
                         content_name: location,
                         path: pagePath()
-                    });
+                    }, { eventID: appStoreEventId });
                 }
                 if (typeof window.ttq === 'object' && typeof window.ttq.track === 'function') {
                     window.ttq.track('Download', {
