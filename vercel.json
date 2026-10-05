@@ -159,6 +159,10 @@
       "use": "@vercel/node"
     },
     {
+      "src": "api/meta-capi.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "api/daily20.js",
       "use": "@vercel/node",
       "config": {
@@ -281,6 +285,7 @@
     { "src": "/api/admin/feedback",       "dest": "api/admin/feedback.js"       },
     { "src": "/api/feedback",             "dest": "api/feedback.js"             },
     { "src": "/api/daily20",              "dest": "api/daily20.js"              },
+    { "src": "/api/meta-capi",            "dest": "api/meta-capi.js"            },
     { "src": "/admin/review",         "dest": "/admin/review/index.html" },
     { "src": "/admin/review/",        "dest": "/admin/review/index.html" },
     { "src": "/r/(?<slug>[^/]+)", "dest": "/api/retrieve.ts?slug=$slug" },

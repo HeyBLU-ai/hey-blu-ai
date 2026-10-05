@@ -322,36 +322,6 @@
         });
     </script>
 
-    <script>
-        // Meta/IG in-app browser App Store hand-off race: tapping the App Store
-        // badge in Meta's own in-app browser triggers an iOS Universal Link
-        // hand-off almost instantly, which can tear down the WebView before the
-        // async AppStoreClick pixel beacon (fired by site-analytics.js's click
-        // listener on this same link) finishes sending. Confirmed via live test
-        // 2026-09-26: real ad -> /softball -> tap badge -> no event received.
-        // Delaying the actual navigation gives that beacon a head start so it
-        // isn't racing the hand-off. Scoped to /softball only.
-        document.querySelectorAll('#app-store-download-link, a.app-store-download-link').forEach(function (link) {
-            link.addEventListener('click', function (e) {
-                var href = link.href;
-                if (!href) return;
-                e.preventDefault();
-                var opensNewTab = link.getAttribute('target') === '_blank';
-                var loc = link.getAttribute('data-cta') || link.id || 'unlabeled';
-                // Same ID goes to site-analytics.js (this listener runs first) and to the
-                // /go-app-store copy of the event, so Meta counts one tap once.
-                var eid = 'ask_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
-                window.HEYBLU_NEXT_APPSTORE_EVENT_ID = eid;
-                var bridge = '/go-app-store?to=' + encodeURIComponent(href) + '&loc=' + encodeURIComponent(loc) + '&path=' + encodeURIComponent('/softball') + '&eid=' + encodeURIComponent(eid);
-                if (opensNewTab) {
-                    window.open(bridge, '_blank', 'noopener,noreferrer');
-                } else {
-                    window.location.href = bridge;
-                }
-            });
-        });
-    </script>
-
     <script src="/pricing-config.js"></script>
     <script src="/pricing-teaser.js"></script>
 

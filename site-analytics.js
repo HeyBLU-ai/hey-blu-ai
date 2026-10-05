@@ -27,6 +27,46 @@
         }
     }
 
+    function readCookie(name) {
+        var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? decodeURIComponent(match[1]) : '';
+    }
+
+    // Sends the tap to our own server, which relays it to Meta's Conversions API with the
+    // ad-click identifier (fbc) attached. sendBeacon is queued by the browser and survives
+    // the hand-off to the App Store, unlike a normal pixel request.
+    function sendServerAppStoreClick(eventId, location) {
+        try {
+            var fbc = readCookie('_fbc');
+            var fbclid = window.HEYBLU_CAMPAIGN && window.HEYBLU_CAMPAIGN.fbclid;
+            if (!fbc && fbclid) {
+                fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+            }
+            var body = JSON.stringify({
+                event_id: eventId,
+                location: location,
+                path: pagePath(),
+                url: window.location.href,
+                fbc: fbc,
+                fbp: readCookie('_fbp')
+            });
+            var sent = false;
+            if (navigator.sendBeacon) {
+                sent = navigator.sendBeacon('/api/meta-capi', new Blob([body], { type: 'application/json' }));
+            }
+            if (!sent && window.fetch) {
+                window.fetch('/api/meta-capi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: body,
+                    keepalive: true
+                });
+            }
+        } catch (e) {
+            /* analytics should never block UX */
+        }
+    }
+
     onReady(function () {
         var appStoreLinks = document.querySelectorAll('#app-store-download-link, a.app-store-download-link');
         appStoreLinks.forEach(function (link) {
@@ -40,12 +80,9 @@
                 });
                 // One shared ID per physical tap. Meta uses event name + eventID to merge
                 // duplicates: this page's pixel event, the same event re-sent by Meta's hosted
-                // Conversions API, and (on /softball) the copy fired on /go-app-store.
-                // /softball sets HEYBLU_NEXT_APPSTORE_EVENT_ID just before this runs and passes
-                // the same ID to /go-app-store.
-                var appStoreEventId = window.HEYBLU_NEXT_APPSTORE_EVENT_ID ||
-                    ('ask_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
-                window.HEYBLU_NEXT_APPSTORE_EVENT_ID = null;
+                // Conversions API, and our own server copy (/api/meta-capi) below.
+                var appStoreEventId = 'ask_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+                sendServerAppStoreClick(appStoreEventId, location);
                 if (typeof window.fbq === 'function') {
                     window.fbq('trackCustom', 'AppStoreClick', {
                         content_name: location,
